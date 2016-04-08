@@ -406,6 +406,7 @@ var kiwi = typeof exports !== 'undefined' ? exports : {};
         if (field.value > fields.length) {
           error('The id for field ' + quote(field.name) + ' cannot be larger than ' + fields.length, field.line, field.column);
         }
+        values.push(field.value);
       }
     }
 
