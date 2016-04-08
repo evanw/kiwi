@@ -1,0 +1,10 @@
+{
+  "name": "kiwi-schema",
+  "version": "0.0.1",
+  "description": "",
+  "main": "kiwi.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/evanw/kiwi.git"
+  }
+}
