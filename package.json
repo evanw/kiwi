@@ -1,8 +1,11 @@
 {
   "name": "kiwi-schema",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "main": "kiwi.js",
+  "bin": {
+    "kiwic": "cli.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/evanw/kiwi.git"

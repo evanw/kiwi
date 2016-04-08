@@ -1,4 +1,4 @@
-var kiwi = typeof exports !== 'undefined' ? exports : {};
+var kiwi = exports || kiwi || {}, exports;
 
 (function() {
   var nativeTypes = [
@@ -10,8 +10,10 @@ var kiwi = typeof exports !== 'undefined' ? exports : {};
     'uint',
   ];
 
-  var reservedTypes = [
-    'ByteBuffer', // This must be on the object returned by compileSchema()
+  // These are special names on the object returned by compileSchema()
+  var reservedNames = [
+    'ByteBuffer',
+    'package',
   ];
 
   var regex = /((?:-|\b)\d+\b|[=;{}]|\[\]|\b[A-Za-z_][A-Za-z0-9_]*\b|\/\/.*|\s+)/g;
@@ -27,6 +29,7 @@ var kiwi = typeof exports !== 'undefined' ? exports : {};
   var enumKeyword = /^enum$/;
   var structKeyword = /^struct$/;
   var messageKeyword = /^message$/;
+  var packageKeyword = /^package$/;
   var requiredKeyword = /^required$/;
 
   var uint8 = new Uint8Array(4);
@@ -288,7 +291,14 @@ var kiwi = typeof exports !== 'undefined' ? exports : {};
     }
 
     var definitions = [];
+    var package = null;
     var index = 0;
+
+    if (eat(packageKeyword)) {
+      package = current().text;
+      expect(identifier, 'identifier');
+      expect(semicolon, '";"');
+    }
 
     while (index < tokens.length && !eat(endOfFile)) {
       var fields = [];
@@ -355,6 +365,7 @@ var kiwi = typeof exports !== 'undefined' ? exports : {};
     }
 
     return {
+      package: package,
       definitions: definitions,
     };
   }
@@ -369,7 +380,7 @@ var kiwi = typeof exports !== 'undefined' ? exports : {};
       if (definedTypes.indexOf(definition.name) !== -1) {
         error('The type ' + quote(definition.name) + ' is defined twice', definition.line, definition.column);
       }
-      if (reservedTypes.indexOf(definition.name) !== -1) {
+      if (reservedNames.indexOf(definition.name) !== -1) {
         error('The type name ' + quote(definition.name) + ' is reserved', definition.line, definition.column);
       }
       definedTypes.push(definition.name);
@@ -440,6 +451,7 @@ var kiwi = typeof exports !== 'undefined' ? exports : {};
 
   function compileDecode(definition, definitions) {
     var lines = [];
+    var indent = '';
 
     lines.push('var result = {};');
     lines.push('if (!(bb instanceof this.ByteBuffer)) {');
@@ -447,10 +459,11 @@ var kiwi = typeof exports !== 'undefined' ? exports : {};
     lines.push('}');
 
     if (definition.kind === 'MESSAGE') {
-      lines.push('var done = false;');
-      lines.push('while (!done) {');
-      lines.push('switch (bb.readByte()) {');
-      lines.push('case 0: done = true; break;');
+      lines.push('while (true) {');
+      lines.push('  switch (bb.readByte()) {');
+      lines.push('  case 0:');
+      lines.push('    return result;');
+      indent = '    ';
     }
 
     for (var j = 0; j < definition.fields.length; j++) {
@@ -501,31 +514,34 @@ var kiwi = typeof exports !== 'undefined' ? exports : {};
       }
 
       if (definition.kind === 'MESSAGE') {
-        lines.push('case ' + field.value + ':');
+        lines.push('  case ' + field.value + ':');
       }
 
       if (field.isArray) {
-        lines.push('var values = result[' + quote(field.name) + '] = [];');
-        lines.push('var length = bb.readVarUint();');
-        lines.push('while (length-- > 0) values.push(' + code + ');');
+        lines.push(indent + 'var values = result[' + quote(field.name) + '] = [];');
+        lines.push(indent + 'var length = bb.readVarUint();');
+        lines.push(indent + 'while (length-- > 0) values.push(' + code + ');');
       }
 
       else {
-        lines.push('result[' + quote(field.name) + '] = ' + code + ';');
+        lines.push(indent + 'result[' + quote(field.name) + '] = ' + code + ';');
       }
 
       if (definition.kind === 'MESSAGE') {
-        lines.push('break;');
+        lines.push('    break;');
       }
     }
 
     if (definition.kind === 'MESSAGE') {
-      lines.push('default: throw new Error("Attempted to parse invalid message");');
-      lines.push('}');
+      lines.push('  default:');
+      lines.push('    throw new Error("Attempted to parse invalid message");');
+      lines.push('  }');
       lines.push('}');
     }
 
-    lines.push('return result;');
+    else {
+      lines.push('return result;');
+    }
 
     return new Function('bb', lines.join('\n'));
   }
@@ -578,7 +594,7 @@ var kiwi = typeof exports !== 'undefined' ? exports : {};
           } else if (type.kind === 'ENUM') {
             code =
               'var encoded = this[' + quote(type.name) + '][value]; ' +
-              'if (encoded === undefined) throw new Error("Invalid value " + JSON.stringify(value) + ' + quote(' for enum ' + quote(type.name)) + '); ' +
+              'if (encoded === void 0) throw new Error("Invalid value " + JSON.stringify(value) + ' + quote(' for enum ' + quote(type.name)) + '); ' +
               'bb.writeVarUint(encoded);';
           } else {
             code = 'this[' + quote('encode' + type.name) + '](value, bb);';
@@ -632,6 +648,7 @@ var kiwi = typeof exports !== 'undefined' ? exports : {};
     var definitions = {};
     var result = {
       ByteBuffer: ByteBuffer,
+      package: schema.package,
     };
 
     for (var i = 0; i < schema.definitions.length; i++) {
@@ -672,7 +689,7 @@ var kiwi = typeof exports !== 'undefined' ? exports : {};
 
   kiwi.ByteBuffer = ByteBuffer;
   kiwi.nativeTypes = nativeTypes;
-  kiwi.reservedTypes = reservedTypes;
+  kiwi.reservedNames = reservedNames;
   kiwi.parseSchema = parseSchema;
   kiwi.compileSchema = compileSchema;
 }());
