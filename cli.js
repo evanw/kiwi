@@ -9,9 +9,13 @@ var usage = [
   '',
   'Options:',
   '',
-  '  --help           Print this message.',
-  '  --schema [PATH]  The schema file to use.',
-  '  --js [PATH]      Generate JavaScript code.',
+  '  --help              Print this message.',
+  '  --schema [PATH]     The schema file to use.',
+  '  --js [PATH]         Generate JavaScript code.',
+  '  --cpp [PATH]        Generate C++ code.',
+  '  --root-type [NAME]  Set the root type for JSON.',
+  '  --to-json [PATH]    Convert a binary file to JSON.',
+  '  --from-json [PATH]  Convert a JSON file to binary.',
   '',
 ].join('\n');
 
@@ -19,6 +23,10 @@ var main = exports.main = function(args) {
   var flags = {
     '--schema': null,
     '--js': null,
+    '--cpp': null,
+    '--root-type': null,
+    '--to-json': null,
+    '--from-json': null,
   };
 
   // Parse flags
@@ -63,39 +71,36 @@ var main = exports.main = function(args) {
     throw e;
   }
 
+  // Validate the root type
+  var rootType = flags['--root-type'];
+  if (rootType !== null && !(('encode' + rootType) in schema && ('decode' + rootType) in schema)) {
+    throw new Error('Invalid root type: ' + JSON.stringify(rootType));
+  }
+
   // Generate JavaScript code
   if (flags['--js'] !== null) {
-    var name = schema.package;
-    var js = [];
+    fs.writeFileSync(flags['--js'], kiwi.compileSchemaJS(content));
+  }
 
-    if (name !== null) {
-      js.push('var ' + name + ' = exports || ' + name + ' || {}, exports;');
-    } else {
-      js.push('var exports = exports || {};');
-      name = 'exports';
+  // Generate C++ code
+  if (flags['--cpp'] !== null) {
+    fs.writeFileSync(flags['--cpp'], kiwi.compileSchemaCPP(content));
+  }
+
+  // Convert a binary file to JSON
+  if (flags['--to-json'] !== null) {
+    if (rootType === null) {
+      throw new Error('Missing flag --root-type when using --to-json');
     }
+    fs.writeFileSync(flags['--to-json'] + '.json', JSON.stringify(schema['decode' + rootType](new Uint8Array(fs.readFileSync(flags['--to-json']))), null, 2) + '\n');
+  }
 
-    js.push(name + '.ByteBuffer = ' + name + '.ByteBuffer || require("kiwi-schema").ByteBuffer;');
-
-    for (var key in schema) {
-      var value = schema[key];
-
-      if (kiwi.reservedNames.indexOf(key) !== -1) {
-        continue;
-      }
-
-      else if (value instanceof Function) {
-        var match = /function[^(]*\(([\w\s,]+).*\)\s*\{([^]*\})/.exec(value + '');
-        js.push(name + '[' + JSON.stringify(key) + '] = function(' + match[1].trim() + ') {' + match[2].replace(/\n/g, '\n  ').replace(/\n  \}$/, '\n}') + ';');
-      }
-
-      else {
-        js.push(name + '[' + JSON.stringify(key) + '] = ' + JSON.stringify(value, null, 2) + ';');
-      }
+  // Convert a JSON file to binary
+  if (flags['--from-json'] !== null) {
+    if (rootType === null) {
+      throw new Error('Missing flag --root-type when using --from-json');
     }
-
-    js.push('');
-    fs.writeFileSync(flags['--js'], js.join('\n'));
+    fs.writeFileSync(flags['--from-json'] + '.bin', Buffer(schema['encode' + rootType](JSON.parse(fs.readFileSync(flags['--from-json'], 'utf8')))));
   }
 
   return 0;
