@@ -6,8 +6,14 @@
   "bin": {
     "kiwic": "cli.js"
   },
+  "scripts": {
+    "test": "cd test && sh ./test.sh"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/evanw/kiwi.git"
+  },
+  "devDependencies": {
+    "mocha": "2.4.5"
   }
 }

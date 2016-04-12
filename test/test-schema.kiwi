@@ -1,0 +1,21 @@
+package test_cpp;
+
+struct ByteStruct {
+  byte x;
+}
+
+struct IntStruct {
+  int x;
+}
+
+struct UintStruct {
+  uint x;
+}
+
+struct FloatStruct {
+  float x;
+}
+
+struct StringStruct {
+  string x;
+}

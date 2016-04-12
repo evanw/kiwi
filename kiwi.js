@@ -1,37 +1,20 @@
 var kiwi = exports || kiwi || {}, exports;
 
 (function() {
-  var nativeTypes = [
-    'bool',
-    'byte',
-    'float',
-    'int',
-    'string',
-    'uint',
-  ];
 
-  // These are special names on the object returned by compileSchema()
-  var reservedNames = [
-    'ByteBuffer',
-    'package',
-  ];
+  function quote(text) {
+    return JSON.stringify(text);
+  }
 
-  var regex = /((?:-|\b)\d+\b|[=;{}]|\[\]|\b[A-Za-z_][A-Za-z0-9_]*\b|\/\/.*|\s+)/g;
-  var identifier = /^[A-Za-z_][A-Za-z0-9_]*$/;
-  var whitespace = /^\/\/.*|\s+$/;
-  var equals = /^=$/;
-  var endOfFile = /^$/;
-  var semicolon = /^;$/;
-  var integer = /^-?\d+$/;
-  var leftBrace = /^\{$/;
-  var rightBrace = /^\}$/;
-  var arrayToken = /^\[\]$/;
-  var enumKeyword = /^enum$/;
-  var structKeyword = /^struct$/;
-  var messageKeyword = /^message$/;
-  var packageKeyword = /^package$/;
-  var requiredKeyword = /^required$/;
+  function error(text, line, column) {
+    var error = new Error(text);
+    error.line = line;
+    error.column = column;
+    throw error;
+  }
 
+// ByteBuffer
+(function() {
   var uint8 = new Uint8Array(4);
   var float32 = new Float32Array(uint8.buffer);
   var utf8 = new ByteBuffer(); // A pre-allocated accumulation buffer to avoid extra GC
@@ -212,20 +195,41 @@ var kiwi = exports || kiwi || {}, exports;
     this._data.set((index + utf8._data.length > this._data.length ? utf8.toUint8Array() : utf8._data), index);
   };
 
-  function quote(text) {
-    return JSON.stringify(text);
-  }
+  kiwi.ByteBuffer = ByteBuffer;
+}());
 
-  function toUpperCase(text) {
-    return text.replace(/([a-z])([A-Z])/g, function(_, a, b) { return a + '_' + b; }).toUpperCase();
-  }
+// Parser
+(function() {
+  var nativeTypes = [
+    'bool',
+    'byte',
+    'float',
+    'int',
+    'string',
+    'uint',
+  ];
 
-  function error(text, line, column) {
-    var error = new Error(text);
-    error.line = line;
-    error.column = column;
-    throw error;
-  }
+  // These are special names on the object returned by compileSchema()
+  var reservedNames = [
+    'ByteBuffer',
+    'package',
+  ];
+
+  var regex = /((?:-|\b)\d+\b|[=;{}]|\[\]|\b[A-Za-z_][A-Za-z0-9_]*\b|\/\/.*|\s+)/g;
+  var identifier = /^[A-Za-z_][A-Za-z0-9_]*$/;
+  var whitespace = /^\/\/.*|\s+$/;
+  var equals = /^=$/;
+  var endOfFile = /^$/;
+  var semicolon = /^;$/;
+  var integer = /^-?\d+$/;
+  var leftBrace = /^\{$/;
+  var rightBrace = /^\}$/;
+  var arrayToken = /^\[\]$/;
+  var enumKeyword = /^enum$/;
+  var structKeyword = /^struct$/;
+  var messageKeyword = /^message$/;
+  var packageKeyword = /^package$/;
+  var requiredKeyword = /^required$/;
 
   function tokenize(text) {
     var parts = text.split(regex);
@@ -453,6 +457,15 @@ var kiwi = exports || kiwi || {}, exports;
     return schema;
   }
 
+  kiwi.nativeTypes = nativeTypes;
+  kiwi.reservedNames = reservedNames;
+  kiwi.parseSchema = parseSchema;
+}());
+
+// JavaScript Compiler
+(function() {
+  var ByteBuffer = kiwi.ByteBuffer;
+
   function compileDecodeJS(definition, definitions) {
     var lines = [];
     var indent = '';
@@ -649,57 +662,9 @@ var kiwi = exports || kiwi || {}, exports;
     return lines.join('\n');
   }
 
-  function compileSchemaJIT(schema) {
-    if (typeof schema === 'string') {
-      schema = parseSchema(schema);
-    }
-
-    var definitions = {};
-    var result = {
-      ByteBuffer: ByteBuffer,
-      package: schema.package,
-    };
-
-    for (var i = 0; i < schema.definitions.length; i++) {
-      var definition = schema.definitions[i];
-      definitions[definition.name] = definition;
-    }
-
-    for (var i = 0; i < schema.definitions.length; i++) {
-      var definition = schema.definitions[i];
-
-      switch (definition.kind) {
-        case 'ENUM': {
-          var value = {};
-          for (var j = 0; j < definition.fields.length; j++) {
-            var field = definition.fields[j];
-            value[field.name] = field.value;
-            value[field.value] = field.name;
-          }
-          result[definition.name] = value;
-          break;
-        }
-
-        case 'STRUCT':
-        case 'MESSAGE': {
-          result['decode' + definition.name] = new Function('return ' + compileDecodeJS(definition, definitions))();
-          result['encode' + definition.name] = new Function('return ' + compileEncodeJS(definition, definitions))();
-          break;
-        }
-
-        default: {
-          error('Invalid definition kind ' + quote(definition.kind), definition.line, definition.column);
-          break;
-        }
-      }
-    }
-
-    return result;
-  }
-
   function compileSchemaJS(schema) {
     if (typeof schema === 'string') {
-      schema = parseSchema(schema);
+      schema = kiwi.parseSchema(schema);
     }
 
     var definitions = {};
@@ -751,6 +716,26 @@ var kiwi = exports || kiwi || {}, exports;
 
     js.push('');
     return js.join('\n');
+  }
+
+  function compileSchemaJIT(schema) {
+    var result = {
+      ByteBuffer: ByteBuffer,
+    };
+    new Function('exports', compileSchemaJS(schema))(result);
+    return result;
+  }
+
+  kiwi.compileSchema = compileSchemaJIT;
+  kiwi.compileSchemaJS = compileSchemaJS;
+}());
+
+// C++ Compiler
+(function() {
+  var ByteBuffer = kiwi.ByteBuffer;
+
+  function toUpperCase(text) {
+    return text.replace(/([a-z])([A-Z])/g, function(_, a, b) { return a + '_' + b; }).toUpperCase();
   }
 
   function compileDecodeCPP(definition, definitions, pass, lines) {
@@ -1374,7 +1359,7 @@ var kiwi = exports || kiwi || {}, exports;
 
   function compileSchemaCPP(schema) {
     if (typeof schema === 'string') {
-      schema = parseSchema(schema);
+      schema = kiwi.parseSchema(schema);
     }
 
     var definitions = {};
@@ -1458,11 +1443,7 @@ var kiwi = exports || kiwi || {}, exports;
     return cpp.join('\n');
   }
 
-  kiwi.ByteBuffer = ByteBuffer;
-  kiwi.nativeTypes = nativeTypes;
-  kiwi.reservedNames = reservedNames;
-  kiwi.parseSchema = parseSchema;
-  kiwi.compileSchema = compileSchemaJIT;
-  kiwi.compileSchemaJS = compileSchemaJS;
   kiwi.compileSchemaCPP = compileSchemaCPP;
+}());
+
 }());

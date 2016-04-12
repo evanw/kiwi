@@ -1,7 +1,6 @@
 # Kiwi Message Format
 
 This is a binary encoding format inspired by Google's [Protocol Buffer](https://developers.google.com/protocol-buffers/) format.
-It is pretty similar but also includes support for efficient compound messages using the `struct` keyword.
 
 ## Native Types
 
@@ -41,3 +40,10 @@ message RootMessage {
   Color[] colors = 3;
 }
 ```
+
+## Differences from Protocol Buffers
+
+* Kiwi adds support for efficient compound messages using the `struct` keyword
+* Enums are scoped to their type instead of dumping everything into the global scope like C
+* The generated JavaScript doesn't emit default values, making it possible to check field presence
+* The generated C++ code is a lot simpler and only depends on a single file, `kiwi.h`
