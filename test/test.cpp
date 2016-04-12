@@ -138,12 +138,79 @@ void testString() {
   check("🙉🙈🙊", {12, 240, 159, 153, 137, 240, 159, 153, 136, 240, 159, 153, 138});
 }
 
+void testCompound() {
+  puts("testCompound");
+
+  auto check = [](int32_t x, int32_t y, std::vector<uint8_t> o) {
+    kiwi::ByteBuffer bb;
+    test_cpp::CompoundStructEncoder(bb).add_x(x).add_y(y);
+    assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
+
+    kiwi::ByteBuffer bb2(o.data(), o.size());
+    test_cpp::CompoundStructDecoder decoder(bb2);
+    int32_t value_x = 0;
+    int32_t value_y = 0;
+    bool success_x = decoder.read_x(value_x);
+    bool success_y = decoder.read_y(value_y);
+    assert(success_x);
+    assert(success_y);
+    assert(value_x == x);
+    assert(value_y == y);
+  };
+
+  check(0, 0, {0, 0});
+  check(1, -1, {2, 1});
+  check(12345, 54321, {242, 192, 1, 226, 208, 6});
+}
+
+void testNested() {
+  puts("testNested");
+
+  auto check = [](int32_t a, int32_t bx, int32_t by, int32_t c, std::vector<uint8_t> o) {
+    kiwi::ByteBuffer bb;
+    test_cpp::NestedStructEncoder encoder(bb);
+    encoder.add_a(a);
+    encoder.add_b().add_x(bx).add_y(by);
+    encoder.add_c(c);
+    assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
+
+    kiwi::ByteBuffer bb2(o.data(), o.size());
+    test_cpp::NestedStructDecoder decoder(bb2);
+    int32_t value_a = 0;
+    int32_t value_bx = 0;
+    int32_t value_by = 0;
+    int32_t value_c = 0;
+    bool success_a = decoder.read_a(value_a);
+    test_cpp::CompoundStructDecoder decoder2;
+    bool success_b = decoder.read_b(decoder2);
+    bool success_bx = decoder2.read_x(value_bx);
+    bool success_by = decoder2.read_y(value_by);
+    bool success_c = decoder.read_c(value_c);
+
+    assert(success_a);
+    assert(success_b);
+    assert(success_bx);
+    assert(success_by);
+    assert(success_c);
+    assert(value_a == a);
+    assert(value_bx == bx);
+    assert(value_by == by);
+    assert(value_c == c);
+  };
+
+  check(0, 0, 0, 0, {0, 0, 0, 0});
+  check(1, -2, 3, -4, {2, 3, 6, 7});
+  check(534, 12345, 54321, 321, {172, 8, 242, 192, 1, 226, 208, 6, 130, 5});
+}
+
 int main() {
   testByte();
   testUint();
   testInt();
   testFloat();
   testString();
+  testCompound();
+  testNested();
   puts("all tests passed");
   return 0;
 }

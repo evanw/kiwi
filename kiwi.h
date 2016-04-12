@@ -47,6 +47,7 @@ namespace kiwi {
 
   class Codec {
   public:
+    Codec();
     Codec(ByteBuffer &bb);
     Codec(Codec &&encoder);
     Codec(const Codec &) = delete;
@@ -54,6 +55,7 @@ namespace kiwi {
 
   protected:
     void _structReadField(uint32_t field);
+    void _structReadFieldNested(uint32_t field, Codec &codec);
     bool _structReadByte(uint32_t field, uint8_t &value);
     bool _structReadVarInt(uint32_t field, int32_t &value);
     bool _structReadVarUint(uint32_t field, uint32_t &value);
@@ -243,6 +245,9 @@ namespace kiwi {
 
   ////////////////////////////////////////////////////////////////////////////////
 
+  Codec::Codec() {
+  }
+
   Codec::Codec(ByteBuffer &bb) : _bb(&bb) {
   }
 
@@ -254,6 +259,12 @@ namespace kiwi {
 
   void Codec::_structReadField(uint32_t field) {
     assert(_bb && _nextField++ == field && !_countRemaining); // Must set each field once in order
+  }
+
+  void Codec::_structReadFieldNested(uint32_t field, Codec &codec) {
+    _structReadField(field);
+    assert(_bb && !codec._bb);
+    codec._bb = _bb;
   }
 
   bool Codec::_structReadByte(uint32_t field, uint8_t &value) {

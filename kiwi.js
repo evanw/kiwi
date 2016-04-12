@@ -746,14 +746,11 @@ var kiwi = exports || kiwi || {}, exports;
     }
 
     else if (pass === 1) {
-      lines.push('class ' + name + ' : kiwi::Codec {');
+      lines.push('class ' + name + ' : public kiwi::Codec {');
       lines.push('public:');
+      lines.push('  ' + name + '() {}');
       lines.push('  ' + name + '(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}');
       lines.push('  ' + name + '(' + name + ' &&decoder) : kiwi::Codec(std::move(decoder)) {}');
-
-      if (definition.kind === 'STRUCT') {
-        lines.push('  ~' + name + '();');
-      }
 
       if (definition.kind === 'MESSAGE') {
         lines.push('  bool nextField(int32_t &value);');
@@ -913,8 +910,9 @@ var kiwi = exports || kiwi || {}, exports;
 
               else {
                 lines.push('bool ' + name + '::read_' + field.name + '(' + type.name + 'Decoder &decoder) {');
-                lines.push('  assert(false); // TODO');
-                lines.push('  return false;');
+                lines.push('  if (!_bb) return false;');
+                lines.push('  _structReadFieldNested(' + j + ', decoder);');
+                lines.push('  return true;');
                 lines.push('}');
                 lines.push('');
               }
@@ -929,11 +927,6 @@ var kiwi = exports || kiwi || {}, exports;
             lines.push('');
           }
         }
-
-        lines.push(name + '::~' + name + '() {');
-        lines.push('  assert(!_bb || _nextField++ == ' + definition.fields.length + '); // Must read all fields');
-        lines.push('}');
-        lines.push('');
       }
 
       if (definition.kind === 'MESSAGE') {
@@ -1033,14 +1026,6 @@ var kiwi = exports || kiwi || {}, exports;
               }
             }
           }
-
-          if (field.isArray) {
-            lines.push('bool ' + name + '::end_' + field.name + '() {');
-            lines.push('  assert(!_countRemaining);');
-            lines.push('  return true;');
-            lines.push('}');
-            lines.push('');
-          }
         }
       }
     }
@@ -1054,7 +1039,7 @@ var kiwi = exports || kiwi || {}, exports;
     }
 
     else if (pass === 1) {
-      lines.push('class ' + name + ' : kiwi::Codec {');
+      lines.push('class ' + name + ' : public kiwi::Codec {');
       lines.push('public:');
       lines.push('  ' + name + '(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}');
       lines.push('  ' + name + '(' + name + ' &&encoder) : kiwi::Codec(std::move(encoder)) {}');

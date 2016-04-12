@@ -1,21 +1,9 @@
 package test_cpp;
 
-struct ByteStruct {
-  byte x;
-}
-
-struct IntStruct {
-  int x;
-}
-
-struct UintStruct {
-  uint x;
-}
-
-struct FloatStruct {
-  float x;
-}
-
-struct StringStruct {
-  string x;
-}
+struct ByteStruct { byte x; }
+struct IntStruct { int x; }
+struct UintStruct { uint x; }
+struct FloatStruct { float x; }
+struct StringStruct { string x; }
+struct CompoundStruct { int x; int y; }
+struct NestedStruct { int a; CompoundStruct b; int c; }

@@ -92,3 +92,25 @@ it('string', function() {
   check('\0abc\0', [5, 0, 97, 98, 99, 0]);
   check('🙉🙈🙊', [12, 240, 159, 153, 137, 240, 159, 153, 136, 240, 159, 153, 138]);
 });
+
+it('compound', function() {
+  function check(i, o) {
+    assert.deepEqual(Buffer(schema.encodeCompoundStruct(i)), Buffer(o));
+    assert.deepEqual(schema.decodeCompoundStruct(new Uint8Array(o)), i);
+  }
+
+  check({x: 0, y: 0}, [0, 0]);
+  check({x: 1, y: -1}, [2, 1]);
+  check({x: 12345, y: 54321}, [242, 192, 1, 226, 208, 6]);
+});
+
+it('nested', function() {
+  function check(i, o) {
+    assert.deepEqual(Buffer(schema.encodeNestedStruct(i)), Buffer(o));
+    assert.deepEqual(schema.decodeNestedStruct(new Uint8Array(o)), i);
+  }
+
+  check({a: 0, b: {x: 0, y: 0}, c: 0}, [0, 0, 0, 0]);
+  check({a: 1, b: {x: -2, y: 3}, c: -4}, [2, 3, 6, 7]);
+  check({a: 534, b: {x: 12345, y: 54321}, c: 321}, [172, 8, 242, 192, 1, 226, 208, 6, 130, 5]);
+});
