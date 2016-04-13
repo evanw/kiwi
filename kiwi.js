@@ -753,13 +753,13 @@ var kiwi = exports || kiwi || {}, exports;
       lines.push('  ' + name + '(' + name + ' &&decoder) : kiwi::Codec(std::move(decoder)) {}');
 
       if (definition.kind === 'MESSAGE') {
-        lines.push('  bool nextField(int32_t &value);');
-        lines.push('  enum {');
+        lines.push('  enum Field {');
         for (var j = 0; j < definition.fields.length; j++) {
           var field = definition.fields[j];
           lines.push('    ' + toUpperCase(field.name) + ' = ' + field.value + ',');
         }
         lines.push('  };');
+        lines.push('  bool nextField(Field &value);');
       }
 
       for (var j = 0; j < definition.fields.length; j++) {
@@ -910,9 +910,7 @@ var kiwi = exports || kiwi || {}, exports;
 
               else {
                 lines.push('bool ' + name + '::read_' + field.name + '(' + type.name + 'Decoder &decoder) {');
-                lines.push('  if (!_bb) return false;');
-                lines.push('  _structReadFieldNested(' + j + ', decoder);');
-                lines.push('  return true;');
+                lines.push('  return _structReadFieldNested(' + j + ', decoder);');
                 lines.push('}');
                 lines.push('');
               }
@@ -930,9 +928,9 @@ var kiwi = exports || kiwi || {}, exports;
       }
 
       if (definition.kind === 'MESSAGE') {
-        lines.push('bool ' + name + '::nextField(int32_t &value) {');
-        lines.push('  if (!_messageReadField()) return false;');
-        lines.push('  value = _nextField;');
+        lines.push('bool ' + name + '::nextField(Field &value) {');
+        lines.push('  if (!_messageReadField() || _nextField == 0) return false;');
+        lines.push('  value = (Field)_nextField;');
         lines.push('  return true;');
         lines.push('}');
         lines.push('');
@@ -1019,8 +1017,7 @@ var kiwi = exports || kiwi || {}, exports;
 
               else {
                 lines.push('bool ' + name + '::read_' + field.name + '(' + type.name + 'Decoder &decoder) {');
-                lines.push('  assert(false); // TODO');
-                lines.push('  return false;');
+                lines.push('  return _messageReadFieldNested(' + field.value + ', decoder);');
                 lines.push('}');
                 lines.push('');
               }

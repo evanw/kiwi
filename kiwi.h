@@ -55,7 +55,7 @@ namespace kiwi {
 
   protected:
     void _structReadField(uint32_t field);
-    void _structReadFieldNested(uint32_t field, Codec &codec);
+    bool _structReadFieldNested(uint32_t field, Codec &codec);
     bool _structReadByte(uint32_t field, uint8_t &value);
     bool _structReadVarInt(uint32_t field, int32_t &value);
     bool _structReadVarUint(uint32_t field, uint32_t &value);
@@ -63,6 +63,7 @@ namespace kiwi {
     bool _structReadString(uint32_t field, std::string &value);
 
     bool _messageReadField();
+    bool _messageReadFieldNested(uint32_t field, Codec &codec);
     bool _messageReadByte(uint32_t field, uint8_t &value);
     bool _messageReadVarInt(uint32_t field, int32_t &value);
     bool _messageReadVarUint(uint32_t field, uint32_t &value);
@@ -261,10 +262,12 @@ namespace kiwi {
     assert(_bb && _nextField++ == field && !_countRemaining); // Must set each field once in order
   }
 
-  void Codec::_structReadFieldNested(uint32_t field, Codec &codec) {
+  bool Codec::_structReadFieldNested(uint32_t field, Codec &codec) {
+    if (!_bb) return false;
     _structReadField(field);
-    assert(_bb && !codec._bb);
+    assert(!codec._bb);
     codec._bb = _bb;
+    return true;
   }
 
   bool Codec::_structReadByte(uint32_t field, uint8_t &value) {
@@ -310,12 +313,24 @@ namespace kiwi {
   ////////////////////////////////////////////////////////////////////////////////
 
   bool Codec::_messageReadField() {
-    return _bb && _bb->readVarUint(_nextField);
+    if (!_bb) return false;
+    assert(_nextField == 0); // Must finish reading the previous field
+    return _bb->readVarUint(_nextField);
+  }
+
+  bool Codec::_messageReadFieldNested(uint32_t field, Codec &codec) {
+    if (!_bb) return false;
+    assert(_nextField == field); // This must be checked by the caller first
+    _nextField = 0;
+    assert(!codec._bb);
+    codec._bb = _bb;
+    return true;
   }
 
   bool Codec::_messageReadByte(uint32_t field, uint8_t &value) {
     if (!_bb) return false;
     assert(_nextField == field); // This must be checked by the caller first
+    _nextField = 0;
     if (_bb->readByte(value)) return true;
     _bb = nullptr;
     return false;
@@ -324,6 +339,7 @@ namespace kiwi {
   bool Codec::_messageReadVarInt(uint32_t field, int32_t &value) {
     if (!_bb) return false;
     assert(_nextField == field); // This must be checked by the caller first
+    _nextField = 0;
     if (_bb->readVarInt(value)) return true;
     _bb = nullptr;
     return false;
@@ -332,6 +348,7 @@ namespace kiwi {
   bool Codec::_messageReadVarUint(uint32_t field, uint32_t &value) {
     if (!_bb) return false;
     assert(_nextField == field); // This must be checked by the caller first
+    _nextField = 0;
     if (_bb->readVarUint(value)) return true;
     _bb = nullptr;
     return false;
@@ -340,6 +357,7 @@ namespace kiwi {
   bool Codec::_messageReadFloat(uint32_t field, float &value) {
     if (!_bb) return false;
     assert(_nextField == field); // This must be checked by the caller first
+    _nextField = 0;
     if (_bb->readFloat(value)) return true;
     _bb = nullptr;
     return false;
@@ -348,6 +366,7 @@ namespace kiwi {
   bool Codec::_messageReadString(uint32_t field, std::string &value) {
     if (!_bb) return false;
     assert(_nextField == field); // This must be checked by the caller first
+    _nextField = 0;
     if (_bb->readString(value)) return true;
     _bb = nullptr;
     return false;
