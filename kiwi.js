@@ -432,16 +432,18 @@ var kiwi = exports || kiwi || {}, exports;
     var state = {};
     var check = function(name) {
       var definition = definitions[name];
-      if (state[name] === 1) {
-        error('Recursive nesting of ' + quote(name) + ' is not allowed', definition.line, definition.column);
-      }
-      if (state[name] !== 2 && definition) {
-        state[name] = 1;
-        var fields = definition.fields;
-        for (var i = 0; i < fields.length; i++) {
-          check(fields[i].type);
+      if (definition && definition.kind === 'STRUCT') {
+        if (state[name] === 1) {
+          error('Recursive nesting of ' + quote(name) + ' is not allowed', definition.line, definition.column);
         }
-        state[name] = 2;
+        if (state[name] !== 2 && definition) {
+          state[name] = 1;
+          var fields = definition.fields;
+          for (var i = 0; i < fields.length; i++) {
+            check(fields[i].type);
+          }
+          state[name] = 2;
+        }
       }
       return true;
     };
@@ -778,6 +780,22 @@ var kiwi = exports || kiwi || {}, exports;
     return type;
   }
 
+  function cppFieldName(field) {
+    return '_data_' + field.name;
+  }
+
+  function cppFlagIndex(i) {
+    return i >> 5;
+  }
+
+  function cppFlagMask(i) {
+    return 1 << (i % 32) >>> 0;
+  }
+
+  function cppIsFieldPointer(definitions, field) {
+    return !field.isArray && field.type in definitions && definitions[field.type].kind !== 'ENUM';
+  }
+
   function compileSchemaCPP(schema) {
     if (typeof schema === 'string') {
       schema = kiwi.parseSchema(schema);
@@ -827,32 +845,39 @@ var kiwi = exports || kiwi || {}, exports;
           continue;
         }
 
-        var name = definition.name;
         var fields = definition.fields;
 
         if (pass === 0) {
-          cpp.push('class ' + name + ';');
+          cpp.push('class ' + definition.name + ';');
           newline = true;
         }
 
         else if (pass === 1) {
-          cpp.push('class ' + name + ' {');
+          cpp.push('class ' + definition.name + ' {');
           cpp.push('public:');
 
           for (var j = 0; j < fields.length; j++) {
             var field = fields[j];
+            var name = cppFieldName(field);
             var type = cppType(definitions, field, field.isArray);
+            var flagIndex = cppFlagIndex(j);
+            var flagMask = cppFlagMask(j);
 
-            cpp.push('  ' + type + ' *' + field.name + '() { return _' + field.name + '; }');
+            if (cppIsFieldPointer(definitions, field)) {
+              cpp.push('  ' + type + ' *' + field.name + '() { return ' + name + '; }');
+              cpp.push('  void set_' + field.name + '(' + type + ' *value) { ' + name + ' = value; }');
+            }
 
-            if (field.isArray) {
-              cpp.push('  ' + type + ' &add_' + field.name + '(kiwi::MemoryPool &pool, uint32_t count) { return *(_' +
-                field.name + ' = pool.array<' + cppType(definitions, field, false) + '>(count)); }');
+            else if (field.isArray) {
+              cpp.push('  ' + type + ' *' + field.name + '() { return _flags[' + flagIndex + '] & ' + flagMask + ' ? &' + name + ' : nullptr; }');
+              cpp.push('  ' + type + ' &set_' + field.name + '(kiwi::MemoryPool &pool, uint32_t count) { _flags[' + flagIndex +
+                '] |= ' + flagMask + '; return ' + name + ' = pool.array<' + cppType(definitions, field, false) + '>(count); }');
             }
 
             else {
-              cpp.push('  ' + type + ' &add_' + field.name + '(kiwi::MemoryPool &pool) { return *(_' +
-                field.name + ' ? _' + field.name + ' : _' + field.name + ' = pool.allocate<' + type + '>(1)); }');
+              cpp.push('  ' + type + ' *' + field.name + '() { return _flags[' + flagIndex + '] & ' + flagMask + ' ? &' + name + ' : nullptr; }');
+              cpp.push('  void set_' + field.name + '(const ' + type + ' &value) { _flags[' +
+                flagIndex + '] |= ' + flagMask + '; ' + name + ' = value; }');
             }
 
             cpp.push('');
@@ -862,10 +887,18 @@ var kiwi = exports || kiwi || {}, exports;
           cpp.push('  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);');
           cpp.push('');
           cpp.push('private:');
+          cpp.push('  uint32_t _flags[' + (fields.length + 31 >> 5) + '] = {};');
 
           for (var j = 0; j < fields.length; j++) {
             var field = fields[j];
-            cpp.push('  ' + cppType(definitions, field, field.isArray) + ' *_' + field.name + ' = nullptr;');
+            var name = cppFieldName(field);
+            var type = cppType(definitions, field, field.isArray);
+
+            if (cppIsFieldPointer(definitions, field)) {
+              cpp.push('  ' + type + ' *' + name + ' = {};');
+            } else {
+              cpp.push('  ' + type + ' ' + name + ' = {};');
+            }
           }
 
           cpp.push('};');
@@ -873,11 +906,14 @@ var kiwi = exports || kiwi || {}, exports;
         }
 
         else {
-          cpp.push('bool ' + name + '::encode(kiwi::ByteBuffer &bb) {');
+          cpp.push('bool ' + definition.name + '::encode(kiwi::ByteBuffer &bb) {');
 
           for (var j = 0; j < fields.length; j++) {
             var field = fields[j];
-            var value = field.isArray ? 'it' : '*_' + field.name;
+            var name = cppFieldName(field);
+            var value = field.isArray ? 'it' : name;
+            var flagIndex = cppFlagIndex(j);
+            var flagMask = cppFlagMask(j);
             var code;
 
             switch (field.type) {
@@ -907,7 +943,7 @@ var kiwi = exports || kiwi || {}, exports;
               }
 
               case 'string': {
-                code = 'bb.writeString((' + value + ').c_str());';
+                code = 'bb.writeString(' + value + '.c_str());';
                 break;
               }
 
@@ -923,16 +959,16 @@ var kiwi = exports || kiwi || {}, exports;
                 }
 
                 else {
-                  code = 'if (!(' + value + ').encode(bb)) return false;';
+                  code = 'if (!' + value + (cppIsFieldPointer(definitions, field) ? '->' : '.') + 'encode(bb)) return false;';
                 }
               }
             }
 
             var indent = '  ';
             if (field.isRequired) {
-              cpp.push('  if (!_' + field.name + ') return false;');
+              cpp.push('  if (' + field.name + '() == nullptr) return false;');
             } else {
-              cpp.push('  if (_' + field.name + ') {');
+              cpp.push('  if (' + field.name + '() != nullptr) {');
               indent = '    ';
             }
 
@@ -941,8 +977,8 @@ var kiwi = exports || kiwi || {}, exports;
             }
 
             if (field.isArray) {
-              cpp.push(indent + 'bb.writeVarUint(_' + field.name + '->size());');
-              cpp.push(indent + 'for (' + cppType(definitions, field, false) + ' &it : *_' + field.name + ') ' + code);
+              cpp.push(indent + 'bb.writeVarUint(' + name + '.size());');
+              cpp.push(indent + 'for (' + cppType(definitions, field, false) + ' &it : ' + name + ') ' + code);
             } else {
               cpp.push(indent + code);
             }
@@ -960,7 +996,7 @@ var kiwi = exports || kiwi || {}, exports;
           cpp.push('}');
           cpp.push('');
 
-          cpp.push('bool ' + name + '::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {');
+          cpp.push('bool ' + definition.name + '::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {');
 
           for (var j = 0; j < fields.length; j++) {
             if (fields[j].isArray) {
@@ -979,7 +1015,7 @@ var kiwi = exports || kiwi || {}, exports;
             for (var j = 0; j < fields.length; j++) {
               var field = fields[j];
               if (field.isRequired) {
-                cpp.push('        if (!_' + field.name + ') return false;');
+                cpp.push('        if (' + field.name + '() == nullptr) return false;');
               }
             }
 
@@ -988,7 +1024,9 @@ var kiwi = exports || kiwi || {}, exports;
 
           for (var j = 0; j < fields.length; j++) {
             var field = fields[j];
-            var value = field.isArray ? 'it' : 'add_' + field.name + '(pool)';
+            var name = cppFieldName(field);
+            var value = field.isArray ? 'it' : name;
+            var isPointer = cppIsFieldPointer(definitions, field);
             var code;
 
             switch (field.type) {
@@ -1034,11 +1072,12 @@ var kiwi = exports || kiwi || {}, exports;
                 }
 
                 else {
-                  code = value + '.decode(bb, pool)';
+                  code = value + (isPointer ? '->' : '.') + 'decode(bb, pool)';
                 }
               }
             }
 
+            var type = cppType(definitions, field, false);
             var indent = '  ';
 
             if (definition.kind === 'MESSAGE') {
@@ -1048,9 +1087,19 @@ var kiwi = exports || kiwi || {}, exports;
 
             if (field.isArray) {
               cpp.push(indent + 'if (!bb.readVarUint(count)) return false;');
-              cpp.push(indent + 'for (' + cppType(definitions, field, false) + ' &it : add_' + field.name + '(pool, count)) if (!' + code + ') return false;');
-            } else {
+              cpp.push(indent + 'for (' + type + ' &it : set_' + field.name + '(pool, count)) if (!' + code + ') return false;');
+            }
+
+            else {
+              if (isPointer) {
+                cpp.push(indent + name + ' = pool.allocate<' + type + '>();');
+              }
+
               cpp.push(indent + 'if (!' + code + ') return false;');
+
+              if (!isPointer) {
+                cpp.push(indent + 'set_' + field.name + '(' + name + ');');
+              }
             }
 
             if (definition.kind === 'MESSAGE') {

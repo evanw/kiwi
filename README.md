@@ -77,15 +77,14 @@ Make sure to generate the C++ code beforehand using something like `kiwic --sche
 #include "test.h"
 
 int main() {
-  kiwi::MemoryPool pool;
-
   Test test;
-  test.add_x(pool) = 123;
+  test.set_x(123);
 
   kiwi::ByteBuffer buffer;
   bool encode_success = test.encode(buffer);
 
   Test test2;
+  kiwi::MemoryPool pool;
   bool decode_success = test2.decode(buffer, pool);
 
   if (test2.x()) {

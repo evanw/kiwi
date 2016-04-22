@@ -86,10 +86,10 @@ namespace kiwi {
     ~MemoryPool();
 
     template <typename T>
-    T *allocate(uint32_t count);
+    T *allocate(uint32_t count = 1);
 
     template <typename T>
-    Array<T> *array(uint32_t size) { return new (allocate<Array<T>>(1)) Array<T>(allocate<T>(size), size); }
+    Array<T> array(uint32_t size) { return Array<T>(allocate<T>(size), size); }
 
     String string(const char *data, uint32_t count);
     String string(const char *c_str) { return string(c_str, strlen(c_str)); }

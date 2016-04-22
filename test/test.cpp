@@ -11,7 +11,7 @@ static void testStructBool() {
     kiwi::MemoryPool pool;
 
     test::BoolStruct s;
-    s.add_x(pool) = i;
+    s.set_x(i);
     assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
@@ -34,7 +34,7 @@ static void testStructByte() {
     kiwi::MemoryPool pool;
 
     test::ByteStruct s;
-    s.add_x(pool) = i;
+    s.set_x(i);
     assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
@@ -60,7 +60,7 @@ static void testStructUint() {
     kiwi::MemoryPool pool;
 
     test::UintStruct s;
-    s.add_x(pool) = i;
+    s.set_x(i);
     assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
@@ -97,7 +97,7 @@ static void testStructInt() {
     kiwi::MemoryPool pool;
 
     test::IntStruct s;
-    s.add_x(pool) = i;
+    s.set_x(i);
     assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
@@ -138,7 +138,7 @@ static void testStructFloat() {
     kiwi::MemoryPool pool;
 
     test::FloatStruct s;
-    s.add_x(pool) = i;
+    s.set_x(i);
     assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
@@ -164,7 +164,7 @@ static void testStructString() {
     kiwi::MemoryPool pool;
 
     test::StringStruct s;
-    s.add_x(pool) = i;
+    s.set_x(i);
     assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
@@ -189,8 +189,8 @@ static void testStructCompound() {
     kiwi::MemoryPool pool;
 
     test::CompoundStruct s;
-    s.add_x(pool) = x;
-    s.add_y(pool) = y;
+    s.set_x(x);
+    s.set_y(y);
     assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
@@ -216,11 +216,12 @@ static void testStructNested() {
     kiwi::MemoryPool pool;
 
     test::NestedStruct s;
-    s.add_a(pool) = a;
-    auto &b = s.add_b(pool);
-    b.add_x(pool) = bx;
-    b.add_y(pool) = by;
-    s.add_c(pool) = c;
+    s.set_a(a);
+    test::CompoundStruct b;
+    s.set_b(&b);
+    b.set_x(bx);
+    b.set_y(by);
+    s.set_c(c);
     assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
@@ -266,7 +267,7 @@ static void testMessageBool() {
     kiwi::MemoryPool pool;
 
     test::BoolMessage s;
-    s.add_x(pool) = i;
+    s.set_x(i);
     assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
@@ -289,7 +290,7 @@ static void testMessageByte() {
     kiwi::MemoryPool pool;
 
     test::ByteMessage s;
-    s.add_x(pool) = i;
+    s.set_x(i);
     assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
@@ -311,7 +312,7 @@ static void testMessageUint() {
     kiwi::MemoryPool pool;
 
     test::UintMessage s;
-    s.add_x(pool) = i;
+    s.set_x(i);
     assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
@@ -333,7 +334,7 @@ static void testMessageInt() {
     kiwi::MemoryPool pool;
 
     test::IntMessage s;
-    s.add_x(pool) = i;
+    s.set_x(i);
     assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
@@ -355,7 +356,7 @@ static void testMessageFloat() {
     kiwi::MemoryPool pool;
 
     test::FloatMessage s;
-    s.add_x(pool) = i;
+    s.set_x(i);
     assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
@@ -377,7 +378,7 @@ static void testMessageString() {
     kiwi::MemoryPool pool;
 
     test::StringMessage s;
-    s.add_x(pool) = i;
+    s.set_x(i);
     assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
@@ -402,8 +403,8 @@ static void testMessageCompound() {
     kiwi::MemoryPool pool;
 
     test::CompoundMessage s;
-    if (x) s.add_x(pool) = x;
-    if (y) s.add_y(pool) = y;
+    if (x) s.set_x(x);
+    if (y) s.set_y(y);
     assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
@@ -430,13 +431,14 @@ static void testMessageNested() {
     kiwi::MemoryPool pool;
 
     test::NestedMessage s;
-    if (a) s.add_a(pool) = a;
+    if (a) s.set_a(a);
     if (bx || by) {
-      auto &b = s.add_b(pool);
-      if (bx) b.add_x(pool) = bx;
-      if (by) b.add_y(pool) = by;
+      auto b = pool.allocate<test::CompoundMessage>();
+      s.set_b(b);
+      if (bx) b->set_x(bx);
+      if (by) b->set_y(by);
     }
-    if (c) s.add_c(pool) = c;
+    if (c) s.set_c(c);
     assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
@@ -459,6 +461,29 @@ static void testMessageNested() {
   check(234, 5, 6, 123, {1, 234, 1, 2, 1, 5, 2, 6, 0, 3, 123, 0});
 }
 
+static void testRecursiveMessage() {
+  puts("testRecursiveMessage");
+
+  std::vector<uint8_t> o{1, 1, 0, 0, 0};
+  kiwi::ByteBuffer bb;
+  kiwi::MemoryPool pool;
+
+  test::RecursiveMessage a;
+  test::RecursiveMessage b;
+  test::RecursiveMessage c;
+
+  a.set_x(&b);
+  b.set_x(&c);
+  assert(a.encode(bb));
+  assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
+
+  test::RecursiveMessage a2;
+  assert(a2.decode(bb, pool));
+  assert(a2.x());
+  assert(a2.x()->x());
+  assert(!a2.x()->x()->x());
+}
+
 static void testRequiredField() {
   puts("testRequiredField");
 
@@ -472,7 +497,7 @@ static void testRequiredField() {
     kiwi::ByteBuffer bb;
     kiwi::MemoryPool pool;
     test::RequiredField s;
-    s.add_x(pool);
+    s.set_x(0);
     assert(s.encode(bb));
   }
 
@@ -512,6 +537,7 @@ int main() {
   testMessageCompound();
   testMessageNested();
 
+  testRecursiveMessage();
   testRequiredField();
 
   puts("all tests passed");
