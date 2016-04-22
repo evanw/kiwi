@@ -34,7 +34,7 @@ struct Color {
   byte alpha;
 }
 
-message RootMessage {
+message Example {
   required uint clientID = 1;
   Type type = 2;
   Color[] colors = 3;
@@ -48,7 +48,11 @@ message RootMessage {
 * It's always possible to check for field presence, even for fields that hold arrays
 * The generated C++ code is a lot simpler and only depends on a single file, `kiwi.h`
 
-## JavaScript usage
+## Live Demo
+
+See [http://evanw.github.io/kiwi/](http://evanw.github.io/kiwi/) for a live demo of the schema compiler.
+
+## JavaScript Usage
 
 Make sure to install the kiwi package beforehand using `npm install kiwi-schema`.
 
@@ -68,7 +72,7 @@ if (test.x !== undefined) {
 }
 ```
 
-## C++ usage
+## C++ Usage
 
 Make sure to generate the C++ code beforehand using something like `kiwic --schema test.kiwi --cpp test.h`.
 
