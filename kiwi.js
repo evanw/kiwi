@@ -91,11 +91,11 @@ var kiwi = exports || kiwi || {}, exports;
           codePoint = ((a & 0x1F) << 6) | (b & 0x3F);
         } else {
           var c = this.readByte();
-            if (a < 0xF0) {
+          if (a < 0xF0) {
             codePoint = ((a & 0x0F) << 12) | ((b & 0x3F) << 6) | (c & 0x3F);
           } else {
             var d = this.readByte();
-                codePoint = ((a & 0x07) << 18) | ((b & 0x3F) << 12) | ((c & 0x3F) << 6) | (d & 0x3F);
+            codePoint = ((a & 0x07) << 18) | ((b & 0x3F) << 12) | ((c & 0x3F) << 6) | (d & 0x3F);
           }
         }
       }
@@ -467,13 +467,14 @@ var kiwi = exports || kiwi || {}, exports;
 
   function compileDecodeJS(definition, definitions) {
     var lines = [];
-    var indent = '';
+    var indent = '  ';
 
     lines.push('function(bb) {');
     lines.push('  var result = {};');
     lines.push('  if (!(bb instanceof this.ByteBuffer)) {');
     lines.push('    bb = new this.ByteBuffer(bb);');
     lines.push('  }');
+    lines.push('');
 
     if (definition.kind === 'MESSAGE') {
       lines.push('  while (true) {');
@@ -488,6 +489,7 @@ var kiwi = exports || kiwi || {}, exports;
       }
 
       lines.push('      return result;');
+      lines.push('');
       indent = '      ';
     }
 
@@ -554,6 +556,7 @@ var kiwi = exports || kiwi || {}, exports;
 
       if (definition.kind === 'MESSAGE') {
         lines.push('      break;');
+        lines.push('');
       }
     }
 
@@ -630,6 +633,7 @@ var kiwi = exports || kiwi || {}, exports;
         }
       }
 
+      lines.push('');
       lines.push('  var value = message[' + quote(field.name) + '];');
       lines.push('  if (value != null) {'); // Comparing with null using "!=" also checks for undefined
 
@@ -663,6 +667,7 @@ var kiwi = exports || kiwi || {}, exports;
       lines.push('  bb.writeVarUint(0);');
     }
 
+    lines.push('');
     lines.push('  if (isTopLevel) return bb.toUint8Array();');
     lines.push('}');
 
@@ -709,7 +714,9 @@ var kiwi = exports || kiwi || {}, exports;
 
         case 'STRUCT':
         case 'MESSAGE': {
+          js.push('');
           js.push(name + '[' + quote('decode' + definition.name) + '] = ' + compileDecodeJS(definition, definitions) + ';');
+          js.push('');
           js.push(name + '[' + quote('encode' + definition.name) + '] = ' + compileEncodeJS(definition, definitions) + ';');
           break;
         }
