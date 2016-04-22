@@ -506,150 +506,150 @@ private:
   int32_t _data_x = {};
 };
 
-bool EnumStruct::encode(kiwi::ByteBuffer &bb) {
+bool EnumStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
-  bb.writeVarUint(static_cast<uint32_t>(_data_x));
+  _bb.writeVarUint(static_cast<uint32_t>(_data_x));
   if (y() == nullptr) return false;
-  bb.writeVarUint(_data_y.size());
-  for (Enum &it : _data_y) bb.writeVarUint(static_cast<uint32_t>(it));
+  _bb.writeVarUint(_data_y.size());
+  for (Enum &_it : _data_y) _bb.writeVarUint(static_cast<uint32_t>(_it));
   return true;
 }
 
-bool EnumStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  uint32_t count;
-  if (!bb.readVarUint(reinterpret_cast<uint32_t &>(_data_x))) return false;
+bool EnumStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  uint32_t _count;
+  if (!_bb.readVarUint(reinterpret_cast<uint32_t &>(_data_x))) return false;
   set_x(_data_x);
-  if (!bb.readVarUint(count)) return false;
-  for (Enum &it : set_y(pool, count)) if (!bb.readVarUint(reinterpret_cast<uint32_t &>(it))) return false;
+  if (!_bb.readVarUint(_count)) return false;
+  for (Enum &_it : set_y(_pool, _count)) if (!_bb.readVarUint(reinterpret_cast<uint32_t &>(_it))) return false;
   return true;
 }
 
-bool BoolStruct::encode(kiwi::ByteBuffer &bb) {
+bool BoolStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
-  bb.writeByte(_data_x);
+  _bb.writeByte(_data_x);
   return true;
 }
 
-bool BoolStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  if (!bb.readByte(_data_x)) return false;
-  set_x(_data_x);
-  return true;
-}
-
-bool ByteStruct::encode(kiwi::ByteBuffer &bb) {
-  if (x() == nullptr) return false;
-  bb.writeByte(_data_x);
-  return true;
-}
-
-bool ByteStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  if (!bb.readByte(_data_x)) return false;
+bool BoolStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  if (!_bb.readByte(_data_x)) return false;
   set_x(_data_x);
   return true;
 }
 
-bool IntStruct::encode(kiwi::ByteBuffer &bb) {
+bool ByteStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
-  bb.writeVarInt(_data_x);
+  _bb.writeByte(_data_x);
   return true;
 }
 
-bool IntStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  if (!bb.readVarInt(_data_x)) return false;
+bool ByteStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  if (!_bb.readByte(_data_x)) return false;
   set_x(_data_x);
   return true;
 }
 
-bool UintStruct::encode(kiwi::ByteBuffer &bb) {
+bool IntStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
-  bb.writeVarUint(_data_x);
+  _bb.writeVarInt(_data_x);
   return true;
 }
 
-bool UintStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  if (!bb.readVarUint(_data_x)) return false;
+bool IntStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  if (!_bb.readVarInt(_data_x)) return false;
   set_x(_data_x);
   return true;
 }
 
-bool FloatStruct::encode(kiwi::ByteBuffer &bb) {
+bool UintStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
-  bb.writeFloat(_data_x);
+  _bb.writeVarUint(_data_x);
   return true;
 }
 
-bool FloatStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  if (!bb.readFloat(_data_x)) return false;
+bool UintStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  if (!_bb.readVarUint(_data_x)) return false;
   set_x(_data_x);
   return true;
 }
 
-bool StringStruct::encode(kiwi::ByteBuffer &bb) {
+bool FloatStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
-  bb.writeString(_data_x.c_str());
+  _bb.writeFloat(_data_x);
   return true;
 }
 
-bool StringStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  if (!bb.readString(_data_x, pool)) return false;
+bool FloatStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  if (!_bb.readFloat(_data_x)) return false;
   set_x(_data_x);
   return true;
 }
 
-bool CompoundStruct::encode(kiwi::ByteBuffer &bb) {
+bool StringStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
-  bb.writeVarUint(_data_x);
+  _bb.writeString(_data_x.c_str());
+  return true;
+}
+
+bool StringStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  if (!_bb.readString(_data_x, _pool)) return false;
+  set_x(_data_x);
+  return true;
+}
+
+bool CompoundStruct::encode(kiwi::ByteBuffer &_bb) {
+  if (x() == nullptr) return false;
+  _bb.writeVarUint(_data_x);
   if (y() == nullptr) return false;
-  bb.writeVarUint(_data_y);
+  _bb.writeVarUint(_data_y);
   return true;
 }
 
-bool CompoundStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  if (!bb.readVarUint(_data_x)) return false;
+bool CompoundStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  if (!_bb.readVarUint(_data_x)) return false;
   set_x(_data_x);
-  if (!bb.readVarUint(_data_y)) return false;
+  if (!_bb.readVarUint(_data_y)) return false;
   set_y(_data_y);
   return true;
 }
 
-bool NestedStruct::encode(kiwi::ByteBuffer &bb) {
+bool NestedStruct::encode(kiwi::ByteBuffer &_bb) {
   if (a() == nullptr) return false;
-  bb.writeVarUint(_data_a);
+  _bb.writeVarUint(_data_a);
   if (b() == nullptr) return false;
-  if (!_data_b->encode(bb)) return false;
+  if (!_data_b->encode(_bb)) return false;
   if (c() == nullptr) return false;
-  bb.writeVarUint(_data_c);
+  _bb.writeVarUint(_data_c);
   return true;
 }
 
-bool NestedStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  if (!bb.readVarUint(_data_a)) return false;
+bool NestedStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  if (!_bb.readVarUint(_data_a)) return false;
   set_a(_data_a);
-  _data_b = pool.allocate<CompoundStruct>();
-  if (!_data_b->decode(bb, pool)) return false;
-  if (!bb.readVarUint(_data_c)) return false;
+  _data_b = _pool.allocate<CompoundStruct>();
+  if (!_data_b->decode(_bb, _pool)) return false;
+  if (!_bb.readVarUint(_data_c)) return false;
   set_c(_data_c);
   return true;
 }
 
-bool BoolMessage::encode(kiwi::ByteBuffer &bb) {
+bool BoolMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
-    bb.writeVarUint(1);
-    bb.writeByte(_data_x);
+    _bb.writeVarUint(1);
+    _bb.writeByte(_data_x);
   }
-  bb.writeVarUint(0);
+  _bb.writeVarUint(0);
   return true;
 }
 
-bool BoolMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+bool BoolMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   while (true) {
-    uint32_t type;
-    if (!bb.readVarUint(type)) return false;
-    switch (type) {
+    uint32_t _type;
+    if (!_bb.readVarUint(_type)) return false;
+    switch (_type) {
       case 0:
         return true;
       case 1:
-        if (!bb.readByte(_data_x)) return false;
+        if (!_bb.readByte(_data_x)) return false;
         set_x(_data_x);
         break;
       default: return false;
@@ -657,24 +657,24 @@ bool BoolMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
   }
 }
 
-bool ByteMessage::encode(kiwi::ByteBuffer &bb) {
+bool ByteMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
-    bb.writeVarUint(1);
-    bb.writeByte(_data_x);
+    _bb.writeVarUint(1);
+    _bb.writeByte(_data_x);
   }
-  bb.writeVarUint(0);
+  _bb.writeVarUint(0);
   return true;
 }
 
-bool ByteMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+bool ByteMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   while (true) {
-    uint32_t type;
-    if (!bb.readVarUint(type)) return false;
-    switch (type) {
+    uint32_t _type;
+    if (!_bb.readVarUint(_type)) return false;
+    switch (_type) {
       case 0:
         return true;
       case 1:
-        if (!bb.readByte(_data_x)) return false;
+        if (!_bb.readByte(_data_x)) return false;
         set_x(_data_x);
         break;
       default: return false;
@@ -682,24 +682,24 @@ bool ByteMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
   }
 }
 
-bool IntMessage::encode(kiwi::ByteBuffer &bb) {
+bool IntMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
-    bb.writeVarUint(1);
-    bb.writeVarInt(_data_x);
+    _bb.writeVarUint(1);
+    _bb.writeVarInt(_data_x);
   }
-  bb.writeVarUint(0);
+  _bb.writeVarUint(0);
   return true;
 }
 
-bool IntMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+bool IntMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   while (true) {
-    uint32_t type;
-    if (!bb.readVarUint(type)) return false;
-    switch (type) {
+    uint32_t _type;
+    if (!_bb.readVarUint(_type)) return false;
+    switch (_type) {
       case 0:
         return true;
       case 1:
-        if (!bb.readVarInt(_data_x)) return false;
+        if (!_bb.readVarInt(_data_x)) return false;
         set_x(_data_x);
         break;
       default: return false;
@@ -707,24 +707,24 @@ bool IntMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
   }
 }
 
-bool UintMessage::encode(kiwi::ByteBuffer &bb) {
+bool UintMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
-    bb.writeVarUint(1);
-    bb.writeVarUint(_data_x);
+    _bb.writeVarUint(1);
+    _bb.writeVarUint(_data_x);
   }
-  bb.writeVarUint(0);
+  _bb.writeVarUint(0);
   return true;
 }
 
-bool UintMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+bool UintMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   while (true) {
-    uint32_t type;
-    if (!bb.readVarUint(type)) return false;
-    switch (type) {
+    uint32_t _type;
+    if (!_bb.readVarUint(_type)) return false;
+    switch (_type) {
       case 0:
         return true;
       case 1:
-        if (!bb.readVarUint(_data_x)) return false;
+        if (!_bb.readVarUint(_data_x)) return false;
         set_x(_data_x);
         break;
       default: return false;
@@ -732,24 +732,24 @@ bool UintMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
   }
 }
 
-bool FloatMessage::encode(kiwi::ByteBuffer &bb) {
+bool FloatMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
-    bb.writeVarUint(1);
-    bb.writeFloat(_data_x);
+    _bb.writeVarUint(1);
+    _bb.writeFloat(_data_x);
   }
-  bb.writeVarUint(0);
+  _bb.writeVarUint(0);
   return true;
 }
 
-bool FloatMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+bool FloatMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   while (true) {
-    uint32_t type;
-    if (!bb.readVarUint(type)) return false;
-    switch (type) {
+    uint32_t _type;
+    if (!_bb.readVarUint(_type)) return false;
+    switch (_type) {
       case 0:
         return true;
       case 1:
-        if (!bb.readFloat(_data_x)) return false;
+        if (!_bb.readFloat(_data_x)) return false;
         set_x(_data_x);
         break;
       default: return false;
@@ -757,24 +757,24 @@ bool FloatMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
   }
 }
 
-bool StringMessage::encode(kiwi::ByteBuffer &bb) {
+bool StringMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
-    bb.writeVarUint(1);
-    bb.writeString(_data_x.c_str());
+    _bb.writeVarUint(1);
+    _bb.writeString(_data_x.c_str());
   }
-  bb.writeVarUint(0);
+  _bb.writeVarUint(0);
   return true;
 }
 
-bool StringMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+bool StringMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   while (true) {
-    uint32_t type;
-    if (!bb.readVarUint(type)) return false;
-    switch (type) {
+    uint32_t _type;
+    if (!_bb.readVarUint(_type)) return false;
+    switch (_type) {
       case 0:
         return true;
       case 1:
-        if (!bb.readString(_data_x, pool)) return false;
+        if (!_bb.readString(_data_x, _pool)) return false;
         set_x(_data_x);
         break;
       default: return false;
@@ -782,32 +782,32 @@ bool StringMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
   }
 }
 
-bool CompoundMessage::encode(kiwi::ByteBuffer &bb) {
+bool CompoundMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
-    bb.writeVarUint(1);
-    bb.writeVarUint(_data_x);
+    _bb.writeVarUint(1);
+    _bb.writeVarUint(_data_x);
   }
   if (y() != nullptr) {
-    bb.writeVarUint(2);
-    bb.writeVarUint(_data_y);
+    _bb.writeVarUint(2);
+    _bb.writeVarUint(_data_y);
   }
-  bb.writeVarUint(0);
+  _bb.writeVarUint(0);
   return true;
 }
 
-bool CompoundMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+bool CompoundMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   while (true) {
-    uint32_t type;
-    if (!bb.readVarUint(type)) return false;
-    switch (type) {
+    uint32_t _type;
+    if (!_bb.readVarUint(_type)) return false;
+    switch (_type) {
       case 0:
         return true;
       case 1:
-        if (!bb.readVarUint(_data_x)) return false;
+        if (!_bb.readVarUint(_data_x)) return false;
         set_x(_data_x);
         break;
       case 2:
-        if (!bb.readVarUint(_data_y)) return false;
+        if (!_bb.readVarUint(_data_y)) return false;
         set_y(_data_y);
         break;
       default: return false;
@@ -815,40 +815,40 @@ bool CompoundMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
   }
 }
 
-bool NestedMessage::encode(kiwi::ByteBuffer &bb) {
+bool NestedMessage::encode(kiwi::ByteBuffer &_bb) {
   if (a() != nullptr) {
-    bb.writeVarUint(1);
-    bb.writeVarUint(_data_a);
+    _bb.writeVarUint(1);
+    _bb.writeVarUint(_data_a);
   }
   if (b() != nullptr) {
-    bb.writeVarUint(2);
-    if (!_data_b->encode(bb)) return false;
+    _bb.writeVarUint(2);
+    if (!_data_b->encode(_bb)) return false;
   }
   if (c() != nullptr) {
-    bb.writeVarUint(3);
-    bb.writeVarUint(_data_c);
+    _bb.writeVarUint(3);
+    _bb.writeVarUint(_data_c);
   }
-  bb.writeVarUint(0);
+  _bb.writeVarUint(0);
   return true;
 }
 
-bool NestedMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+bool NestedMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   while (true) {
-    uint32_t type;
-    if (!bb.readVarUint(type)) return false;
-    switch (type) {
+    uint32_t _type;
+    if (!_bb.readVarUint(_type)) return false;
+    switch (_type) {
       case 0:
         return true;
       case 1:
-        if (!bb.readVarUint(_data_a)) return false;
+        if (!_bb.readVarUint(_data_a)) return false;
         set_a(_data_a);
         break;
       case 2:
-        _data_b = pool.allocate<CompoundMessage>();
-        if (!_data_b->decode(bb, pool)) return false;
+        _data_b = _pool.allocate<CompoundMessage>();
+        if (!_data_b->decode(_bb, _pool)) return false;
         break;
       case 3:
-        if (!bb.readVarUint(_data_c)) return false;
+        if (!_bb.readVarUint(_data_c)) return false;
         set_c(_data_c);
         break;
       default: return false;
@@ -856,350 +856,350 @@ bool NestedMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
   }
 }
 
-bool BoolArrayStruct::encode(kiwi::ByteBuffer &bb) {
+bool BoolArrayStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
-  bb.writeVarUint(_data_x.size());
-  for (bool &it : _data_x) bb.writeByte(it);
+  _bb.writeVarUint(_data_x.size());
+  for (bool &_it : _data_x) _bb.writeByte(_it);
   return true;
 }
 
-bool BoolArrayStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  uint32_t count;
-  if (!bb.readVarUint(count)) return false;
-  for (bool &it : set_x(pool, count)) if (!bb.readByte(it)) return false;
+bool BoolArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  uint32_t _count;
+  if (!_bb.readVarUint(_count)) return false;
+  for (bool &_it : set_x(_pool, _count)) if (!_bb.readByte(_it)) return false;
   return true;
 }
 
-bool ByteArrayStruct::encode(kiwi::ByteBuffer &bb) {
+bool ByteArrayStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
-  bb.writeVarUint(_data_x.size());
-  for (uint8_t &it : _data_x) bb.writeByte(it);
+  _bb.writeVarUint(_data_x.size());
+  for (uint8_t &_it : _data_x) _bb.writeByte(_it);
   return true;
 }
 
-bool ByteArrayStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  uint32_t count;
-  if (!bb.readVarUint(count)) return false;
-  for (uint8_t &it : set_x(pool, count)) if (!bb.readByte(it)) return false;
+bool ByteArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  uint32_t _count;
+  if (!_bb.readVarUint(_count)) return false;
+  for (uint8_t &_it : set_x(_pool, _count)) if (!_bb.readByte(_it)) return false;
   return true;
 }
 
-bool IntArrayStruct::encode(kiwi::ByteBuffer &bb) {
+bool IntArrayStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
-  bb.writeVarUint(_data_x.size());
-  for (int32_t &it : _data_x) bb.writeVarInt(it);
+  _bb.writeVarUint(_data_x.size());
+  for (int32_t &_it : _data_x) _bb.writeVarInt(_it);
   return true;
 }
 
-bool IntArrayStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  uint32_t count;
-  if (!bb.readVarUint(count)) return false;
-  for (int32_t &it : set_x(pool, count)) if (!bb.readVarInt(it)) return false;
+bool IntArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  uint32_t _count;
+  if (!_bb.readVarUint(_count)) return false;
+  for (int32_t &_it : set_x(_pool, _count)) if (!_bb.readVarInt(_it)) return false;
   return true;
 }
 
-bool UintArrayStruct::encode(kiwi::ByteBuffer &bb) {
+bool UintArrayStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
-  bb.writeVarUint(_data_x.size());
-  for (uint32_t &it : _data_x) bb.writeVarUint(it);
+  _bb.writeVarUint(_data_x.size());
+  for (uint32_t &_it : _data_x) _bb.writeVarUint(_it);
   return true;
 }
 
-bool UintArrayStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  uint32_t count;
-  if (!bb.readVarUint(count)) return false;
-  for (uint32_t &it : set_x(pool, count)) if (!bb.readVarUint(it)) return false;
+bool UintArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  uint32_t _count;
+  if (!_bb.readVarUint(_count)) return false;
+  for (uint32_t &_it : set_x(_pool, _count)) if (!_bb.readVarUint(_it)) return false;
   return true;
 }
 
-bool FloatArrayStruct::encode(kiwi::ByteBuffer &bb) {
+bool FloatArrayStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
-  bb.writeVarUint(_data_x.size());
-  for (float &it : _data_x) bb.writeFloat(it);
+  _bb.writeVarUint(_data_x.size());
+  for (float &_it : _data_x) _bb.writeFloat(_it);
   return true;
 }
 
-bool FloatArrayStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  uint32_t count;
-  if (!bb.readVarUint(count)) return false;
-  for (float &it : set_x(pool, count)) if (!bb.readFloat(it)) return false;
+bool FloatArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  uint32_t _count;
+  if (!_bb.readVarUint(_count)) return false;
+  for (float &_it : set_x(_pool, _count)) if (!_bb.readFloat(_it)) return false;
   return true;
 }
 
-bool StringArrayStruct::encode(kiwi::ByteBuffer &bb) {
+bool StringArrayStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
-  bb.writeVarUint(_data_x.size());
-  for (kiwi::String &it : _data_x) bb.writeString(it.c_str());
+  _bb.writeVarUint(_data_x.size());
+  for (kiwi::String &_it : _data_x) _bb.writeString(_it.c_str());
   return true;
 }
 
-bool StringArrayStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  uint32_t count;
-  if (!bb.readVarUint(count)) return false;
-  for (kiwi::String &it : set_x(pool, count)) if (!bb.readString(it, pool)) return false;
+bool StringArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  uint32_t _count;
+  if (!_bb.readVarUint(_count)) return false;
+  for (kiwi::String &_it : set_x(_pool, _count)) if (!_bb.readString(_it, _pool)) return false;
   return true;
 }
 
-bool CompoundArrayStruct::encode(kiwi::ByteBuffer &bb) {
+bool CompoundArrayStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
-  bb.writeVarUint(_data_x.size());
-  for (uint32_t &it : _data_x) bb.writeVarUint(it);
+  _bb.writeVarUint(_data_x.size());
+  for (uint32_t &_it : _data_x) _bb.writeVarUint(_it);
   if (y() == nullptr) return false;
-  bb.writeVarUint(_data_y.size());
-  for (uint32_t &it : _data_y) bb.writeVarUint(it);
+  _bb.writeVarUint(_data_y.size());
+  for (uint32_t &_it : _data_y) _bb.writeVarUint(_it);
   return true;
 }
 
-bool CompoundArrayStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  uint32_t count;
-  if (!bb.readVarUint(count)) return false;
-  for (uint32_t &it : set_x(pool, count)) if (!bb.readVarUint(it)) return false;
-  if (!bb.readVarUint(count)) return false;
-  for (uint32_t &it : set_y(pool, count)) if (!bb.readVarUint(it)) return false;
+bool CompoundArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  uint32_t _count;
+  if (!_bb.readVarUint(_count)) return false;
+  for (uint32_t &_it : set_x(_pool, _count)) if (!_bb.readVarUint(_it)) return false;
+  if (!_bb.readVarUint(_count)) return false;
+  for (uint32_t &_it : set_y(_pool, _count)) if (!_bb.readVarUint(_it)) return false;
   return true;
 }
 
-bool BoolArrayMessage::encode(kiwi::ByteBuffer &bb) {
+bool BoolArrayMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
-    bb.writeVarUint(1);
-    bb.writeVarUint(_data_x.size());
-    for (bool &it : _data_x) bb.writeByte(it);
+    _bb.writeVarUint(1);
+    _bb.writeVarUint(_data_x.size());
+    for (bool &_it : _data_x) _bb.writeByte(_it);
   }
-  bb.writeVarUint(0);
+  _bb.writeVarUint(0);
   return true;
 }
 
-bool BoolArrayMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  uint32_t count;
+bool BoolArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  uint32_t _count;
   while (true) {
-    uint32_t type;
-    if (!bb.readVarUint(type)) return false;
-    switch (type) {
+    uint32_t _type;
+    if (!_bb.readVarUint(_type)) return false;
+    switch (_type) {
       case 0:
         return true;
       case 1:
-        if (!bb.readVarUint(count)) return false;
-        for (bool &it : set_x(pool, count)) if (!bb.readByte(it)) return false;
+        if (!_bb.readVarUint(_count)) return false;
+        for (bool &_it : set_x(_pool, _count)) if (!_bb.readByte(_it)) return false;
         break;
       default: return false;
     }
   }
 }
 
-bool ByteArrayMessage::encode(kiwi::ByteBuffer &bb) {
+bool ByteArrayMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
-    bb.writeVarUint(1);
-    bb.writeVarUint(_data_x.size());
-    for (uint8_t &it : _data_x) bb.writeByte(it);
+    _bb.writeVarUint(1);
+    _bb.writeVarUint(_data_x.size());
+    for (uint8_t &_it : _data_x) _bb.writeByte(_it);
   }
-  bb.writeVarUint(0);
+  _bb.writeVarUint(0);
   return true;
 }
 
-bool ByteArrayMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  uint32_t count;
+bool ByteArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  uint32_t _count;
   while (true) {
-    uint32_t type;
-    if (!bb.readVarUint(type)) return false;
-    switch (type) {
+    uint32_t _type;
+    if (!_bb.readVarUint(_type)) return false;
+    switch (_type) {
       case 0:
         return true;
       case 1:
-        if (!bb.readVarUint(count)) return false;
-        for (uint8_t &it : set_x(pool, count)) if (!bb.readByte(it)) return false;
+        if (!_bb.readVarUint(_count)) return false;
+        for (uint8_t &_it : set_x(_pool, _count)) if (!_bb.readByte(_it)) return false;
         break;
       default: return false;
     }
   }
 }
 
-bool IntArrayMessage::encode(kiwi::ByteBuffer &bb) {
+bool IntArrayMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
-    bb.writeVarUint(1);
-    bb.writeVarUint(_data_x.size());
-    for (int32_t &it : _data_x) bb.writeVarInt(it);
+    _bb.writeVarUint(1);
+    _bb.writeVarUint(_data_x.size());
+    for (int32_t &_it : _data_x) _bb.writeVarInt(_it);
   }
-  bb.writeVarUint(0);
+  _bb.writeVarUint(0);
   return true;
 }
 
-bool IntArrayMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  uint32_t count;
+bool IntArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  uint32_t _count;
   while (true) {
-    uint32_t type;
-    if (!bb.readVarUint(type)) return false;
-    switch (type) {
+    uint32_t _type;
+    if (!_bb.readVarUint(_type)) return false;
+    switch (_type) {
       case 0:
         return true;
       case 1:
-        if (!bb.readVarUint(count)) return false;
-        for (int32_t &it : set_x(pool, count)) if (!bb.readVarInt(it)) return false;
+        if (!_bb.readVarUint(_count)) return false;
+        for (int32_t &_it : set_x(_pool, _count)) if (!_bb.readVarInt(_it)) return false;
         break;
       default: return false;
     }
   }
 }
 
-bool UintArrayMessage::encode(kiwi::ByteBuffer &bb) {
+bool UintArrayMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
-    bb.writeVarUint(1);
-    bb.writeVarUint(_data_x.size());
-    for (uint32_t &it : _data_x) bb.writeVarUint(it);
+    _bb.writeVarUint(1);
+    _bb.writeVarUint(_data_x.size());
+    for (uint32_t &_it : _data_x) _bb.writeVarUint(_it);
   }
-  bb.writeVarUint(0);
+  _bb.writeVarUint(0);
   return true;
 }
 
-bool UintArrayMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  uint32_t count;
+bool UintArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  uint32_t _count;
   while (true) {
-    uint32_t type;
-    if (!bb.readVarUint(type)) return false;
-    switch (type) {
+    uint32_t _type;
+    if (!_bb.readVarUint(_type)) return false;
+    switch (_type) {
       case 0:
         return true;
       case 1:
-        if (!bb.readVarUint(count)) return false;
-        for (uint32_t &it : set_x(pool, count)) if (!bb.readVarUint(it)) return false;
+        if (!_bb.readVarUint(_count)) return false;
+        for (uint32_t &_it : set_x(_pool, _count)) if (!_bb.readVarUint(_it)) return false;
         break;
       default: return false;
     }
   }
 }
 
-bool FloatArrayMessage::encode(kiwi::ByteBuffer &bb) {
+bool FloatArrayMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
-    bb.writeVarUint(1);
-    bb.writeVarUint(_data_x.size());
-    for (float &it : _data_x) bb.writeFloat(it);
+    _bb.writeVarUint(1);
+    _bb.writeVarUint(_data_x.size());
+    for (float &_it : _data_x) _bb.writeFloat(_it);
   }
-  bb.writeVarUint(0);
+  _bb.writeVarUint(0);
   return true;
 }
 
-bool FloatArrayMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  uint32_t count;
+bool FloatArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  uint32_t _count;
   while (true) {
-    uint32_t type;
-    if (!bb.readVarUint(type)) return false;
-    switch (type) {
+    uint32_t _type;
+    if (!_bb.readVarUint(_type)) return false;
+    switch (_type) {
       case 0:
         return true;
       case 1:
-        if (!bb.readVarUint(count)) return false;
-        for (float &it : set_x(pool, count)) if (!bb.readFloat(it)) return false;
+        if (!_bb.readVarUint(_count)) return false;
+        for (float &_it : set_x(_pool, _count)) if (!_bb.readFloat(_it)) return false;
         break;
       default: return false;
     }
   }
 }
 
-bool StringArrayMessage::encode(kiwi::ByteBuffer &bb) {
+bool StringArrayMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
-    bb.writeVarUint(1);
-    bb.writeVarUint(_data_x.size());
-    for (kiwi::String &it : _data_x) bb.writeString(it.c_str());
+    _bb.writeVarUint(1);
+    _bb.writeVarUint(_data_x.size());
+    for (kiwi::String &_it : _data_x) _bb.writeString(_it.c_str());
   }
-  bb.writeVarUint(0);
+  _bb.writeVarUint(0);
   return true;
 }
 
-bool StringArrayMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  uint32_t count;
+bool StringArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  uint32_t _count;
   while (true) {
-    uint32_t type;
-    if (!bb.readVarUint(type)) return false;
-    switch (type) {
+    uint32_t _type;
+    if (!_bb.readVarUint(_type)) return false;
+    switch (_type) {
       case 0:
         return true;
       case 1:
-        if (!bb.readVarUint(count)) return false;
-        for (kiwi::String &it : set_x(pool, count)) if (!bb.readString(it, pool)) return false;
+        if (!_bb.readVarUint(_count)) return false;
+        for (kiwi::String &_it : set_x(_pool, _count)) if (!_bb.readString(_it, _pool)) return false;
         break;
       default: return false;
     }
   }
 }
 
-bool CompoundArrayMessage::encode(kiwi::ByteBuffer &bb) {
+bool CompoundArrayMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
-    bb.writeVarUint(1);
-    bb.writeVarUint(_data_x.size());
-    for (uint32_t &it : _data_x) bb.writeVarUint(it);
+    _bb.writeVarUint(1);
+    _bb.writeVarUint(_data_x.size());
+    for (uint32_t &_it : _data_x) _bb.writeVarUint(_it);
   }
   if (y() != nullptr) {
-    bb.writeVarUint(2);
-    bb.writeVarUint(_data_y.size());
-    for (uint32_t &it : _data_y) bb.writeVarUint(it);
+    _bb.writeVarUint(2);
+    _bb.writeVarUint(_data_y.size());
+    for (uint32_t &_it : _data_y) _bb.writeVarUint(_it);
   }
-  bb.writeVarUint(0);
+  _bb.writeVarUint(0);
   return true;
 }
 
-bool CompoundArrayMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
-  uint32_t count;
+bool CompoundArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
+  uint32_t _count;
   while (true) {
-    uint32_t type;
-    if (!bb.readVarUint(type)) return false;
-    switch (type) {
+    uint32_t _type;
+    if (!_bb.readVarUint(_type)) return false;
+    switch (_type) {
       case 0:
         return true;
       case 1:
-        if (!bb.readVarUint(count)) return false;
-        for (uint32_t &it : set_x(pool, count)) if (!bb.readVarUint(it)) return false;
+        if (!_bb.readVarUint(_count)) return false;
+        for (uint32_t &_it : set_x(_pool, _count)) if (!_bb.readVarUint(_it)) return false;
         break;
       case 2:
-        if (!bb.readVarUint(count)) return false;
-        for (uint32_t &it : set_y(pool, count)) if (!bb.readVarUint(it)) return false;
+        if (!_bb.readVarUint(_count)) return false;
+        for (uint32_t &_it : set_y(_pool, _count)) if (!_bb.readVarUint(_it)) return false;
         break;
       default: return false;
     }
   }
 }
 
-bool RecursiveMessage::encode(kiwi::ByteBuffer &bb) {
+bool RecursiveMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
-    bb.writeVarUint(1);
-    if (!_data_x->encode(bb)) return false;
+    _bb.writeVarUint(1);
+    if (!_data_x->encode(_bb)) return false;
   }
-  bb.writeVarUint(0);
+  _bb.writeVarUint(0);
   return true;
 }
 
-bool RecursiveMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+bool RecursiveMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   while (true) {
-    uint32_t type;
-    if (!bb.readVarUint(type)) return false;
-    switch (type) {
+    uint32_t _type;
+    if (!_bb.readVarUint(_type)) return false;
+    switch (_type) {
       case 0:
         return true;
       case 1:
-        _data_x = pool.allocate<RecursiveMessage>();
-        if (!_data_x->decode(bb, pool)) return false;
+        _data_x = _pool.allocate<RecursiveMessage>();
+        if (!_data_x->decode(_bb, _pool)) return false;
         break;
       default: return false;
     }
   }
 }
 
-bool RequiredField::encode(kiwi::ByteBuffer &bb) {
+bool RequiredField::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
-  bb.writeVarUint(1);
-  bb.writeVarInt(_data_x);
-  bb.writeVarUint(0);
+  _bb.writeVarUint(1);
+  _bb.writeVarInt(_data_x);
+  _bb.writeVarUint(0);
   return true;
 }
 
-bool RequiredField::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+bool RequiredField::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   while (true) {
-    uint32_t type;
-    if (!bb.readVarUint(type)) return false;
-    switch (type) {
+    uint32_t _type;
+    if (!_bb.readVarUint(_type)) return false;
+    switch (_type) {
       case 0:
         if (x() == nullptr) return false;
         return true;
       case 1:
-        if (!bb.readVarInt(_data_x)) return false;
+        if (!_bb.readVarInt(_data_x)) return false;
         set_x(_data_x);
         break;
       default: return false;

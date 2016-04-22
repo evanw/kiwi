@@ -906,44 +906,44 @@ var kiwi = exports || kiwi || {}, exports;
         }
 
         else {
-          cpp.push('bool ' + definition.name + '::encode(kiwi::ByteBuffer &bb) {');
+          cpp.push('bool ' + definition.name + '::encode(kiwi::ByteBuffer &_bb) {');
 
           for (var j = 0; j < fields.length; j++) {
             var field = fields[j];
             var name = cppFieldName(field);
-            var value = field.isArray ? 'it' : name;
+            var value = field.isArray ? '_it' : name;
             var flagIndex = cppFlagIndex(j);
             var flagMask = cppFlagMask(j);
             var code;
 
             switch (field.type) {
               case 'bool': {
-                code = 'bb.writeByte(' + value + ');';
+                code = '_bb.writeByte(' + value + ');';
                 break;
               }
 
               case 'byte': {
-                code = 'bb.writeByte(' + value + ');';
+                code = '_bb.writeByte(' + value + ');';
                 break;
               }
 
               case 'int': {
-                code = 'bb.writeVarInt(' + value + ');';
+                code = '_bb.writeVarInt(' + value + ');';
                 break;
               }
 
               case 'uint': {
-                code = 'bb.writeVarUint(' + value + ');';
+                code = '_bb.writeVarUint(' + value + ');';
                 break;
               }
 
               case 'float': {
-                code = 'bb.writeFloat(' + value + ');';
+                code = '_bb.writeFloat(' + value + ');';
                 break;
               }
 
               case 'string': {
-                code = 'bb.writeString(' + value + '.c_str());';
+                code = '_bb.writeString(' + value + '.c_str());';
                 break;
               }
 
@@ -955,11 +955,11 @@ var kiwi = exports || kiwi || {}, exports;
                 }
 
                 else if (type.kind === 'ENUM') {
-                  code = 'bb.writeVarUint(static_cast<uint32_t>(' + value + '));';
+                  code = '_bb.writeVarUint(static_cast<uint32_t>(' + value + '));';
                 }
 
                 else {
-                  code = 'if (!' + value + (cppIsFieldPointer(definitions, field) ? '->' : '.') + 'encode(bb)) return false;';
+                  code = 'if (!' + value + (cppIsFieldPointer(definitions, field) ? '->' : '.') + 'encode(_bb)) return false;';
                 }
               }
             }
@@ -973,12 +973,12 @@ var kiwi = exports || kiwi || {}, exports;
             }
 
             if (definition.kind === 'MESSAGE') {
-              cpp.push(indent + 'bb.writeVarUint(' + field.value + ');');
+              cpp.push(indent + '_bb.writeVarUint(' + field.value + ');');
             }
 
             if (field.isArray) {
-              cpp.push(indent + 'bb.writeVarUint(' + name + '.size());');
-              cpp.push(indent + 'for (' + cppType(definitions, field, false) + ' &it : ' + name + ') ' + code);
+              cpp.push(indent + '_bb.writeVarUint(' + name + '.size());');
+              cpp.push(indent + 'for (' + cppType(definitions, field, false) + ' &_it : ' + name + ') ' + code);
             } else {
               cpp.push(indent + code);
             }
@@ -989,27 +989,27 @@ var kiwi = exports || kiwi || {}, exports;
           }
 
           if (definition.kind === 'MESSAGE') {
-            cpp.push('  bb.writeVarUint(0);');
+            cpp.push('  _bb.writeVarUint(0);');
           }
 
           cpp.push('  return true;');
           cpp.push('}');
           cpp.push('');
 
-          cpp.push('bool ' + definition.name + '::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {');
+          cpp.push('bool ' + definition.name + '::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {');
 
           for (var j = 0; j < fields.length; j++) {
             if (fields[j].isArray) {
-              cpp.push('  uint32_t count;');
+              cpp.push('  uint32_t _count;');
               break;
             }
           }
 
           if (definition.kind === 'MESSAGE') {
             cpp.push('  while (true) {');
-            cpp.push('    uint32_t type;');
-            cpp.push('    if (!bb.readVarUint(type)) return false;');
-            cpp.push('    switch (type) {');
+            cpp.push('    uint32_t _type;');
+            cpp.push('    if (!_bb.readVarUint(_type)) return false;');
+            cpp.push('    switch (_type) {');
             cpp.push('      case 0:');
 
             for (var j = 0; j < fields.length; j++) {
@@ -1025,38 +1025,38 @@ var kiwi = exports || kiwi || {}, exports;
           for (var j = 0; j < fields.length; j++) {
             var field = fields[j];
             var name = cppFieldName(field);
-            var value = field.isArray ? 'it' : name;
+            var value = field.isArray ? '_it' : name;
             var isPointer = cppIsFieldPointer(definitions, field);
             var code;
 
             switch (field.type) {
               case 'bool': {
-                code = 'bb.readByte(' + value + ')';
+                code = '_bb.readByte(' + value + ')';
                 break;
               }
 
               case 'byte': {
-                code = 'bb.readByte(' + value + ')';
+                code = '_bb.readByte(' + value + ')';
                 break;
               }
 
               case 'int': {
-                code = 'bb.readVarInt(' + value + ')';
+                code = '_bb.readVarInt(' + value + ')';
                 break;
               }
 
               case 'uint': {
-                code = 'bb.readVarUint(' + value + ')';
+                code = '_bb.readVarUint(' + value + ')';
                 break;
               }
 
               case 'float': {
-                code = 'bb.readFloat(' + value + ')';
+                code = '_bb.readFloat(' + value + ')';
                 break;
               }
 
               case 'string': {
-                code = 'bb.readString(' + value + ', pool)';
+                code = '_bb.readString(' + value + ', _pool)';
                 break;
               }
 
@@ -1068,11 +1068,11 @@ var kiwi = exports || kiwi || {}, exports;
                 }
 
                 else if (type.kind === 'ENUM') {
-                  code = 'bb.readVarUint(reinterpret_cast<uint32_t &>(' + value + '))';
+                  code = '_bb.readVarUint(reinterpret_cast<uint32_t &>(' + value + '))';
                 }
 
                 else {
-                  code = value + (isPointer ? '->' : '.') + 'decode(bb, pool)';
+                  code = value + (isPointer ? '->' : '.') + 'decode(_bb, _pool)';
                 }
               }
             }
@@ -1086,13 +1086,13 @@ var kiwi = exports || kiwi || {}, exports;
             }
 
             if (field.isArray) {
-              cpp.push(indent + 'if (!bb.readVarUint(count)) return false;');
-              cpp.push(indent + 'for (' + type + ' &it : set_' + field.name + '(pool, count)) if (!' + code + ') return false;');
+              cpp.push(indent + 'if (!_bb.readVarUint(_count)) return false;');
+              cpp.push(indent + 'for (' + type + ' &_it : set_' + field.name + '(_pool, _count)) if (!' + code + ') return false;');
             }
 
             else {
               if (isPointer) {
-                cpp.push(indent + name + ' = pool.allocate<' + type + '>();');
+                cpp.push(indent + name + ' = _pool.allocate<' + type + '>();');
               }
 
               cpp.push(indent + 'if (!' + code + ') return false;');
