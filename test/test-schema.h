@@ -43,13 +43,13 @@ class RequiredField;
 
 class EnumStruct {
 public:
-  Enum *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const Enum *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  void set_x(const Enum &value) { _flags[0] |= 1; _data_x = value; }
+  Enum *x();
+  const Enum *x() const;
+  void set_x(const Enum &value);
 
-  kiwi::Array<Enum> *y() { return _flags[0] & 2 ? &_data_y : nullptr; }
-  const kiwi::Array<Enum> *y() const { return _flags[0] & 2 ? &_data_y : nullptr; }
-  kiwi::Array<Enum> &set_y(kiwi::MemoryPool &pool, uint32_t count) { _flags[0] |= 2; return _data_y = pool.array<Enum>(count); }
+  kiwi::Array<Enum> *y();
+  const kiwi::Array<Enum> *y() const;
+  kiwi::Array<Enum> &set_y(kiwi::MemoryPool &pool, uint32_t count);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -62,9 +62,9 @@ private:
 
 class BoolStruct {
 public:
-  bool *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const bool *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  void set_x(const bool &value) { _flags[0] |= 1; _data_x = value; }
+  bool *x();
+  const bool *x() const;
+  void set_x(const bool &value);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -76,9 +76,9 @@ private:
 
 class ByteStruct {
 public:
-  uint8_t *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const uint8_t *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  void set_x(const uint8_t &value) { _flags[0] |= 1; _data_x = value; }
+  uint8_t *x();
+  const uint8_t *x() const;
+  void set_x(const uint8_t &value);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -90,9 +90,9 @@ private:
 
 class IntStruct {
 public:
-  int32_t *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const int32_t *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  void set_x(const int32_t &value) { _flags[0] |= 1; _data_x = value; }
+  int32_t *x();
+  const int32_t *x() const;
+  void set_x(const int32_t &value);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -104,9 +104,9 @@ private:
 
 class UintStruct {
 public:
-  uint32_t *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const uint32_t *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  void set_x(const uint32_t &value) { _flags[0] |= 1; _data_x = value; }
+  uint32_t *x();
+  const uint32_t *x() const;
+  void set_x(const uint32_t &value);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -118,9 +118,9 @@ private:
 
 class FloatStruct {
 public:
-  float *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const float *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  void set_x(const float &value) { _flags[0] |= 1; _data_x = value; }
+  float *x();
+  const float *x() const;
+  void set_x(const float &value);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -132,9 +132,9 @@ private:
 
 class StringStruct {
 public:
-  kiwi::String *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const kiwi::String *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  void set_x(const kiwi::String &value) { _flags[0] |= 1; _data_x = value; }
+  kiwi::String *x();
+  const kiwi::String *x() const;
+  void set_x(const kiwi::String &value);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -146,13 +146,13 @@ private:
 
 class CompoundStruct {
 public:
-  uint32_t *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const uint32_t *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  void set_x(const uint32_t &value) { _flags[0] |= 1; _data_x = value; }
+  uint32_t *x();
+  const uint32_t *x() const;
+  void set_x(const uint32_t &value);
 
-  uint32_t *y() { return _flags[0] & 2 ? &_data_y : nullptr; }
-  const uint32_t *y() const { return _flags[0] & 2 ? &_data_y : nullptr; }
-  void set_y(const uint32_t &value) { _flags[0] |= 2; _data_y = value; }
+  uint32_t *y();
+  const uint32_t *y() const;
+  void set_y(const uint32_t &value);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -165,17 +165,17 @@ private:
 
 class NestedStruct {
 public:
-  uint32_t *a() { return _flags[0] & 1 ? &_data_a : nullptr; }
-  const uint32_t *a() const { return _flags[0] & 1 ? &_data_a : nullptr; }
-  void set_a(const uint32_t &value) { _flags[0] |= 1; _data_a = value; }
+  uint32_t *a();
+  const uint32_t *a() const;
+  void set_a(const uint32_t &value);
 
-  CompoundStruct *b() { return _data_b; }
-  const CompoundStruct *b() const { return _data_b; }
-  void set_b(CompoundStruct *value) { _data_b = value; }
+  CompoundStruct *b();
+  const CompoundStruct *b() const;
+  void set_b(CompoundStruct *value);
 
-  uint32_t *c() { return _flags[0] & 4 ? &_data_c : nullptr; }
-  const uint32_t *c() const { return _flags[0] & 4 ? &_data_c : nullptr; }
-  void set_c(const uint32_t &value) { _flags[0] |= 4; _data_c = value; }
+  uint32_t *c();
+  const uint32_t *c() const;
+  void set_c(const uint32_t &value);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -189,9 +189,9 @@ private:
 
 class BoolMessage {
 public:
-  bool *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const bool *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  void set_x(const bool &value) { _flags[0] |= 1; _data_x = value; }
+  bool *x();
+  const bool *x() const;
+  void set_x(const bool &value);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -203,9 +203,9 @@ private:
 
 class ByteMessage {
 public:
-  uint8_t *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const uint8_t *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  void set_x(const uint8_t &value) { _flags[0] |= 1; _data_x = value; }
+  uint8_t *x();
+  const uint8_t *x() const;
+  void set_x(const uint8_t &value);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -217,9 +217,9 @@ private:
 
 class IntMessage {
 public:
-  int32_t *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const int32_t *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  void set_x(const int32_t &value) { _flags[0] |= 1; _data_x = value; }
+  int32_t *x();
+  const int32_t *x() const;
+  void set_x(const int32_t &value);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -231,9 +231,9 @@ private:
 
 class UintMessage {
 public:
-  uint32_t *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const uint32_t *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  void set_x(const uint32_t &value) { _flags[0] |= 1; _data_x = value; }
+  uint32_t *x();
+  const uint32_t *x() const;
+  void set_x(const uint32_t &value);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -245,9 +245,9 @@ private:
 
 class FloatMessage {
 public:
-  float *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const float *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  void set_x(const float &value) { _flags[0] |= 1; _data_x = value; }
+  float *x();
+  const float *x() const;
+  void set_x(const float &value);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -259,9 +259,9 @@ private:
 
 class StringMessage {
 public:
-  kiwi::String *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const kiwi::String *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  void set_x(const kiwi::String &value) { _flags[0] |= 1; _data_x = value; }
+  kiwi::String *x();
+  const kiwi::String *x() const;
+  void set_x(const kiwi::String &value);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -273,13 +273,13 @@ private:
 
 class CompoundMessage {
 public:
-  uint32_t *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const uint32_t *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  void set_x(const uint32_t &value) { _flags[0] |= 1; _data_x = value; }
+  uint32_t *x();
+  const uint32_t *x() const;
+  void set_x(const uint32_t &value);
 
-  uint32_t *y() { return _flags[0] & 2 ? &_data_y : nullptr; }
-  const uint32_t *y() const { return _flags[0] & 2 ? &_data_y : nullptr; }
-  void set_y(const uint32_t &value) { _flags[0] |= 2; _data_y = value; }
+  uint32_t *y();
+  const uint32_t *y() const;
+  void set_y(const uint32_t &value);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -292,17 +292,17 @@ private:
 
 class NestedMessage {
 public:
-  uint32_t *a() { return _flags[0] & 1 ? &_data_a : nullptr; }
-  const uint32_t *a() const { return _flags[0] & 1 ? &_data_a : nullptr; }
-  void set_a(const uint32_t &value) { _flags[0] |= 1; _data_a = value; }
+  uint32_t *a();
+  const uint32_t *a() const;
+  void set_a(const uint32_t &value);
 
-  CompoundMessage *b() { return _data_b; }
-  const CompoundMessage *b() const { return _data_b; }
-  void set_b(CompoundMessage *value) { _data_b = value; }
+  CompoundMessage *b();
+  const CompoundMessage *b() const;
+  void set_b(CompoundMessage *value);
 
-  uint32_t *c() { return _flags[0] & 4 ? &_data_c : nullptr; }
-  const uint32_t *c() const { return _flags[0] & 4 ? &_data_c : nullptr; }
-  void set_c(const uint32_t &value) { _flags[0] |= 4; _data_c = value; }
+  uint32_t *c();
+  const uint32_t *c() const;
+  void set_c(const uint32_t &value);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -316,9 +316,9 @@ private:
 
 class BoolArrayStruct {
 public:
-  kiwi::Array<bool> *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const kiwi::Array<bool> *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  kiwi::Array<bool> &set_x(kiwi::MemoryPool &pool, uint32_t count) { _flags[0] |= 1; return _data_x = pool.array<bool>(count); }
+  kiwi::Array<bool> *x();
+  const kiwi::Array<bool> *x() const;
+  kiwi::Array<bool> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -330,9 +330,9 @@ private:
 
 class ByteArrayStruct {
 public:
-  kiwi::Array<uint8_t> *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const kiwi::Array<uint8_t> *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  kiwi::Array<uint8_t> &set_x(kiwi::MemoryPool &pool, uint32_t count) { _flags[0] |= 1; return _data_x = pool.array<uint8_t>(count); }
+  kiwi::Array<uint8_t> *x();
+  const kiwi::Array<uint8_t> *x() const;
+  kiwi::Array<uint8_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -344,9 +344,9 @@ private:
 
 class IntArrayStruct {
 public:
-  kiwi::Array<int32_t> *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const kiwi::Array<int32_t> *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  kiwi::Array<int32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count) { _flags[0] |= 1; return _data_x = pool.array<int32_t>(count); }
+  kiwi::Array<int32_t> *x();
+  const kiwi::Array<int32_t> *x() const;
+  kiwi::Array<int32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -358,9 +358,9 @@ private:
 
 class UintArrayStruct {
 public:
-  kiwi::Array<uint32_t> *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const kiwi::Array<uint32_t> *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  kiwi::Array<uint32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count) { _flags[0] |= 1; return _data_x = pool.array<uint32_t>(count); }
+  kiwi::Array<uint32_t> *x();
+  const kiwi::Array<uint32_t> *x() const;
+  kiwi::Array<uint32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -372,9 +372,9 @@ private:
 
 class FloatArrayStruct {
 public:
-  kiwi::Array<float> *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const kiwi::Array<float> *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  kiwi::Array<float> &set_x(kiwi::MemoryPool &pool, uint32_t count) { _flags[0] |= 1; return _data_x = pool.array<float>(count); }
+  kiwi::Array<float> *x();
+  const kiwi::Array<float> *x() const;
+  kiwi::Array<float> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -386,9 +386,9 @@ private:
 
 class StringArrayStruct {
 public:
-  kiwi::Array<kiwi::String> *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const kiwi::Array<kiwi::String> *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  kiwi::Array<kiwi::String> &set_x(kiwi::MemoryPool &pool, uint32_t count) { _flags[0] |= 1; return _data_x = pool.array<kiwi::String>(count); }
+  kiwi::Array<kiwi::String> *x();
+  const kiwi::Array<kiwi::String> *x() const;
+  kiwi::Array<kiwi::String> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -400,13 +400,13 @@ private:
 
 class CompoundArrayStruct {
 public:
-  kiwi::Array<uint32_t> *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const kiwi::Array<uint32_t> *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  kiwi::Array<uint32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count) { _flags[0] |= 1; return _data_x = pool.array<uint32_t>(count); }
+  kiwi::Array<uint32_t> *x();
+  const kiwi::Array<uint32_t> *x() const;
+  kiwi::Array<uint32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
-  kiwi::Array<uint32_t> *y() { return _flags[0] & 2 ? &_data_y : nullptr; }
-  const kiwi::Array<uint32_t> *y() const { return _flags[0] & 2 ? &_data_y : nullptr; }
-  kiwi::Array<uint32_t> &set_y(kiwi::MemoryPool &pool, uint32_t count) { _flags[0] |= 2; return _data_y = pool.array<uint32_t>(count); }
+  kiwi::Array<uint32_t> *y();
+  const kiwi::Array<uint32_t> *y() const;
+  kiwi::Array<uint32_t> &set_y(kiwi::MemoryPool &pool, uint32_t count);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -419,9 +419,9 @@ private:
 
 class BoolArrayMessage {
 public:
-  kiwi::Array<bool> *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const kiwi::Array<bool> *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  kiwi::Array<bool> &set_x(kiwi::MemoryPool &pool, uint32_t count) { _flags[0] |= 1; return _data_x = pool.array<bool>(count); }
+  kiwi::Array<bool> *x();
+  const kiwi::Array<bool> *x() const;
+  kiwi::Array<bool> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -433,9 +433,9 @@ private:
 
 class ByteArrayMessage {
 public:
-  kiwi::Array<uint8_t> *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const kiwi::Array<uint8_t> *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  kiwi::Array<uint8_t> &set_x(kiwi::MemoryPool &pool, uint32_t count) { _flags[0] |= 1; return _data_x = pool.array<uint8_t>(count); }
+  kiwi::Array<uint8_t> *x();
+  const kiwi::Array<uint8_t> *x() const;
+  kiwi::Array<uint8_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -447,9 +447,9 @@ private:
 
 class IntArrayMessage {
 public:
-  kiwi::Array<int32_t> *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const kiwi::Array<int32_t> *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  kiwi::Array<int32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count) { _flags[0] |= 1; return _data_x = pool.array<int32_t>(count); }
+  kiwi::Array<int32_t> *x();
+  const kiwi::Array<int32_t> *x() const;
+  kiwi::Array<int32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -461,9 +461,9 @@ private:
 
 class UintArrayMessage {
 public:
-  kiwi::Array<uint32_t> *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const kiwi::Array<uint32_t> *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  kiwi::Array<uint32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count) { _flags[0] |= 1; return _data_x = pool.array<uint32_t>(count); }
+  kiwi::Array<uint32_t> *x();
+  const kiwi::Array<uint32_t> *x() const;
+  kiwi::Array<uint32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -475,9 +475,9 @@ private:
 
 class FloatArrayMessage {
 public:
-  kiwi::Array<float> *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const kiwi::Array<float> *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  kiwi::Array<float> &set_x(kiwi::MemoryPool &pool, uint32_t count) { _flags[0] |= 1; return _data_x = pool.array<float>(count); }
+  kiwi::Array<float> *x();
+  const kiwi::Array<float> *x() const;
+  kiwi::Array<float> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -489,9 +489,9 @@ private:
 
 class StringArrayMessage {
 public:
-  kiwi::Array<kiwi::String> *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const kiwi::Array<kiwi::String> *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  kiwi::Array<kiwi::String> &set_x(kiwi::MemoryPool &pool, uint32_t count) { _flags[0] |= 1; return _data_x = pool.array<kiwi::String>(count); }
+  kiwi::Array<kiwi::String> *x();
+  const kiwi::Array<kiwi::String> *x() const;
+  kiwi::Array<kiwi::String> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -503,13 +503,13 @@ private:
 
 class CompoundArrayMessage {
 public:
-  kiwi::Array<uint32_t> *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const kiwi::Array<uint32_t> *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  kiwi::Array<uint32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count) { _flags[0] |= 1; return _data_x = pool.array<uint32_t>(count); }
+  kiwi::Array<uint32_t> *x();
+  const kiwi::Array<uint32_t> *x() const;
+  kiwi::Array<uint32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
-  kiwi::Array<uint32_t> *y() { return _flags[0] & 2 ? &_data_y : nullptr; }
-  const kiwi::Array<uint32_t> *y() const { return _flags[0] & 2 ? &_data_y : nullptr; }
-  kiwi::Array<uint32_t> &set_y(kiwi::MemoryPool &pool, uint32_t count) { _flags[0] |= 2; return _data_y = pool.array<uint32_t>(count); }
+  kiwi::Array<uint32_t> *y();
+  const kiwi::Array<uint32_t> *y() const;
+  kiwi::Array<uint32_t> &set_y(kiwi::MemoryPool &pool, uint32_t count);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -522,9 +522,9 @@ private:
 
 class RecursiveMessage {
 public:
-  RecursiveMessage *x() { return _data_x; }
-  const RecursiveMessage *x() const { return _data_x; }
-  void set_x(RecursiveMessage *value) { _data_x = value; }
+  RecursiveMessage *x();
+  const RecursiveMessage *x() const;
+  void set_x(RecursiveMessage *value);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -536,9 +536,9 @@ private:
 
 class RequiredField {
 public:
-  int32_t *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
-  const int32_t *x() const { return _flags[0] & 1 ? &_data_x : nullptr; }
-  void set_x(const int32_t &value) { _flags[0] |= 1; _data_x = value; }
+  int32_t *x();
+  const int32_t *x() const;
+  void set_x(const int32_t &value);
 
   bool encode(kiwi::ByteBuffer &bb);
   bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
@@ -547,6 +547,30 @@ private:
   uint32_t _flags[1] = {};
   int32_t _data_x = {};
 };
+
+Enum *EnumStruct::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const Enum *EnumStruct::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+void EnumStruct::set_x(const Enum &value) {
+  _flags[0] |= 1; _data_x = value;
+}
+
+kiwi::Array<Enum> *EnumStruct::y() {
+  return _flags[0] & 2 ? &_data_y : nullptr;
+}
+
+const kiwi::Array<Enum> *EnumStruct::y() const {
+  return _flags[0] & 2 ? &_data_y : nullptr;
+}
+
+kiwi::Array<Enum> &EnumStruct::set_y(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 2; return _data_y = pool.array<Enum>(count);
+}
 
 bool EnumStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
@@ -566,6 +590,18 @@ bool EnumStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   return true;
 }
 
+bool *BoolStruct::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const bool *BoolStruct::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+void BoolStruct::set_x(const bool &value) {
+  _flags[0] |= 1; _data_x = value;
+}
+
 bool BoolStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeByte(_data_x);
@@ -576,6 +612,18 @@ bool BoolStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   if (!_bb.readByte(_data_x)) return false;
   set_x(_data_x);
   return true;
+}
+
+uint8_t *ByteStruct::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const uint8_t *ByteStruct::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+void ByteStruct::set_x(const uint8_t &value) {
+  _flags[0] |= 1; _data_x = value;
 }
 
 bool ByteStruct::encode(kiwi::ByteBuffer &_bb) {
@@ -590,6 +638,18 @@ bool ByteStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   return true;
 }
 
+int32_t *IntStruct::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const int32_t *IntStruct::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+void IntStruct::set_x(const int32_t &value) {
+  _flags[0] |= 1; _data_x = value;
+}
+
 bool IntStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeVarInt(_data_x);
@@ -600,6 +660,18 @@ bool IntStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   if (!_bb.readVarInt(_data_x)) return false;
   set_x(_data_x);
   return true;
+}
+
+uint32_t *UintStruct::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const uint32_t *UintStruct::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+void UintStruct::set_x(const uint32_t &value) {
+  _flags[0] |= 1; _data_x = value;
 }
 
 bool UintStruct::encode(kiwi::ByteBuffer &_bb) {
@@ -614,6 +686,18 @@ bool UintStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   return true;
 }
 
+float *FloatStruct::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const float *FloatStruct::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+void FloatStruct::set_x(const float &value) {
+  _flags[0] |= 1; _data_x = value;
+}
+
 bool FloatStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeFloat(_data_x);
@@ -626,6 +710,18 @@ bool FloatStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   return true;
 }
 
+kiwi::String *StringStruct::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const kiwi::String *StringStruct::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+void StringStruct::set_x(const kiwi::String &value) {
+  _flags[0] |= 1; _data_x = value;
+}
+
 bool StringStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeString(_data_x.c_str());
@@ -636,6 +732,30 @@ bool StringStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   if (!_bb.readString(_data_x, _pool)) return false;
   set_x(_data_x);
   return true;
+}
+
+uint32_t *CompoundStruct::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const uint32_t *CompoundStruct::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+void CompoundStruct::set_x(const uint32_t &value) {
+  _flags[0] |= 1; _data_x = value;
+}
+
+uint32_t *CompoundStruct::y() {
+  return _flags[0] & 2 ? &_data_y : nullptr;
+}
+
+const uint32_t *CompoundStruct::y() const {
+  return _flags[0] & 2 ? &_data_y : nullptr;
+}
+
+void CompoundStruct::set_y(const uint32_t &value) {
+  _flags[0] |= 2; _data_y = value;
 }
 
 bool CompoundStruct::encode(kiwi::ByteBuffer &_bb) {
@@ -652,6 +772,42 @@ bool CompoundStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   if (!_bb.readVarUint(_data_y)) return false;
   set_y(_data_y);
   return true;
+}
+
+uint32_t *NestedStruct::a() {
+  return _flags[0] & 1 ? &_data_a : nullptr;
+}
+
+const uint32_t *NestedStruct::a() const {
+  return _flags[0] & 1 ? &_data_a : nullptr;
+}
+
+void NestedStruct::set_a(const uint32_t &value) {
+  _flags[0] |= 1; _data_a = value;
+}
+
+CompoundStruct *NestedStruct::b() {
+  return _data_b;
+}
+
+const CompoundStruct *NestedStruct::b() const {
+  return _data_b;
+}
+
+void NestedStruct::set_b(CompoundStruct *value) {
+  _data_b = value;
+}
+
+uint32_t *NestedStruct::c() {
+  return _flags[0] & 4 ? &_data_c : nullptr;
+}
+
+const uint32_t *NestedStruct::c() const {
+  return _flags[0] & 4 ? &_data_c : nullptr;
+}
+
+void NestedStruct::set_c(const uint32_t &value) {
+  _flags[0] |= 4; _data_c = value;
 }
 
 bool NestedStruct::encode(kiwi::ByteBuffer &_bb) {
@@ -672,6 +828,18 @@ bool NestedStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   if (!_bb.readVarUint(_data_c)) return false;
   set_c(_data_c);
   return true;
+}
+
+bool *BoolMessage::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const bool *BoolMessage::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+void BoolMessage::set_x(const bool &value) {
+  _flags[0] |= 1; _data_x = value;
 }
 
 bool BoolMessage::encode(kiwi::ByteBuffer &_bb) {
@@ -699,6 +867,18 @@ bool BoolMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   }
 }
 
+uint8_t *ByteMessage::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const uint8_t *ByteMessage::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+void ByteMessage::set_x(const uint8_t &value) {
+  _flags[0] |= 1; _data_x = value;
+}
+
 bool ByteMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
@@ -722,6 +902,18 @@ bool ByteMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
       default: return false;
     }
   }
+}
+
+int32_t *IntMessage::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const int32_t *IntMessage::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+void IntMessage::set_x(const int32_t &value) {
+  _flags[0] |= 1; _data_x = value;
 }
 
 bool IntMessage::encode(kiwi::ByteBuffer &_bb) {
@@ -749,6 +941,18 @@ bool IntMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   }
 }
 
+uint32_t *UintMessage::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const uint32_t *UintMessage::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+void UintMessage::set_x(const uint32_t &value) {
+  _flags[0] |= 1; _data_x = value;
+}
+
 bool UintMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
@@ -772,6 +976,18 @@ bool UintMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
       default: return false;
     }
   }
+}
+
+float *FloatMessage::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const float *FloatMessage::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+void FloatMessage::set_x(const float &value) {
+  _flags[0] |= 1; _data_x = value;
 }
 
 bool FloatMessage::encode(kiwi::ByteBuffer &_bb) {
@@ -799,6 +1015,18 @@ bool FloatMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   }
 }
 
+kiwi::String *StringMessage::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const kiwi::String *StringMessage::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+void StringMessage::set_x(const kiwi::String &value) {
+  _flags[0] |= 1; _data_x = value;
+}
+
 bool StringMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
@@ -822,6 +1050,30 @@ bool StringMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
       default: return false;
     }
   }
+}
+
+uint32_t *CompoundMessage::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const uint32_t *CompoundMessage::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+void CompoundMessage::set_x(const uint32_t &value) {
+  _flags[0] |= 1; _data_x = value;
+}
+
+uint32_t *CompoundMessage::y() {
+  return _flags[0] & 2 ? &_data_y : nullptr;
+}
+
+const uint32_t *CompoundMessage::y() const {
+  return _flags[0] & 2 ? &_data_y : nullptr;
+}
+
+void CompoundMessage::set_y(const uint32_t &value) {
+  _flags[0] |= 2; _data_y = value;
 }
 
 bool CompoundMessage::encode(kiwi::ByteBuffer &_bb) {
@@ -855,6 +1107,42 @@ bool CompoundMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
       default: return false;
     }
   }
+}
+
+uint32_t *NestedMessage::a() {
+  return _flags[0] & 1 ? &_data_a : nullptr;
+}
+
+const uint32_t *NestedMessage::a() const {
+  return _flags[0] & 1 ? &_data_a : nullptr;
+}
+
+void NestedMessage::set_a(const uint32_t &value) {
+  _flags[0] |= 1; _data_a = value;
+}
+
+CompoundMessage *NestedMessage::b() {
+  return _data_b;
+}
+
+const CompoundMessage *NestedMessage::b() const {
+  return _data_b;
+}
+
+void NestedMessage::set_b(CompoundMessage *value) {
+  _data_b = value;
+}
+
+uint32_t *NestedMessage::c() {
+  return _flags[0] & 4 ? &_data_c : nullptr;
+}
+
+const uint32_t *NestedMessage::c() const {
+  return _flags[0] & 4 ? &_data_c : nullptr;
+}
+
+void NestedMessage::set_c(const uint32_t &value) {
+  _flags[0] |= 4; _data_c = value;
 }
 
 bool NestedMessage::encode(kiwi::ByteBuffer &_bb) {
@@ -898,6 +1186,18 @@ bool NestedMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   }
 }
 
+kiwi::Array<bool> *BoolArrayStruct::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const kiwi::Array<bool> *BoolArrayStruct::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+kiwi::Array<bool> &BoolArrayStruct::set_x(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 1; return _data_x = pool.array<bool>(count);
+}
+
 bool BoolArrayStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeVarUint(_data_x.size());
@@ -910,6 +1210,18 @@ bool BoolArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   if (!_bb.readVarUint(_count)) return false;
   for (bool &_it : set_x(_pool, _count)) if (!_bb.readByte(_it)) return false;
   return true;
+}
+
+kiwi::Array<uint8_t> *ByteArrayStruct::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const kiwi::Array<uint8_t> *ByteArrayStruct::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+kiwi::Array<uint8_t> &ByteArrayStruct::set_x(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 1; return _data_x = pool.array<uint8_t>(count);
 }
 
 bool ByteArrayStruct::encode(kiwi::ByteBuffer &_bb) {
@@ -926,6 +1238,18 @@ bool ByteArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   return true;
 }
 
+kiwi::Array<int32_t> *IntArrayStruct::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const kiwi::Array<int32_t> *IntArrayStruct::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+kiwi::Array<int32_t> &IntArrayStruct::set_x(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 1; return _data_x = pool.array<int32_t>(count);
+}
+
 bool IntArrayStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeVarUint(_data_x.size());
@@ -938,6 +1262,18 @@ bool IntArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   if (!_bb.readVarUint(_count)) return false;
   for (int32_t &_it : set_x(_pool, _count)) if (!_bb.readVarInt(_it)) return false;
   return true;
+}
+
+kiwi::Array<uint32_t> *UintArrayStruct::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const kiwi::Array<uint32_t> *UintArrayStruct::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+kiwi::Array<uint32_t> &UintArrayStruct::set_x(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 1; return _data_x = pool.array<uint32_t>(count);
 }
 
 bool UintArrayStruct::encode(kiwi::ByteBuffer &_bb) {
@@ -954,6 +1290,18 @@ bool UintArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   return true;
 }
 
+kiwi::Array<float> *FloatArrayStruct::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const kiwi::Array<float> *FloatArrayStruct::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+kiwi::Array<float> &FloatArrayStruct::set_x(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 1; return _data_x = pool.array<float>(count);
+}
+
 bool FloatArrayStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeVarUint(_data_x.size());
@@ -968,6 +1316,18 @@ bool FloatArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   return true;
 }
 
+kiwi::Array<kiwi::String> *StringArrayStruct::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const kiwi::Array<kiwi::String> *StringArrayStruct::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+kiwi::Array<kiwi::String> &StringArrayStruct::set_x(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 1; return _data_x = pool.array<kiwi::String>(count);
+}
+
 bool StringArrayStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeVarUint(_data_x.size());
@@ -980,6 +1340,30 @@ bool StringArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   if (!_bb.readVarUint(_count)) return false;
   for (kiwi::String &_it : set_x(_pool, _count)) if (!_bb.readString(_it, _pool)) return false;
   return true;
+}
+
+kiwi::Array<uint32_t> *CompoundArrayStruct::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const kiwi::Array<uint32_t> *CompoundArrayStruct::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+kiwi::Array<uint32_t> &CompoundArrayStruct::set_x(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 1; return _data_x = pool.array<uint32_t>(count);
+}
+
+kiwi::Array<uint32_t> *CompoundArrayStruct::y() {
+  return _flags[0] & 2 ? &_data_y : nullptr;
+}
+
+const kiwi::Array<uint32_t> *CompoundArrayStruct::y() const {
+  return _flags[0] & 2 ? &_data_y : nullptr;
+}
+
+kiwi::Array<uint32_t> &CompoundArrayStruct::set_y(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 2; return _data_y = pool.array<uint32_t>(count);
 }
 
 bool CompoundArrayStruct::encode(kiwi::ByteBuffer &_bb) {
@@ -999,6 +1383,18 @@ bool CompoundArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool)
   if (!_bb.readVarUint(_count)) return false;
   for (uint32_t &_it : set_y(_pool, _count)) if (!_bb.readVarUint(_it)) return false;
   return true;
+}
+
+kiwi::Array<bool> *BoolArrayMessage::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const kiwi::Array<bool> *BoolArrayMessage::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+kiwi::Array<bool> &BoolArrayMessage::set_x(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 1; return _data_x = pool.array<bool>(count);
 }
 
 bool BoolArrayMessage::encode(kiwi::ByteBuffer &_bb) {
@@ -1028,6 +1424,18 @@ bool BoolArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   }
 }
 
+kiwi::Array<uint8_t> *ByteArrayMessage::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const kiwi::Array<uint8_t> *ByteArrayMessage::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+kiwi::Array<uint8_t> &ByteArrayMessage::set_x(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 1; return _data_x = pool.array<uint8_t>(count);
+}
+
 bool ByteArrayMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
@@ -1053,6 +1461,18 @@ bool ByteArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
       default: return false;
     }
   }
+}
+
+kiwi::Array<int32_t> *IntArrayMessage::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const kiwi::Array<int32_t> *IntArrayMessage::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+kiwi::Array<int32_t> &IntArrayMessage::set_x(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 1; return _data_x = pool.array<int32_t>(count);
 }
 
 bool IntArrayMessage::encode(kiwi::ByteBuffer &_bb) {
@@ -1082,6 +1502,18 @@ bool IntArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   }
 }
 
+kiwi::Array<uint32_t> *UintArrayMessage::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const kiwi::Array<uint32_t> *UintArrayMessage::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+kiwi::Array<uint32_t> &UintArrayMessage::set_x(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 1; return _data_x = pool.array<uint32_t>(count);
+}
+
 bool UintArrayMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
@@ -1107,6 +1539,18 @@ bool UintArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
       default: return false;
     }
   }
+}
+
+kiwi::Array<float> *FloatArrayMessage::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const kiwi::Array<float> *FloatArrayMessage::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+kiwi::Array<float> &FloatArrayMessage::set_x(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 1; return _data_x = pool.array<float>(count);
 }
 
 bool FloatArrayMessage::encode(kiwi::ByteBuffer &_bb) {
@@ -1136,6 +1580,18 @@ bool FloatArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   }
 }
 
+kiwi::Array<kiwi::String> *StringArrayMessage::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const kiwi::Array<kiwi::String> *StringArrayMessage::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+kiwi::Array<kiwi::String> &StringArrayMessage::set_x(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 1; return _data_x = pool.array<kiwi::String>(count);
+}
+
 bool StringArrayMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
@@ -1161,6 +1617,30 @@ bool StringArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) 
       default: return false;
     }
   }
+}
+
+kiwi::Array<uint32_t> *CompoundArrayMessage::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const kiwi::Array<uint32_t> *CompoundArrayMessage::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+kiwi::Array<uint32_t> &CompoundArrayMessage::set_x(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 1; return _data_x = pool.array<uint32_t>(count);
+}
+
+kiwi::Array<uint32_t> *CompoundArrayMessage::y() {
+  return _flags[0] & 2 ? &_data_y : nullptr;
+}
+
+const kiwi::Array<uint32_t> *CompoundArrayMessage::y() const {
+  return _flags[0] & 2 ? &_data_y : nullptr;
+}
+
+kiwi::Array<uint32_t> &CompoundArrayMessage::set_y(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 2; return _data_y = pool.array<uint32_t>(count);
 }
 
 bool CompoundArrayMessage::encode(kiwi::ByteBuffer &_bb) {
@@ -1199,6 +1679,18 @@ bool CompoundArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool
   }
 }
 
+RecursiveMessage *RecursiveMessage::x() {
+  return _data_x;
+}
+
+const RecursiveMessage *RecursiveMessage::x() const {
+  return _data_x;
+}
+
+void RecursiveMessage::set_x(RecursiveMessage *value) {
+  _data_x = value;
+}
+
 bool RecursiveMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
@@ -1222,6 +1714,18 @@ bool RecursiveMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
       default: return false;
     }
   }
+}
+
+int32_t *RequiredField::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const int32_t *RequiredField::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+void RequiredField::set_x(const int32_t &value) {
+  _flags[0] |= 1; _data_x = value;
 }
 
 bool RequiredField::encode(kiwi::ByteBuffer &_bb) {

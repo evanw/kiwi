@@ -864,23 +864,21 @@ var kiwi = exports || kiwi || {}, exports;
             var flagMask = cppFlagMask(j);
 
             if (cppIsFieldPointer(definitions, field)) {
-              cpp.push('  ' + type + ' *' + field.name + '() { return ' + name + '; }');
-              cpp.push('  const ' + type + ' *' + field.name + '() const { return ' + name + '; }');
-              cpp.push('  void set_' + field.name + '(' + type + ' *value) { ' + name + ' = value; }');
+              cpp.push('  ' + type + ' *' + field.name + '();');
+              cpp.push('  const ' + type + ' *' + field.name + '() const;');
+              cpp.push('  void set_' + field.name + '(' + type + ' *value);');
             }
 
             else if (field.isArray) {
-              cpp.push('  ' + type + ' *' + field.name + '() { return _flags[' + flagIndex + '] & ' + flagMask + ' ? &' + name + ' : nullptr; }');
-              cpp.push('  const ' + type + ' *' + field.name + '() const { return _flags[' + flagIndex + '] & ' + flagMask + ' ? &' + name + ' : nullptr; }');
-              cpp.push('  ' + type + ' &set_' + field.name + '(kiwi::MemoryPool &pool, uint32_t count) { _flags[' + flagIndex +
-                '] |= ' + flagMask + '; return ' + name + ' = pool.array<' + cppType(definitions, field, false) + '>(count); }');
+              cpp.push('  ' + type + ' *' + field.name + '();');
+              cpp.push('  const ' + type + ' *' + field.name + '() const;');
+              cpp.push('  ' + type + ' &set_' + field.name + '(kiwi::MemoryPool &pool, uint32_t count);');
             }
 
             else {
-              cpp.push('  ' + type + ' *' + field.name + '() { return _flags[' + flagIndex + '] & ' + flagMask + ' ? &' + name + ' : nullptr; }');
-              cpp.push('  const ' + type + ' *' + field.name + '() const { return _flags[' + flagIndex + '] & ' + flagMask + ' ? &' + name + ' : nullptr; }');
-              cpp.push('  void set_' + field.name + '(const ' + type + ' &value) { _flags[' +
-                flagIndex + '] |= ' + flagMask + '; ' + name + ' = value; }');
+              cpp.push('  ' + type + ' *' + field.name + '();');
+              cpp.push('  const ' + type + ' *' + field.name + '() const;');
+              cpp.push('  void set_' + field.name + '(const ' + type + ' &value);');
             }
 
             cpp.push('');
@@ -909,6 +907,65 @@ var kiwi = exports || kiwi || {}, exports;
         }
 
         else {
+          for (var j = 0; j < fields.length; j++) {
+            var field = fields[j];
+            var name = cppFieldName(field);
+            var type = cppType(definitions, field, field.isArray);
+            var flagIndex = cppFlagIndex(j);
+            var flagMask = cppFlagMask(j);
+
+            if (cppIsFieldPointer(definitions, field)) {
+              cpp.push(type + ' *' + definition.name + '::' + field.name + '() {');
+              cpp.push('  return ' + name + ';');
+              cpp.push('}');
+              cpp.push('');
+
+              cpp.push('const ' + type + ' *' + definition.name + '::' + field.name + '() const {');
+              cpp.push('  return ' + name + ';');
+              cpp.push('}');
+              cpp.push('');
+
+              cpp.push('void ' + definition.name + '::set_' + field.name + '(' + type + ' *value) {');
+              cpp.push('  ' + name + ' = value;');
+              cpp.push('}');
+              cpp.push('');
+            }
+
+            else if (field.isArray) {
+              cpp.push(type + ' *' + definition.name + '::' + field.name + '() {');
+              cpp.push('  return _flags[' + flagIndex + '] & ' + flagMask + ' ? &' + name + ' : nullptr;');
+              cpp.push('}');
+              cpp.push('');
+
+              cpp.push('const ' + type + ' *' + definition.name + '::' + field.name + '() const {');
+              cpp.push('  return _flags[' + flagIndex + '] & ' + flagMask + ' ? &' + name + ' : nullptr;');
+              cpp.push('}');
+              cpp.push('');
+
+              cpp.push(type + ' &' + definition.name + '::set_' + field.name + '(kiwi::MemoryPool &pool, uint32_t count) {');
+              cpp.push('  _flags[' + flagIndex + '] |= ' + flagMask + '; return ' + name + ' = pool.array<' + cppType(definitions, field, false) + '>(count);');
+              cpp.push('}');
+              cpp.push('');
+            }
+
+            else {
+              cpp.push(type + ' *' + definition.name + '::' + field.name + '() {');
+              cpp.push('  return _flags[' + flagIndex + '] & ' + flagMask + ' ? &' + name + ' : nullptr;');
+              cpp.push('}');
+              cpp.push('');
+
+              cpp.push('const ' + type + ' *' + definition.name + '::' + field.name + '() const {');
+              cpp.push('  return _flags[' + flagIndex + '] & ' + flagMask + ' ? &' + name + ' : nullptr;');
+              cpp.push('}');
+              cpp.push('');
+
+              cpp.push('void ' + definition.name + '::set_' + field.name + '(const ' + type + ' &value) {');
+              cpp.push('  _flags[' + flagIndex + '] |= ' + flagMask + '; ' + name + ' = value;');
+              cpp.push('}');
+              cpp.push('');
+            }
+          }
+
           cpp.push('bool ' + definition.name + '::encode(kiwi::ByteBuffer &_bb) {');
 
           for (var j = 0; j < fields.length; j++) {

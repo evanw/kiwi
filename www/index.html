@@ -129,7 +129,7 @@ message Example {
   }
 
   function fromHex(value) {
-    return new Uint8Array(value.split(/\s+/g).map(function(x) {
+    return new Uint8Array(value.split(/[\s,]+/g).map(function(x) {
       return '0x' + x | 0;
     }));
   }
