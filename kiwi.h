@@ -4,9 +4,11 @@
 #include <assert.h>
 #include <memory.h>
 #include <stdlib.h>
-#include <string>
 
 namespace kiwi {
+  class String;
+  class MemoryPool;
+
   class ByteBuffer {
   public:
     ByteBuffer();
@@ -20,17 +22,18 @@ namespace kiwi {
     size_t index() const { return _index; }
 
     bool seekTo(size_t index);
+    bool readByte(bool &result);
     bool readByte(uint8_t &result);
     bool readFloat(float &result);
     bool readVarUint(uint32_t &result);
     bool readVarInt(int32_t &result);
-    bool readString(std::string &result);
+    bool readString(String &result, MemoryPool &pool);
 
     void writeByte(uint8_t value);
     void writeFloat(float value);
     void writeVarUint(uint32_t value);
     void writeVarInt(int32_t value);
-    void writeString(const std::string &value);
+    void writeString(const char *value);
 
   private:
     void _growBy(size_t amount);
@@ -45,68 +48,64 @@ namespace kiwi {
 
   ////////////////////////////////////////////////////////////////////////////////
 
-  class Codec {
+  struct String {
+    String() {}
+    String(const char *c_str) : _c_str(c_str) {}
+
+    const char *c_str() const { return _c_str; }
+
+  private:
+    const char *_c_str = nullptr;
+  };
+
+  inline bool operator == (const String &a, const String &b) { return !strcmp(a.c_str(), b.c_str()); }
+  inline bool operator != (const String &a, const String &b) { return !(a == b); }
+
+  ////////////////////////////////////////////////////////////////////////////////
+
+  template <typename T>
+  struct Array {
+    Array() {}
+    Array(T *data, uint32_t size) : _data(data), _size(size) {}
+
+    T *data() { return _data; }
+    T *begin() { return _data; }
+    T *end() { return _data + _size; }
+    uint32_t size() const { return _size; }
+    T &operator [] (uint32_t index) { assert(index < _size); return _data[index]; }
+
+  private:
+    T *_data = nullptr;
+    uint32_t _size = 0;
+  };
+
+  ////////////////////////////////////////////////////////////////////////////////
+
+  class MemoryPool {
   public:
-    Codec();
-    Codec(ByteBuffer &bb);
-    Codec(Codec &&encoder);
-    Codec(const Codec &) = delete;
-    Codec &operator = (const Codec &) = delete;
+    ~MemoryPool();
 
-  protected:
-    void _structReadField(uint32_t field);
-    bool _structReadFieldNested(uint32_t field, Codec &codec);
-    bool _structReadByte(uint32_t field, uint8_t &value);
-    bool _structReadVarInt(uint32_t field, int32_t &value);
-    bool _structReadVarUint(uint32_t field, uint32_t &value);
-    bool _structReadFloat(uint32_t field, float &value);
-    bool _structReadString(uint32_t field, std::string &value);
+    template <typename T>
+    T *allocate(uint32_t count);
 
-    bool _messageReadField();
-    bool _messageReadFieldNested(uint32_t field, Codec &codec);
-    bool _messageReadByte(uint32_t field, uint8_t &value);
-    bool _messageReadVarInt(uint32_t field, int32_t &value);
-    bool _messageReadVarUint(uint32_t field, uint32_t &value);
-    bool _messageReadFloat(uint32_t field, float &value);
-    bool _messageReadString(uint32_t field, std::string &value);
+    template <typename T>
+    Array<T> *array(uint32_t size) { return new (allocate<Array<T>>(1)) Array<T>(allocate<T>(size), size); }
 
-    void _structWriteField(uint32_t field);
-    void _structWriteByte(uint32_t field, uint8_t value);
-    void _structWriteVarInt(uint32_t field, int32_t value);
-    void _structWriteVarUint(uint32_t field, uint32_t value);
-    void _structWriteFloat(uint32_t field, float value);
-    void _structWriteString(uint32_t field, const std::string &value);
+    String string(const char *data, uint32_t count);
+    String string(const char *c_str) { return string(c_str, strlen(c_str)); }
 
-    void _structWriteArrayField(uint32_t field);
-    void _structWriteArrayBegin(uint32_t field, uint32_t count);
-    void _structWriteArrayByte(uint32_t field, uint8_t value);
-    void _structWriteArrayVarInt(uint32_t field, int32_t value);
-    void _structWriteArrayVarUint(uint32_t field, uint32_t value);
-    void _structWriteArrayFloat(uint32_t field, float value);
-    void _structWriteArrayString(uint32_t field, const std::string &value);
-    void _structWriteArrayEnd(uint32_t field);
+  private:
+    enum { INITIAL_CAPACITY = 1 << 12 };
 
-    void _messageWriteField(uint32_t field);
-    void _messageWriteByte(uint32_t field, uint8_t value);
-    void _messageWriteVarInt(uint32_t field, int32_t value);
-    void _messageWriteVarUint(uint32_t field, uint32_t value);
-    void _messageWriteFloat(uint32_t field, float value);
-    void _messageWriteString(uint32_t field, const std::string &value);
+    struct Chunk {
+      uint8_t *data = nullptr;
+      uint32_t capacity = 0;
+      uint32_t used = 0;
+      Chunk *next = nullptr;
+    };
 
-    void _messageWriteArrayField();
-    void _messageWriteArrayBegin(uint32_t field, uint32_t count);
-    void _messageWriteArrayByte(uint8_t value);
-    void _messageWriteArrayVarInt(int32_t value);
-    void _messageWriteArrayVarUint(uint32_t value);
-    void _messageWriteArrayFloat(float value);
-    void _messageWriteArrayString(const std::string &value);
-    void _messageWriteArrayEnd();
-
-    void _messageFinish();
-
-    ByteBuffer *_bb = nullptr;
-    uint32_t _nextField = 0;
-    uint32_t _countRemaining = 0;
+    Chunk *_first = nullptr;
+    Chunk *_last = nullptr;
   };
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -130,6 +129,17 @@ namespace kiwi {
     }
 
     return false;
+  }
+
+  bool ByteBuffer::readByte(bool &result) {
+    uint8_t value;
+    if (!readByte(value)) {
+      result = false;
+      return false;
+    }
+
+    result = value;
+    return true;
   }
 
   bool ByteBuffer::readByte(uint8_t &result) {
@@ -182,15 +192,15 @@ namespace kiwi {
     return true;
   }
 
-  bool ByteBuffer::readString(std::string &result) {
-    uint32_t size;
-    if (!readVarUint(size) || _index + size < _index || _index + size > _size) {
-      result.clear();
-      return false;
-    }
+  bool ByteBuffer::readString(String &result, MemoryPool &pool) {
+    uint32_t size = 0;
+    result = String();
 
-    result.resize(size);
-    memcpy(&result[0], _data + _index, size);
+    do {
+      if (_index >= _size) return false;
+    } while (_data[_index + size++] != '\0');
+
+    result = pool.string(reinterpret_cast<char *>(_data + _index), size - 1);
     _index += size;
     return true;
   }
@@ -219,11 +229,11 @@ namespace kiwi {
     writeVarUint((value << 1) ^ (value >> 31));
   }
 
-  void ByteBuffer::writeString(const std::string &value) {
-    writeVarUint(value.size());
+  void ByteBuffer::writeString(const char *value) {
+    uint32_t count = strlen(value) + 1;
     size_t index = _size;
-    _growBy(value.size());
-    memcpy(_data + index, value.data(), value.size());
+    _growBy(count);
+    memcpy(_data + index, value, count);
   }
 
   void ByteBuffer::_growBy(size_t amount) {
@@ -246,292 +256,47 @@ namespace kiwi {
 
   ////////////////////////////////////////////////////////////////////////////////
 
-  Codec::Codec() {
+  inline uint32_t nextMultipleOf(uint32_t value, uint32_t stride) {
+    value += stride - 1;
+    return value - value % stride;
   }
 
-  Codec::Codec(ByteBuffer &bb) : _bb(&bb) {
-  }
-
-  Codec::Codec(Codec &&encoder) : _bb(encoder._bb), _nextField(encoder._nextField), _countRemaining(encoder._countRemaining) {
-    encoder._bb = nullptr;
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-
-  void Codec::_structReadField(uint32_t field) {
-    assert(_bb && _nextField++ == field && !_countRemaining); // Must set each field once in order
-  }
-
-  bool Codec::_structReadFieldNested(uint32_t field, Codec &codec) {
-    if (!_bb) return false;
-    _structReadField(field);
-    assert(!codec._bb);
-    codec._bb = _bb;
-    return true;
-  }
-
-  bool Codec::_structReadByte(uint32_t field, uint8_t &value) {
-    if (!_bb) return false;
-    _structReadField(field);
-    if (_bb->readByte(value)) return true;
-    _bb = nullptr;
-    return false;
-  }
-
-  bool Codec::_structReadVarInt(uint32_t field, int32_t &value) {
-    if (!_bb) return false;
-    _structReadField(field);
-    if (_bb->readVarInt(value)) return true;
-    _bb = nullptr;
-    return false;
-  }
-
-  bool Codec::_structReadVarUint(uint32_t field, uint32_t &value) {
-    if (!_bb) return false;
-    _structReadField(field);
-    if (_bb->readVarUint(value)) return true;
-    _bb = nullptr;
-    return false;
-  }
-
-  bool Codec::_structReadFloat(uint32_t field, float &value) {
-    if (!_bb) return false;
-    _structReadField(field);
-    if (_bb->readFloat(value)) return true;
-    _bb = nullptr;
-    return false;
-  }
-
-  bool Codec::_structReadString(uint32_t field, std::string &value) {
-    if (!_bb) return false;
-    _structReadField(field);
-    if (_bb->readString(value)) return true;
-    _bb = nullptr;
-    return false;
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-
-  bool Codec::_messageReadField() {
-    if (!_bb) return false;
-    assert(_nextField == 0); // Must finish reading the previous field
-    return _bb->readVarUint(_nextField);
-  }
-
-  bool Codec::_messageReadFieldNested(uint32_t field, Codec &codec) {
-    if (!_bb) return false;
-    assert(_nextField == field); // This must be checked by the caller first
-    _nextField = 0;
-    assert(!codec._bb);
-    codec._bb = _bb;
-    return true;
-  }
-
-  bool Codec::_messageReadByte(uint32_t field, uint8_t &value) {
-    if (!_bb) return false;
-    assert(_nextField == field); // This must be checked by the caller first
-    _nextField = 0;
-    if (_bb->readByte(value)) return true;
-    _bb = nullptr;
-    return false;
-  }
-
-  bool Codec::_messageReadVarInt(uint32_t field, int32_t &value) {
-    if (!_bb) return false;
-    assert(_nextField == field); // This must be checked by the caller first
-    _nextField = 0;
-    if (_bb->readVarInt(value)) return true;
-    _bb = nullptr;
-    return false;
-  }
-
-  bool Codec::_messageReadVarUint(uint32_t field, uint32_t &value) {
-    if (!_bb) return false;
-    assert(_nextField == field); // This must be checked by the caller first
-    _nextField = 0;
-    if (_bb->readVarUint(value)) return true;
-    _bb = nullptr;
-    return false;
-  }
-
-  bool Codec::_messageReadFloat(uint32_t field, float &value) {
-    if (!_bb) return false;
-    assert(_nextField == field); // This must be checked by the caller first
-    _nextField = 0;
-    if (_bb->readFloat(value)) return true;
-    _bb = nullptr;
-    return false;
-  }
-
-  bool Codec::_messageReadString(uint32_t field, std::string &value) {
-    if (!_bb) return false;
-    assert(_nextField == field); // This must be checked by the caller first
-    _nextField = 0;
-    if (_bb->readString(value)) return true;
-    _bb = nullptr;
-    return false;
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-
-  void Codec::_structWriteField(uint32_t field) {
-    assert(_bb && _nextField++ == field && !_countRemaining); // Must set each field once in order
-  }
-
-  void Codec::_structWriteByte(uint32_t field, uint8_t value) {
-    _structWriteField(field);
-    _bb->writeByte(value);
-  }
-
-  void Codec::_structWriteVarInt(uint32_t field, int32_t value) {
-    _structWriteField(field);
-    _bb->writeVarInt(value);
-  }
-
-  void Codec::_structWriteVarUint(uint32_t field, uint32_t value) {
-    _structWriteField(field);
-    _bb->writeVarUint(value);
-  }
-
-  void Codec::_structWriteFloat(uint32_t field, float value) {
-    _structWriteField(field);
-    _bb->writeFloat(value);
-  }
-
-  void Codec::_structWriteString(uint32_t field, const std::string &value) {
-    _structWriteField(field);
-    _bb->writeString(value);
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-
-  void Codec::_structWriteArrayField(uint32_t field) {
-    assert(_bb && _nextField == field);
-  }
-
-  void Codec::_structWriteArrayBegin(uint32_t field, uint32_t count) {
-    assert(!_countRemaining); // Must not be inside an array
-    _structWriteArrayField(field);
-    _bb->writeVarUint(count);
-    _countRemaining = count;
-  }
-
-  void Codec::_structWriteArrayByte(uint32_t field, uint8_t value) {
-    assert(_countRemaining-- > 0);
-    _structWriteArrayField(field);
-    _bb->writeByte(value);
-  }
-
-  void Codec::_structWriteArrayVarInt(uint32_t field, int32_t value) {
-    assert(_countRemaining-- > 0);
-    _structWriteArrayField(field);
-    _bb->writeVarInt(value);
-  }
-
-  void Codec::_structWriteArrayVarUint(uint32_t field, uint32_t value) {
-    assert(_countRemaining-- > 0);
-    _structWriteArrayField(field);
-    _bb->writeVarUint(value);
-  }
-
-  void Codec::_structWriteArrayFloat(uint32_t field, float value) {
-    assert(_countRemaining-- > 0);
-    _structWriteArrayField(field);
-    _bb->writeFloat(value);
-  }
-
-  void Codec::_structWriteArrayString(uint32_t field, const std::string &value) {
-    assert(_countRemaining-- > 0);
-    _structWriteArrayField(field);
-    _bb->writeString(value);
-  }
-
-  void Codec::_structWriteArrayEnd(uint32_t field) {
-    assert(!_countRemaining); // Must write all elements
-    _structWriteArrayField(field);
-    _nextField++;
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-
-  void Codec::_messageWriteField(uint32_t field) {
-    assert(_bb && !_countRemaining); // Must not be inside an array
-    _bb->writeVarUint(field);
-  }
-
-  void Codec::_messageWriteByte(uint32_t field, uint8_t value) {
-    _messageWriteField(field);
-    _bb->writeByte(value);
-  }
-
-  void Codec::_messageWriteVarInt(uint32_t field, int32_t value) {
-    _messageWriteField(field);
-    _bb->writeVarInt(value);
-  }
-
-  void Codec::_messageWriteVarUint(uint32_t field, uint32_t value) {
-    _messageWriteField(field);
-    _bb->writeVarUint(value);
-  }
-
-  void Codec::_messageWriteFloat(uint32_t field, float value) {
-    _messageWriteField(field);
-    _bb->writeFloat(value);
-  }
-
-  void Codec::_messageWriteString(uint32_t field, const std::string &value) {
-    _messageWriteField(field);
-    _bb->writeString(value);
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-
-  void Codec::_messageWriteArrayField() {
-    assert(_bb && _countRemaining-- > 0);
-  }
-
-  void Codec::_messageWriteArrayBegin(uint32_t field, uint32_t count) {
-    _messageWriteField(field);
-    _bb->writeVarUint(count);
-    _countRemaining = count;
-  }
-
-  void Codec::_messageWriteArrayByte(uint8_t value) {
-    _messageWriteArrayField();
-    _bb->writeByte(value);
-  }
-
-  void Codec::_messageWriteArrayVarInt(int32_t value) {
-    _messageWriteArrayField();
-    _bb->writeVarInt(value);
-  }
-
-  void Codec::_messageWriteArrayVarUint(uint32_t value) {
-    _messageWriteArrayField();
-    _bb->writeVarUint(value);
-  }
-
-  void Codec::_messageWriteArrayFloat(float value) {
-    _messageWriteArrayField();
-    _bb->writeFloat(value);
-  }
-
-  void Codec::_messageWriteArrayString(const std::string &value) {
-    _messageWriteArrayField();
-    _bb->writeString(value);
-  }
-
-  void Codec::_messageWriteArrayEnd() {
-    assert(_bb && _countRemaining == 0); // Must write all elements
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-
-  void Codec::_messageFinish() {
-    if (_bb) {
-      _bb->writeVarUint(0);
-      _bb = nullptr;
+  MemoryPool::~MemoryPool() {
+    for (Chunk *chunk = _first, *next; chunk; chunk = next) {
+      next = chunk->next;
+      delete [] chunk->data;
+      delete chunk;
     }
+  }
+
+  template <typename T>
+  T *MemoryPool::allocate(uint32_t count) {
+    Chunk *chunk = _last;
+    uint32_t size = count * sizeof(T);
+    uint32_t index = chunk ? nextMultipleOf(chunk->used, alignof(T)) : 0;
+
+    if (chunk && index + size >= index && index + size <= chunk->capacity) {
+      chunk->used = index + size;
+    }
+
+    else {
+      chunk = new Chunk;
+      chunk->capacity = size > INITIAL_CAPACITY ? size : INITIAL_CAPACITY;
+      chunk->data = new uint8_t[chunk->capacity](); // "()" means zero-initialized
+      chunk->used = size;
+
+      if (_last) _last->next = chunk;
+      else _first = chunk;
+      _last = chunk;
+    }
+
+    return reinterpret_cast<T *>(chunk->data + index);
+  }
+
+  String MemoryPool::string(const char *text, uint32_t count) {
+    char *c_str = allocate<char>(count + 1);
+    memcpy(c_str, text, count);
+    return c_str;
   }
 }
 

@@ -1,7 +1,7 @@
 var assert = require('assert');
-var kiwi = require('../kiwi');
+var kiwi = require(__dirname + '/../kiwi');
 var fs = require('fs');
-var schema = kiwi.compileSchema(fs.readFileSync('test-schema.kiwi', 'utf8'));
+var schema = kiwi.compileSchema(fs.readFileSync(__dirname + '/test-schema.kiwi', 'utf8'));
 
 it('struct bool', function() {
   function check(i, o) {
@@ -98,9 +98,8 @@ it('struct string', function() {
   }
 
   check('', [0]);
-  check('abc', [3, 97, 98, 99]);
-  check('\0abc\0', [5, 0, 97, 98, 99, 0]);
-  check('🙉🙈🙊', [12, 240, 159, 153, 137, 240, 159, 153, 136, 240, 159, 153, 138]);
+  check('abc', [97, 98, 99, 0]);
+  check('🙉🙈🙊', [240, 159, 153, 137, 240, 159, 153, 136, 240, 159, 153, 138, 0]);
 });
 
 it('struct compound', function() {
@@ -184,7 +183,7 @@ it('message string', function() {
 
   check({}, [0]);
   check({x: ''}, [1, 0, 0]);
-  check({x: '🙉🙈🙊'}, [1, 12, 240, 159, 153, 137, 240, 159, 153, 136, 240, 159, 153, 138, 0]);
+  check({x: '🙉🙈🙊'}, [1, 240, 159, 153, 137, 240, 159, 153, 136, 240, 159, 153, 138, 0, 0]);
 });
 
 it('message compound', function() {
@@ -209,5 +208,35 @@ it('message nested', function() {
   check({}, [0]);
   check({a: 123, c: 234}, [1, 123, 3, 234, 1, 0]);
   check({b: {x: 5, y: 6}}, [2, 1, 5, 2, 6, 0, 0]);
+  check({b: {x: 5}, c: 123}, [2, 1, 5, 0, 3, 123, 0]);
   check({c: 123, b: {x: 5, y: 6}, a: 234}, [1, 234, 1, 2, 1, 5, 2, 6, 0, 3, 123, 0]);
+});
+
+it('struct bool array', function() {
+  function check(i, o) {
+    assert.deepEqual(Buffer(schema.encodeBoolArrayStruct({x: i})), Buffer(o));
+    assert.deepEqual(schema.decodeBoolArrayStruct(new Uint8Array(o)), {x: i});
+  }
+
+  check([], [0]);
+  check([true, false], [2, 1, 0]);
+});
+
+it('message bool array', function() {
+  function check(i, o) {
+    assert.deepEqual(Buffer(schema.encodeBoolArrayMessage(i)), Buffer(o));
+    assert.deepEqual(schema.decodeBoolArrayMessage(new Uint8Array(o)), i);
+  }
+
+  check({}, [0]);
+  check({x: []}, [1, 0, 0]);
+  check({x: [true, false]}, [1, 2, 1, 0, 0]);
+});
+
+it('required field', function() {
+  assert.throws(function() { schema.encodeRequiredField({}); }, Error);
+  assert.doesNotThrow(function() { schema.encodeRequiredField({x: 0}); }, Error);
+
+  assert.throws(function() { schema.decodeRequiredField(Buffer([0])); }, Error);
+  assert.doesNotThrow(function() { schema.decodeRequiredField(Buffer([1, 1, 0])); }, Error);
 });

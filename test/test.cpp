@@ -8,14 +8,18 @@ static void testStructBool() {
 
   auto check = [](bool i, std::vector<uint8_t> o) {
     kiwi::ByteBuffer bb;
-    test_cpp::BoolStructEncoder(bb).add_x(i);
+    kiwi::MemoryPool pool;
+
+    test::BoolStruct s;
+    s.add_x(pool) = i;
+    assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
     kiwi::ByteBuffer bb2(o.data(), o.size());
-    bool value = false;
-    bool success = test_cpp::BoolStructDecoder(bb2).read_x(value);
-    assert(success);
-    assert(value == i);
+    test::BoolStruct s2;
+    assert(s2.decode(bb2, pool));
+    assert(s2.x());
+    assert(*s2.x() == i);
   };
 
   check(false, {0});
@@ -27,14 +31,18 @@ static void testStructByte() {
 
   auto check = [](uint8_t i, std::vector<uint8_t> o) {
     kiwi::ByteBuffer bb;
-    test_cpp::ByteStructEncoder(bb).add_x(i);
+    kiwi::MemoryPool pool;
+
+    test::ByteStruct s;
+    s.add_x(pool) = i;
+    assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
     kiwi::ByteBuffer bb2(o.data(), o.size());
-    uint8_t value = 0;
-    bool success = test_cpp::ByteStructDecoder(bb2).read_x(value);
-    assert(success);
-    assert(value == i);
+    test::ByteStruct s2;
+    assert(s2.decode(bb2, pool));
+    assert(s2.x());
+    assert(*s2.x() == i);
   };
 
   check(0x00, {0x00});
@@ -49,14 +57,18 @@ static void testStructUint() {
 
   auto check = [](uint32_t i, std::vector<uint8_t> o) {
     kiwi::ByteBuffer bb;
-    test_cpp::UintStructEncoder(bb).add_x(i);
+    kiwi::MemoryPool pool;
+
+    test::UintStruct s;
+    s.add_x(pool) = i;
+    assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
     kiwi::ByteBuffer bb2(o.data(), o.size());
-    uint32_t value = 0;
-    bool success = test_cpp::UintStructDecoder(bb2).read_x(value);
-    assert(success);
-    assert(value == i);
+    test::UintStruct s2;
+    assert(s2.decode(bb2, pool));
+    assert(s2.x());
+    assert(*s2.x() == i);
   };
 
   check(0x00, {0x00});
@@ -82,14 +94,18 @@ static void testStructInt() {
 
   auto check = [](int32_t i, std::vector<uint8_t> o) {
     kiwi::ByteBuffer bb;
-    test_cpp::IntStructEncoder(bb).add_x(i);
+    kiwi::MemoryPool pool;
+
+    test::IntStruct s;
+    s.add_x(pool) = i;
+    assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
     kiwi::ByteBuffer bb2(o.data(), o.size());
-    int32_t value = 0;
-    bool success = test_cpp::IntStructDecoder(bb2).read_x(value);
-    assert(success);
-    assert(value == i);
+    test::IntStruct s2;
+    assert(s2.decode(bb2, pool));
+    assert(s2.x());
+    assert(*s2.x() == i);
   };
 
   check(0x00, {0x00});
@@ -119,14 +135,18 @@ static void testStructFloat() {
 
   auto check = [](float i, std::vector<uint8_t> o) {
     kiwi::ByteBuffer bb;
-    test_cpp::FloatStructEncoder(bb).add_x(i);
+    kiwi::MemoryPool pool;
+
+    test::FloatStruct s;
+    s.add_x(pool) = i;
+    assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
     kiwi::ByteBuffer bb2(o.data(), o.size());
-    float value = 0;
-    bool success = test_cpp::FloatStructDecoder(bb2).read_x(value);
-    assert(success);
-    assert(value == i);
+    test::FloatStruct s2;
+    assert(s2.decode(bb2, pool));
+    assert(s2.x());
+    assert(*s2.x() == i);
   };
 
   check(0, {0, 0, 0, 0});
@@ -139,22 +159,26 @@ static void testStructFloat() {
 static void testStructString() {
   puts("testStructString");
 
-  auto check = [](std::string i, std::vector<uint8_t> o) {
+  auto check = [](const char *i, std::vector<uint8_t> o) {
     kiwi::ByteBuffer bb;
-    test_cpp::StringStructEncoder(bb).add_x(i);
+    kiwi::MemoryPool pool;
+
+    test::StringStruct s;
+    s.add_x(pool) = i;
+    assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
     kiwi::ByteBuffer bb2(o.data(), o.size());
-    std::string value;
-    bool success = test_cpp::StringStructDecoder(bb2).read_x(value);
-    assert(success);
-    assert(value == i);
+    test::StringStruct s2;
+    assert(s2.decode(bb2, pool));
+    assert(s2.x());
+    assert(*s2.x() == i);
   };
 
   check("", {0});
-  check("abc", {3, 97, 98, 99});
-  check({"\0abc\0", 5}, {5, 0, 97, 98, 99, 0});
-  check("🙉🙈🙊", {12, 240, 159, 153, 137, 240, 159, 153, 136, 240, 159, 153, 138});
+  check("\0abc\0", {0});
+  check("abc", {97, 98, 99, 0});
+  check("🙉🙈🙊", {240, 159, 153, 137, 240, 159, 153, 136, 240, 159, 153, 138, 0});
 }
 
 static void testStructCompound() {
@@ -162,19 +186,21 @@ static void testStructCompound() {
 
   auto check = [](uint32_t x, uint32_t y, std::vector<uint8_t> o) {
     kiwi::ByteBuffer bb;
-    test_cpp::CompoundStructEncoder(bb).add_x(x).add_y(y);
+    kiwi::MemoryPool pool;
+
+    test::CompoundStruct s;
+    s.add_x(pool) = x;
+    s.add_y(pool) = y;
+    assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
     kiwi::ByteBuffer bb2(o.data(), o.size());
-    test_cpp::CompoundStructDecoder decoder(bb2);
-    uint32_t value_x = 0;
-    uint32_t value_y = 0;
-    bool success_x = decoder.read_x(value_x);
-    bool success_y = decoder.read_y(value_y);
-    assert(success_x);
-    assert(success_y);
-    assert(value_x == x);
-    assert(value_y == y);
+    test::CompoundStruct s2;
+    assert(s2.decode(bb2, pool));
+    assert(s2.x());
+    assert(s2.y());
+    assert(*s2.x() == x);
+    assert(*s2.y() == y);
   };
 
   check(0, 0, {0, 0});
@@ -187,34 +213,29 @@ static void testStructNested() {
 
   auto check = [](uint32_t a, uint32_t bx, uint32_t by, uint32_t c, std::vector<uint8_t> o) {
     kiwi::ByteBuffer bb;
-    test_cpp::NestedStructEncoder encoder(bb);
-    encoder.add_a(a);
-    encoder.add_b().add_x(bx).add_y(by);
-    encoder.add_c(c);
+    kiwi::MemoryPool pool;
+
+    test::NestedStruct s;
+    s.add_a(pool) = a;
+    auto &b = s.add_b(pool);
+    b.add_x(pool) = bx;
+    b.add_y(pool) = by;
+    s.add_c(pool) = c;
+    assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
     kiwi::ByteBuffer bb2(o.data(), o.size());
-    test_cpp::NestedStructDecoder decoder(bb2);
-    uint32_t value_a = 0;
-    uint32_t value_bx = 0;
-    uint32_t value_by = 0;
-    uint32_t value_c = 0;
-    bool success_a = decoder.read_a(value_a);
-    test_cpp::CompoundStructDecoder decoder2;
-    bool success_b = decoder.read_b(decoder2);
-    bool success_bx = decoder2.read_x(value_bx);
-    bool success_by = decoder2.read_y(value_by);
-    bool success_c = decoder.read_c(value_c);
-
-    assert(success_a);
-    assert(success_b);
-    assert(success_bx);
-    assert(success_by);
-    assert(success_c);
-    assert(value_a == a);
-    assert(value_bx == bx);
-    assert(value_by == by);
-    assert(value_c == c);
+    test::NestedStruct s2;
+    assert(s2.decode(bb2, pool));
+    assert(s2.a());
+    assert(s2.b());
+    assert(s2.b()->x());
+    assert(s2.b()->y());
+    assert(s2.c());
+    assert(*s2.a() == a);
+    assert(*s2.b()->x() == bx);
+    assert(*s2.b()->y() == by);
+    assert(*s2.c() == c);
   };
 
   check(0, 0, 0, 0, {0, 0, 0, 0});
@@ -227,39 +248,33 @@ static void testMessageBool() {
 
   {
     std::vector<uint8_t> o{0};
-
     kiwi::ByteBuffer bb;
-    test_cpp::BoolMessageEncoder(bb).finish();
+    kiwi::MemoryPool pool;
+
+    test::BoolMessage s;
+    assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
     kiwi::ByteBuffer bb2(o.data(), o.size());
-    test_cpp::BoolMessageDecoder decoder(bb2);
-
-    test_cpp::BoolMessageDecoder::Field next;
-    bool success = decoder.nextField(next);
-    assert(!success);
+    test::BoolMessage s2;
+    assert(s2.decode(bb2, pool));
+    assert(!s2.x());
   }
 
   auto check = [](bool i, std::vector<uint8_t> o) {
     kiwi::ByteBuffer bb;
-    test_cpp::BoolMessageEncoder(bb).add_x(i).finish();
+    kiwi::MemoryPool pool;
+
+    test::BoolMessage s;
+    s.add_x(pool) = i;
+    assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
     kiwi::ByteBuffer bb2(o.data(), o.size());
-    test_cpp::BoolMessageDecoder decoder(bb2);
-
-    test_cpp::BoolMessageDecoder::Field next;
-    bool success = decoder.nextField(next);
-    assert(success);
-    assert(next == test_cpp::BoolMessageDecoder::X);
-
-    bool value = false;
-    bool success2 = decoder.read_x(value);
-    assert(success2);
-    assert(value == i);
-
-    bool success3 = decoder.nextField(next);
-    assert(!success3);
+    test::BoolMessage s2;
+    assert(s2.decode(bb2, pool));
+    assert(s2.x());
+    assert(*s2.x() == i);
   };
 
   check(false, {1, 0, 0});
@@ -271,24 +286,18 @@ static void testMessageByte() {
 
   auto check = [](uint8_t i, std::vector<uint8_t> o) {
     kiwi::ByteBuffer bb;
-    test_cpp::ByteMessageEncoder(bb).add_x(i).finish();
+    kiwi::MemoryPool pool;
+
+    test::ByteMessage s;
+    s.add_x(pool) = i;
+    assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
     kiwi::ByteBuffer bb2(o.data(), o.size());
-    test_cpp::ByteMessageDecoder decoder(bb2);
-
-    test_cpp::ByteMessageDecoder::Field next;
-    bool success = decoder.nextField(next);
-    assert(success);
-    assert(next == test_cpp::ByteMessageDecoder::X);
-
-    uint8_t value = 0;
-    bool success2 = decoder.read_x(value);
-    assert(success2);
-    assert(value == i);
-
-    bool success3 = decoder.nextField(next);
-    assert(!success3);
+    test::ByteMessage s2;
+    assert(s2.decode(bb2, pool));
+    assert(s2.x());
+    assert(*s2.x() == i);
   };
 
   check(234, {1, 234, 0});
@@ -299,24 +308,18 @@ static void testMessageUint() {
 
   auto check = [](uint32_t i, std::vector<uint8_t> o) {
     kiwi::ByteBuffer bb;
-    test_cpp::UintMessageEncoder(bb).add_x(i).finish();
+    kiwi::MemoryPool pool;
+
+    test::UintMessage s;
+    s.add_x(pool) = i;
+    assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
     kiwi::ByteBuffer bb2(o.data(), o.size());
-    test_cpp::UintMessageDecoder decoder(bb2);
-
-    test_cpp::UintMessageDecoder::Field next;
-    bool success = decoder.nextField(next);
-    assert(success);
-    assert(next == test_cpp::UintMessageDecoder::X);
-
-    uint32_t value = 0;
-    bool success2 = decoder.read_x(value);
-    assert(success2);
-    assert(value == i);
-
-    bool success3 = decoder.nextField(next);
-    assert(!success3);
+    test::UintMessage s2;
+    assert(s2.decode(bb2, pool));
+    assert(s2.x());
+    assert(*s2.x() == i);
   };
 
   check(12345678, {1, 206, 194, 241, 5, 0});
@@ -327,24 +330,18 @@ static void testMessageInt() {
 
   auto check = [](int32_t i, std::vector<uint8_t> o) {
     kiwi::ByteBuffer bb;
-    test_cpp::IntMessageEncoder(bb).add_x(i).finish();
+    kiwi::MemoryPool pool;
+
+    test::IntMessage s;
+    s.add_x(pool) = i;
+    assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
     kiwi::ByteBuffer bb2(o.data(), o.size());
-    test_cpp::IntMessageDecoder decoder(bb2);
-
-    test_cpp::IntMessageDecoder::Field next;
-    bool success = decoder.nextField(next);
-    assert(success);
-    assert(next == test_cpp::IntMessageDecoder::X);
-
-    int32_t value = 0;
-    bool success2 = decoder.read_x(value);
-    assert(success2);
-    assert(value == i);
-
-    bool success3 = decoder.nextField(next);
-    assert(!success3);
+    test::IntMessage s2;
+    assert(s2.decode(bb2, pool));
+    assert(s2.x());
+    assert(*s2.x() == i);
   };
 
   check(12345678, {1, 156, 133, 227, 11, 0});
@@ -355,24 +352,18 @@ static void testMessageFloat() {
 
   auto check = [](float i, std::vector<uint8_t> o) {
     kiwi::ByteBuffer bb;
-    test_cpp::FloatMessageEncoder(bb).add_x(i).finish();
+    kiwi::MemoryPool pool;
+
+    test::FloatMessage s;
+    s.add_x(pool) = i;
+    assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
     kiwi::ByteBuffer bb2(o.data(), o.size());
-    test_cpp::FloatMessageDecoder decoder(bb2);
-
-    test_cpp::FloatMessageDecoder::Field next;
-    bool success = decoder.nextField(next);
-    assert(success);
-    assert(next == test_cpp::FloatMessageDecoder::X);
-
-    float value = 0;
-    bool success2 = decoder.read_x(value);
-    assert(success2);
-    assert(value == i);
-
-    bool success3 = decoder.nextField(next);
-    assert(!success3);
+    test::FloatMessage s2;
+    assert(s2.decode(bb2, pool));
+    assert(s2.x());
+    assert(*s2.x() == i);
   };
 
   check(3.1415927410125732, {1, 219, 15, 73, 64, 0});
@@ -381,99 +372,54 @@ static void testMessageFloat() {
 static void testMessageString() {
   puts("testMessageString");
 
-  auto check = [](std::string i, std::vector<uint8_t> o) {
+  auto check = [](const char *i, std::vector<uint8_t> o) {
     kiwi::ByteBuffer bb;
-    test_cpp::StringMessageEncoder(bb).add_x(i).finish();
+    kiwi::MemoryPool pool;
+
+    test::StringMessage s;
+    s.add_x(pool) = i;
+    assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
     kiwi::ByteBuffer bb2(o.data(), o.size());
-    test_cpp::StringMessageDecoder decoder(bb2);
-
-    test_cpp::StringMessageDecoder::Field next;
-    bool success = decoder.nextField(next);
-    assert(success);
-    assert(next == test_cpp::StringMessageDecoder::X);
-
-    std::string value;
-    bool success2 = decoder.read_x(value);
-    assert(success2);
-    assert(value == i);
-
-    bool success3 = decoder.nextField(next);
-    assert(!success3);
+    test::StringMessage s2;
+    assert(s2.decode(bb2, pool));
+    assert(s2.x());
+    assert(*s2.x() == i);
   };
 
   check("", {1, 0, 0});
-  check("🙉🙈🙊", {1, 12, 240, 159, 153, 137, 240, 159, 153, 136, 240, 159, 153, 138, 0});
+  check("\0abc\0", {1, 0, 0});
+  check("abc", {1, 97, 98, 99, 0, 0});
+  check("🙉🙈🙊", {1, 240, 159, 153, 137, 240, 159, 153, 136, 240, 159, 153, 138, 0, 0});
 }
 
 static void testMessageCompound() {
   puts("testMessageCompound");
 
-  auto check_xy = [](uint32_t x, uint32_t y, std::vector<uint8_t> o) {
+  auto check = [](uint32_t x, uint32_t y, std::vector<uint8_t> o) {
     kiwi::ByteBuffer bb;
-    test_cpp::CompoundMessageEncoder(bb).add_x(x).add_y(y).finish();
+    kiwi::MemoryPool pool;
+
+    test::CompoundMessage s;
+    if (x) s.add_x(pool) = x;
+    if (y) s.add_y(pool) = y;
+    assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
     kiwi::ByteBuffer bb2(o.data(), o.size());
-    test_cpp::CompoundMessageDecoder decoder(bb2);
-
-    test_cpp::CompoundMessageDecoder::Field next;
-    bool success = decoder.nextField(next);
-    assert(success);
-    assert(next == test_cpp::CompoundMessageDecoder::X);
-
-    uint32_t value_x = 0;
-    bool success2 = decoder.read_x(value_x);
-    assert(success2);
-    assert(value_x == x);
-
-    bool success3 = decoder.nextField(next);
-    assert(success3);
-    assert(next == test_cpp::CompoundMessageDecoder::Y);
-
-    uint32_t value_y = 0;
-    bool success4 = decoder.read_y(value_y);
-    assert(success4);
-    assert(value_y == y);
-
-    bool success5 = decoder.nextField(next);
-    assert(!success5);
+    test::CompoundMessage s2;
+    assert(s2.decode(bb2, pool));
+    assert(!!s2.x() == !!x);
+    assert(!!s2.y() == !!y);
+    if (x) assert(*s2.x() == x);
+    if (y) assert(*s2.y() == y);
   };
 
-  auto check_yx = [](uint32_t y, uint32_t x, std::vector<uint8_t> o) {
-    kiwi::ByteBuffer bb;
-    test_cpp::CompoundMessageEncoder(bb).add_y(y).add_x(x).finish();
-    assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
-
-    kiwi::ByteBuffer bb2(o.data(), o.size());
-    test_cpp::CompoundMessageDecoder decoder(bb2);
-
-    test_cpp::CompoundMessageDecoder::Field next;
-    bool success = decoder.nextField(next);
-    assert(success);
-    assert(next == test_cpp::CompoundMessageDecoder::Y);
-
-    uint32_t value_y = 0;
-    bool success2 = decoder.read_y(value_y);
-    assert(success2);
-    assert(value_y == y);
-
-    bool success3 = decoder.nextField(next);
-    assert(success3);
-    assert(next == test_cpp::CompoundMessageDecoder::X);
-
-    uint32_t value_x = 0;
-    bool success4 = decoder.read_x(value_x);
-    assert(success4);
-    assert(value_x == x);
-
-    bool success5 = decoder.nextField(next);
-    assert(!success5);
-  };
-
-  check_xy(123, 234, {1, 123, 2, 234, 1, 0});
-  check_yx(234, 123, {2, 234, 1, 1, 123, 0});
+  check(0, 0, {0});
+  check(123, 0, {1, 123, 0});
+  check(0, 234, {2, 234, 1, 0});
+  check(123, 234, {1, 123, 2, 234, 1, 0});
 }
 
 static void testMessageNested() {
@@ -481,69 +427,70 @@ static void testMessageNested() {
 
   auto check = [](uint32_t a, uint32_t bx, uint32_t by, uint32_t c, std::vector<uint8_t> o) {
     kiwi::ByteBuffer bb;
-    test_cpp::NestedMessageEncoder encoder(bb);
-    encoder.add_a(a);
-    encoder.add_b().add_x(bx).add_y(by).finish();
-    encoder.add_c(c).finish();
+    kiwi::MemoryPool pool;
+
+    test::NestedMessage s;
+    if (a) s.add_a(pool) = a;
+    if (bx || by) {
+      auto &b = s.add_b(pool);
+      if (bx) b.add_x(pool) = bx;
+      if (by) b.add_y(pool) = by;
+    }
+    if (c) s.add_c(pool) = c;
+    assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
     kiwi::ByteBuffer bb2(o.data(), o.size());
-    test_cpp::NestedMessageDecoder decoder(bb2);
-
-    test_cpp::NestedMessageDecoder::Field next;
-    bool success = decoder.nextField(next);
-    assert(success);
-    assert(next == test_cpp::NestedMessageDecoder::A);
-
-    uint32_t value_a = 0;
-    bool success2 = decoder.read_a(value_a);
-    assert(success2);
-    assert(value_a == a);
-
-    bool success3 = decoder.nextField(next);
-    assert(success3);
-    assert(next == test_cpp::NestedMessageDecoder::B);
-
-    test_cpp::CompoundMessageDecoder decoder2;
-    bool success4 = decoder.read_b(decoder2);
-    assert(success4);
-
-    test_cpp::CompoundMessageDecoder::Field next2;
-    bool success5 = decoder2.nextField(next2);
-    assert(success5);
-    assert(next2 == test_cpp::CompoundMessageDecoder::X);
-
-    uint32_t value_x = 0;
-    bool success6 = decoder2.read_x(value_x);
-    assert(success6);
-    assert(value_x == bx);
-
-    bool success7 = decoder2.nextField(next2);
-    assert(success7);
-    assert(next2 == test_cpp::CompoundMessageDecoder::Y);
-
-    uint32_t value_y = 0;
-    bool success8 = decoder2.read_y(value_y);
-    assert(success8);
-    assert(value_y == by);
-
-    bool success9 = decoder2.nextField(next2);
-    assert(!success9);
-
-    bool success10 = decoder.nextField(next);
-    assert(success10);
-    assert(next == test_cpp::NestedMessageDecoder::C);
-
-    uint32_t value_c;
-    bool success11 = decoder.read_c(value_c);
-    assert(success11);
-    assert(value_c == c);
-
-    bool success12 = decoder.nextField(next);
-    assert(!success12);
+    test::NestedMessage s2;
+    assert(s2.decode(bb2, pool));
+    assert(!!s2.a() == !!a);
+    assert(!!s2.b() == (bx || by));
+    assert(!!s2.c() == !!c);
+    if (a) assert(*s2.a() == a);
+    if (bx) assert(*s2.b()->x() == bx);
+    if (by) assert(*s2.b()->y() == by);
+    if (c) assert(*s2.c() == c);
   };
 
+  check(0, 0, 0, 0, {0});
+  check(123, 0, 0, 234, {1, 123, 3, 234, 1, 0});
+  check(0, 5, 6, 0, {2, 1, 5, 2, 6, 0, 0});
+  check(0, 5, 0, 123, {2, 1, 5, 0, 3, 123, 0});
   check(234, 5, 6, 123, {1, 234, 1, 2, 1, 5, 2, 6, 0, 3, 123, 0});
+}
+
+static void testRequiredField() {
+  puts("testRequiredField");
+
+  {
+    kiwi::ByteBuffer bb;
+    test::RequiredField s;
+    assert(!s.encode(bb));
+  }
+
+  {
+    kiwi::ByteBuffer bb;
+    kiwi::MemoryPool pool;
+    test::RequiredField s;
+    s.add_x(pool);
+    assert(s.encode(bb));
+  }
+
+  {
+    std::vector<uint8_t> o{0};
+    kiwi::ByteBuffer bb(o.data(), o.size());
+    kiwi::MemoryPool pool;
+    test::RequiredField s;
+    assert(!s.decode(bb, pool));
+  }
+
+  {
+    std::vector<uint8_t> o{1, 0, 0};
+    kiwi::ByteBuffer bb(o.data(), o.size());
+    kiwi::MemoryPool pool;
+    test::RequiredField s;
+    assert(s.decode(bb, pool));
+  }
 }
 
 int main() {
@@ -564,6 +511,8 @@ int main() {
   testMessageString();
   testMessageCompound();
   testMessageNested();
+
+  testRequiredField();
 
   puts("all tests passed");
   return 0;

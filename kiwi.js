@@ -17,7 +17,6 @@ var kiwi = exports || kiwi || {}, exports;
 (function() {
   var uint8 = new Uint8Array(4);
   var float32 = new Float32Array(uint8.buffer);
-  var utf8 = new ByteBuffer(); // A pre-allocated accumulation buffer to avoid extra GC
 
   function ByteBuffer(data) {
     if (data && !(data instanceof Uint8Array)) {
@@ -77,33 +76,33 @@ var kiwi = exports || kiwi || {}, exports;
   };
 
   ByteBuffer.prototype.readString = function() {
-    var length = this.readVarUint();
     var result = '';
 
-    while (length > 0) {
+    while (true) {
       var codePoint;
 
       // Decode UTF-8
       var a = this.readByte();
-      length--;
-      if (a < 0xC0 || length === 0) {
+      if (a < 0xC0) {
         codePoint = a;
       } else {
         var b = this.readByte();
-        length--;
-        if (a < 0xE0 || length === 0) {
+        if (a < 0xE0) {
           codePoint = ((a & 0x1F) << 6) | (b & 0x3F);
         } else {
           var c = this.readByte();
-          length--;
-          if (a < 0xF0 || length === 0) {
+            if (a < 0xF0) {
             codePoint = ((a & 0x0F) << 12) | ((b & 0x3F) << 6) | (c & 0x3F);
           } else {
             var d = this.readByte();
-            length--;
-            codePoint = ((a & 0x07) << 18) | ((b & 0x3F) << 12) | ((c & 0x3F) << 6) | (d & 0x3F);
+                codePoint = ((a & 0x07) << 18) | ((b & 0x3F) << 12) | ((c & 0x3F) << 6) | (d & 0x3F);
           }
         }
+      }
+
+      // Strings are null-terminated
+      if (codePoint === 0) {
+        break;
       }
 
       // Encode UTF-16
@@ -157,8 +156,6 @@ var kiwi = exports || kiwi || {}, exports;
   };
 
   ByteBuffer.prototype.writeString = function(value) {
-    utf8.length = 0;
-
     for (var i = 0; i < value.length; i++) {
       // Decode UTF-16
       var a = value.charCodeAt(i);
@@ -169,30 +166,32 @@ var kiwi = exports || kiwi || {}, exports;
         codePoint = (a << 10) + b + (0x10000 - (0xD800 << 10) - 0xDC00);
       }
 
+      // Strings are null-terminated
+      if (codePoint === 0) {
+        throw new Error('Cannot encode a string containing the null character');
+      }
+
       // Encode UTF-8
       if (codePoint < 0x80) {
-        utf8.writeByte(codePoint);
+        this.writeByte(codePoint);
       } else {
         if (codePoint < 0x800) {
-          utf8.writeByte(((codePoint >> 6) & 0x1F) | 0xC0);
+          this.writeByte(((codePoint >> 6) & 0x1F) | 0xC0);
         } else {
           if (codePoint < 0x10000) {
-            utf8.writeByte(((codePoint >> 12) & 0x0F) | 0xE0);
+            this.writeByte(((codePoint >> 12) & 0x0F) | 0xE0);
           } else {
-            utf8.writeByte(((codePoint >> 18) & 0x07) | 0xF0);
-            utf8.writeByte(((codePoint >> 12) & 0x3F) | 0x80);
+            this.writeByte(((codePoint >> 18) & 0x07) | 0xF0);
+            this.writeByte(((codePoint >> 12) & 0x3F) | 0x80);
           }
-          utf8.writeByte(((codePoint >> 6) & 0x3F) | 0x80);
+          this.writeByte(((codePoint >> 6) & 0x3F) | 0x80);
         }
-        utf8.writeByte((codePoint & 0x3F) | 0x80);
+        this.writeByte((codePoint & 0x3F) | 0x80);
       }
     }
 
-    // Append all bytes once we know how many there are
-    this.writeVarUint(utf8.length);
-    var index = this.length;
-    this._growBy(utf8.length);
-    this._data.set((index + utf8._data.length > this._data.length ? utf8.toUint8Array() : utf8._data), index);
+    // Strings are null-terminated
+    this.writeByte(0);
   };
 
   kiwi.ByteBuffer = ByteBuffer;
@@ -480,12 +479,20 @@ var kiwi = exports || kiwi || {}, exports;
       lines.push('  while (true) {');
       lines.push('    switch (bb.readByte()) {');
       lines.push('    case 0:');
+
+      for (var i = 0; i < definition.fields.length; i++) {
+        var field = definition.fields[i];
+        if (field.isRequired) {
+          lines.push('      if (result[' + quote(field.name) + '] == null) throw new Error(' + quote('Missing required field ' + quote(field.name)) + ');');
+        }
+      }
+
       lines.push('      return result;');
       indent = '      ';
     }
 
-    for (var j = 0; j < definition.fields.length; j++) {
-      var field = definition.fields[j];
+    for (var i = 0; i < definition.fields.length; i++) {
+      var field = definition.fields[i];
       var code;
 
       switch (field.type) {
@@ -522,7 +529,7 @@ var kiwi = exports || kiwi || {}, exports;
         default: {
           var type = definitions[field.type];
           if (!type) {
-            throw new Error('Invalid type ' + quote(field.type) + ' for field ' + quote(field.name));
+            error('Invalid type ' + quote(field.type) + ' for field ' + quote(field.name), field.line, field.column);
           } else if (type.kind === 'ENUM') {
             code = 'this[' + quote(type.name) + '][bb.readVarUint()]';
           } else {
@@ -734,609 +741,34 @@ var kiwi = exports || kiwi || {}, exports;
 (function() {
   var ByteBuffer = kiwi.ByteBuffer;
 
-  function toUpperCase(text) {
-    return text.replace(/([a-z])([A-Z])/g, function(_, a, b) { return a + '_' + b; }).toUpperCase();
-  }
+  function cppType(definitions, field, isArray) {
+    var type;
 
-  function compileDecodeCPP(definition, definitions, pass, lines) {
-    var name = definition.name + 'Decoder';
+    switch (field.type) {
+      case 'bool': type = 'bool'; break;
+      case 'byte': type = 'uint8_t'; break;
+      case 'int': type = 'int32_t'; break;
+      case 'uint': type = 'uint32_t'; break;
+      case 'float': type = 'float'; break;
+      case 'string': type = 'kiwi::String'; break;
 
-    if (pass === 0) {
-      lines.push('class ' + name + ';');
-    }
+      default: {
+        var definition = definitions[field.type];
 
-    else if (pass === 1) {
-      lines.push('class ' + name + ' : public kiwi::Codec {');
-      lines.push('public:');
-      lines.push('  ' + name + '() {}');
-      lines.push('  ' + name + '(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}');
-      lines.push('  ' + name + '(' + name + ' &&decoder) : kiwi::Codec(std::move(decoder)) {}');
-
-      if (definition.kind === 'MESSAGE') {
-        lines.push('  enum Field {');
-        for (var j = 0; j < definition.fields.length; j++) {
-          var field = definition.fields[j];
-          lines.push('    ' + toUpperCase(field.name) + ' = ' + field.value + ',');
-        }
-        lines.push('  };');
-        lines.push('  bool nextField(Field &value);');
-      }
-
-      for (var j = 0; j < definition.fields.length; j++) {
-        var field = definition.fields[j];
-
-        if (field.isArray) {
-          lines.push('  bool begin_' + field.name + '(uint32_t &count);');
+        if (!definition) {
+          error('Invalid type ' + quote(field.type) + ' for field ' + quote(field.name), field.line, field.column);
         }
 
-        switch (field.type) {
-          case 'bool': {
-            lines.push('  bool read_' + field.name + '(bool &value);');
-            break;
-          }
-
-          case 'byte': {
-            lines.push('  bool read_' + field.name + '(uint8_t &value);');
-            break;
-          }
-
-          case 'int': {
-            lines.push('  bool read_' + field.name + '(int32_t &value);');
-            break;
-          }
-
-          case 'uint': {
-            lines.push('  bool read_' + field.name + '(uint32_t &value);');
-            break;
-          }
-
-          case 'float': {
-            lines.push('  bool read_' + field.name + '(float &value);');
-            break;
-          }
-
-          case 'string': {
-            lines.push('  bool read_' + field.name + '(std::string &value);');
-            break;
-          }
-
-          default: {
-            var type = definitions[field.type];
-
-            if (!type) {
-              throw new Error('Invalid type ' + quote(field.type) + ' for field ' + quote(field.name));
-            }
-
-            else if (type.kind === 'ENUM') {
-              lines.push('  bool read_' + field.name + '(' + type.name + ' &value);');
-            }
-
-            else {
-              lines.push('  bool read_' + field.name + '(' + type.name + 'Decoder &decoder);');
-            }
-          }
-        }
-
-        if (field.isArray) {
-          lines.push('  bool end_' + field.name + '();');
-        }
-      }
-
-      lines.push('};');
-      lines.push('');
-    }
-
-    else if (pass === 2) {
-      if (definition.kind === 'STRUCT') {
-        for (var j = 0; j < definition.fields.length; j++) {
-          var field = definition.fields[j];
-
-          if (field.isArray) {
-            lines.push('bool ' + name + '::begin_' + field.name + '(uint32_t &count) {');
-            lines.push('  assert(false); // TODO');
-            lines.push('  return true;');
-            lines.push('}');
-            lines.push('');
-          }
-
-          switch (field.type) {
-            case 'bool': {
-              lines.push('bool ' + name + '::read_' + field.name + '(bool &value) {');
-              lines.push('  uint8_t byte;');
-              lines.push('  if (!_structReadByte(' + j + ', byte)) return false;');
-              lines.push('  value = byte;');
-              lines.push('  return true;');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'byte': {
-              lines.push('bool ' + name + '::read_' + field.name + '(uint8_t &value) {');
-              lines.push('  return _structReadByte(' + j + ', value);');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'int': {
-              lines.push('bool ' + name + '::read_' + field.name + '(int32_t &value) {');
-              lines.push('  return _structReadVarInt(' + j + ', value);');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'uint': {
-              lines.push('bool ' + name + '::read_' + field.name + '(uint32_t &value) {');
-              lines.push('  return _structReadVarUint(' + j + ', value);');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'float': {
-              lines.push('bool ' + name + '::read_' + field.name + '(float &value) {');
-              lines.push('  return _structReadFloat(' + j + ', value);');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'string': {
-              lines.push('bool ' + name + '::read_' + field.name + '(std::string &value) {');
-              lines.push('  return _structReadString(' + j + ', value);');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            default: {
-              var type = definitions[field.type];
-
-              if (!type) {
-                throw new Error('Invalid type ' + quote(field.type) + ' for field ' + quote(field.name));
-              }
-
-              else if (type.kind === 'ENUM') {
-                lines.push('bool ' + name + '::read_' + field.name + '(' + type.name + ' &value) {');
-                lines.push('  uint32_t uint;');
-                lines.push('  if (!_structReadVarUint(' + j + ', uint)) return false;');
-                lines.push('  value = (' + type.name + ')uint;');
-                lines.push('  return true;');
-                lines.push('}');
-                lines.push('');
-              }
-
-              else {
-                lines.push('bool ' + name + '::read_' + field.name + '(' + type.name + 'Decoder &decoder) {');
-                lines.push('  return _structReadFieldNested(' + j + ', decoder);');
-                lines.push('}');
-                lines.push('');
-              }
-            }
-          }
-
-          if (field.isArray) {
-            lines.push('bool ' + name + '::end_' + field.name + '() {');
-            lines.push('  assert(!_countRemaining);');
-            lines.push('  return true;');
-            lines.push('}');
-            lines.push('');
-          }
-        }
-      }
-
-      if (definition.kind === 'MESSAGE') {
-        lines.push('bool ' + name + '::nextField(Field &value) {');
-        lines.push('  if (!_messageReadField() || _nextField == 0) return false;');
-        lines.push('  value = (Field)_nextField;');
-        lines.push('  return true;');
-        lines.push('}');
-        lines.push('');
-
-        for (var j = 0; j < definition.fields.length; j++) {
-          var field = definition.fields[j];
-
-          if (field.isArray) {
-            lines.push('bool ' + name + '::begin_' + field.name + '(uint32_t &count) {');
-            lines.push('  assert(false); // TODO');
-            lines.push('  return true;');
-            lines.push('}');
-            lines.push('');
-          }
-
-          switch (field.type) {
-            case 'bool': {
-              lines.push('bool ' + name + '::read_' + field.name + '(bool &value) {');
-              lines.push('  uint8_t byte;');
-              lines.push('  if (!_messageReadByte(' + field.value + ', byte)) return false;');
-              lines.push('  value = byte;');
-              lines.push('  return true;');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'byte': {
-              lines.push('bool ' + name + '::read_' + field.name + '(uint8_t &value) {');
-              lines.push('  return _messageReadByte(' + field.value + ', value);');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'int': {
-              lines.push('bool ' + name + '::read_' + field.name + '(int32_t &value) {');
-              lines.push('  return _messageReadVarInt(' + field.value + ', value);');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'uint': {
-              lines.push('bool ' + name + '::read_' + field.name + '(uint32_t &value) {');
-              lines.push('  return _messageReadVarUint(' + field.value + ', value);');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'float': {
-              lines.push('bool ' + name + '::read_' + field.name + '(float &value) {');
-              lines.push('  return _messageReadFloat(' + field.value + ', value);');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'string': {
-              lines.push('bool ' + name + '::read_' + field.name + '(std::string &value) {');
-              lines.push('  return _messageReadString(' + field.value + ', value);');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            default: {
-              var type = definitions[field.type];
-
-              if (!type) {
-                throw new Error('Invalid type ' + quote(field.type) + ' for field ' + quote(field.name));
-              }
-
-              else if (type.kind === 'ENUM') {
-                lines.push('bool ' + name + '::read_' + field.name + '(' + type.name + ' &value) {');
-                lines.push('  uint32_t uint;');
-                lines.push('  if (!_messageReadVarUint(' + field.value + ', uint)) return false;');
-                lines.push('  value = (' + type.name + ')uint;');
-                lines.push('  return true;');
-                lines.push('}');
-                lines.push('');
-              }
-
-              else {
-                lines.push('bool ' + name + '::read_' + field.name + '(' + type.name + 'Decoder &decoder) {');
-                lines.push('  return _messageReadFieldNested(' + field.value + ', decoder);');
-                lines.push('}');
-                lines.push('');
-              }
-            }
-          }
-        }
+        type = definition.name;
+        break;
       }
     }
-  }
 
-  function compileEncodeCPP(definition, definitions, pass, lines) {
-    var name = definition.name + 'Encoder';
-
-    if (pass === 0) {
-      lines.push('class ' + name + ';');
+    if (isArray) {
+      type = 'kiwi::Array<' + type + '>';
     }
 
-    else if (pass === 1) {
-      lines.push('class ' + name + ' : public kiwi::Codec {');
-      lines.push('public:');
-      lines.push('  ' + name + '(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}');
-      lines.push('  ' + name + '(' + name + ' &&encoder) : kiwi::Codec(std::move(encoder)) {}');
-      lines.push('  ~' + name + '();');
-
-      for (var j = 0; j < definition.fields.length; j++) {
-        var field = definition.fields[j];
-
-        if (field.isArray) {
-          lines.push('  ' + name + ' &begin_' + field.name + '(uint32_t count);');
-        }
-
-        switch (field.type) {
-          case 'bool': {
-            lines.push('  ' + name + ' &add_' + field.name + '(bool value);');
-            break;
-          }
-
-          case 'byte': {
-            lines.push('  ' + name + ' &add_' + field.name + '(uint8_t value);');
-            break;
-          }
-
-          case 'int': {
-            lines.push('  ' + name + ' &add_' + field.name + '(int32_t value);');
-            break;
-          }
-
-          case 'uint': {
-            lines.push('  ' + name + ' &add_' + field.name + '(uint32_t value);');
-            break;
-          }
-
-          case 'float': {
-            lines.push('  ' + name + ' &add_' + field.name + '(float value);');
-            break;
-          }
-
-          case 'string': {
-            lines.push('  ' + name + ' &add_' + field.name + '(const std::string &value);');
-            break;
-          }
-
-          default: {
-            var type = definitions[field.type];
-
-            if (!type) {
-              throw new Error('Invalid type ' + quote(field.type) + ' for field ' + quote(field.name));
-            }
-
-            else if (type.kind === 'ENUM') {
-              lines.push('  ' + name + ' &add_' + field.name + '(' + type.name + ' value);');
-            }
-
-            else {
-              lines.push('  ' + type.name + 'Encoder add_' + field.name + '();');
-            }
-          }
-        }
-
-        if (field.isArray) {
-          lines.push('  ' + name + ' &end_' + field.name + '();');
-        }
-      }
-
-      if (definition.kind === 'MESSAGE') {
-        lines.push('  ' + name + ' &finish();');
-      }
-
-      lines.push('};');
-      lines.push('');
-    }
-
-    else if (pass === 2) {
-      if (definition.kind === 'STRUCT') {
-        for (var j = 0; j < definition.fields.length; j++) {
-          var field = definition.fields[j];
-          var prefix = '_structWrite';
-
-          if (field.isArray) {
-            lines.push(name + ' &' + name + '::begin_' + field.name + '(uint32_t count) {');
-            lines.push('  _structWriteArrayBegin(' + j + ', count);');
-            lines.push('  return *this;');
-            lines.push('}');
-            lines.push('');
-            prefix = '_structWriteArray';
-          }
-
-          switch (field.type) {
-            case 'bool': {
-              lines.push(name + ' &' + name + '::add_' + field.name + '(bool value) {');
-              lines.push('  ' + prefix + 'Byte(' + j + ', value);');
-              lines.push('  return *this;');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'byte': {
-              lines.push(name + ' &' + name + '::add_' + field.name + '(uint8_t value) {');
-              lines.push('  ' + prefix + 'Byte(' + j + ', value);');
-              lines.push('  return *this;');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'int': {
-              lines.push(name + ' &' + name + '::add_' + field.name + '(int32_t value) {');
-              lines.push('  ' + prefix + 'VarInt(' + j + ', value);');
-              lines.push('  return *this;');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'uint': {
-              lines.push(name + ' &' + name + '::add_' + field.name + '(uint32_t value) {');
-              lines.push('  ' + prefix + 'VarUint(' + j + ', value);');
-              lines.push('  return *this;');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'float': {
-              lines.push(name + ' &' + name + '::add_' + field.name + '(float value) {');
-              lines.push('  ' + prefix + 'Float(' + j + ', value);');
-              lines.push('  return *this;');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'string': {
-              lines.push(name + ' &' + name + '::add_' + field.name + '(const std::string &value) {');
-              lines.push('  ' + prefix + 'String(' + j + ', value);');
-              lines.push('  return *this;');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            default: {
-              var type = definitions[field.type];
-
-              if (!type) {
-                throw new Error('Invalid type ' + quote(field.type) + ' for field ' + quote(field.name));
-              }
-
-              else if (type.kind === 'ENUM') {
-                lines.push(name + ' &' + name + '::add_' + field.name + '(' + type.name + ' value) {');
-                lines.push('  ' + prefix + 'VarUint(' + j + ', (uint32_t)value);');
-                lines.push('  return *this;');
-                lines.push('}');
-                lines.push('');
-              }
-
-              else {
-                lines.push(type.name + 'Encoder ' + name + '::add_' + field.name + '() {');
-                lines.push('  ' + prefix + 'Field(' + j + ');');
-                lines.push('  return ' + type.name + 'Encoder(*_bb);');
-                lines.push('}');
-                lines.push('');
-              }
-            }
-          }
-
-          if (field.isArray) {
-            lines.push(name + ' &' + name + '::end_' + field.name + '() {');
-            lines.push('  _structWriteArrayEnd(' + j + ');');
-            lines.push('  return *this;');
-            lines.push('}');
-            lines.push('');
-          }
-        }
-
-        lines.push(name + '::~' + name + '() {');
-        lines.push('  assert(!_bb || _nextField++ == ' + definition.fields.length + '); // Must set all fields');
-        lines.push('}');
-        lines.push('');
-      }
-
-      else if (definition.kind === 'MESSAGE') {
-        for (var j = 0; j < definition.fields.length; j++) {
-          var field = definition.fields[j];
-          var prefix = '_messageWrite';
-          var first = field.value + ', ';
-
-          if (field.isArray) {
-            lines.push(name + '& ' + name + '::begin_' + field.name + '(uint32_t count) {');
-            lines.push('  _messageWriteArrayBegin(' + first + 'count);');
-            lines.push('  return *this;');
-            lines.push('}');
-            lines.push('');
-            prefix = '_messageWriteArray';
-            first = '';
-          }
-
-          switch (field.type) {
-            case 'bool': {
-              lines.push(name + '& ' + name + '::add_' + field.name + '(bool value) {');
-              lines.push('  ' + prefix + 'Byte(' + first + 'value);');
-              lines.push('  return *this;');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'byte': {
-              lines.push(name + '& ' + name + '::add_' + field.name + '(uint8_t value) {');
-              lines.push('  ' + prefix + 'Byte(' + first + 'value);');
-              lines.push('  return *this;');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'int': {
-              lines.push(name + '& ' + name + '::add_' + field.name + '(int32_t value) {');
-              lines.push('  ' + prefix + 'VarInt(' + first + 'value);');
-              lines.push('  return *this;');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'uint': {
-              lines.push(name + '& ' + name + '::add_' + field.name + '(uint32_t value) {');
-              lines.push('  ' + prefix + 'VarUint(' + first + 'value);');
-              lines.push('  return *this;');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'float': {
-              lines.push(name + '& ' + name + '::add_' + field.name + '(float value) {');
-              lines.push('  ' + prefix + 'Float(' + first + 'value);');
-              lines.push('  return *this;');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            case 'string': {
-              lines.push(name + '& ' + name + '::add_' + field.name + '(const std::string &value) {');
-              lines.push('  ' + prefix + 'String(' + first + 'value);');
-              lines.push('  return *this;');
-              lines.push('}');
-              lines.push('');
-              break;
-            }
-
-            default: {
-              var type = definitions[field.type];
-
-              if (!type) {
-                throw new Error('Invalid type ' + quote(field.type) + ' for field ' + quote(field.name));
-              }
-
-              else if (type.kind === 'ENUM') {
-                lines.push(name + '& ' + name + '::add_' + field.name + '(' + type.name + ' value) {');
-                lines.push('  ' + prefix + 'VarUint(' + first + '(uint32_t)value);');
-                lines.push('  return *this;');
-                lines.push('}');
-                lines.push('');
-              }
-
-              else {
-                lines.push(type.name + 'Encoder ' + name + '::add_' + field.name + '() {');
-                lines.push('  ' + prefix + 'Field(' + (field.isArray ? '' : field.value) + ');');
-                lines.push('  return ' + type.name + 'Encoder(*_bb);');
-                lines.push('}');
-                lines.push('');
-              }
-            }
-          }
-
-          if (field.isArray) {
-            lines.push(name + ' &' + name + '::end_' + field.name + '() {');
-            lines.push('  _messageWriteArrayEnd();');
-            lines.push('  return *this;');
-            lines.push('}');
-            lines.push('');
-          }
-        }
-
-        lines.push(name + ' &' + name + '::finish() {');
-        lines.push('  _messageFinish();');
-        lines.push('  return *this;');
-        lines.push('}');
-        lines.push('');
-
-        lines.push(name + '::~' + name + '() {');
-        lines.push('  assert(!_bb); // Must call finish()');
-        lines.push('}');
-        lines.push('');
-      }
-    }
+    return type;
   }
 
   function compileSchemaCPP(schema) {
@@ -1345,14 +777,13 @@ var kiwi = exports || kiwi || {}, exports;
     }
 
     var definitions = {};
-    var name = schema.package;
     var cpp = [];
 
     cpp.push('#include "kiwi.h"');
     cpp.push('');
 
-    if (name !== null) {
-      cpp.push('namespace ' + name + ' {');
+    if (schema.package !== null) {
+      cpp.push('namespace ' + schema.package + ' {');
       cpp.push('');
     }
 
@@ -1364,27 +795,18 @@ var kiwi = exports || kiwi || {}, exports;
     for (var i = 0; i < schema.definitions.length; i++) {
       var definition = schema.definitions[i];
 
-      switch (definition.kind) {
-        case 'ENUM': {
-          cpp.push('enum class ' + definition.name + ' {');
-          for (var j = 0; j < definition.fields.length; j++) {
-            var field = definition.fields[j];
-            cpp.push('  ' + field.name + ' = ' + field.value + ',');
-          }
-          cpp.push('};');
-          cpp.push('');
-          break;
+      if (definition === 'ENUM') {
+        cpp.push('enum class ' + definition.name + ' {');
+        for (var j = 0; j < definition.fields.length; j++) {
+          var field = definition.fields[j];
+          cpp.push('  ' + field.name + ' = ' + field.value + ',');
         }
+        cpp.push('};');
+        cpp.push('');
+      }
 
-        case 'STRUCT':
-        case 'MESSAGE': {
-          break;
-        }
-
-        default: {
-          error('Invalid definition kind ' + quote(definition.kind), definition.line, definition.column);
-          break;
-        }
+      else if (definition.kind !== 'STRUCT' && definition.kind !== 'MESSAGE') {
+        error('Invalid definition kind ' + quote(definition.kind), definition.line, definition.column);
       }
     }
 
@@ -1394,30 +816,260 @@ var kiwi = exports || kiwi || {}, exports;
       for (var i = 0; i < schema.definitions.length; i++) {
         var definition = schema.definitions[i];
 
-        switch (definition.kind) {
-          case 'ENUM': {
-            break;
+        if (definition.kind === 'ENUM') {
+          continue;
+        }
+
+        var name = definition.name;
+        var fields = definition.fields;
+
+        if (pass === 0) {
+          cpp.push('class ' + name + ';');
+          newline = true;
+        }
+
+        else if (pass === 1) {
+          cpp.push('class ' + name + ' {');
+          cpp.push('public:');
+
+          for (var j = 0; j < fields.length; j++) {
+            var field = fields[j];
+            var type = cppType(definitions, field, field.isArray);
+
+            cpp.push('  ' + type + ' *' + field.name + '() { return _' + field.name + '; }');
+
+            if (field.isArray) {
+              cpp.push('  ' + type + ' &add_' + field.name + '(kiwi::MemoryPool &pool, uint32_t count) { return *(_' +
+                field.name + ' = pool.array<' + cppType(definitions, field, false) + '>(count)); }');
+            }
+
+            else {
+              cpp.push('  ' + type + ' &add_' + field.name + '(kiwi::MemoryPool &pool) { return *(_' +
+                field.name + ' ? _' + field.name + ' : _' + field.name + ' = pool.allocate<' + type + '>(1)); }');
+            }
+
+            cpp.push('');
           }
 
-          case 'STRUCT':
-          case 'MESSAGE': {
-            compileDecodeCPP(definition, definitions, pass, cpp);
-            compileEncodeCPP(definition, definitions, pass, cpp);
-            if (pass === 0) newline = true;
-            break;
+          cpp.push('  bool encode(kiwi::ByteBuffer &bb);');
+          cpp.push('  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);');
+          cpp.push('');
+          cpp.push('private:');
+
+          for (var j = 0; j < fields.length; j++) {
+            var field = fields[j];
+            cpp.push('  ' + cppType(definitions, field, field.isArray) + ' *_' + field.name + ' = nullptr;');
           }
 
-          default: {
-            error('Invalid definition kind ' + quote(definition.kind), definition.line, definition.column);
-            break;
+          cpp.push('};');
+          cpp.push('');
+        }
+
+        else {
+          cpp.push('bool ' + name + '::encode(kiwi::ByteBuffer &bb) {');
+
+          for (var j = 0; j < fields.length; j++) {
+            var field = fields[j];
+            var value = field.isArray ? 'it' : '*_' + field.name;
+            var code;
+
+            switch (field.type) {
+              case 'bool': {
+                code = 'bb.writeByte(' + value + ');';
+                break;
+              }
+
+              case 'byte': {
+                code = 'bb.writeByte(' + value + ');';
+                break;
+              }
+
+              case 'int': {
+                code = 'bb.writeVarInt(' + value + ');';
+                break;
+              }
+
+              case 'uint': {
+                code = 'bb.writeVarUint(' + value + ');';
+                break;
+              }
+
+              case 'float': {
+                code = 'bb.writeFloat(' + value + ');';
+                break;
+              }
+
+              case 'string': {
+                code = 'bb.writeString((' + value + ').c_str());';
+                break;
+              }
+
+              default: {
+                var type = definitions[field.type];
+
+                if (!type) {
+                  error('Invalid type ' + quote(field.type) + ' for field ' + quote(field.name), field.line, field.column);
+                }
+
+                else if (type.kind === 'ENUM') {
+                  code = 'bb.writeVarUint(' + value + ');';
+                }
+
+                else {
+                  code = 'if (!(' + value + ').encode(bb)) return false;';
+                }
+              }
+            }
+
+            var indent = '  ';
+            if (field.isRequired) {
+              cpp.push('  if (!_' + field.name + ') return false;');
+            } else {
+              cpp.push('  if (_' + field.name + ') {');
+              indent = '    ';
+            }
+
+            if (definition.kind === 'MESSAGE') {
+              cpp.push(indent + 'bb.writeVarUint(' + field.value + ');');
+            }
+
+            if (field.isArray) {
+              cpp.push(indent + 'bb.writeVarUint(_' + field.name + '->size());');
+              cpp.push(indent + 'for (' + cppType(definitions, field, false) + ' &it : *_' + field.name + ') ' + code);
+            } else {
+              cpp.push(indent + code);
+            }
+
+            if (!field.isRequired) {
+              cpp.push('  }');
+            }
           }
+
+          if (definition.kind === 'MESSAGE') {
+            cpp.push('  bb.writeVarUint(0);');
+          }
+
+          cpp.push('  return true;');
+          cpp.push('}');
+          cpp.push('');
+
+          cpp.push('bool ' + name + '::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {');
+
+          for (var j = 0; j < fields.length; j++) {
+            if (fields[j].isArray) {
+              cpp.push('  uint32_t count;');
+              break;
+            }
+          }
+
+          if (definition.kind === 'MESSAGE') {
+            cpp.push('  while (true) {');
+            cpp.push('    uint32_t type;');
+            cpp.push('    if (!bb.readVarUint(type)) return false;');
+            cpp.push('    switch (type) {');
+            cpp.push('      case 0:');
+
+            for (var j = 0; j < fields.length; j++) {
+              var field = fields[j];
+              if (field.isRequired) {
+                cpp.push('        if (!_' + field.name + ') return false;');
+              }
+            }
+
+            cpp.push('        return true;');
+          }
+
+          for (var j = 0; j < fields.length; j++) {
+            var field = fields[j];
+            var value = field.isArray ? 'it' : 'add_' + field.name + '(pool)';
+            var code;
+
+            switch (field.type) {
+              case 'bool': {
+                code = 'bb.readByte(' + value + ')';
+                break;
+              }
+
+              case 'byte': {
+                code = 'bb.readByte(' + value + ')';
+                break;
+              }
+
+              case 'int': {
+                code = 'bb.readVarInt(' + value + ')';
+                break;
+              }
+
+              case 'uint': {
+                code = 'bb.readVarUint(' + value + ')';
+                break;
+              }
+
+              case 'float': {
+                code = 'bb.readFloat(' + value + ')';
+                break;
+              }
+
+              case 'string': {
+                code = 'bb.readString(' + value + ', pool)';
+                break;
+              }
+
+              default: {
+                var type = definitions[field.type];
+
+                if (!type) {
+                  error('Invalid type ' + quote(field.type) + ' for field ' + quote(field.name), field.line, field.column);
+                }
+
+                else if (type.kind === 'ENUM') {
+                  code = 'bb.readVarUint(' + value + ')';
+                }
+
+                else {
+                  code = value + '.decode(bb, pool)';
+                }
+              }
+            }
+
+            var indent = '  ';
+
+            if (definition.kind === 'MESSAGE') {
+              cpp.push('      case ' + field.value + ':');
+              indent = '        ';
+            }
+
+            if (field.isArray) {
+              cpp.push(indent + 'if (!bb.readVarUint(count)) return false;');
+              cpp.push(indent + 'for (' + cppType(definitions, field, false) + ' &it : add_' + field.name + '(pool, count)) if (!' + code + ') return false;');
+            } else {
+              cpp.push(indent + 'if (!' + code + ') return false;');
+            }
+
+            if (definition.kind === 'MESSAGE') {
+              cpp.push('        break;');
+            }
+          }
+
+          if (definition.kind === 'MESSAGE') {
+            cpp.push('      default: return false;');
+            cpp.push('    }');
+            cpp.push('  }');
+          }
+
+          else {
+            cpp.push('  return true;');
+          }
+
+          cpp.push('}');
+          cpp.push('');
         }
       }
 
       if (newline) cpp.push('');
     }
 
-    if (name !== null) {
+    if (schema.package !== null) {
       cpp.push('}');
       cpp.push('');
     }

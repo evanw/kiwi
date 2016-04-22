@@ -45,5 +45,53 @@ message RootMessage {
 
 * Kiwi adds support for efficient compound messages using the `struct` keyword
 * Enums are scoped to their type instead of dumping everything into the global scope like C
-* The generated JavaScript doesn't emit default values, making it possible to check field presence
+* It's always possible to check for field presence, even for fields that hold arrays
 * The generated C++ code is a lot simpler and only depends on a single file, `kiwi.h`
+
+## JavaScript usage
+
+Make sure to install the kiwi package beforehand using `npm install kiwi-schema`.
+
+```js
+var kiwi = require('kiwi-schema');
+var schema = kiwi.compileSchema([
+  'message Test {',
+  '  int x = 1;',
+  '}',
+].join('\n'));
+
+var buffer = schema.encodeTest({x: 123});
+var test = schema.decodeTest(buffer);
+
+if (test.x !== undefined) {
+  console.log('x is %d', test.x);
+}
+```
+
+## C++ usage
+
+Make sure to generate the C++ code beforehand using something like `kiwic --schema test.kiwi --cpp test.h`.
+
+```cpp
+#include <stdio.h>
+#include "test.h"
+
+int main() {
+  kiwi::MemoryPool pool;
+
+  Test test;
+  test.add_x(pool) = 123;
+
+  kiwi::ByteBuffer buffer;
+  bool encode_success = test.encode(buffer);
+
+  Test test2;
+  bool decode_success = test2.decode(buffer, pool);
+
+  if (test2.x()) {
+    printf("x is %d\n", *test2.x());
+  }
+
+  return 0;
+}
+```

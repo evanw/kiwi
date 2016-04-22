@@ -1,705 +1,1076 @@
 #include "kiwi.h"
 
-namespace test_cpp {
+namespace test {
 
-class BoolStructDecoder;
-class BoolStructEncoder;
-class ByteStructDecoder;
-class ByteStructEncoder;
-class IntStructDecoder;
-class IntStructEncoder;
-class UintStructDecoder;
-class UintStructEncoder;
-class FloatStructDecoder;
-class FloatStructEncoder;
-class StringStructDecoder;
-class StringStructEncoder;
-class CompoundStructDecoder;
-class CompoundStructEncoder;
-class NestedStructDecoder;
-class NestedStructEncoder;
-class BoolMessageDecoder;
-class BoolMessageEncoder;
-class ByteMessageDecoder;
-class ByteMessageEncoder;
-class IntMessageDecoder;
-class IntMessageEncoder;
-class UintMessageDecoder;
-class UintMessageEncoder;
-class FloatMessageDecoder;
-class FloatMessageEncoder;
-class StringMessageDecoder;
-class StringMessageEncoder;
-class CompoundMessageDecoder;
-class CompoundMessageEncoder;
-class NestedMessageDecoder;
-class NestedMessageEncoder;
+class BoolStruct;
+class ByteStruct;
+class IntStruct;
+class UintStruct;
+class FloatStruct;
+class StringStruct;
+class CompoundStruct;
+class NestedStruct;
+class BoolMessage;
+class ByteMessage;
+class IntMessage;
+class UintMessage;
+class FloatMessage;
+class StringMessage;
+class CompoundMessage;
+class NestedMessage;
+class BoolArrayStruct;
+class ByteArrayStruct;
+class IntArrayStruct;
+class UintArrayStruct;
+class FloatArrayStruct;
+class StringArrayStruct;
+class CompoundArrayStruct;
+class BoolArrayMessage;
+class ByteArrayMessage;
+class IntArrayMessage;
+class UintArrayMessage;
+class FloatArrayMessage;
+class StringArrayMessage;
+class CompoundArrayMessage;
+class RequiredField;
 
-class BoolStructDecoder : public kiwi::Codec {
+class BoolStruct {
 public:
-  BoolStructDecoder() {}
-  BoolStructDecoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  BoolStructDecoder(BoolStructDecoder &&decoder) : kiwi::Codec(std::move(decoder)) {}
-  bool read_x(bool &value);
+  bool *x() { return _x; }
+  bool &add_x(kiwi::MemoryPool &pool) { return *(_x ? _x : _x = pool.allocate<bool>(1)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  bool *_x = nullptr;
 };
 
-class BoolStructEncoder : public kiwi::Codec {
+class ByteStruct {
 public:
-  BoolStructEncoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  BoolStructEncoder(BoolStructEncoder &&encoder) : kiwi::Codec(std::move(encoder)) {}
-  ~BoolStructEncoder();
-  BoolStructEncoder &add_x(bool value);
+  uint8_t *x() { return _x; }
+  uint8_t &add_x(kiwi::MemoryPool &pool) { return *(_x ? _x : _x = pool.allocate<uint8_t>(1)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  uint8_t *_x = nullptr;
 };
 
-class ByteStructDecoder : public kiwi::Codec {
+class IntStruct {
 public:
-  ByteStructDecoder() {}
-  ByteStructDecoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  ByteStructDecoder(ByteStructDecoder &&decoder) : kiwi::Codec(std::move(decoder)) {}
-  bool read_x(uint8_t &value);
+  int32_t *x() { return _x; }
+  int32_t &add_x(kiwi::MemoryPool &pool) { return *(_x ? _x : _x = pool.allocate<int32_t>(1)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  int32_t *_x = nullptr;
 };
 
-class ByteStructEncoder : public kiwi::Codec {
+class UintStruct {
 public:
-  ByteStructEncoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  ByteStructEncoder(ByteStructEncoder &&encoder) : kiwi::Codec(std::move(encoder)) {}
-  ~ByteStructEncoder();
-  ByteStructEncoder &add_x(uint8_t value);
+  uint32_t *x() { return _x; }
+  uint32_t &add_x(kiwi::MemoryPool &pool) { return *(_x ? _x : _x = pool.allocate<uint32_t>(1)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  uint32_t *_x = nullptr;
 };
 
-class IntStructDecoder : public kiwi::Codec {
+class FloatStruct {
 public:
-  IntStructDecoder() {}
-  IntStructDecoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  IntStructDecoder(IntStructDecoder &&decoder) : kiwi::Codec(std::move(decoder)) {}
-  bool read_x(int32_t &value);
+  float *x() { return _x; }
+  float &add_x(kiwi::MemoryPool &pool) { return *(_x ? _x : _x = pool.allocate<float>(1)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  float *_x = nullptr;
 };
 
-class IntStructEncoder : public kiwi::Codec {
+class StringStruct {
 public:
-  IntStructEncoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  IntStructEncoder(IntStructEncoder &&encoder) : kiwi::Codec(std::move(encoder)) {}
-  ~IntStructEncoder();
-  IntStructEncoder &add_x(int32_t value);
+  kiwi::String *x() { return _x; }
+  kiwi::String &add_x(kiwi::MemoryPool &pool) { return *(_x ? _x : _x = pool.allocate<kiwi::String>(1)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  kiwi::String *_x = nullptr;
 };
 
-class UintStructDecoder : public kiwi::Codec {
+class CompoundStruct {
 public:
-  UintStructDecoder() {}
-  UintStructDecoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  UintStructDecoder(UintStructDecoder &&decoder) : kiwi::Codec(std::move(decoder)) {}
-  bool read_x(uint32_t &value);
+  uint32_t *x() { return _x; }
+  uint32_t &add_x(kiwi::MemoryPool &pool) { return *(_x ? _x : _x = pool.allocate<uint32_t>(1)); }
+
+  uint32_t *y() { return _y; }
+  uint32_t &add_y(kiwi::MemoryPool &pool) { return *(_y ? _y : _y = pool.allocate<uint32_t>(1)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  uint32_t *_x = nullptr;
+  uint32_t *_y = nullptr;
 };
 
-class UintStructEncoder : public kiwi::Codec {
+class NestedStruct {
 public:
-  UintStructEncoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  UintStructEncoder(UintStructEncoder &&encoder) : kiwi::Codec(std::move(encoder)) {}
-  ~UintStructEncoder();
-  UintStructEncoder &add_x(uint32_t value);
+  uint32_t *a() { return _a; }
+  uint32_t &add_a(kiwi::MemoryPool &pool) { return *(_a ? _a : _a = pool.allocate<uint32_t>(1)); }
+
+  CompoundStruct *b() { return _b; }
+  CompoundStruct &add_b(kiwi::MemoryPool &pool) { return *(_b ? _b : _b = pool.allocate<CompoundStruct>(1)); }
+
+  uint32_t *c() { return _c; }
+  uint32_t &add_c(kiwi::MemoryPool &pool) { return *(_c ? _c : _c = pool.allocate<uint32_t>(1)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  uint32_t *_a = nullptr;
+  CompoundStruct *_b = nullptr;
+  uint32_t *_c = nullptr;
 };
 
-class FloatStructDecoder : public kiwi::Codec {
+class BoolMessage {
 public:
-  FloatStructDecoder() {}
-  FloatStructDecoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  FloatStructDecoder(FloatStructDecoder &&decoder) : kiwi::Codec(std::move(decoder)) {}
-  bool read_x(float &value);
+  bool *x() { return _x; }
+  bool &add_x(kiwi::MemoryPool &pool) { return *(_x ? _x : _x = pool.allocate<bool>(1)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  bool *_x = nullptr;
 };
 
-class FloatStructEncoder : public kiwi::Codec {
+class ByteMessage {
 public:
-  FloatStructEncoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  FloatStructEncoder(FloatStructEncoder &&encoder) : kiwi::Codec(std::move(encoder)) {}
-  ~FloatStructEncoder();
-  FloatStructEncoder &add_x(float value);
+  uint8_t *x() { return _x; }
+  uint8_t &add_x(kiwi::MemoryPool &pool) { return *(_x ? _x : _x = pool.allocate<uint8_t>(1)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  uint8_t *_x = nullptr;
 };
 
-class StringStructDecoder : public kiwi::Codec {
+class IntMessage {
 public:
-  StringStructDecoder() {}
-  StringStructDecoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  StringStructDecoder(StringStructDecoder &&decoder) : kiwi::Codec(std::move(decoder)) {}
-  bool read_x(std::string &value);
+  int32_t *x() { return _x; }
+  int32_t &add_x(kiwi::MemoryPool &pool) { return *(_x ? _x : _x = pool.allocate<int32_t>(1)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  int32_t *_x = nullptr;
 };
 
-class StringStructEncoder : public kiwi::Codec {
+class UintMessage {
 public:
-  StringStructEncoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  StringStructEncoder(StringStructEncoder &&encoder) : kiwi::Codec(std::move(encoder)) {}
-  ~StringStructEncoder();
-  StringStructEncoder &add_x(const std::string &value);
+  uint32_t *x() { return _x; }
+  uint32_t &add_x(kiwi::MemoryPool &pool) { return *(_x ? _x : _x = pool.allocate<uint32_t>(1)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  uint32_t *_x = nullptr;
 };
 
-class CompoundStructDecoder : public kiwi::Codec {
+class FloatMessage {
 public:
-  CompoundStructDecoder() {}
-  CompoundStructDecoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  CompoundStructDecoder(CompoundStructDecoder &&decoder) : kiwi::Codec(std::move(decoder)) {}
-  bool read_x(uint32_t &value);
-  bool read_y(uint32_t &value);
+  float *x() { return _x; }
+  float &add_x(kiwi::MemoryPool &pool) { return *(_x ? _x : _x = pool.allocate<float>(1)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  float *_x = nullptr;
 };
 
-class CompoundStructEncoder : public kiwi::Codec {
+class StringMessage {
 public:
-  CompoundStructEncoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  CompoundStructEncoder(CompoundStructEncoder &&encoder) : kiwi::Codec(std::move(encoder)) {}
-  ~CompoundStructEncoder();
-  CompoundStructEncoder &add_x(uint32_t value);
-  CompoundStructEncoder &add_y(uint32_t value);
+  kiwi::String *x() { return _x; }
+  kiwi::String &add_x(kiwi::MemoryPool &pool) { return *(_x ? _x : _x = pool.allocate<kiwi::String>(1)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  kiwi::String *_x = nullptr;
 };
 
-class NestedStructDecoder : public kiwi::Codec {
+class CompoundMessage {
 public:
-  NestedStructDecoder() {}
-  NestedStructDecoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  NestedStructDecoder(NestedStructDecoder &&decoder) : kiwi::Codec(std::move(decoder)) {}
-  bool read_a(uint32_t &value);
-  bool read_b(CompoundStructDecoder &decoder);
-  bool read_c(uint32_t &value);
+  uint32_t *x() { return _x; }
+  uint32_t &add_x(kiwi::MemoryPool &pool) { return *(_x ? _x : _x = pool.allocate<uint32_t>(1)); }
+
+  uint32_t *y() { return _y; }
+  uint32_t &add_y(kiwi::MemoryPool &pool) { return *(_y ? _y : _y = pool.allocate<uint32_t>(1)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  uint32_t *_x = nullptr;
+  uint32_t *_y = nullptr;
 };
 
-class NestedStructEncoder : public kiwi::Codec {
+class NestedMessage {
 public:
-  NestedStructEncoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  NestedStructEncoder(NestedStructEncoder &&encoder) : kiwi::Codec(std::move(encoder)) {}
-  ~NestedStructEncoder();
-  NestedStructEncoder &add_a(uint32_t value);
-  CompoundStructEncoder add_b();
-  NestedStructEncoder &add_c(uint32_t value);
+  uint32_t *a() { return _a; }
+  uint32_t &add_a(kiwi::MemoryPool &pool) { return *(_a ? _a : _a = pool.allocate<uint32_t>(1)); }
+
+  CompoundMessage *b() { return _b; }
+  CompoundMessage &add_b(kiwi::MemoryPool &pool) { return *(_b ? _b : _b = pool.allocate<CompoundMessage>(1)); }
+
+  uint32_t *c() { return _c; }
+  uint32_t &add_c(kiwi::MemoryPool &pool) { return *(_c ? _c : _c = pool.allocate<uint32_t>(1)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  uint32_t *_a = nullptr;
+  CompoundMessage *_b = nullptr;
+  uint32_t *_c = nullptr;
 };
 
-class BoolMessageDecoder : public kiwi::Codec {
+class BoolArrayStruct {
 public:
-  BoolMessageDecoder() {}
-  BoolMessageDecoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  BoolMessageDecoder(BoolMessageDecoder &&decoder) : kiwi::Codec(std::move(decoder)) {}
-  enum Field {
-    X = 1,
-  };
-  bool nextField(Field &value);
-  bool read_x(bool &value);
+  kiwi::Array<bool> *x() { return _x; }
+  kiwi::Array<bool> &add_x(kiwi::MemoryPool &pool, uint32_t count) { return *(_x = pool.array<bool>(count)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  kiwi::Array<bool> *_x = nullptr;
 };
 
-class BoolMessageEncoder : public kiwi::Codec {
+class ByteArrayStruct {
 public:
-  BoolMessageEncoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  BoolMessageEncoder(BoolMessageEncoder &&encoder) : kiwi::Codec(std::move(encoder)) {}
-  ~BoolMessageEncoder();
-  BoolMessageEncoder &add_x(bool value);
-  BoolMessageEncoder &finish();
+  kiwi::Array<uint8_t> *x() { return _x; }
+  kiwi::Array<uint8_t> &add_x(kiwi::MemoryPool &pool, uint32_t count) { return *(_x = pool.array<uint8_t>(count)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  kiwi::Array<uint8_t> *_x = nullptr;
 };
 
-class ByteMessageDecoder : public kiwi::Codec {
+class IntArrayStruct {
 public:
-  ByteMessageDecoder() {}
-  ByteMessageDecoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  ByteMessageDecoder(ByteMessageDecoder &&decoder) : kiwi::Codec(std::move(decoder)) {}
-  enum Field {
-    X = 1,
-  };
-  bool nextField(Field &value);
-  bool read_x(uint8_t &value);
+  kiwi::Array<int32_t> *x() { return _x; }
+  kiwi::Array<int32_t> &add_x(kiwi::MemoryPool &pool, uint32_t count) { return *(_x = pool.array<int32_t>(count)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  kiwi::Array<int32_t> *_x = nullptr;
 };
 
-class ByteMessageEncoder : public kiwi::Codec {
+class UintArrayStruct {
 public:
-  ByteMessageEncoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  ByteMessageEncoder(ByteMessageEncoder &&encoder) : kiwi::Codec(std::move(encoder)) {}
-  ~ByteMessageEncoder();
-  ByteMessageEncoder &add_x(uint8_t value);
-  ByteMessageEncoder &finish();
+  kiwi::Array<uint32_t> *x() { return _x; }
+  kiwi::Array<uint32_t> &add_x(kiwi::MemoryPool &pool, uint32_t count) { return *(_x = pool.array<uint32_t>(count)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  kiwi::Array<uint32_t> *_x = nullptr;
 };
 
-class IntMessageDecoder : public kiwi::Codec {
+class FloatArrayStruct {
 public:
-  IntMessageDecoder() {}
-  IntMessageDecoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  IntMessageDecoder(IntMessageDecoder &&decoder) : kiwi::Codec(std::move(decoder)) {}
-  enum Field {
-    X = 1,
-  };
-  bool nextField(Field &value);
-  bool read_x(int32_t &value);
+  kiwi::Array<float> *x() { return _x; }
+  kiwi::Array<float> &add_x(kiwi::MemoryPool &pool, uint32_t count) { return *(_x = pool.array<float>(count)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  kiwi::Array<float> *_x = nullptr;
 };
 
-class IntMessageEncoder : public kiwi::Codec {
+class StringArrayStruct {
 public:
-  IntMessageEncoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  IntMessageEncoder(IntMessageEncoder &&encoder) : kiwi::Codec(std::move(encoder)) {}
-  ~IntMessageEncoder();
-  IntMessageEncoder &add_x(int32_t value);
-  IntMessageEncoder &finish();
+  kiwi::Array<kiwi::String> *x() { return _x; }
+  kiwi::Array<kiwi::String> &add_x(kiwi::MemoryPool &pool, uint32_t count) { return *(_x = pool.array<kiwi::String>(count)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  kiwi::Array<kiwi::String> *_x = nullptr;
 };
 
-class UintMessageDecoder : public kiwi::Codec {
+class CompoundArrayStruct {
 public:
-  UintMessageDecoder() {}
-  UintMessageDecoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  UintMessageDecoder(UintMessageDecoder &&decoder) : kiwi::Codec(std::move(decoder)) {}
-  enum Field {
-    X = 1,
-  };
-  bool nextField(Field &value);
-  bool read_x(uint32_t &value);
+  kiwi::Array<uint32_t> *x() { return _x; }
+  kiwi::Array<uint32_t> &add_x(kiwi::MemoryPool &pool, uint32_t count) { return *(_x = pool.array<uint32_t>(count)); }
+
+  kiwi::Array<uint32_t> *y() { return _y; }
+  kiwi::Array<uint32_t> &add_y(kiwi::MemoryPool &pool, uint32_t count) { return *(_y = pool.array<uint32_t>(count)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  kiwi::Array<uint32_t> *_x = nullptr;
+  kiwi::Array<uint32_t> *_y = nullptr;
 };
 
-class UintMessageEncoder : public kiwi::Codec {
+class BoolArrayMessage {
 public:
-  UintMessageEncoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  UintMessageEncoder(UintMessageEncoder &&encoder) : kiwi::Codec(std::move(encoder)) {}
-  ~UintMessageEncoder();
-  UintMessageEncoder &add_x(uint32_t value);
-  UintMessageEncoder &finish();
+  kiwi::Array<bool> *x() { return _x; }
+  kiwi::Array<bool> &add_x(kiwi::MemoryPool &pool, uint32_t count) { return *(_x = pool.array<bool>(count)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  kiwi::Array<bool> *_x = nullptr;
 };
 
-class FloatMessageDecoder : public kiwi::Codec {
+class ByteArrayMessage {
 public:
-  FloatMessageDecoder() {}
-  FloatMessageDecoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  FloatMessageDecoder(FloatMessageDecoder &&decoder) : kiwi::Codec(std::move(decoder)) {}
-  enum Field {
-    X = 1,
-  };
-  bool nextField(Field &value);
-  bool read_x(float &value);
+  kiwi::Array<uint8_t> *x() { return _x; }
+  kiwi::Array<uint8_t> &add_x(kiwi::MemoryPool &pool, uint32_t count) { return *(_x = pool.array<uint8_t>(count)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  kiwi::Array<uint8_t> *_x = nullptr;
 };
 
-class FloatMessageEncoder : public kiwi::Codec {
+class IntArrayMessage {
 public:
-  FloatMessageEncoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  FloatMessageEncoder(FloatMessageEncoder &&encoder) : kiwi::Codec(std::move(encoder)) {}
-  ~FloatMessageEncoder();
-  FloatMessageEncoder &add_x(float value);
-  FloatMessageEncoder &finish();
+  kiwi::Array<int32_t> *x() { return _x; }
+  kiwi::Array<int32_t> &add_x(kiwi::MemoryPool &pool, uint32_t count) { return *(_x = pool.array<int32_t>(count)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  kiwi::Array<int32_t> *_x = nullptr;
 };
 
-class StringMessageDecoder : public kiwi::Codec {
+class UintArrayMessage {
 public:
-  StringMessageDecoder() {}
-  StringMessageDecoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  StringMessageDecoder(StringMessageDecoder &&decoder) : kiwi::Codec(std::move(decoder)) {}
-  enum Field {
-    X = 1,
-  };
-  bool nextField(Field &value);
-  bool read_x(std::string &value);
+  kiwi::Array<uint32_t> *x() { return _x; }
+  kiwi::Array<uint32_t> &add_x(kiwi::MemoryPool &pool, uint32_t count) { return *(_x = pool.array<uint32_t>(count)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  kiwi::Array<uint32_t> *_x = nullptr;
 };
 
-class StringMessageEncoder : public kiwi::Codec {
+class FloatArrayMessage {
 public:
-  StringMessageEncoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  StringMessageEncoder(StringMessageEncoder &&encoder) : kiwi::Codec(std::move(encoder)) {}
-  ~StringMessageEncoder();
-  StringMessageEncoder &add_x(const std::string &value);
-  StringMessageEncoder &finish();
+  kiwi::Array<float> *x() { return _x; }
+  kiwi::Array<float> &add_x(kiwi::MemoryPool &pool, uint32_t count) { return *(_x = pool.array<float>(count)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  kiwi::Array<float> *_x = nullptr;
 };
 
-class CompoundMessageDecoder : public kiwi::Codec {
+class StringArrayMessage {
 public:
-  CompoundMessageDecoder() {}
-  CompoundMessageDecoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  CompoundMessageDecoder(CompoundMessageDecoder &&decoder) : kiwi::Codec(std::move(decoder)) {}
-  enum Field {
-    X = 1,
-    Y = 2,
-  };
-  bool nextField(Field &value);
-  bool read_x(uint32_t &value);
-  bool read_y(uint32_t &value);
+  kiwi::Array<kiwi::String> *x() { return _x; }
+  kiwi::Array<kiwi::String> &add_x(kiwi::MemoryPool &pool, uint32_t count) { return *(_x = pool.array<kiwi::String>(count)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  kiwi::Array<kiwi::String> *_x = nullptr;
 };
 
-class CompoundMessageEncoder : public kiwi::Codec {
+class CompoundArrayMessage {
 public:
-  CompoundMessageEncoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  CompoundMessageEncoder(CompoundMessageEncoder &&encoder) : kiwi::Codec(std::move(encoder)) {}
-  ~CompoundMessageEncoder();
-  CompoundMessageEncoder &add_x(uint32_t value);
-  CompoundMessageEncoder &add_y(uint32_t value);
-  CompoundMessageEncoder &finish();
+  kiwi::Array<uint32_t> *x() { return _x; }
+  kiwi::Array<uint32_t> &add_x(kiwi::MemoryPool &pool, uint32_t count) { return *(_x = pool.array<uint32_t>(count)); }
+
+  kiwi::Array<uint32_t> *y() { return _y; }
+  kiwi::Array<uint32_t> &add_y(kiwi::MemoryPool &pool, uint32_t count) { return *(_y = pool.array<uint32_t>(count)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  kiwi::Array<uint32_t> *_x = nullptr;
+  kiwi::Array<uint32_t> *_y = nullptr;
 };
 
-class NestedMessageDecoder : public kiwi::Codec {
+class RequiredField {
 public:
-  NestedMessageDecoder() {}
-  NestedMessageDecoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  NestedMessageDecoder(NestedMessageDecoder &&decoder) : kiwi::Codec(std::move(decoder)) {}
-  enum Field {
-    A = 1,
-    B = 2,
-    C = 3,
-  };
-  bool nextField(Field &value);
-  bool read_a(uint32_t &value);
-  bool read_b(CompoundMessageDecoder &decoder);
-  bool read_c(uint32_t &value);
+  int32_t *x() { return _x; }
+  int32_t &add_x(kiwi::MemoryPool &pool) { return *(_x ? _x : _x = pool.allocate<int32_t>(1)); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  int32_t *_x = nullptr;
 };
 
-class NestedMessageEncoder : public kiwi::Codec {
-public:
-  NestedMessageEncoder(kiwi::ByteBuffer &bb) : kiwi::Codec(bb) {}
-  NestedMessageEncoder(NestedMessageEncoder &&encoder) : kiwi::Codec(std::move(encoder)) {}
-  ~NestedMessageEncoder();
-  NestedMessageEncoder &add_a(uint32_t value);
-  CompoundMessageEncoder add_b();
-  NestedMessageEncoder &add_c(uint32_t value);
-  NestedMessageEncoder &finish();
-};
-
-bool BoolStructDecoder::read_x(bool &value) {
-  uint8_t byte;
-  if (!_structReadByte(0, byte)) return false;
-  value = byte;
+bool BoolStruct::encode(kiwi::ByteBuffer &bb) {
+  if (!_x) return false;
+  bb.writeByte(*_x);
   return true;
 }
 
-BoolStructEncoder &BoolStructEncoder::add_x(bool value) {
-  _structWriteByte(0, value);
-  return *this;
-}
-
-BoolStructEncoder::~BoolStructEncoder() {
-  assert(!_bb || _nextField++ == 1); // Must set all fields
-}
-
-bool ByteStructDecoder::read_x(uint8_t &value) {
-  return _structReadByte(0, value);
-}
-
-ByteStructEncoder &ByteStructEncoder::add_x(uint8_t value) {
-  _structWriteByte(0, value);
-  return *this;
-}
-
-ByteStructEncoder::~ByteStructEncoder() {
-  assert(!_bb || _nextField++ == 1); // Must set all fields
-}
-
-bool IntStructDecoder::read_x(int32_t &value) {
-  return _structReadVarInt(0, value);
-}
-
-IntStructEncoder &IntStructEncoder::add_x(int32_t value) {
-  _structWriteVarInt(0, value);
-  return *this;
-}
-
-IntStructEncoder::~IntStructEncoder() {
-  assert(!_bb || _nextField++ == 1); // Must set all fields
-}
-
-bool UintStructDecoder::read_x(uint32_t &value) {
-  return _structReadVarUint(0, value);
-}
-
-UintStructEncoder &UintStructEncoder::add_x(uint32_t value) {
-  _structWriteVarUint(0, value);
-  return *this;
-}
-
-UintStructEncoder::~UintStructEncoder() {
-  assert(!_bb || _nextField++ == 1); // Must set all fields
-}
-
-bool FloatStructDecoder::read_x(float &value) {
-  return _structReadFloat(0, value);
-}
-
-FloatStructEncoder &FloatStructEncoder::add_x(float value) {
-  _structWriteFloat(0, value);
-  return *this;
-}
-
-FloatStructEncoder::~FloatStructEncoder() {
-  assert(!_bb || _nextField++ == 1); // Must set all fields
-}
-
-bool StringStructDecoder::read_x(std::string &value) {
-  return _structReadString(0, value);
-}
-
-StringStructEncoder &StringStructEncoder::add_x(const std::string &value) {
-  _structWriteString(0, value);
-  return *this;
-}
-
-StringStructEncoder::~StringStructEncoder() {
-  assert(!_bb || _nextField++ == 1); // Must set all fields
-}
-
-bool CompoundStructDecoder::read_x(uint32_t &value) {
-  return _structReadVarUint(0, value);
-}
-
-bool CompoundStructDecoder::read_y(uint32_t &value) {
-  return _structReadVarUint(1, value);
-}
-
-CompoundStructEncoder &CompoundStructEncoder::add_x(uint32_t value) {
-  _structWriteVarUint(0, value);
-  return *this;
-}
-
-CompoundStructEncoder &CompoundStructEncoder::add_y(uint32_t value) {
-  _structWriteVarUint(1, value);
-  return *this;
-}
-
-CompoundStructEncoder::~CompoundStructEncoder() {
-  assert(!_bb || _nextField++ == 2); // Must set all fields
-}
-
-bool NestedStructDecoder::read_a(uint32_t &value) {
-  return _structReadVarUint(0, value);
-}
-
-bool NestedStructDecoder::read_b(CompoundStructDecoder &decoder) {
-  return _structReadFieldNested(1, decoder);
-}
-
-bool NestedStructDecoder::read_c(uint32_t &value) {
-  return _structReadVarUint(2, value);
-}
-
-NestedStructEncoder &NestedStructEncoder::add_a(uint32_t value) {
-  _structWriteVarUint(0, value);
-  return *this;
-}
-
-CompoundStructEncoder NestedStructEncoder::add_b() {
-  _structWriteField(1);
-  return CompoundStructEncoder(*_bb);
-}
-
-NestedStructEncoder &NestedStructEncoder::add_c(uint32_t value) {
-  _structWriteVarUint(2, value);
-  return *this;
-}
-
-NestedStructEncoder::~NestedStructEncoder() {
-  assert(!_bb || _nextField++ == 3); // Must set all fields
-}
-
-bool BoolMessageDecoder::nextField(Field &value) {
-  if (!_messageReadField() || _nextField == 0) return false;
-  value = (Field)_nextField;
+bool BoolStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  if (!bb.readByte(add_x(pool))) return false;
   return true;
 }
 
-bool BoolMessageDecoder::read_x(bool &value) {
-  uint8_t byte;
-  if (!_messageReadByte(1, byte)) return false;
-  value = byte;
+bool ByteStruct::encode(kiwi::ByteBuffer &bb) {
+  if (!_x) return false;
+  bb.writeByte(*_x);
   return true;
 }
 
-BoolMessageEncoder& BoolMessageEncoder::add_x(bool value) {
-  _messageWriteByte(1, value);
-  return *this;
-}
-
-BoolMessageEncoder &BoolMessageEncoder::finish() {
-  _messageFinish();
-  return *this;
-}
-
-BoolMessageEncoder::~BoolMessageEncoder() {
-  assert(!_bb); // Must call finish()
-}
-
-bool ByteMessageDecoder::nextField(Field &value) {
-  if (!_messageReadField() || _nextField == 0) return false;
-  value = (Field)_nextField;
+bool ByteStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  if (!bb.readByte(add_x(pool))) return false;
   return true;
 }
 
-bool ByteMessageDecoder::read_x(uint8_t &value) {
-  return _messageReadByte(1, value);
-}
-
-ByteMessageEncoder& ByteMessageEncoder::add_x(uint8_t value) {
-  _messageWriteByte(1, value);
-  return *this;
-}
-
-ByteMessageEncoder &ByteMessageEncoder::finish() {
-  _messageFinish();
-  return *this;
-}
-
-ByteMessageEncoder::~ByteMessageEncoder() {
-  assert(!_bb); // Must call finish()
-}
-
-bool IntMessageDecoder::nextField(Field &value) {
-  if (!_messageReadField() || _nextField == 0) return false;
-  value = (Field)_nextField;
+bool IntStruct::encode(kiwi::ByteBuffer &bb) {
+  if (!_x) return false;
+  bb.writeVarInt(*_x);
   return true;
 }
 
-bool IntMessageDecoder::read_x(int32_t &value) {
-  return _messageReadVarInt(1, value);
-}
-
-IntMessageEncoder& IntMessageEncoder::add_x(int32_t value) {
-  _messageWriteVarInt(1, value);
-  return *this;
-}
-
-IntMessageEncoder &IntMessageEncoder::finish() {
-  _messageFinish();
-  return *this;
-}
-
-IntMessageEncoder::~IntMessageEncoder() {
-  assert(!_bb); // Must call finish()
-}
-
-bool UintMessageDecoder::nextField(Field &value) {
-  if (!_messageReadField() || _nextField == 0) return false;
-  value = (Field)_nextField;
+bool IntStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  if (!bb.readVarInt(add_x(pool))) return false;
   return true;
 }
 
-bool UintMessageDecoder::read_x(uint32_t &value) {
-  return _messageReadVarUint(1, value);
-}
-
-UintMessageEncoder& UintMessageEncoder::add_x(uint32_t value) {
-  _messageWriteVarUint(1, value);
-  return *this;
-}
-
-UintMessageEncoder &UintMessageEncoder::finish() {
-  _messageFinish();
-  return *this;
-}
-
-UintMessageEncoder::~UintMessageEncoder() {
-  assert(!_bb); // Must call finish()
-}
-
-bool FloatMessageDecoder::nextField(Field &value) {
-  if (!_messageReadField() || _nextField == 0) return false;
-  value = (Field)_nextField;
+bool UintStruct::encode(kiwi::ByteBuffer &bb) {
+  if (!_x) return false;
+  bb.writeVarUint(*_x);
   return true;
 }
 
-bool FloatMessageDecoder::read_x(float &value) {
-  return _messageReadFloat(1, value);
-}
-
-FloatMessageEncoder& FloatMessageEncoder::add_x(float value) {
-  _messageWriteFloat(1, value);
-  return *this;
-}
-
-FloatMessageEncoder &FloatMessageEncoder::finish() {
-  _messageFinish();
-  return *this;
-}
-
-FloatMessageEncoder::~FloatMessageEncoder() {
-  assert(!_bb); // Must call finish()
-}
-
-bool StringMessageDecoder::nextField(Field &value) {
-  if (!_messageReadField() || _nextField == 0) return false;
-  value = (Field)_nextField;
+bool UintStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  if (!bb.readVarUint(add_x(pool))) return false;
   return true;
 }
 
-bool StringMessageDecoder::read_x(std::string &value) {
-  return _messageReadString(1, value);
-}
-
-StringMessageEncoder& StringMessageEncoder::add_x(const std::string &value) {
-  _messageWriteString(1, value);
-  return *this;
-}
-
-StringMessageEncoder &StringMessageEncoder::finish() {
-  _messageFinish();
-  return *this;
-}
-
-StringMessageEncoder::~StringMessageEncoder() {
-  assert(!_bb); // Must call finish()
-}
-
-bool CompoundMessageDecoder::nextField(Field &value) {
-  if (!_messageReadField() || _nextField == 0) return false;
-  value = (Field)_nextField;
+bool FloatStruct::encode(kiwi::ByteBuffer &bb) {
+  if (!_x) return false;
+  bb.writeFloat(*_x);
   return true;
 }
 
-bool CompoundMessageDecoder::read_x(uint32_t &value) {
-  return _messageReadVarUint(1, value);
-}
-
-bool CompoundMessageDecoder::read_y(uint32_t &value) {
-  return _messageReadVarUint(2, value);
-}
-
-CompoundMessageEncoder& CompoundMessageEncoder::add_x(uint32_t value) {
-  _messageWriteVarUint(1, value);
-  return *this;
-}
-
-CompoundMessageEncoder& CompoundMessageEncoder::add_y(uint32_t value) {
-  _messageWriteVarUint(2, value);
-  return *this;
-}
-
-CompoundMessageEncoder &CompoundMessageEncoder::finish() {
-  _messageFinish();
-  return *this;
-}
-
-CompoundMessageEncoder::~CompoundMessageEncoder() {
-  assert(!_bb); // Must call finish()
-}
-
-bool NestedMessageDecoder::nextField(Field &value) {
-  if (!_messageReadField() || _nextField == 0) return false;
-  value = (Field)_nextField;
+bool FloatStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  if (!bb.readFloat(add_x(pool))) return false;
   return true;
 }
 
-bool NestedMessageDecoder::read_a(uint32_t &value) {
-  return _messageReadVarUint(1, value);
+bool StringStruct::encode(kiwi::ByteBuffer &bb) {
+  if (!_x) return false;
+  bb.writeString((*_x).c_str());
+  return true;
 }
 
-bool NestedMessageDecoder::read_b(CompoundMessageDecoder &decoder) {
-  return _messageReadFieldNested(2, decoder);
+bool StringStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  if (!bb.readString(add_x(pool), pool)) return false;
+  return true;
 }
 
-bool NestedMessageDecoder::read_c(uint32_t &value) {
-  return _messageReadVarUint(3, value);
+bool CompoundStruct::encode(kiwi::ByteBuffer &bb) {
+  if (!_x) return false;
+  bb.writeVarUint(*_x);
+  if (!_y) return false;
+  bb.writeVarUint(*_y);
+  return true;
 }
 
-NestedMessageEncoder& NestedMessageEncoder::add_a(uint32_t value) {
-  _messageWriteVarUint(1, value);
-  return *this;
+bool CompoundStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  if (!bb.readVarUint(add_x(pool))) return false;
+  if (!bb.readVarUint(add_y(pool))) return false;
+  return true;
 }
 
-CompoundMessageEncoder NestedMessageEncoder::add_b() {
-  _messageWriteField(2);
-  return CompoundMessageEncoder(*_bb);
+bool NestedStruct::encode(kiwi::ByteBuffer &bb) {
+  if (!_a) return false;
+  bb.writeVarUint(*_a);
+  if (!_b) return false;
+  if (!(*_b).encode(bb)) return false;
+  if (!_c) return false;
+  bb.writeVarUint(*_c);
+  return true;
 }
 
-NestedMessageEncoder& NestedMessageEncoder::add_c(uint32_t value) {
-  _messageWriteVarUint(3, value);
-  return *this;
+bool NestedStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  if (!bb.readVarUint(add_a(pool))) return false;
+  if (!add_b(pool).decode(bb, pool)) return false;
+  if (!bb.readVarUint(add_c(pool))) return false;
+  return true;
 }
 
-NestedMessageEncoder &NestedMessageEncoder::finish() {
-  _messageFinish();
-  return *this;
+bool BoolMessage::encode(kiwi::ByteBuffer &bb) {
+  if (_x) {
+    bb.writeVarUint(1);
+    bb.writeByte(*_x);
+  }
+  bb.writeVarUint(0);
+  return true;
 }
 
-NestedMessageEncoder::~NestedMessageEncoder() {
-  assert(!_bb); // Must call finish()
+bool BoolMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  while (true) {
+    uint32_t type;
+    if (!bb.readVarUint(type)) return false;
+    switch (type) {
+      case 0:
+        return true;
+      case 1:
+        if (!bb.readByte(add_x(pool))) return false;
+        break;
+      default: return false;
+    }
+  }
+}
+
+bool ByteMessage::encode(kiwi::ByteBuffer &bb) {
+  if (_x) {
+    bb.writeVarUint(1);
+    bb.writeByte(*_x);
+  }
+  bb.writeVarUint(0);
+  return true;
+}
+
+bool ByteMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  while (true) {
+    uint32_t type;
+    if (!bb.readVarUint(type)) return false;
+    switch (type) {
+      case 0:
+        return true;
+      case 1:
+        if (!bb.readByte(add_x(pool))) return false;
+        break;
+      default: return false;
+    }
+  }
+}
+
+bool IntMessage::encode(kiwi::ByteBuffer &bb) {
+  if (_x) {
+    bb.writeVarUint(1);
+    bb.writeVarInt(*_x);
+  }
+  bb.writeVarUint(0);
+  return true;
+}
+
+bool IntMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  while (true) {
+    uint32_t type;
+    if (!bb.readVarUint(type)) return false;
+    switch (type) {
+      case 0:
+        return true;
+      case 1:
+        if (!bb.readVarInt(add_x(pool))) return false;
+        break;
+      default: return false;
+    }
+  }
+}
+
+bool UintMessage::encode(kiwi::ByteBuffer &bb) {
+  if (_x) {
+    bb.writeVarUint(1);
+    bb.writeVarUint(*_x);
+  }
+  bb.writeVarUint(0);
+  return true;
+}
+
+bool UintMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  while (true) {
+    uint32_t type;
+    if (!bb.readVarUint(type)) return false;
+    switch (type) {
+      case 0:
+        return true;
+      case 1:
+        if (!bb.readVarUint(add_x(pool))) return false;
+        break;
+      default: return false;
+    }
+  }
+}
+
+bool FloatMessage::encode(kiwi::ByteBuffer &bb) {
+  if (_x) {
+    bb.writeVarUint(1);
+    bb.writeFloat(*_x);
+  }
+  bb.writeVarUint(0);
+  return true;
+}
+
+bool FloatMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  while (true) {
+    uint32_t type;
+    if (!bb.readVarUint(type)) return false;
+    switch (type) {
+      case 0:
+        return true;
+      case 1:
+        if (!bb.readFloat(add_x(pool))) return false;
+        break;
+      default: return false;
+    }
+  }
+}
+
+bool StringMessage::encode(kiwi::ByteBuffer &bb) {
+  if (_x) {
+    bb.writeVarUint(1);
+    bb.writeString((*_x).c_str());
+  }
+  bb.writeVarUint(0);
+  return true;
+}
+
+bool StringMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  while (true) {
+    uint32_t type;
+    if (!bb.readVarUint(type)) return false;
+    switch (type) {
+      case 0:
+        return true;
+      case 1:
+        if (!bb.readString(add_x(pool), pool)) return false;
+        break;
+      default: return false;
+    }
+  }
+}
+
+bool CompoundMessage::encode(kiwi::ByteBuffer &bb) {
+  if (_x) {
+    bb.writeVarUint(1);
+    bb.writeVarUint(*_x);
+  }
+  if (_y) {
+    bb.writeVarUint(2);
+    bb.writeVarUint(*_y);
+  }
+  bb.writeVarUint(0);
+  return true;
+}
+
+bool CompoundMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  while (true) {
+    uint32_t type;
+    if (!bb.readVarUint(type)) return false;
+    switch (type) {
+      case 0:
+        return true;
+      case 1:
+        if (!bb.readVarUint(add_x(pool))) return false;
+        break;
+      case 2:
+        if (!bb.readVarUint(add_y(pool))) return false;
+        break;
+      default: return false;
+    }
+  }
+}
+
+bool NestedMessage::encode(kiwi::ByteBuffer &bb) {
+  if (_a) {
+    bb.writeVarUint(1);
+    bb.writeVarUint(*_a);
+  }
+  if (_b) {
+    bb.writeVarUint(2);
+    if (!(*_b).encode(bb)) return false;
+  }
+  if (_c) {
+    bb.writeVarUint(3);
+    bb.writeVarUint(*_c);
+  }
+  bb.writeVarUint(0);
+  return true;
+}
+
+bool NestedMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  while (true) {
+    uint32_t type;
+    if (!bb.readVarUint(type)) return false;
+    switch (type) {
+      case 0:
+        return true;
+      case 1:
+        if (!bb.readVarUint(add_a(pool))) return false;
+        break;
+      case 2:
+        if (!add_b(pool).decode(bb, pool)) return false;
+        break;
+      case 3:
+        if (!bb.readVarUint(add_c(pool))) return false;
+        break;
+      default: return false;
+    }
+  }
+}
+
+bool BoolArrayStruct::encode(kiwi::ByteBuffer &bb) {
+  if (!_x) return false;
+  bb.writeVarUint(_x->size());
+  for (bool &it : *_x) bb.writeByte(it);
+  return true;
+}
+
+bool BoolArrayStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  uint32_t count;
+  if (!bb.readVarUint(count)) return false;
+  for (bool &it : add_x(pool, count)) if (!bb.readByte(it)) return false;
+  return true;
+}
+
+bool ByteArrayStruct::encode(kiwi::ByteBuffer &bb) {
+  if (!_x) return false;
+  bb.writeVarUint(_x->size());
+  for (uint8_t &it : *_x) bb.writeByte(it);
+  return true;
+}
+
+bool ByteArrayStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  uint32_t count;
+  if (!bb.readVarUint(count)) return false;
+  for (uint8_t &it : add_x(pool, count)) if (!bb.readByte(it)) return false;
+  return true;
+}
+
+bool IntArrayStruct::encode(kiwi::ByteBuffer &bb) {
+  if (!_x) return false;
+  bb.writeVarUint(_x->size());
+  for (int32_t &it : *_x) bb.writeVarInt(it);
+  return true;
+}
+
+bool IntArrayStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  uint32_t count;
+  if (!bb.readVarUint(count)) return false;
+  for (int32_t &it : add_x(pool, count)) if (!bb.readVarInt(it)) return false;
+  return true;
+}
+
+bool UintArrayStruct::encode(kiwi::ByteBuffer &bb) {
+  if (!_x) return false;
+  bb.writeVarUint(_x->size());
+  for (uint32_t &it : *_x) bb.writeVarUint(it);
+  return true;
+}
+
+bool UintArrayStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  uint32_t count;
+  if (!bb.readVarUint(count)) return false;
+  for (uint32_t &it : add_x(pool, count)) if (!bb.readVarUint(it)) return false;
+  return true;
+}
+
+bool FloatArrayStruct::encode(kiwi::ByteBuffer &bb) {
+  if (!_x) return false;
+  bb.writeVarUint(_x->size());
+  for (float &it : *_x) bb.writeFloat(it);
+  return true;
+}
+
+bool FloatArrayStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  uint32_t count;
+  if (!bb.readVarUint(count)) return false;
+  for (float &it : add_x(pool, count)) if (!bb.readFloat(it)) return false;
+  return true;
+}
+
+bool StringArrayStruct::encode(kiwi::ByteBuffer &bb) {
+  if (!_x) return false;
+  bb.writeVarUint(_x->size());
+  for (kiwi::String &it : *_x) bb.writeString((it).c_str());
+  return true;
+}
+
+bool StringArrayStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  uint32_t count;
+  if (!bb.readVarUint(count)) return false;
+  for (kiwi::String &it : add_x(pool, count)) if (!bb.readString(it, pool)) return false;
+  return true;
+}
+
+bool CompoundArrayStruct::encode(kiwi::ByteBuffer &bb) {
+  if (!_x) return false;
+  bb.writeVarUint(_x->size());
+  for (uint32_t &it : *_x) bb.writeVarUint(it);
+  if (!_y) return false;
+  bb.writeVarUint(_y->size());
+  for (uint32_t &it : *_y) bb.writeVarUint(it);
+  return true;
+}
+
+bool CompoundArrayStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  uint32_t count;
+  if (!bb.readVarUint(count)) return false;
+  for (uint32_t &it : add_x(pool, count)) if (!bb.readVarUint(it)) return false;
+  if (!bb.readVarUint(count)) return false;
+  for (uint32_t &it : add_y(pool, count)) if (!bb.readVarUint(it)) return false;
+  return true;
+}
+
+bool BoolArrayMessage::encode(kiwi::ByteBuffer &bb) {
+  if (_x) {
+    bb.writeVarUint(1);
+    bb.writeVarUint(_x->size());
+    for (bool &it : *_x) bb.writeByte(it);
+  }
+  bb.writeVarUint(0);
+  return true;
+}
+
+bool BoolArrayMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  uint32_t count;
+  while (true) {
+    uint32_t type;
+    if (!bb.readVarUint(type)) return false;
+    switch (type) {
+      case 0:
+        return true;
+      case 1:
+        if (!bb.readVarUint(count)) return false;
+        for (bool &it : add_x(pool, count)) if (!bb.readByte(it)) return false;
+        break;
+      default: return false;
+    }
+  }
+}
+
+bool ByteArrayMessage::encode(kiwi::ByteBuffer &bb) {
+  if (_x) {
+    bb.writeVarUint(1);
+    bb.writeVarUint(_x->size());
+    for (uint8_t &it : *_x) bb.writeByte(it);
+  }
+  bb.writeVarUint(0);
+  return true;
+}
+
+bool ByteArrayMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  uint32_t count;
+  while (true) {
+    uint32_t type;
+    if (!bb.readVarUint(type)) return false;
+    switch (type) {
+      case 0:
+        return true;
+      case 1:
+        if (!bb.readVarUint(count)) return false;
+        for (uint8_t &it : add_x(pool, count)) if (!bb.readByte(it)) return false;
+        break;
+      default: return false;
+    }
+  }
+}
+
+bool IntArrayMessage::encode(kiwi::ByteBuffer &bb) {
+  if (_x) {
+    bb.writeVarUint(1);
+    bb.writeVarUint(_x->size());
+    for (int32_t &it : *_x) bb.writeVarInt(it);
+  }
+  bb.writeVarUint(0);
+  return true;
+}
+
+bool IntArrayMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  uint32_t count;
+  while (true) {
+    uint32_t type;
+    if (!bb.readVarUint(type)) return false;
+    switch (type) {
+      case 0:
+        return true;
+      case 1:
+        if (!bb.readVarUint(count)) return false;
+        for (int32_t &it : add_x(pool, count)) if (!bb.readVarInt(it)) return false;
+        break;
+      default: return false;
+    }
+  }
+}
+
+bool UintArrayMessage::encode(kiwi::ByteBuffer &bb) {
+  if (_x) {
+    bb.writeVarUint(1);
+    bb.writeVarUint(_x->size());
+    for (uint32_t &it : *_x) bb.writeVarUint(it);
+  }
+  bb.writeVarUint(0);
+  return true;
+}
+
+bool UintArrayMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  uint32_t count;
+  while (true) {
+    uint32_t type;
+    if (!bb.readVarUint(type)) return false;
+    switch (type) {
+      case 0:
+        return true;
+      case 1:
+        if (!bb.readVarUint(count)) return false;
+        for (uint32_t &it : add_x(pool, count)) if (!bb.readVarUint(it)) return false;
+        break;
+      default: return false;
+    }
+  }
+}
+
+bool FloatArrayMessage::encode(kiwi::ByteBuffer &bb) {
+  if (_x) {
+    bb.writeVarUint(1);
+    bb.writeVarUint(_x->size());
+    for (float &it : *_x) bb.writeFloat(it);
+  }
+  bb.writeVarUint(0);
+  return true;
+}
+
+bool FloatArrayMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  uint32_t count;
+  while (true) {
+    uint32_t type;
+    if (!bb.readVarUint(type)) return false;
+    switch (type) {
+      case 0:
+        return true;
+      case 1:
+        if (!bb.readVarUint(count)) return false;
+        for (float &it : add_x(pool, count)) if (!bb.readFloat(it)) return false;
+        break;
+      default: return false;
+    }
+  }
+}
+
+bool StringArrayMessage::encode(kiwi::ByteBuffer &bb) {
+  if (_x) {
+    bb.writeVarUint(1);
+    bb.writeVarUint(_x->size());
+    for (kiwi::String &it : *_x) bb.writeString((it).c_str());
+  }
+  bb.writeVarUint(0);
+  return true;
+}
+
+bool StringArrayMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  uint32_t count;
+  while (true) {
+    uint32_t type;
+    if (!bb.readVarUint(type)) return false;
+    switch (type) {
+      case 0:
+        return true;
+      case 1:
+        if (!bb.readVarUint(count)) return false;
+        for (kiwi::String &it : add_x(pool, count)) if (!bb.readString(it, pool)) return false;
+        break;
+      default: return false;
+    }
+  }
+}
+
+bool CompoundArrayMessage::encode(kiwi::ByteBuffer &bb) {
+  if (_x) {
+    bb.writeVarUint(1);
+    bb.writeVarUint(_x->size());
+    for (uint32_t &it : *_x) bb.writeVarUint(it);
+  }
+  if (_y) {
+    bb.writeVarUint(2);
+    bb.writeVarUint(_y->size());
+    for (uint32_t &it : *_y) bb.writeVarUint(it);
+  }
+  bb.writeVarUint(0);
+  return true;
+}
+
+bool CompoundArrayMessage::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  uint32_t count;
+  while (true) {
+    uint32_t type;
+    if (!bb.readVarUint(type)) return false;
+    switch (type) {
+      case 0:
+        return true;
+      case 1:
+        if (!bb.readVarUint(count)) return false;
+        for (uint32_t &it : add_x(pool, count)) if (!bb.readVarUint(it)) return false;
+        break;
+      case 2:
+        if (!bb.readVarUint(count)) return false;
+        for (uint32_t &it : add_y(pool, count)) if (!bb.readVarUint(it)) return false;
+        break;
+      default: return false;
+    }
+  }
+}
+
+bool RequiredField::encode(kiwi::ByteBuffer &bb) {
+  if (!_x) return false;
+  bb.writeVarUint(1);
+  bb.writeVarInt(*_x);
+  bb.writeVarUint(0);
+  return true;
+}
+
+bool RequiredField::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  while (true) {
+    uint32_t type;
+    if (!bb.readVarUint(type)) return false;
+    switch (type) {
+      case 0:
+        if (!_x) return false;
+        return true;
+      case 1:
+        if (!bb.readVarInt(add_x(pool))) return false;
+        break;
+      default: return false;
+    }
+  }
 }
 
 }

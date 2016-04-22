@@ -1,4 +1,4 @@
-package test_cpp;
+package test;
 
 struct BoolStruct { bool x; }
 struct ByteStruct { byte x; }
@@ -17,3 +17,21 @@ message FloatMessage { float x = 1; }
 message StringMessage { string x = 1; }
 message CompoundMessage { uint x = 1; uint y = 2; }
 message NestedMessage { uint a = 1; CompoundMessage b = 2; uint c = 3; }
+
+struct BoolArrayStruct { bool[] x; }
+struct ByteArrayStruct { byte[] x; }
+struct IntArrayStruct { int[] x; }
+struct UintArrayStruct { uint[] x; }
+struct FloatArrayStruct { float[] x; }
+struct StringArrayStruct { string[] x; }
+struct CompoundArrayStruct { uint[] x; uint[] y; }
+
+message BoolArrayMessage { bool[] x = 1; }
+message ByteArrayMessage { byte[] x = 1; }
+message IntArrayMessage { int[] x = 1; }
+message UintArrayMessage { uint[] x = 1; }
+message FloatArrayMessage { float[] x = 1; }
+message StringArrayMessage { string[] x = 1; }
+message CompoundArrayMessage { uint[] x = 1; uint[] y = 2; }
+
+message RequiredField { required int x = 1; }
