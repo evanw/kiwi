@@ -2,6 +2,12 @@
 
 namespace test {
 
+enum class Enum : uint32_t {
+  A = 100,
+  B = 200,
+};
+
+class EnumStruct;
 class BoolStruct;
 class ByteStruct;
 class IntStruct;
@@ -34,6 +40,23 @@ class StringArrayMessage;
 class CompoundArrayMessage;
 class RecursiveMessage;
 class RequiredField;
+
+class EnumStruct {
+public:
+  Enum *x() { return _flags[0] & 1 ? &_data_x : nullptr; }
+  void set_x(const Enum &value) { _flags[0] |= 1; _data_x = value; }
+
+  kiwi::Array<Enum> *y() { return _flags[0] & 2 ? &_data_y : nullptr; }
+  kiwi::Array<Enum> &set_y(kiwi::MemoryPool &pool, uint32_t count) { _flags[0] |= 2; return _data_y = pool.array<Enum>(count); }
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
+
+private:
+  uint32_t _flags[1] = {};
+  Enum _data_x = {};
+  kiwi::Array<Enum> _data_y = {};
+};
 
 class BoolStruct {
 public:
@@ -482,6 +505,24 @@ private:
   uint32_t _flags[1] = {};
   int32_t _data_x = {};
 };
+
+bool EnumStruct::encode(kiwi::ByteBuffer &bb) {
+  if (x() == nullptr) return false;
+  bb.writeVarUint(static_cast<uint32_t>(_data_x));
+  if (y() == nullptr) return false;
+  bb.writeVarUint(_data_y.size());
+  for (Enum &it : _data_y) bb.writeVarUint(static_cast<uint32_t>(it));
+  return true;
+}
+
+bool EnumStruct::decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool) {
+  uint32_t count;
+  if (!bb.readVarUint(reinterpret_cast<uint32_t &>(_data_x))) return false;
+  set_x(_data_x);
+  if (!bb.readVarUint(count)) return false;
+  for (Enum &it : set_y(pool, count)) if (!bb.readVarUint(reinterpret_cast<uint32_t &>(it))) return false;
+  return true;
+}
 
 bool BoolStruct::encode(kiwi::ByteBuffer &bb) {
   if (x() == nullptr) return false;

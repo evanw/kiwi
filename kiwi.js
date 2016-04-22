@@ -820,8 +820,8 @@ var kiwi = exports || kiwi || {}, exports;
     for (var i = 0; i < schema.definitions.length; i++) {
       var definition = schema.definitions[i];
 
-      if (definition === 'ENUM') {
-        cpp.push('enum class ' + definition.name + ' {');
+      if (definition.kind === 'ENUM') {
+        cpp.push('enum class ' + definition.name + ' : uint32_t {');
         for (var j = 0; j < definition.fields.length; j++) {
           var field = definition.fields[j];
           cpp.push('  ' + field.name + ' = ' + field.value + ',');
@@ -955,7 +955,7 @@ var kiwi = exports || kiwi || {}, exports;
                 }
 
                 else if (type.kind === 'ENUM') {
-                  code = 'bb.writeVarUint(' + value + ');';
+                  code = 'bb.writeVarUint(static_cast<uint32_t>(' + value + '));';
                 }
 
                 else {
@@ -1068,7 +1068,7 @@ var kiwi = exports || kiwi || {}, exports;
                 }
 
                 else if (type.kind === 'ENUM') {
-                  code = 'bb.readVarUint(' + value + ')';
+                  code = 'bb.readVarUint(reinterpret_cast<uint32_t &>(' + value + '))';
                 }
 
                 else {

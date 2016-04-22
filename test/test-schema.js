@@ -1,5 +1,50 @@
 var test = exports || test || {}, exports;
 test.ByteBuffer = test.ByteBuffer || require("kiwi-schema").ByteBuffer;
+test["Enum"] = {
+  "100": "A",
+  "200": "B",
+  "A": 100,
+  "B": 200
+};
+
+test["decodeEnumStruct"] = function(bb) {
+  var result = {};
+  if (!(bb instanceof this.ByteBuffer)) {
+    bb = new this.ByteBuffer(bb);
+  }
+
+  result["x"] = this["Enum"][bb.readVarUint()];
+  var values = result["y"] = [];
+  var length = bb.readVarUint();
+  while (length-- > 0) values.push(this["Enum"][bb.readVarUint()]);
+  return result;
+};
+
+test["encodeEnumStruct"] = function(message, bb) {
+  var isTopLevel = !bb;
+  if (isTopLevel) bb = new this.ByteBuffer();
+
+  var value = message["x"];
+  if (value != null) {
+    var encoded = this["Enum"][value]; if (encoded === void 0) throw new Error("Invalid value " + JSON.stringify(value) + " for enum \"Enum\""); bb.writeVarUint(encoded);
+  } else {
+    throw new Error("Missing required field \"x\"");
+  }
+
+  var value = message["y"];
+  if (value != null) {
+    var values = value, n = values.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < n; i++) {
+      value = values[i];
+      var encoded = this["Enum"][value]; if (encoded === void 0) throw new Error("Invalid value " + JSON.stringify(value) + " for enum \"Enum\""); bb.writeVarUint(encoded);
+    }
+  } else {
+    throw new Error("Missing required field \"y\"");
+  }
+
+  if (isTopLevel) return bb.toUint8Array();
+};
 
 test["decodeBoolStruct"] = function(bb) {
   var result = {};
@@ -1064,6 +1109,41 @@ test["encodeCompoundArrayMessage"] = function(message, bb) {
       value = values[i];
       bb.writeVarUint(value);
     }
+  }
+  bb.writeVarUint(0);
+
+  if (isTopLevel) return bb.toUint8Array();
+};
+
+test["decodeRecursiveMessage"] = function(bb) {
+  var result = {};
+  if (!(bb instanceof this.ByteBuffer)) {
+    bb = new this.ByteBuffer(bb);
+  }
+
+  while (true) {
+    switch (bb.readByte()) {
+    case 0:
+      return result;
+
+    case 1:
+      result["x"] = this["decodeRecursiveMessage"](bb);
+      break;
+
+    default:
+      throw new Error("Attempted to parse invalid message");
+    }
+  }
+};
+
+test["encodeRecursiveMessage"] = function(message, bb) {
+  var isTopLevel = !bb;
+  if (isTopLevel) bb = new this.ByteBuffer();
+
+  var value = message["x"];
+  if (value != null) {
+    bb.writeVarUint(1);
+    this["encodeRecursiveMessage"](value, bb);
   }
   bb.writeVarUint(0);
 

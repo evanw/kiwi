@@ -1,5 +1,12 @@
 package test;
 
+enum Enum {
+  A = 100;
+  B = 200;
+}
+
+struct EnumStruct { Enum x; Enum[] y; }
+
 struct BoolStruct { bool x; }
 struct ByteStruct { byte x; }
 struct IntStruct { int x; }
