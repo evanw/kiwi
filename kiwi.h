@@ -48,7 +48,8 @@ namespace kiwi {
 
   ////////////////////////////////////////////////////////////////////////////////
 
-  struct String {
+  class String {
+  public:
     String() {}
     String(const char *c_str) : _c_str(c_str) {}
 
@@ -64,7 +65,8 @@ namespace kiwi {
   ////////////////////////////////////////////////////////////////////////////////
 
   template <typename T>
-  struct Array {
+  class Array {
+  public:
     Array() {}
     Array(T *data, uint32_t size) : _data(data), _size(size) {}
 
