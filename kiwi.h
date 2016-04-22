@@ -74,6 +74,11 @@ namespace kiwi {
     uint32_t size() const { return _size; }
     T &operator [] (uint32_t index) { assert(index < _size); return _data[index]; }
 
+    const T *data() const { return _data; }
+    const T *begin() const { return _data; }
+    const T *end() const { return _data + _size; }
+    const T &operator [] (uint32_t index) const { assert(index < _size); return _data[index]; }
+
   private:
     T *_data = nullptr;
     uint32_t _size = 0;
