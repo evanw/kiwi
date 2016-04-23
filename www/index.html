@@ -137,10 +137,10 @@ message Example {
   function update() {
     try {
       var compiled = kiwi.compileSchema(schema.value);
-      var parts = schema.value.split(/\bmessage\s+(\w+)\b/g);
+      var parts = schema.value.split(/\b(?:message|struct)\s+(\w+)\b/g);
 
       if (parts.length < 2) {
-        throw new Error('No message found');
+        throw new Error('No message or struct found');
       }
 
       // Encode using the last message found in the schema

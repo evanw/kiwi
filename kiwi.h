@@ -24,13 +24,13 @@ namespace kiwi {
     bool seekTo(size_t index);
     bool readByte(bool &result);
     bool readByte(uint8_t &result);
-    bool readFloat(float &result);
+    bool readVarFloat(float &result);
     bool readVarUint(uint32_t &result);
     bool readVarInt(int32_t &result);
     bool readString(String &result, MemoryPool &pool);
 
     void writeByte(uint8_t value);
-    void writeFloat(float value);
+    void writeVarFloat(float value);
     void writeVarUint(uint32_t value);
     void writeVarInt(int32_t value);
     void writeString(const char *value);
@@ -150,24 +150,41 @@ namespace kiwi {
   }
 
   bool ByteBuffer::readByte(uint8_t &result) {
-    if (_index + sizeof(uint8_t) > _size) {
+    if (_index >= _size) {
       result = 0;
       return false;
     }
 
     result = _data[_index];
-    _index += sizeof(uint8_t);
+    _index++;
     return true;
   }
 
-  bool ByteBuffer::readFloat(float &result) {
-    if (_index + sizeof(float) > _size) {
-      result = 0;
+  bool ByteBuffer::readVarFloat(float &result) {
+    uint8_t first;
+    if (!readByte(first)) {
       return false;
     }
 
-    memcpy(&result, _data + _index, sizeof(float));
-    _index += sizeof(float);
+    // Optimization: use a single byte to store zero
+    if (first == 0) {
+      result = 0;
+      return true;
+    }
+
+    // Endian-independent 32-bit read
+    if (_index + 3 > _size) {
+      result = 0;
+      return false;
+    }
+    uint32_t bits = first | (_data[_index] << 8) | (_data[_index + 1] << 16) | (_data[_index + 2] << 24);
+    _index += 3;
+
+    // Move the exponent back into place
+    bits = (bits << 23) | (bits >> 9);
+
+    // Reinterpret as a floating-point number
+    memcpy(&result, &bits, 4);
     return true;
   }
 
@@ -214,14 +231,31 @@ namespace kiwi {
 
   void ByteBuffer::writeByte(uint8_t value) {
     size_t index = _size;
-    _growBy(sizeof(uint8_t));
+    _growBy(1);
     _data[index] = value;
   }
 
-  void ByteBuffer::writeFloat(float value) {
+  void ByteBuffer::writeVarFloat(float value) {
+    // Reinterpret as an integer
+    uint32_t bits;
+    memcpy(&bits, &value, 4);
+
+    // Move the exponent to the first 8 bits
+    bits = (bits >> 23) | (bits << 9);
+
+    // Optimization: use a single byte to store zero and denormals (check for an exponent of 0)
+    if ((bits & 255) == 0) {
+      writeByte(0);
+      return;
+    }
+
+    // Endian-independent 32-bit write
     size_t index = _size;
-    _growBy(sizeof(float));
-    memcpy(_data + index, &value, sizeof(float));
+    _growBy(4);
+    _data[index] = bits;
+    _data[index + 1] = bits >> 8;
+    _data[index + 2] = bits >> 16;
+    _data[index + 3] = bits >> 24;
   }
 
   void ByteBuffer::writeVarUint(uint32_t value) {

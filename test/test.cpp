@@ -146,14 +146,17 @@ static void testStructFloat() {
     test::FloatStruct s2;
     assert(s2.decode(bb2, pool));
     assert(s2.x());
-    assert(*s2.x() == i);
+    assert(*s2.x() == i || (*s2.x() != *s2.x() && i != i));
   };
 
-  check(0, {0, 0, 0, 0});
-  check(1, {0, 0, 128, 63});
-  check(-1, {0, 0, 128, 191});
-  check(3.1415927410125732, {219, 15, 73, 64});
-  check(-3.1415927410125732, {219, 15, 73, 192});
+  check(0, {0});
+  check(1, {127, 0, 0, 0});
+  check(-1, {127, 1, 0, 0});
+  check(3.1415927410125732, {128, 182, 31, 146});
+  check(-3.1415927410125732, {128, 183, 31, 146});
+  check(1.0 / 0, {255, 0, 0, 0});
+  check(-1.0 / 0, {255, 1, 0, 0});
+  check(0.0 / 0, {255, 0, 0, 128});
 }
 
 static void testStructString() {
@@ -367,7 +370,7 @@ static void testMessageFloat() {
     assert(*s2.x() == i);
   };
 
-  check(3.1415927410125732, {1, 219, 15, 73, 64, 0});
+  check(3.1415927410125732, {1, 128, 182, 31, 146, 0});
 }
 
 static void testMessageString() {

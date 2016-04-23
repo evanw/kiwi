@@ -700,12 +700,12 @@ void FloatStruct::set_x(const float &value) {
 
 bool FloatStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
-  _bb.writeFloat(_data_x);
+  _bb.writeVarFloat(_data_x);
   return true;
 }
 
 bool FloatStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
-  if (!_bb.readFloat(_data_x)) return false;
+  if (!_bb.readVarFloat(_data_x)) return false;
   set_x(_data_x);
   return true;
 }
@@ -993,7 +993,7 @@ void FloatMessage::set_x(const float &value) {
 bool FloatMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
-    _bb.writeFloat(_data_x);
+    _bb.writeVarFloat(_data_x);
   }
   _bb.writeVarUint(0);
   return true;
@@ -1007,7 +1007,7 @@ bool FloatMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
       case 0:
         return true;
       case 1:
-        if (!_bb.readFloat(_data_x)) return false;
+        if (!_bb.readVarFloat(_data_x)) return false;
         set_x(_data_x);
         break;
       default: return false;
@@ -1305,14 +1305,14 @@ kiwi::Array<float> &FloatArrayStruct::set_x(kiwi::MemoryPool &pool, uint32_t cou
 bool FloatArrayStruct::encode(kiwi::ByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeVarUint(_data_x.size());
-  for (float &_it : _data_x) _bb.writeFloat(_it);
+  for (float &_it : _data_x) _bb.writeVarFloat(_it);
   return true;
 }
 
 bool FloatArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
   uint32_t _count;
   if (!_bb.readVarUint(_count)) return false;
-  for (float &_it : set_x(_pool, _count)) if (!_bb.readFloat(_it)) return false;
+  for (float &_it : set_x(_pool, _count)) if (!_bb.readVarFloat(_it)) return false;
   return true;
 }
 
@@ -1557,7 +1557,7 @@ bool FloatArrayMessage::encode(kiwi::ByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
     _bb.writeVarUint(_data_x.size());
-    for (float &_it : _data_x) _bb.writeFloat(_it);
+    for (float &_it : _data_x) _bb.writeVarFloat(_it);
   }
   _bb.writeVarUint(0);
   return true;
@@ -1573,7 +1573,7 @@ bool FloatArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
         return true;
       case 1:
         if (!_bb.readVarUint(_count)) return false;
-        for (float &_it : set_x(_pool, _count)) if (!_bb.readFloat(_it)) return false;
+        for (float &_it : set_x(_pool, _count)) if (!_bb.readVarFloat(_it)) return false;
         break;
       default: return false;
     }

@@ -81,14 +81,17 @@ it('struct int', function() {
 it('struct float', function() {
   function check(i, o) {
     assert.deepEqual(Buffer(schema.encodeFloatStruct({x: i})), Buffer(o));
-    assert.deepEqual(schema.decodeFloatStruct(new Uint8Array(o)), {x: i});
+    assert.deepEqual(JSON.stringify(schema.decodeFloatStruct(new Uint8Array(o))), JSON.stringify({x: i}));
   }
 
-  check(0, [0, 0, 0, 0]);
-  check(1, [0, 0, 128, 63]);
-  check(-1, [0, 0, 128, 191]);
-  check(3.1415927410125732, [219, 15, 73, 64]);
-  check(-3.1415927410125732, [219, 15, 73, 192]);
+  check(0, [0]);
+  check(1, [127, 0, 0, 0]);
+  check(-1, [127, 1, 0, 0]);
+  check(3.1415927410125732, [128, 182, 31, 146]);
+  check(-3.1415927410125732, [128, 183, 31, 146]);
+  check(Infinity, [255, 0, 0, 0]);
+  check(-Infinity, [255, 1, 0, 0]);
+  check(NaN, [255, 0, 0, 128]);
 });
 
 it('struct string', function() {
@@ -172,7 +175,7 @@ it('message float', function() {
   }
 
   check({}, [0]);
-  check({x: 3.1415927410125732}, [1, 219, 15, 73, 64, 0]);
+  check({x: 3.1415927410125732}, [1, 128, 182, 31, 146, 0]);
 });
 
 it('message string', function() {

@@ -148,7 +148,7 @@ test["decodeFloatStruct"] = function(bb) {
     bb = new this.ByteBuffer(bb);
   }
 
-  result["x"] = bb.readFloat();
+  result["x"] = bb.readVarFloat();
   return result;
 };
 
@@ -158,7 +158,7 @@ test["encodeFloatStruct"] = function(message, bb) {
 
   var value = message["x"];
   if (value != null) {
-    bb.writeFloat(value);
+    bb.writeVarFloat(value);
   } else {
     throw new Error("Missing required field \"x\"");
   }
@@ -414,7 +414,7 @@ test["decodeFloatMessage"] = function(bb) {
       return result;
 
     case 1:
-      result["x"] = bb.readFloat();
+      result["x"] = bb.readVarFloat();
       break;
 
     default:
@@ -430,7 +430,7 @@ test["encodeFloatMessage"] = function(message, bb) {
   var value = message["x"];
   if (value != null) {
     bb.writeVarUint(1);
-    bb.writeFloat(value);
+    bb.writeVarFloat(value);
   }
   bb.writeVarUint(0);
 
@@ -704,7 +704,7 @@ test["decodeFloatArrayStruct"] = function(bb) {
 
   var values = result["x"] = [];
   var length = bb.readVarUint();
-  while (length-- > 0) values.push(bb.readFloat());
+  while (length-- > 0) values.push(bb.readVarFloat());
   return result;
 };
 
@@ -718,7 +718,7 @@ test["encodeFloatArrayStruct"] = function(message, bb) {
     bb.writeVarUint(n);
     for (var i = 0; i < n; i++) {
       value = values[i];
-      bb.writeFloat(value);
+      bb.writeVarFloat(value);
     }
   } else {
     throw new Error("Missing required field \"x\"");
@@ -986,7 +986,7 @@ test["decodeFloatArrayMessage"] = function(bb) {
     case 1:
       var values = result["x"] = [];
       var length = bb.readVarUint();
-      while (length-- > 0) values.push(bb.readFloat());
+      while (length-- > 0) values.push(bb.readVarFloat());
       break;
 
     default:
@@ -1006,7 +1006,7 @@ test["encodeFloatArrayMessage"] = function(message, bb) {
     bb.writeVarUint(n);
     for (var i = 0; i < n; i++) {
       value = values[i];
-      bb.writeFloat(value);
+      bb.writeVarFloat(value);
     }
   }
   bb.writeVarUint(0);

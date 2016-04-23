@@ -15,8 +15,8 @@ var kiwi = exports || kiwi || {}, exports;
 
 // ByteBuffer
 (function() {
-  var uint8 = new Uint8Array(4);
-  var float32 = new Float32Array(uint8.buffer);
+  var int32 = new Int32Array(1);
+  var float32 = new Float32Array(int32.buffer);
 
   function ByteBuffer(data) {
     if (data && !(data instanceof Uint8Array)) {
@@ -45,17 +45,33 @@ var kiwi = exports || kiwi || {}, exports;
     return this._data[this._index++];
   };
 
-  ByteBuffer.prototype.readFloat = function() {
+  ByteBuffer.prototype.readVarFloat = function() {
     var index = this._index;
     var data = this._data;
-    if (index + 4 > data.length) {
+    var length = data.length;
+
+    // Optimization: use a single byte to store zero
+    if (index + 1 > length) {
       throw new Error('Index out of bounds');
     }
-    uint8[0] = data[index];
-    uint8[1] = data[index + 1];
-    uint8[2] = data[index + 2];
-    uint8[3] = data[index + 3];
+    var first = data[index];
+    if (first === 0) {
+      this._index = index + 1;
+      return 0;
+    }
+
+    // Endian-independent 32-bit read
+    if (index + 4 > length) {
+      throw new Error('Index out of bounds');
+    }
+    var bits = first | (data[index + 1] << 8) | (data[index + 2] << 16) | (data[index + 3] << 24);
     this._index = index + 4;
+
+    // Move the exponent back into place
+    bits = (bits << 23) | (bits >>> 9);
+
+    // Reinterpret as a floating-point number
+    int32[0] = bits;
     return float32[0];
   };
 
@@ -132,15 +148,29 @@ var kiwi = exports || kiwi || {}, exports;
     this._data[index] = value;
   };
 
-  ByteBuffer.prototype.writeFloat = function(value) {
+  ByteBuffer.prototype.writeVarFloat = function(value) {
     var index = this.length;
+
+    // Reinterpret as an integer
+    float32[0] = value;
+    var bits = int32[0];
+
+    // Move the exponent to the first 8 bits
+    bits = (bits >>> 23) | (bits << 9);
+
+    // Optimization: use a single byte to store zero and denormals (check for an exponent of 0)
+    if ((bits & 255) === 0) {
+      this.writeByte(0);
+      return;
+    }
+
+    // Endian-independent 32-bit write
     this._growBy(4);
     var data = this._data;
-    float32[0] = value;
-    data[index] = uint8[0];
-    data[index + 1] = uint8[1];
-    data[index + 2] = uint8[2];
-    data[index + 3] = uint8[3];
+    data[index] = bits;
+    data[index + 1] = bits >> 8;
+    data[index + 2] = bits >> 16;
+    data[index + 3] = bits >> 24;
   };
 
   ByteBuffer.prototype.writeVarUint = function(value) {
@@ -521,7 +551,7 @@ var kiwi = exports || kiwi || {}, exports;
         }
 
         case 'float': {
-          code = 'bb.readFloat()';
+          code = 'bb.readVarFloat()';
           break;
         }
 
@@ -611,7 +641,7 @@ var kiwi = exports || kiwi || {}, exports;
         }
 
         case 'float': {
-          code = 'bb.writeFloat(value);';
+          code = 'bb.writeVarFloat(value);';
           break;
         }
 
@@ -998,7 +1028,7 @@ var kiwi = exports || kiwi || {}, exports;
               }
 
               case 'float': {
-                code = '_bb.writeFloat(' + value + ');';
+                code = '_bb.writeVarFloat(' + value + ');';
                 break;
               }
 
@@ -1111,7 +1141,7 @@ var kiwi = exports || kiwi || {}, exports;
               }
 
               case 'float': {
-                code = '_bb.readFloat(' + value + ')';
+                code = '_bb.readVarFloat(' + value + ')';
                 break;
               }
 
