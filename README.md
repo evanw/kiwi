@@ -9,7 +9,7 @@ This is a binary encoding format inspired by Google's [Protocol Buffer](https://
 * *int*: A 32-bit integer value stored using a variable-length encoding optimized for storing numbers with a small magnitude. Will use at most 5 bytes.
 * *uint*: A 32-bit integer value stored using a variable-length encoding optimized for storing small non-negative numbers. Will use at most 5 bytes.
 * *float*: A 32-bit floating-point number. Normally uses 4 bytes but a value of zero uses 1 byte ([denormal numbers](https://en.wikipedia.org/wiki/Denormal_number) become zero when encoded).
-* *string*: A UTF-8 length-prefixed string. Will use at least 1 byte.
+* *string*: A UTF-8 null-terminated string. Will use at least 1 byte.
 * *T[]*: Any type can be made into an array using the `[]` suffix.
 
 ## User Types
