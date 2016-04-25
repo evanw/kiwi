@@ -51,7 +51,7 @@ namespace kiwi {
   class String {
   public:
     String() {}
-    String(const char *c_str) : _c_str(c_str) {}
+    explicit String(const char *c_str) : _c_str(c_str) {}
 
     const char *c_str() const { return _c_str; }
 
@@ -337,7 +337,7 @@ namespace kiwi {
   String MemoryPool::string(const char *text, uint32_t count) {
     char *c_str = allocate<char>(count + 1);
     memcpy(c_str, text, count);
-    return c_str;
+    return String(c_str);
   }
 }
 

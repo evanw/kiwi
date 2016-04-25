@@ -167,7 +167,7 @@ static void testStructString() {
     kiwi::MemoryPool pool;
 
     test::StringStruct s;
-    s.set_x(i);
+    s.set_x(pool.string(i));
     assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
@@ -175,7 +175,7 @@ static void testStructString() {
     test::StringStruct s2;
     assert(s2.decode(bb2, pool));
     assert(s2.x());
-    assert(*s2.x() == i);
+    assert(*s2.x() == kiwi::String(i));
   };
 
   check("", {0});
@@ -381,7 +381,7 @@ static void testMessageString() {
     kiwi::MemoryPool pool;
 
     test::StringMessage s;
-    s.set_x(i);
+    s.set_x(pool.string(i));
     assert(s.encode(bb));
     assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
 
@@ -389,7 +389,7 @@ static void testMessageString() {
     test::StringMessage s2;
     assert(s2.decode(bb2, pool));
     assert(s2.x());
-    assert(*s2.x() == i);
+    assert(*s2.x() == kiwi::String(i));
   };
 
   check("", {1, 0, 0});
