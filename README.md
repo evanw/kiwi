@@ -1,22 +1,37 @@
 # Kiwi Message Format
 
-This is a binary encoding format inspired by Google's [Protocol Buffer](https://developers.google.com/protocol-buffers/) format.
+Kiwi is a schema-based binary format for efficiently encoding trees of data.
+It's inspired by Google's [Protocol Buffer](https://developers.google.com/protocol-buffers/) format but is simpler, has a more compact encoding, and has better support for optional fields.
+
+Goals:
+
+* **Efficient encoding of common values:** Variable-length encoding is used for numeric values where small values take up less space.
+* **Efficient encoding of compound objects:** The `struct` feature supports nested objects with zero encoding overhead.
+* **Presence of optional fields is detectable:** This is not possible with Protocol Buffers, especially for repeated fields.
+* **Linearly serializable:** Reading and writing are both single-scan operations so they are cache-efficient and have guaranteed time complexity.
+* **Backwards compatibility:** New versions of the schema can still read old data.
+* **Simple implementation:** The API is very minimal and the generated C++ code only depends on a single file.
+
+Non-goals:
+
+* **Forwards compatibility:** Old versions of the schema cannot read new data.
+* **Optimal bit-packing:** Compression can be used after encoding for more space savings if needed.
 
 ## Native Types
 
-* *bool*: A value that stores either `true` or `false`. Will use 1 byte.
-* *byte*: An unsigned 8-bit integer value. Uses 1 byte, obviously.
-* *int*: A 32-bit integer value stored using a variable-length encoding optimized for storing numbers with a small magnitude. Will use at most 5 bytes.
-* *uint*: A 32-bit integer value stored using a variable-length encoding optimized for storing small non-negative numbers. Will use at most 5 bytes.
-* *float*: A 32-bit floating-point number. Normally uses 4 bytes but a value of zero uses 1 byte ([denormal numbers](https://en.wikipedia.org/wiki/Denormal_number) become zero when encoded).
-* *string*: A UTF-8 null-terminated string. Will use at least 1 byte.
-* *T[]*: Any type can be made into an array using the `[]` suffix.
+* **bool:** A value that stores either `true` or `false`. Will use 1 byte.
+* **byte:** An unsigned 8-bit integer value. Uses 1 byte, obviously.
+* **int:** A 32-bit integer value stored using a variable-length encoding optimized for storing numbers with a small magnitude. Will use at most 5 bytes.
+* **uint:** A 32-bit integer value stored using a variable-length encoding optimized for storing small non-negative numbers. Will use at most 5 bytes.
+* **float:** A 32-bit floating-point number. Normally uses 4 bytes but a value of zero uses 1 byte ([denormal numbers](https://en.wikipedia.org/wiki/Denormal_number) become zero when encoded).
+* **string:** A UTF-8 null-terminated string. Will use at least 1 byte.
+* **T[]:** Any type can be made into an array using the `[]` suffix.
 
 ## User Types
 
-* *enum*: A `uint` with a restricted set of values that are identified by name.
-* *struct*: A compound value with a fixed set of fields that are always required and written out in order.
-* *message*: A compound value with optional fields. A field can be made required using the `required` keyword.
+* **enum:** A `uint` with a restricted set of values that are identified by name. New fields can be added to any message while maintaining backwards compatibility.
+* **struct:** A compound value with a fixed set of fields that are always required and written out in order. New fields cannot be added to a struct once that struct is in use.
+* **message:** A compound value with optional fields. A field can be made required using the `required` keyword. New fields can be added to any message while maintaining backwards compatibility.
 
 ## Example Schema
 
@@ -40,13 +55,6 @@ message Example {
   Color[] colors = 3;
 }
 ```
-
-## Differences from Protocol Buffers
-
-* Kiwi adds support for efficient compound messages using the `struct` keyword
-* Enums are scoped to their type instead of dumping everything into the global scope like C
-* It's always possible to check for field presence, even for fields that hold arrays
-* The generated C++ code is a lot simpler and only depends on a single file, `kiwi.h`
 
 ## Live Demo
 
