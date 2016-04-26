@@ -21,7 +21,6 @@ namespace kiwi {
     size_t size() const { return _size; }
     size_t index() const { return _index; }
 
-    bool seekTo(size_t index);
     bool readByte(bool &result);
     bool readByte(uint8_t &result);
     bool readVarFloat(float &result);
@@ -127,15 +126,6 @@ namespace kiwi {
     if (_ownsData) {
       delete [] _data;
     }
-  }
-
-  bool ByteBuffer::seekTo(size_t index) {
-    if (index <= _size) {
-      _index = index;
-      return true;
-    }
-
-    return false;
   }
 
   bool ByteBuffer::readByte(bool &result) {
