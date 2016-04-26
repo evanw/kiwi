@@ -318,20 +318,19 @@ namespace kiwi {
 
     if (chunk && index + size >= index && index + size <= chunk->capacity) {
       chunk->used = index + size;
+      return reinterpret_cast<T *>(chunk->data + index);
     }
 
-    else {
-      chunk = new Chunk;
-      chunk->capacity = size > INITIAL_CAPACITY ? size : INITIAL_CAPACITY;
-      chunk->data = new uint8_t[chunk->capacity](); // "()" means zero-initialized
-      chunk->used = size;
+    chunk = new Chunk;
+    chunk->capacity = size > INITIAL_CAPACITY ? size : INITIAL_CAPACITY;
+    chunk->data = new uint8_t[chunk->capacity](); // "()" means zero-initialized
+    chunk->used = size;
 
-      if (_last) _last->next = chunk;
-      else _first = chunk;
-      _last = chunk;
-    }
+    if (_last) _last->next = chunk;
+    else _first = chunk;
+    _last = chunk;
 
-    return reinterpret_cast<T *>(chunk->data + index);
+    return reinterpret_cast<T *>(chunk->data);
   }
 
   String MemoryPool::string(const char *text, uint32_t count) {
