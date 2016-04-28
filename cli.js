@@ -13,6 +13,7 @@ var usage = [
   '  --schema [PATH]     The schema file to use.',
   '  --js [PATH]         Generate JavaScript code.',
   '  --cpp [PATH]        Generate C++ code.',
+  '  --skew [PATH]       Generate Skew code.',
   '  --root-type [NAME]  Set the root type for JSON.',
   '  --to-json [PATH]    Convert a binary file to JSON.',
   '  --from-json [PATH]  Convert a JSON file to binary.',
@@ -24,6 +25,7 @@ var main = exports.main = function(args) {
     '--schema': null,
     '--js': null,
     '--cpp': null,
+    '--skew': null,
     '--root-type': null,
     '--to-json': null,
     '--from-json': null,
@@ -85,6 +87,11 @@ var main = exports.main = function(args) {
   // Generate C++ code
   if (flags['--cpp'] !== null) {
     fs.writeFileSync(flags['--cpp'], kiwi.compileSchemaCPP(content));
+  }
+
+  // Generate Skew code
+  if (flags['--skew'] !== null) {
+    fs.writeFileSync(flags['--skew'], kiwi.compileSchemaSkew(content));
   }
 
   // Convert a binary file to JSON

@@ -1,6 +1,6 @@
 {
   "name": "kiwi-schema",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "",
   "main": "kiwi.js",
   "bin": {
@@ -14,6 +14,7 @@
     "url": "https://github.com/evanw/kiwi.git"
   },
   "devDependencies": {
-    "mocha": "2.4.5"
+    "mocha": "2.4.5",
+    "skew": "0.7.40"
   }
 }

@@ -1,0 +1,236 @@
+namespace Kiwi {
+  var _int32 = Int32Array.new(1)
+  var _float32 = Float32Array.new(_int32.buffer)
+
+  class DecodeError {
+    const message string
+  }
+
+  namespace DecodeError {
+    def throwOutOfBounds {
+      throw new("Index out of bounds")
+    }
+
+    def throwInvalidMessage {
+      throw new("Attempted to parse invalid message")
+    }
+
+    def throwInvalidEnumValue(name string) {
+      throw new("Invalid value for enum \"\(name)\"")
+    }
+
+    def throwMissingRequiredField(name string) {
+      throw new("Missing required field \"\(name)\"")
+    }
+  }
+
+  class ByteBuffer {
+    var _index = 0
+    var _length = 0
+    var _data Uint8Array = null
+
+    def new {
+      _data = Uint8Array.new(256)
+    }
+
+    def new(data Uint8Array) {
+      _data = data
+      _index = 0
+      _length = data.length
+    }
+
+    def toUint8Array Uint8Array {
+      return _data.subarray(0, _length)
+    }
+
+    def readByte int {
+      if _index + 1 > _length {
+        DecodeError.throwOutOfBounds
+      }
+      return _data[_index++]
+    }
+
+    def readVarFloat double {
+      var index = _index
+      var data = _data
+
+      # Optimization: use a single byte to store zero
+      if index + 1 > _length {
+        DecodeError.throwOutOfBounds
+      }
+      var first = data[index]
+      if first == 0 {
+        _index = index + 1
+        return 0
+      }
+
+      # Endian-independent 32-bit read
+      if index + 4 > _length {
+        DecodeError.throwOutOfBounds
+      }
+      var bits = first | (data[index + 1] << 8) | (data[index + 2] << 16) | (data[index + 3] << 24)
+      _index = index + 4
+
+      # Move the exponent back into place
+      bits = (bits << 23) | (bits >>> 9)
+
+      # Reinterpret as a floating-point number
+      _int32[0] = bits
+      return _float32[0]
+    }
+
+    def readVarUint int {
+      var value = 0
+      var shift = 0
+
+      while true {
+        var byte = readByte
+        value |= (byte & 127) << shift
+        shift += 7
+
+        if (byte & 128) == 0 || shift >= 35 {
+          break
+        }
+      }
+
+      return value
+    }
+
+    def readVarInt int {
+      var value = readVarUint
+      return (value & 1) != 0 ? ~(value >>> 1) : value >>> 1
+    }
+
+    def readString string {
+      var result = ""
+
+      while true {
+        var codePoint = 0
+
+        # Decode UTF-8
+        var a = readByte
+        if a < 0xC0 {
+          codePoint = a
+        } else {
+          var b = readByte
+          if a < 0xE0 {
+            codePoint = ((a & 0x1F) << 6) | (b & 0x3F)
+          } else {
+            var c = readByte
+            if a < 0xF0 {
+              codePoint = ((a & 0x0F) << 12) | ((b & 0x3F) << 6) | (c & 0x3F)
+            } else {
+              var d = readByte
+              codePoint = ((a & 0x07) << 18) | ((b & 0x3F) << 12) | ((c & 0x3F) << 6) | (d & 0x3F)
+            }
+          }
+        }
+
+        # Strings are null-terminated
+        if codePoint == 0 {
+          break
+        }
+
+        # Encode unicode
+        result += string.fromCodePoint(codePoint)
+      }
+
+      return result
+    }
+
+    def _growBy(amount int) {
+      assert(amount > 0)
+
+      if _length + amount > _data.length {
+        var data = Uint8Array.new(_length + amount << 1)
+        data.set(_data)
+        _data = data
+      }
+
+      _length += amount
+    }
+
+    def writeByte(value int) {
+      assert(0 <= value && value <= 255)
+      var index = _length
+      _growBy(1)
+      _data[index] = value
+    }
+
+    def writeVarFloat(value double) {
+      var index = _length
+
+      # Reinterpret as an integer
+      _float32[0] = value
+      var bits = _int32[0]
+
+      # Move the exponent to the first 8 bits
+      bits = (bits >>> 23) | (bits << 9)
+
+      # Optimization: use a single byte to store zero and denormals (check for an exponent of 0)
+      if (bits & 255) == 0 {
+        writeByte(0)
+        return
+      }
+
+      # Endian-independent 32-bit write
+      _growBy(4)
+      var data = _data
+      data[index] = bits
+      data[index + 1] = bits >> 8
+      data[index + 2] = bits >> 16
+      data[index + 3] = bits >> 24
+    }
+
+    def writeVarUint(value int) {
+      while true {
+        var byte = value & 127
+        value >>>= 7
+        writeByte(value != 0 ? byte | 128 : byte)
+        if value == 0 {
+          break
+        }
+      }
+    }
+
+    def writeVarInt(value int) {
+      writeVarUint((value << 1) ^ (value >> 31))
+    }
+
+    def writeString(value string) {
+      var iterator = Unicode.StringIterator.INSTANCE.reset(value, 0)
+
+      while true {
+        # Decode unicode
+        var codePoint = iterator.nextCodePoint
+        if codePoint == -1 {
+          break
+        }
+
+        # Strings are null-terminated
+        assert(codePoint != 0)
+
+        # Encode UTF-8
+        if codePoint < 0x80 {
+          writeByte(codePoint)
+        } else {
+          if codePoint < 0x800 {
+            writeByte(((codePoint >> 6) & 0x1F) | 0xC0)
+          } else {
+            if codePoint < 0x10000 {
+              writeByte(((codePoint >> 12) & 0x0F) | 0xE0)
+            } else {
+              writeByte(((codePoint >> 18) & 0x07) | 0xF0)
+              writeByte(((codePoint >> 12) & 0x3F) | 0x80)
+            }
+            writeByte(((codePoint >> 6) & 0x3F) | 0x80)
+          }
+          writeByte((codePoint & 0x3F) | 0x80)
+        }
+      }
+
+      # Strings are null-terminated
+      writeByte(0)
+    }
+  }
+}

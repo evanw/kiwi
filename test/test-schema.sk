@@ -1,0 +1,2048 @@
+namespace test {
+  enum Enum {
+    A
+    B
+  }
+
+  namespace Enum {
+    const _encode = {
+      A: 100,
+      B: 200
+    }
+
+    const _decode = {
+      100: A,
+      200: B
+    }
+
+    def encode(value Enum) int {
+      return _encode[value]
+    }
+
+    def decode(value int) Enum {
+      if !(value in _decode) {
+        Kiwi.DecodeError.throwInvalidEnumValue("Enum")
+      }
+      return _decode[value]
+    }
+  }
+
+  class EnumStruct {
+    var _flags0 = 0
+    var _x Enum = .A
+    var _y List<Enum> = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x Enum {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value Enum) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def has_y bool {
+      return (_flags0 & 2) != 0
+    }
+
+    def y List<Enum> {
+      assert(has_y)
+      return _y
+    }
+
+    def y=(value List<Enum>) {
+      _y = value
+      _flags0 |= 2
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_x)
+      bb.writeVarUint(Enum.encode(_x))
+
+      assert(has_y)
+      bb.writeVarUint(_y.count)
+      for value in _y {
+        bb.writeVarUint(Enum.encode(value))
+      }
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace EnumStruct {
+    def decode(bytes Uint8Array) EnumStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) EnumStruct {
+      var self = new
+      var count = 0
+      self.x = Enum.decode(bb.readVarUint)
+      count = bb.readVarUint
+      self.y = []
+      for array = self._y; count != 0; count-- {
+        array.append(Enum.decode(bb.readVarUint))
+      }
+      return self
+    }
+  }
+
+  class BoolStruct {
+    var _flags0 = 0
+    var _x bool = false
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x bool {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value bool) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_x)
+      bb.writeByte(_x as int)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace BoolStruct {
+    def decode(bytes Uint8Array) BoolStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) BoolStruct {
+      var self = new
+      self.x = bb.readByte as bool
+      return self
+    }
+  }
+
+  class ByteStruct {
+    var _flags0 = 0
+    var _x int = 0
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x int {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value int) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_x)
+      bb.writeByte(_x)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace ByteStruct {
+    def decode(bytes Uint8Array) ByteStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) ByteStruct {
+      var self = new
+      self.x = bb.readByte
+      return self
+    }
+  }
+
+  class IntStruct {
+    var _flags0 = 0
+    var _x int = 0
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x int {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value int) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_x)
+      bb.writeVarInt(_x)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace IntStruct {
+    def decode(bytes Uint8Array) IntStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) IntStruct {
+      var self = new
+      self.x = bb.readVarInt
+      return self
+    }
+  }
+
+  class UintStruct {
+    var _flags0 = 0
+    var _x int = 0
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x int {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value int) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_x)
+      bb.writeVarUint(_x)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace UintStruct {
+    def decode(bytes Uint8Array) UintStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) UintStruct {
+      var self = new
+      self.x = bb.readVarUint
+      return self
+    }
+  }
+
+  class FloatStruct {
+    var _flags0 = 0
+    var _x double = 0.0
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x double {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value double) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_x)
+      bb.writeVarFloat(_x)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace FloatStruct {
+    def decode(bytes Uint8Array) FloatStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) FloatStruct {
+      var self = new
+      self.x = bb.readVarFloat
+      return self
+    }
+  }
+
+  class StringStruct {
+    var _flags0 = 0
+    var _x string = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x string {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value string) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_x)
+      bb.writeString(_x)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace StringStruct {
+    def decode(bytes Uint8Array) StringStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) StringStruct {
+      var self = new
+      self.x = bb.readString
+      return self
+    }
+  }
+
+  class CompoundStruct {
+    var _flags0 = 0
+    var _x int = 0
+    var _y int = 0
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x int {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value int) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def has_y bool {
+      return (_flags0 & 2) != 0
+    }
+
+    def y int {
+      assert(has_y)
+      return _y
+    }
+
+    def y=(value int) {
+      _y = value
+      _flags0 |= 2
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_x)
+      bb.writeVarUint(_x)
+
+      assert(has_y)
+      bb.writeVarUint(_y)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace CompoundStruct {
+    def decode(bytes Uint8Array) CompoundStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) CompoundStruct {
+      var self = new
+      self.x = bb.readVarUint
+      self.y = bb.readVarUint
+      return self
+    }
+  }
+
+  class NestedStruct {
+    var _flags0 = 0
+    var _a int = 0
+    var _b CompoundStruct = null
+    var _c int = 0
+
+    def has_a bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def a int {
+      assert(has_a)
+      return _a
+    }
+
+    def a=(value int) {
+      _a = value
+      _flags0 |= 1
+    }
+
+    def has_b bool {
+      return (_flags0 & 2) != 0
+    }
+
+    def b CompoundStruct {
+      assert(has_b)
+      return _b
+    }
+
+    def b=(value CompoundStruct) {
+      _b = value
+      _flags0 |= 2
+    }
+
+    def has_c bool {
+      return (_flags0 & 4) != 0
+    }
+
+    def c int {
+      assert(has_c)
+      return _c
+    }
+
+    def c=(value int) {
+      _c = value
+      _flags0 |= 4
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_a)
+      bb.writeVarUint(_a)
+
+      assert(has_b)
+      _b.encode(bb)
+
+      assert(has_c)
+      bb.writeVarUint(_c)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace NestedStruct {
+    def decode(bytes Uint8Array) NestedStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) NestedStruct {
+      var self = new
+      self.a = bb.readVarUint
+      self.b = CompoundStruct.decode(bb)
+      self.c = bb.readVarUint
+      return self
+    }
+  }
+
+  class BoolMessage {
+    var _flags0 = 0
+    var _x bool = false
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x bool {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value bool) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_x {
+        bb.writeVarUint(1)
+        bb.writeByte(_x as int)
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace BoolMessage {
+    def decode(bytes Uint8Array) BoolMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) BoolMessage {
+      var self = new
+      while true {
+        switch bb.readByte {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            self.x = bb.readByte as bool
+          }
+
+          default {
+            Kiwi.DecodeError.throwInvalidMessage
+          }
+        }
+      }
+      return self
+    }
+  }
+
+  class ByteMessage {
+    var _flags0 = 0
+    var _x int = 0
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x int {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value int) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_x {
+        bb.writeVarUint(1)
+        bb.writeByte(_x)
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace ByteMessage {
+    def decode(bytes Uint8Array) ByteMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) ByteMessage {
+      var self = new
+      while true {
+        switch bb.readByte {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            self.x = bb.readByte
+          }
+
+          default {
+            Kiwi.DecodeError.throwInvalidMessage
+          }
+        }
+      }
+      return self
+    }
+  }
+
+  class IntMessage {
+    var _flags0 = 0
+    var _x int = 0
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x int {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value int) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_x {
+        bb.writeVarUint(1)
+        bb.writeVarInt(_x)
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace IntMessage {
+    def decode(bytes Uint8Array) IntMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) IntMessage {
+      var self = new
+      while true {
+        switch bb.readByte {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            self.x = bb.readVarInt
+          }
+
+          default {
+            Kiwi.DecodeError.throwInvalidMessage
+          }
+        }
+      }
+      return self
+    }
+  }
+
+  class UintMessage {
+    var _flags0 = 0
+    var _x int = 0
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x int {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value int) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_x {
+        bb.writeVarUint(1)
+        bb.writeVarUint(_x)
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace UintMessage {
+    def decode(bytes Uint8Array) UintMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) UintMessage {
+      var self = new
+      while true {
+        switch bb.readByte {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            self.x = bb.readVarUint
+          }
+
+          default {
+            Kiwi.DecodeError.throwInvalidMessage
+          }
+        }
+      }
+      return self
+    }
+  }
+
+  class FloatMessage {
+    var _flags0 = 0
+    var _x double = 0.0
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x double {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value double) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_x {
+        bb.writeVarUint(1)
+        bb.writeVarFloat(_x)
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace FloatMessage {
+    def decode(bytes Uint8Array) FloatMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) FloatMessage {
+      var self = new
+      while true {
+        switch bb.readByte {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            self.x = bb.readVarFloat
+          }
+
+          default {
+            Kiwi.DecodeError.throwInvalidMessage
+          }
+        }
+      }
+      return self
+    }
+  }
+
+  class StringMessage {
+    var _flags0 = 0
+    var _x string = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x string {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value string) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_x {
+        bb.writeVarUint(1)
+        bb.writeString(_x)
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace StringMessage {
+    def decode(bytes Uint8Array) StringMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) StringMessage {
+      var self = new
+      while true {
+        switch bb.readByte {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            self.x = bb.readString
+          }
+
+          default {
+            Kiwi.DecodeError.throwInvalidMessage
+          }
+        }
+      }
+      return self
+    }
+  }
+
+  class CompoundMessage {
+    var _flags0 = 0
+    var _x int = 0
+    var _y int = 0
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x int {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value int) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def has_y bool {
+      return (_flags0 & 2) != 0
+    }
+
+    def y int {
+      assert(has_y)
+      return _y
+    }
+
+    def y=(value int) {
+      _y = value
+      _flags0 |= 2
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_x {
+        bb.writeVarUint(1)
+        bb.writeVarUint(_x)
+      }
+
+      if has_y {
+        bb.writeVarUint(2)
+        bb.writeVarUint(_y)
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace CompoundMessage {
+    def decode(bytes Uint8Array) CompoundMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) CompoundMessage {
+      var self = new
+      while true {
+        switch bb.readByte {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            self.x = bb.readVarUint
+          }
+
+          case 2 {
+            self.y = bb.readVarUint
+          }
+
+          default {
+            Kiwi.DecodeError.throwInvalidMessage
+          }
+        }
+      }
+      return self
+    }
+  }
+
+  class NestedMessage {
+    var _flags0 = 0
+    var _a int = 0
+    var _b CompoundMessage = null
+    var _c int = 0
+
+    def has_a bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def a int {
+      assert(has_a)
+      return _a
+    }
+
+    def a=(value int) {
+      _a = value
+      _flags0 |= 1
+    }
+
+    def has_b bool {
+      return (_flags0 & 2) != 0
+    }
+
+    def b CompoundMessage {
+      assert(has_b)
+      return _b
+    }
+
+    def b=(value CompoundMessage) {
+      _b = value
+      _flags0 |= 2
+    }
+
+    def has_c bool {
+      return (_flags0 & 4) != 0
+    }
+
+    def c int {
+      assert(has_c)
+      return _c
+    }
+
+    def c=(value int) {
+      _c = value
+      _flags0 |= 4
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_a {
+        bb.writeVarUint(1)
+        bb.writeVarUint(_a)
+      }
+
+      if has_b {
+        bb.writeVarUint(2)
+        _b.encode(bb)
+      }
+
+      if has_c {
+        bb.writeVarUint(3)
+        bb.writeVarUint(_c)
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace NestedMessage {
+    def decode(bytes Uint8Array) NestedMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) NestedMessage {
+      var self = new
+      while true {
+        switch bb.readByte {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            self.a = bb.readVarUint
+          }
+
+          case 2 {
+            self.b = CompoundMessage.decode(bb)
+          }
+
+          case 3 {
+            self.c = bb.readVarUint
+          }
+
+          default {
+            Kiwi.DecodeError.throwInvalidMessage
+          }
+        }
+      }
+      return self
+    }
+  }
+
+  class BoolArrayStruct {
+    var _flags0 = 0
+    var _x List<bool> = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x List<bool> {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value List<bool>) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_x)
+      bb.writeVarUint(_x.count)
+      for value in _x {
+        bb.writeByte(value as int)
+      }
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace BoolArrayStruct {
+    def decode(bytes Uint8Array) BoolArrayStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) BoolArrayStruct {
+      var self = new
+      var count = 0
+      count = bb.readVarUint
+      self.x = []
+      for array = self._x; count != 0; count-- {
+        array.append(bb.readByte as bool)
+      }
+      return self
+    }
+  }
+
+  class ByteArrayStruct {
+    var _flags0 = 0
+    var _x List<int> = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x List<int> {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value List<int>) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_x)
+      bb.writeVarUint(_x.count)
+      for value in _x {
+        bb.writeByte(value)
+      }
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace ByteArrayStruct {
+    def decode(bytes Uint8Array) ByteArrayStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) ByteArrayStruct {
+      var self = new
+      var count = 0
+      count = bb.readVarUint
+      self.x = []
+      for array = self._x; count != 0; count-- {
+        array.append(bb.readByte)
+      }
+      return self
+    }
+  }
+
+  class IntArrayStruct {
+    var _flags0 = 0
+    var _x List<int> = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x List<int> {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value List<int>) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_x)
+      bb.writeVarUint(_x.count)
+      for value in _x {
+        bb.writeVarInt(value)
+      }
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace IntArrayStruct {
+    def decode(bytes Uint8Array) IntArrayStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) IntArrayStruct {
+      var self = new
+      var count = 0
+      count = bb.readVarUint
+      self.x = []
+      for array = self._x; count != 0; count-- {
+        array.append(bb.readVarInt)
+      }
+      return self
+    }
+  }
+
+  class UintArrayStruct {
+    var _flags0 = 0
+    var _x List<int> = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x List<int> {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value List<int>) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_x)
+      bb.writeVarUint(_x.count)
+      for value in _x {
+        bb.writeVarUint(value)
+      }
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace UintArrayStruct {
+    def decode(bytes Uint8Array) UintArrayStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) UintArrayStruct {
+      var self = new
+      var count = 0
+      count = bb.readVarUint
+      self.x = []
+      for array = self._x; count != 0; count-- {
+        array.append(bb.readVarUint)
+      }
+      return self
+    }
+  }
+
+  class FloatArrayStruct {
+    var _flags0 = 0
+    var _x List<double> = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x List<double> {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value List<double>) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_x)
+      bb.writeVarUint(_x.count)
+      for value in _x {
+        bb.writeVarFloat(value)
+      }
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace FloatArrayStruct {
+    def decode(bytes Uint8Array) FloatArrayStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) FloatArrayStruct {
+      var self = new
+      var count = 0
+      count = bb.readVarUint
+      self.x = []
+      for array = self._x; count != 0; count-- {
+        array.append(bb.readVarFloat)
+      }
+      return self
+    }
+  }
+
+  class StringArrayStruct {
+    var _flags0 = 0
+    var _x List<string> = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x List<string> {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value List<string>) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_x)
+      bb.writeVarUint(_x.count)
+      for value in _x {
+        bb.writeString(value)
+      }
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace StringArrayStruct {
+    def decode(bytes Uint8Array) StringArrayStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) StringArrayStruct {
+      var self = new
+      var count = 0
+      count = bb.readVarUint
+      self.x = []
+      for array = self._x; count != 0; count-- {
+        array.append(bb.readString)
+      }
+      return self
+    }
+  }
+
+  class CompoundArrayStruct {
+    var _flags0 = 0
+    var _x List<int> = null
+    var _y List<int> = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x List<int> {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value List<int>) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def has_y bool {
+      return (_flags0 & 2) != 0
+    }
+
+    def y List<int> {
+      assert(has_y)
+      return _y
+    }
+
+    def y=(value List<int>) {
+      _y = value
+      _flags0 |= 2
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_x)
+      bb.writeVarUint(_x.count)
+      for value in _x {
+        bb.writeVarUint(value)
+      }
+
+      assert(has_y)
+      bb.writeVarUint(_y.count)
+      for value in _y {
+        bb.writeVarUint(value)
+      }
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace CompoundArrayStruct {
+    def decode(bytes Uint8Array) CompoundArrayStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) CompoundArrayStruct {
+      var self = new
+      var count = 0
+      count = bb.readVarUint
+      self.x = []
+      for array = self._x; count != 0; count-- {
+        array.append(bb.readVarUint)
+      }
+      count = bb.readVarUint
+      self.y = []
+      for array = self._y; count != 0; count-- {
+        array.append(bb.readVarUint)
+      }
+      return self
+    }
+  }
+
+  class BoolArrayMessage {
+    var _flags0 = 0
+    var _x List<bool> = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x List<bool> {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value List<bool>) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_x {
+        bb.writeVarUint(1)
+        bb.writeVarUint(_x.count)
+        for value in _x {
+          bb.writeByte(value as int)
+        }
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace BoolArrayMessage {
+    def decode(bytes Uint8Array) BoolArrayMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) BoolArrayMessage {
+      var self = new
+      var count = 0
+      while true {
+        switch bb.readByte {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            count = bb.readVarUint
+            self.x = []
+            for array = self._x; count != 0; count-- {
+              array.append(bb.readByte as bool)
+            }
+          }
+
+          default {
+            Kiwi.DecodeError.throwInvalidMessage
+          }
+        }
+      }
+      return self
+    }
+  }
+
+  class ByteArrayMessage {
+    var _flags0 = 0
+    var _x List<int> = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x List<int> {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value List<int>) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_x {
+        bb.writeVarUint(1)
+        bb.writeVarUint(_x.count)
+        for value in _x {
+          bb.writeByte(value)
+        }
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace ByteArrayMessage {
+    def decode(bytes Uint8Array) ByteArrayMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) ByteArrayMessage {
+      var self = new
+      var count = 0
+      while true {
+        switch bb.readByte {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            count = bb.readVarUint
+            self.x = []
+            for array = self._x; count != 0; count-- {
+              array.append(bb.readByte)
+            }
+          }
+
+          default {
+            Kiwi.DecodeError.throwInvalidMessage
+          }
+        }
+      }
+      return self
+    }
+  }
+
+  class IntArrayMessage {
+    var _flags0 = 0
+    var _x List<int> = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x List<int> {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value List<int>) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_x {
+        bb.writeVarUint(1)
+        bb.writeVarUint(_x.count)
+        for value in _x {
+          bb.writeVarInt(value)
+        }
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace IntArrayMessage {
+    def decode(bytes Uint8Array) IntArrayMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) IntArrayMessage {
+      var self = new
+      var count = 0
+      while true {
+        switch bb.readByte {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            count = bb.readVarUint
+            self.x = []
+            for array = self._x; count != 0; count-- {
+              array.append(bb.readVarInt)
+            }
+          }
+
+          default {
+            Kiwi.DecodeError.throwInvalidMessage
+          }
+        }
+      }
+      return self
+    }
+  }
+
+  class UintArrayMessage {
+    var _flags0 = 0
+    var _x List<int> = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x List<int> {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value List<int>) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_x {
+        bb.writeVarUint(1)
+        bb.writeVarUint(_x.count)
+        for value in _x {
+          bb.writeVarUint(value)
+        }
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace UintArrayMessage {
+    def decode(bytes Uint8Array) UintArrayMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) UintArrayMessage {
+      var self = new
+      var count = 0
+      while true {
+        switch bb.readByte {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            count = bb.readVarUint
+            self.x = []
+            for array = self._x; count != 0; count-- {
+              array.append(bb.readVarUint)
+            }
+          }
+
+          default {
+            Kiwi.DecodeError.throwInvalidMessage
+          }
+        }
+      }
+      return self
+    }
+  }
+
+  class FloatArrayMessage {
+    var _flags0 = 0
+    var _x List<double> = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x List<double> {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value List<double>) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_x {
+        bb.writeVarUint(1)
+        bb.writeVarUint(_x.count)
+        for value in _x {
+          bb.writeVarFloat(value)
+        }
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace FloatArrayMessage {
+    def decode(bytes Uint8Array) FloatArrayMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) FloatArrayMessage {
+      var self = new
+      var count = 0
+      while true {
+        switch bb.readByte {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            count = bb.readVarUint
+            self.x = []
+            for array = self._x; count != 0; count-- {
+              array.append(bb.readVarFloat)
+            }
+          }
+
+          default {
+            Kiwi.DecodeError.throwInvalidMessage
+          }
+        }
+      }
+      return self
+    }
+  }
+
+  class StringArrayMessage {
+    var _flags0 = 0
+    var _x List<string> = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x List<string> {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value List<string>) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_x {
+        bb.writeVarUint(1)
+        bb.writeVarUint(_x.count)
+        for value in _x {
+          bb.writeString(value)
+        }
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace StringArrayMessage {
+    def decode(bytes Uint8Array) StringArrayMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) StringArrayMessage {
+      var self = new
+      var count = 0
+      while true {
+        switch bb.readByte {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            count = bb.readVarUint
+            self.x = []
+            for array = self._x; count != 0; count-- {
+              array.append(bb.readString)
+            }
+          }
+
+          default {
+            Kiwi.DecodeError.throwInvalidMessage
+          }
+        }
+      }
+      return self
+    }
+  }
+
+  class CompoundArrayMessage {
+    var _flags0 = 0
+    var _x List<int> = null
+    var _y List<int> = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x List<int> {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value List<int>) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def has_y bool {
+      return (_flags0 & 2) != 0
+    }
+
+    def y List<int> {
+      assert(has_y)
+      return _y
+    }
+
+    def y=(value List<int>) {
+      _y = value
+      _flags0 |= 2
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_x {
+        bb.writeVarUint(1)
+        bb.writeVarUint(_x.count)
+        for value in _x {
+          bb.writeVarUint(value)
+        }
+      }
+
+      if has_y {
+        bb.writeVarUint(2)
+        bb.writeVarUint(_y.count)
+        for value in _y {
+          bb.writeVarUint(value)
+        }
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace CompoundArrayMessage {
+    def decode(bytes Uint8Array) CompoundArrayMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) CompoundArrayMessage {
+      var self = new
+      var count = 0
+      while true {
+        switch bb.readByte {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            count = bb.readVarUint
+            self.x = []
+            for array = self._x; count != 0; count-- {
+              array.append(bb.readVarUint)
+            }
+          }
+
+          case 2 {
+            count = bb.readVarUint
+            self.y = []
+            for array = self._y; count != 0; count-- {
+              array.append(bb.readVarUint)
+            }
+          }
+
+          default {
+            Kiwi.DecodeError.throwInvalidMessage
+          }
+        }
+      }
+      return self
+    }
+  }
+
+  class RecursiveMessage {
+    var _flags0 = 0
+    var _x RecursiveMessage = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x RecursiveMessage {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value RecursiveMessage) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_x {
+        bb.writeVarUint(1)
+        _x.encode(bb)
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace RecursiveMessage {
+    def decode(bytes Uint8Array) RecursiveMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) RecursiveMessage {
+      var self = new
+      while true {
+        switch bb.readByte {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            self.x = RecursiveMessage.decode(bb)
+          }
+
+          default {
+            Kiwi.DecodeError.throwInvalidMessage
+          }
+        }
+      }
+      return self
+    }
+  }
+
+  class RequiredField {
+    var _flags0 = 0
+    var _x int = 0
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x int {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value int) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_x)
+      bb.writeVarUint(1)
+      bb.writeVarInt(_x)
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace RequiredField {
+    def decode(bytes Uint8Array) RequiredField {
+      return decode(Kiwi.ByteBuffer.new(bytes))
+    }
+
+    def decode(bb Kiwi.ByteBuffer) RequiredField {
+      var self = new
+      while true {
+        switch bb.readByte {
+          case 0 {
+            if !self.has_x {
+              Kiwi.DecodeError.throwMissingRequiredField("x")
+            }
+            break
+          }
+
+          case 1 {
+            self.x = bb.readVarInt
+          }
+
+          default {
+            Kiwi.DecodeError.throwInvalidMessage
+          }
+        }
+      }
+      return self
+    }
+  }
+}

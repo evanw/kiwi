@@ -106,3 +106,27 @@ int main() {
   return 0;
 }
 ```
+
+## [Skew](http://skew-lang.org/) Usage
+
+Make sure to generate the Skew code beforehand using something like `kiwic --schema test.kiwi --skew test.sk`.
+
+```
+@import
+var console dynamic
+
+@entry
+def main int {
+  var test = Test.new
+  test.x = 123
+
+  var buffer = test.encode
+  var test2 = Test.decode(buffer)
+
+  if test2.has_x {
+    console.log("x is \(test2.x)")
+  }
+
+  return 0
+}
+```

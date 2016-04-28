@@ -1,0 +1,260 @@
+@import
+class ArrayBuffer {
+  const byteLength int
+
+  def new(length int)
+  def slice(begin int) ArrayBuffer
+  def slice(begin int, end int) ArrayBuffer
+}
+
+namespace ArrayBuffer {
+  def isView(value dynamic) bool
+}
+
+@import
+class ArrayBufferView {
+  const buffer ArrayBuffer
+  const byteOffset int
+  const byteLength int
+}
+
+@import
+class Int8Array : ArrayBufferView {
+  const length int
+
+  @prefer
+  def new(length int)
+  def new(array Int8Array)
+  def new(array List<int>)
+  def new(buffer ArrayBuffer)
+  def new(buffer ArrayBuffer, byteOffset int)
+  def new(buffer ArrayBuffer, byteOffset int, length int)
+
+  def [](index int) int
+  def []=(index int, value int)
+  def set(array Int8Array)
+  def set(array Int8Array, offset int)
+  def set(array List<int>)
+  def set(array List<int>, offset int)
+  def subarray(begin int) Int8Array
+  def subarray(begin int, end int) Int8Array
+}
+
+@import
+class Uint8Array : ArrayBufferView {
+  const length int
+
+  @prefer
+  def new(length int)
+  def new(array Uint8Array)
+  def new(array List<int>)
+  def new(buffer ArrayBuffer)
+  def new(buffer ArrayBuffer, byteOffset int)
+  def new(buffer ArrayBuffer, byteOffset int, length int)
+
+  def [](index int) int
+  def []=(index int, value int)
+  def set(array Uint8Array)
+  def set(array Uint8Array, offset int)
+  def set(array List<int>)
+  def set(array List<int>, offset int)
+  def subarray(begin int) Uint8Array
+  def subarray(begin int, end int) Uint8Array
+}
+
+@import
+class Uint8ClampedArray : ArrayBufferView {
+  const length int
+
+  @prefer
+  def new(length int)
+  def new(array Uint8ClampedArray)
+  def new(array List<int>)
+  def new(buffer ArrayBuffer)
+  def new(buffer ArrayBuffer, byteOffset int)
+  def new(buffer ArrayBuffer, byteOffset int, length int)
+
+  def [](index int) int
+  def []=(index int, value int)
+  def set(array Uint8ClampedArray)
+  def set(array Uint8ClampedArray, offset int)
+  def set(array List<int>)
+  def set(array List<int>, offset int)
+  def subarray(begin int) Uint8ClampedArray
+  def subarray(begin int, end int) Uint8ClampedArray
+}
+
+@import
+class Int16Array : ArrayBufferView {
+  const length int
+
+  @prefer
+  def new(length int)
+  def new(array Int16Array)
+  def new(array List<int>)
+  def new(buffer ArrayBuffer)
+  def new(buffer ArrayBuffer, byteOffset int)
+  def new(buffer ArrayBuffer, byteOffset int, length int)
+
+  def [](index int) int
+  def []=(index int, value int)
+  def set(array Int16Array)
+  def set(array Int16Array, offset int)
+  def set(array List<int>)
+  def set(array List<int>, offset int)
+  def subarray(begin int) Int16Array
+  def subarray(begin int, end int) Int16Array
+}
+
+@import
+class Uint16Array : ArrayBufferView {
+  const length int
+
+  @prefer
+  def new(length int)
+  def new(array Uint16Array)
+  def new(array List<int>)
+  def new(buffer ArrayBuffer)
+  def new(buffer ArrayBuffer, byteOffset int)
+  def new(buffer ArrayBuffer, byteOffset int, length int)
+
+  def [](index int) int
+  def []=(index int, value int)
+  def set(array Uint16Array)
+  def set(array Uint16Array, offset int)
+  def set(array List<int>)
+  def set(array List<int>, offset int)
+  def subarray(begin int) Uint16Array
+  def subarray(begin int, end int) Uint16Array
+}
+
+@import
+class Int32Array : ArrayBufferView {
+  const length int
+
+  @prefer
+  def new(length int)
+  def new(array Int32Array)
+  def new(array List<int>)
+  def new(buffer ArrayBuffer)
+  def new(buffer ArrayBuffer, byteOffset int)
+  def new(buffer ArrayBuffer, byteOffset int, length int)
+
+  def [](index int) int
+  def []=(index int, value int)
+  def set(array Int32Array)
+  def set(array Int32Array, offset int)
+  def set(array List<int>)
+  def set(array List<int>, offset int)
+  def subarray(begin int) Int32Array
+  def subarray(begin int, end int) Int32Array
+}
+
+@import
+class Uint32Array : ArrayBufferView {
+  const length int
+
+  @prefer
+  def new(length int)
+  def new(array Uint32Array)
+  def new(array List<int>)
+  def new(buffer ArrayBuffer)
+  def new(buffer ArrayBuffer, byteOffset int)
+  def new(buffer ArrayBuffer, byteOffset int, length int)
+
+  def [](index int) int
+  def []=(index int, value int)
+  def set(array Uint32Array)
+  def set(array Uint32Array, offset int)
+  def set(array List<int>)
+  def set(array List<int>, offset int)
+  def subarray(begin int) Uint32Array
+  def subarray(begin int, end int) Uint32Array
+}
+
+@import
+class Float32Array : ArrayBufferView {
+  const length int
+
+  @prefer
+  def new(length int)
+  def new(array Float32Array)
+  def new(array List<double>)
+  def new(buffer ArrayBuffer)
+  def new(buffer ArrayBuffer, byteOffset int)
+  def new(buffer ArrayBuffer, byteOffset int, length int)
+
+  def [](index int) double
+  def []=(index int, value double)
+  def set(array Float32Array)
+  def set(array Float32Array, offset int)
+  def set(array List<double>)
+  def set(array List<double>, offset int)
+  def subarray(begin int) Float32Array
+  def subarray(begin int, end int) Float32Array
+}
+
+@import
+class Float64Array : ArrayBufferView {
+  const length int
+
+  @prefer
+  def new(length int)
+  def new(array Float64Array)
+  def new(array List<double>)
+  def new(buffer ArrayBuffer)
+  def new(buffer ArrayBuffer, byteOffset int)
+  def new(buffer ArrayBuffer, byteOffset int, length int)
+
+  def [](index int) double
+  def []=(index int, value double)
+  def set(array Float64Array)
+  def set(array Float64Array, offset int)
+  def set(array List<double>)
+  def set(array List<double>, offset int)
+  def subarray(begin int) Float64Array
+  def subarray(begin int, end int) Float64Array
+}
+
+@import
+class DataView : ArrayBufferView {
+  def new(buffer ArrayBuffer)
+  def new(buffer ArrayBuffer, byteOffset int)
+  def new(buffer ArrayBuffer, byteOffset int, byteLength int)
+
+  def getInt8(byteOffset int) int
+  def getUint8(byteOffset int) int
+  def getInt16(byteOffset int) int
+  def getUint16(byteOffset int) int
+  def getInt16(byteOffset int, littleEndian bool) int
+  def getUint16(byteOffset int, littleEndian bool) int
+  def getInt32(byteOffset int) int
+  def getUint32(byteOffset int) int
+  def getInt32(byteOffset int, littleEndian bool) int
+  def getUint32(byteOffset int, littleEndian bool) int
+  def getFloat32(byteOffset int) double
+  def getFloat64(byteOffset int) double
+  def getFloat32(byteOffset int, littleEndian bool) double
+  def getFloat64(byteOffset int, littleEndian bool) double
+
+  def setInt8(byteOffset int, value int)
+  def setUint8(byteOffset int, value int)
+  def setInt16(byteOffset int, value int)
+  def setUint16(byteOffset int, value int)
+  def setInt16(byteOffset int, value int, littleEndian bool)
+  def setUint16(byteOffset int, value int, littleEndian bool)
+  def setInt32(byteOffset int, value int)
+  def setUint32(byteOffset int, value int)
+  def setInt32(byteOffset int, value int, littleEndian bool)
+  def setUint32(byteOffset int, value int, littleEndian bool)
+  def setFloat32(byteOffset int, value double)
+  def setFloat64(byteOffset int, value double)
+  def setFloat32(byteOffset int, value double, littleEndian bool)
+  def setFloat64(byteOffset int, value double, littleEndian bool)
+}
+
+namespace DataView {
+  def new(array ArrayBufferView) DataView {
+    return new(array.buffer, array.byteOffset, array.byteLength)
+  }
+}
