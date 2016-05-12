@@ -463,7 +463,10 @@ var kiwi = exports || kiwi || {}, exports;
           state[name] = 1;
           var fields = definition.fields;
           for (var i = 0; i < fields.length; i++) {
-            check(fields[i].type);
+            var field = fields[i];
+            if (!field.isArray) {
+              check(field.type);
+            }
           }
           state[name] = 2;
         }
