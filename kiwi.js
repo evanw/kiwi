@@ -24,18 +24,11 @@ var kiwi = exports || kiwi || {}, exports;
     }
     this._data = data || new Uint8Array(256);
     this._index = 0;
-    this.length = 0;
+    this.length = data ? data.length : 0;
   }
 
   ByteBuffer.prototype.toUint8Array = function() {
     return this._data.subarray(0, this.length);
-  };
-
-  ByteBuffer.prototype.seekTo = function(index) {
-    if (index > this._data.length) {
-      throw new Error('Index out of bounds');
-    }
-    this._index = index;
   };
 
   ByteBuffer.prototype.readByte = function() {
@@ -470,7 +463,10 @@ var kiwi = exports || kiwi || {}, exports;
           state[name] = 1;
           var fields = definition.fields;
           for (var i = 0; i < fields.length; i++) {
-            check(fields[i].type);
+            var field = fields[i];
+            if (!field.isArray) {
+              check(field.type);
+            }
           }
           state[name] = 2;
         }
@@ -497,7 +493,7 @@ var kiwi = exports || kiwi || {}, exports;
 (function() {
   var ByteBuffer = kiwi.ByteBuffer;
 
-  function compileDecodeJS(definition, definitions) {
+  function compileDecode(definition, definitions) {
     var lines = [];
     var indent = '  ';
 
@@ -608,7 +604,7 @@ var kiwi = exports || kiwi || {}, exports;
     return lines.join('\n');
   }
 
-  function compileEncodeJS(definition, definitions) {
+  function compileEncode(definition, definitions) {
     var lines = [];
 
     lines.push('function(message, bb) {');
@@ -747,9 +743,9 @@ var kiwi = exports || kiwi || {}, exports;
         case 'STRUCT':
         case 'MESSAGE': {
           js.push('');
-          js.push(name + '[' + quote('decode' + definition.name) + '] = ' + compileDecodeJS(definition, definitions) + ';');
+          js.push(name + '[' + quote('decode' + definition.name) + '] = ' + compileDecode(definition, definitions) + ';');
           js.push('');
-          js.push(name + '[' + quote('encode' + definition.name) + '] = ' + compileEncodeJS(definition, definitions) + ';');
+          js.push(name + '[' + quote('encode' + definition.name) + '] = ' + compileEncode(definition, definitions) + ';');
           break;
         }
 
@@ -1224,6 +1220,400 @@ var kiwi = exports || kiwi || {}, exports;
   }
 
   kiwi.compileSchemaCPP = compileSchemaCPP;
+}());
+
+// Skew Compiler
+(function() {
+  var ByteBuffer = kiwi.ByteBuffer;
+
+  function popTrailingNewline(lines) {
+    if (lines[lines.length - 1] === '') {
+      lines.pop();
+    }
+  }
+
+  function skewDefaultValueForField(definitions, field) {
+    if (field.isArray) {
+      return 'null';
+    }
+
+    switch (field.type) {
+      case 'bool': return 'false';
+      case 'byte':
+      case 'int':
+      case 'uint': return '0';
+      case 'float': return '0.0';
+      case 'string': return 'null';
+    }
+
+    var def = definitions[field.type];
+
+    if (def.kind === 'ENUM') {
+      if (def.fields.length > 0) {
+        return '.' + def.fields[0].name;
+      }
+      return '0 as ' + field.type;
+    }
+
+    return 'null';
+  }
+
+  function skewTypeForField(field) {
+    var type;
+
+    switch (field.type) {
+      case 'bool': type = 'bool'; break;
+      case 'byte':
+      case 'int':
+      case 'uint': type = 'int'; break;
+      case 'float': type = 'double'; break;
+      case 'string': type = 'string'; break;
+      default: type = field.type; break;
+    }
+
+    if (field.isArray) {
+      type = 'List<' + type + '>';
+    }
+
+    return type;
+  }
+
+  function compileSchemaSkew(schema) {
+    if (typeof schema === 'string') {
+      schema = kiwi.parseSchema(schema);
+    }
+
+    var definitions = {};
+    var indent = '';
+    var lines = [];
+
+    if (schema.package !== null) {
+      lines.push('namespace ' + schema.package + ' {');
+      indent += '  ';
+    }
+
+    for (var i = 0; i < schema.definitions.length; i++) {
+      var definition = schema.definitions[i];
+      definitions[definition.name] = definition;
+    }
+
+    for (var i = 0; i < schema.definitions.length; i++) {
+      var definition = schema.definitions[i];
+
+      switch (definition.kind) {
+        case 'ENUM': {
+          var encode = {};
+          var decode = {};
+
+          lines.push(indent + 'enum ' + definition.name + ' {');
+          for (var j = 0; j < definition.fields.length; j++) {
+            var field = definition.fields[j];
+            encode[field.name] = field.value;
+            decode[field.value] = field.name;
+            lines.push(indent + '  ' + field.name);
+          }
+          lines.push(indent + '}');
+          lines.push('');
+
+          lines.push(indent + 'namespace ' + definition.name + ' {');
+          lines.push(indent + '  const _encode = ' + JSON.stringify(encode, null, 2).replace(/"/g, '').replace(/\n/g, '\n  ' + indent));
+          lines.push('');
+
+          lines.push(indent + '  const _decode = ' + JSON.stringify(decode, null, 2).replace(/"/g, '').replace(/\n/g, '\n  ' + indent));
+          lines.push('');
+
+          lines.push(indent + '  def encode(value ' + definition.name + ') int {');
+          lines.push(indent + '    return _encode[value]');
+          lines.push(indent + '  }');
+          lines.push('');
+
+          lines.push(indent + '  def decode(value int) ' + definition.name + ' {');
+          lines.push(indent + '    if !(value in _decode) {');
+          lines.push(indent + '      Kiwi.DecodeError.throwInvalidEnumValue(' + quote(definition.name) + ')');
+          lines.push(indent + '    }');
+          lines.push(indent + '    return _decode[value]');
+          lines.push(indent + '  }');
+          lines.push(indent + '}');
+          lines.push('');
+          break;
+        }
+
+        case 'STRUCT':
+        case 'MESSAGE': {
+          lines.push(indent + 'class ' + definition.name + ' {');
+
+          for (var j = 0; j < definition.fields.length; j += 32) {
+            lines.push(indent + '  var _flags' + (j >> 5) + ' = 0');
+          }
+
+          for (var j = 0; j < definition.fields.length; j++) {
+            var field = definition.fields[j];
+            lines.push(indent + '  var _' + field.name + ' ' + skewTypeForField(field) + ' = ' + skewDefaultValueForField(definitions, field));
+          }
+
+          lines.push('');
+
+          for (var j = 0; j < definition.fields.length; j++) {
+            var field = definition.fields[j];
+            var type = skewTypeForField(field);
+            var flags = '_flags' + (j >> 5);
+            var mask = '' + (1 << (j % 31));
+
+            lines.push(indent + '  def has_' + field.name + ' bool {');
+            lines.push(indent + '    return (' + flags + ' & ' + mask + ') != 0');
+            lines.push(indent + '  }');
+            lines.push('');
+
+            lines.push(indent + '  def ' + field.name + ' ' + type + ' {');
+            lines.push(indent + '    assert(has_' + field.name + ')');
+            lines.push(indent + '    return _' + field.name);
+            lines.push(indent + '  }');
+            lines.push('');
+
+            lines.push(indent + '  def ' + field.name + '=(value ' + type + ') {');
+            lines.push(indent + '    _' + field.name + ' = value');
+            lines.push(indent + '    ' + flags + ' |= ' + mask);
+            lines.push(indent + '  }');
+            lines.push('');
+          }
+
+          lines.push(indent + '  def encode(bb Kiwi.ByteBuffer) {');
+
+          for (var j = 0; j < definition.fields.length; j++) {
+            var field = definition.fields[j];
+            var value = '_' + field.name;
+            var code;
+
+            if (field.isArray) {
+              value = 'value';
+            }
+
+            switch (field.type) {
+              case 'bool': {
+                code = 'bb.writeByte(' + value + ' as int)';
+                break;
+              }
+
+              case 'byte': {
+                code = 'bb.writeByte(' + value + ')';
+                break;
+              }
+
+              case 'int': {
+                code = 'bb.writeVarInt(' + value + ')';
+                break;
+              }
+
+              case 'uint': {
+                code = 'bb.writeVarUint(' + value + ')';
+                break;
+              }
+
+              case 'float': {
+                code = 'bb.writeVarFloat(' + value + ')';
+                break;
+              }
+
+              case 'string': {
+                code = 'bb.writeString(' + value + ')';
+                break;
+              }
+
+              default: {
+                var type = definitions[field.type];
+                if (!type) {
+                  throw new Error('Invalid type ' + quote(field.type) + ' for field ' + quote(field.name));
+                } else if (type.kind === 'ENUM') {
+                  code = 'bb.writeVarUint(' + type.name + '.encode(' + value + '))';
+                } else {
+                  code = value + '.encode(bb)';
+                }
+              }
+            }
+
+            var nestedIndent = indent + '    ';
+
+            if (field.isRequired) {
+              lines.push(nestedIndent + 'assert(has_' + field.name + ')');
+            } else {
+              lines.push(nestedIndent + 'if has_' + field.name + ' {');
+              nestedIndent += '  ';
+            }
+
+            if (definition.kind === 'MESSAGE') {
+              lines.push(nestedIndent + 'bb.writeVarUint(' + field.value + ')');
+            }
+
+            if (field.isArray) {
+              lines.push(nestedIndent + 'bb.writeVarUint(_' + field.name + '.count)');
+              lines.push(nestedIndent + 'for value in _' + field.name + ' {');
+              lines.push(nestedIndent + '  ' + code);
+              lines.push(nestedIndent + '}');
+            } else {
+              lines.push(nestedIndent + code);
+            }
+
+            if (!field.isRequired) {
+              lines.push(indent + '    }');
+            }
+
+            lines.push('');
+          }
+
+          if (definition.kind === 'MESSAGE') {
+            lines.push(indent + '    bb.writeVarUint(0)');
+          } else {
+            popTrailingNewline(lines);
+          }
+          lines.push(indent + '  }');
+          lines.push('');
+
+          lines.push(indent + '  def encode Uint8Array {');
+          lines.push(indent + '    var bb = Kiwi.ByteBuffer.new');
+          lines.push(indent + '    encode(bb)');
+          lines.push(indent + '    return bb.toUint8Array');
+          lines.push(indent + '  }');
+
+          lines.push(indent + '}');
+          lines.push('');
+
+          lines.push(indent + 'namespace ' + definition.name + ' {');
+          lines.push(indent + '  def decode(bytes Uint8Array) ' + definition.name + ' {');
+          lines.push(indent + '    return decode(Kiwi.ByteBuffer.new(bytes))');
+          lines.push(indent + '  }');
+          lines.push('');
+
+          lines.push(indent + '  def decode(bb Kiwi.ByteBuffer) ' + definition.name + ' {');
+          lines.push(indent + '    var self = new');
+
+          for (var j = 0; j < definition.fields.length; j++) {
+            if (definition.fields[j].isArray) {
+              lines.push(indent + '    var count = 0');
+              break;
+            }
+          }
+
+          var nestedIndent = indent + '  ';
+
+          if (definition.kind === 'MESSAGE') {
+            lines.push(indent + '    while true {');
+            lines.push(indent + '      switch bb.readByte {');
+            lines.push(indent + '        case 0 {');
+
+            for (var j = 0; j < definition.fields.length; j++) {
+              var field = definition.fields[j];
+              if (field.isRequired) {
+                lines.push(indent + '          if !self.has_' + field.name + ' {');
+                lines.push(indent + '            Kiwi.DecodeError.throwMissingRequiredField(' + quote(field.name) + ')');
+                lines.push(indent + '          }');
+              }
+            }
+
+            lines.push(indent + '          break');
+            lines.push(indent + '        }');
+            lines.push('');
+            nestedIndent += '      ';
+          }
+
+          for (var j = 0; j < definition.fields.length; j++) {
+            var field = definition.fields[j];
+            var code;
+
+            switch (field.type) {
+              case 'bool': {
+                code = 'bb.readByte as bool';
+                break;
+              }
+
+              case 'byte': {
+                code = 'bb.readByte';
+                break;
+              }
+
+              case 'int': {
+                code = 'bb.readVarInt';
+                break;
+              }
+
+              case 'uint': {
+                code = 'bb.readVarUint';
+                break;
+              }
+
+              case 'float': {
+                code = 'bb.readVarFloat';
+                break;
+              }
+
+              case 'string': {
+                code = 'bb.readString';
+                break;
+              }
+
+              default: {
+                var type = definitions[field.type];
+                if (!type) {
+                  throw new Error('Invalid type ' + quote(field.type) + ' for field ' + quote(field.name));
+                } else if (type.kind === 'ENUM') {
+                  code = type.name + '.decode(bb.readVarUint)';
+                } else {
+                  code = type.name + '.decode(bb)';
+                }
+              }
+            }
+
+            if (definition.kind === 'MESSAGE') {
+              lines.push(nestedIndent + 'case ' + field.value + ' {');
+            }
+
+            if (field.isArray) {
+              lines.push(nestedIndent + '  count = bb.readVarUint');
+              lines.push(nestedIndent + '  self.' + field.name + ' = []');
+              lines.push(nestedIndent + '  for array = self._' + field.name + '; count != 0; count-- {');
+              lines.push(nestedIndent + '    array.append(' + code + ')');
+              lines.push(nestedIndent + '  }');
+            } else {
+              lines.push(nestedIndent + '  self.' + field.name + ' = ' + code);
+            }
+
+            if (definition.kind === 'MESSAGE') {
+              lines.push(nestedIndent + '}');
+              lines.push('');
+            }
+          }
+
+          if (definition.kind === 'MESSAGE') {
+            lines.push(indent + '        default {');
+            lines.push(indent + '          Kiwi.DecodeError.throwInvalidMessage');
+            lines.push(indent + '        }');
+            lines.push(indent + '      }');
+            lines.push(indent + '    }');
+          }
+
+          lines.push(indent + '    return self');
+          lines.push(indent + '  }');
+          lines.push(indent + '}');
+          lines.push('');
+          break;
+        }
+
+        default: {
+          error('Invalid definition kind ' + quote(definition.kind), definition.line, definition.column);
+          break;
+        }
+      }
+    }
+
+    if (schema.package !== null) {
+      popTrailingNewline(lines);
+      lines.push('}');
+    }
+
+    lines.push('');
+    return lines.join('\n');
+  }
+
+  kiwi.compileSchemaSkew = compileSchemaSkew;
 }());
 
 }());
