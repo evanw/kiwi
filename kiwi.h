@@ -89,7 +89,12 @@ namespace kiwi {
 
   class MemoryPool {
   public:
-    ~MemoryPool();
+    MemoryPool() {}
+    ~MemoryPool() { clear(); }
+    MemoryPool(const MemoryPool &) = delete;
+    MemoryPool &operator = (const MemoryPool &) = delete;
+
+    void clear();
 
     template <typename T>
     T *allocate(uint32_t count = 1);
@@ -292,12 +297,14 @@ namespace kiwi {
     return value - value % stride;
   }
 
-  MemoryPool::~MemoryPool() {
+  void MemoryPool::clear() {
     for (Chunk *chunk = _first, *next; chunk; chunk = next) {
       next = chunk->next;
       delete [] chunk->data;
       delete chunk;
     }
+
+    _first = _last = nullptr;
   }
 
   template <typename T>
