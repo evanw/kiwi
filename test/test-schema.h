@@ -548,6 +548,8 @@ private:
   int32_t _data_x = {};
 };
 
+#ifdef IMPLEMENT_SCHEMA_H
+
 Enum *EnumStruct::x() {
   return _flags[0] & 1 ? &_data_x : nullptr;
 }
@@ -1752,5 +1754,7 @@ bool RequiredField::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
     }
   }
 }
+
+#endif
 
 }

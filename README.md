@@ -85,6 +85,9 @@ if (test.x !== undefined) {
 Make sure to generate the C++ code beforehand using something like `kiwic --schema test.kiwi --cpp test.h`.
 
 ```cpp
+#define IMPLEMENT_KIWI_H
+#define IMPLEMENT_SCHEMA_H
+
 #include <stdio.h>
 #include "test.h"
 

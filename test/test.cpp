@@ -1,5 +1,8 @@
 // ../cli.js --schema test-schema.kiwi --cpp test-schema.h && c++ test.cpp -std=c++11 -I.. && ./a.out
 
+#define IMPLEMENT_KIWI_H
+#define IMPLEMENT_SCHEMA_H
+
 #include "test-schema.h"
 #include <vector>
 

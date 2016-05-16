@@ -118,22 +118,23 @@ namespace kiwi {
     Chunk *_first = nullptr;
     Chunk *_last = nullptr;
   };
+}
 
-  ////////////////////////////////////////////////////////////////////////////////
+#ifdef IMPLEMENT_KIWI_H
 
-  ByteBuffer::ByteBuffer() : _data(new uint8_t[INITIAL_CAPACITY]), _capacity(INITIAL_CAPACITY), _ownsData(true) {
+  kiwi::ByteBuffer::ByteBuffer() : _data(new uint8_t[INITIAL_CAPACITY]), _capacity(INITIAL_CAPACITY), _ownsData(true) {
   }
 
-  ByteBuffer::ByteBuffer(uint8_t *data, size_t size) : _data(data), _size(size), _capacity(size) {
+  kiwi::ByteBuffer::ByteBuffer(uint8_t *data, size_t size) : _data(data), _size(size), _capacity(size) {
   }
 
-  ByteBuffer::~ByteBuffer() {
+  kiwi::ByteBuffer::~ByteBuffer() {
     if (_ownsData) {
       delete [] _data;
     }
   }
 
-  bool ByteBuffer::readByte(bool &result) {
+  bool kiwi::ByteBuffer::readByte(bool &result) {
     uint8_t value;
     if (!readByte(value)) {
       result = false;
@@ -144,7 +145,7 @@ namespace kiwi {
     return true;
   }
 
-  bool ByteBuffer::readByte(uint8_t &result) {
+  bool kiwi::ByteBuffer::readByte(uint8_t &result) {
     if (_index >= _size) {
       result = 0;
       return false;
@@ -155,7 +156,7 @@ namespace kiwi {
     return true;
   }
 
-  bool ByteBuffer::readVarFloat(float &result) {
+  bool kiwi::ByteBuffer::readVarFloat(float &result) {
     uint8_t first;
     if (!readByte(first)) {
       return false;
@@ -183,7 +184,7 @@ namespace kiwi {
     return true;
   }
 
-  bool ByteBuffer::readVarUint(uint32_t &result) {
+  bool kiwi::ByteBuffer::readVarUint(uint32_t &result) {
     uint8_t shift = 0;
     uint8_t byte;
     result = 0;
@@ -200,7 +201,7 @@ namespace kiwi {
     return true;
   }
 
-  bool ByteBuffer::readVarInt(int32_t &result) {
+  bool kiwi::ByteBuffer::readVarInt(int32_t &result) {
     uint32_t value;
     if (!readVarUint(value)) {
       result = 0;
@@ -211,7 +212,7 @@ namespace kiwi {
     return true;
   }
 
-  bool ByteBuffer::readString(String &result, MemoryPool &pool) {
+  bool kiwi::ByteBuffer::readString(String &result, MemoryPool &pool) {
     uint32_t size = 0;
     result = String();
 
@@ -224,13 +225,13 @@ namespace kiwi {
     return true;
   }
 
-  void ByteBuffer::writeByte(uint8_t value) {
+  void kiwi::ByteBuffer::writeByte(uint8_t value) {
     size_t index = _size;
     _growBy(1);
     _data[index] = value;
   }
 
-  void ByteBuffer::writeVarFloat(float value) {
+  void kiwi::ByteBuffer::writeVarFloat(float value) {
     // Reinterpret as an integer
     uint32_t bits;
     memcpy(&bits, &value, 4);
@@ -253,7 +254,7 @@ namespace kiwi {
     _data[index + 3] = bits >> 24;
   }
 
-  void ByteBuffer::writeVarUint(uint32_t value) {
+  void kiwi::ByteBuffer::writeVarUint(uint32_t value) {
     do {
       uint8_t byte = value & 127;
       value >>= 7;
@@ -261,18 +262,18 @@ namespace kiwi {
     } while (value);
   }
 
-  void ByteBuffer::writeVarInt(int32_t value) {
+  void kiwi::ByteBuffer::writeVarInt(int32_t value) {
     writeVarUint((value << 1) ^ (value >> 31));
   }
 
-  void ByteBuffer::writeString(const char *value) {
+  void kiwi::ByteBuffer::writeString(const char *value) {
     uint32_t count = strlen(value) + 1;
     size_t index = _size;
     _growBy(count);
     memcpy(_data + index, value, count);
   }
 
-  void ByteBuffer::_growBy(size_t amount) {
+  void kiwi::ByteBuffer::_growBy(size_t amount) {
     if (_size + amount > _capacity) {
       size_t capacity = (_size + amount) * 2;
       uint8_t *data = new uint8_t[capacity];
@@ -292,12 +293,7 @@ namespace kiwi {
 
   ////////////////////////////////////////////////////////////////////////////////
 
-  inline uint32_t nextMultipleOf(uint32_t value, uint32_t stride) {
-    value += stride - 1;
-    return value - value % stride;
-  }
-
-  void MemoryPool::clear() {
+  void kiwi::MemoryPool::clear() {
     for (Chunk *chunk = _first, *next; chunk; chunk = next) {
       next = chunk->next;
       delete [] chunk->data;
@@ -308,10 +304,11 @@ namespace kiwi {
   }
 
   template <typename T>
-  T *MemoryPool::allocate(uint32_t count) {
+  T *kiwi::MemoryPool::allocate(uint32_t count) {
     Chunk *chunk = _last;
     uint32_t size = count * sizeof(T);
-    uint32_t index = chunk ? nextMultipleOf(chunk->used, alignof(T)) : 0;
+    uint32_t index = (chunk ? chunk->used : 0) + alignof(T) - 1;
+    index -= index % alignof(T);
 
     if (chunk && index + size >= index && index + size <= chunk->capacity) {
       chunk->used = index + size;
@@ -330,11 +327,11 @@ namespace kiwi {
     return reinterpret_cast<T *>(chunk->data);
   }
 
-  String MemoryPool::string(const char *text, uint32_t count) {
+  kiwi::String kiwi::MemoryPool::string(const char *text, uint32_t count) {
     char *c_str = allocate<char>(count + 1);
     memcpy(c_str, text, count);
     return String(c_str);
   }
-}
 
+#endif
 #endif

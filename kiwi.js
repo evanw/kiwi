@@ -864,6 +864,11 @@ var kiwi = exports || kiwi || {}, exports;
     for (var pass = 0; pass < 3; pass++) {
       var newline = false;
 
+      if (pass === 2) {
+        cpp.push('#ifdef IMPLEMENT_SCHEMA_H');
+        cpp.push('');
+      }
+
       for (var i = 0; i < schema.definitions.length; i++) {
         var definition = schema.definitions[i];
 
@@ -1208,7 +1213,12 @@ var kiwi = exports || kiwi || {}, exports;
         }
       }
 
-      if (newline) cpp.push('');
+      if (pass === 2) {
+        cpp.push('#endif');
+        cpp.push('');
+      }
+
+      else if (newline) cpp.push('');
     }
 
     if (schema.package !== null) {
