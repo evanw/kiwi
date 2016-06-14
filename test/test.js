@@ -1,7 +1,9 @@
 var assert = require('assert');
 var kiwi = require(__dirname + '/../kiwi');
 var fs = require('fs');
-var schema = kiwi.compileSchema(fs.readFileSync(__dirname + '/test-schema.kiwi', 'utf8'));
+
+var schemaText = fs.readFileSync(__dirname + '/test-schema.kiwi', 'utf8');
+var schema = kiwi.compileSchema(schemaText);
 
 it('struct bool', function() {
   function check(i, o) {
@@ -245,4 +247,18 @@ it('recursive message', function() {
   check({}, [0]);
   check({x: {}}, [1, 0, 0]);
   check({x: {x: {}}}, [1, 1, 0, 0, 0]);
+});
+
+it('binary schema', function() {
+  var compiledSchema = kiwi.compileSchema(kiwi.decodeBinarySchema(kiwi.encodeBinarySchema(schemaText)));
+
+  function check(message) {
+    assert.deepEqual(
+      Buffer(schema.encodeNestedMessage(message)),
+      Buffer(compiledSchema.encodeNestedMessage(message)));
+  }
+
+  check({a: 1, c: 4});
+  check({a: 1, b: {}, c: 4});
+  check({a: 1, b: {x: 2, y: 3}, c: 4});
 });

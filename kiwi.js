@@ -486,6 +486,108 @@ var kiwi = exports || kiwi || {}, exports;
   kiwi.parseSchema = parseSchema;
 }());
 
+// Binary schema support
+(function() {
+  var ByteBuffer = kiwi.ByteBuffer;
+  var types = ['bool', 'byte', 'int', 'uint', 'float', 'string'];
+  var kinds = ['ENUM', 'STRUCT', 'MESSAGE'];
+
+  function decodeBinarySchema(bb) {
+    if (!(bb instanceof ByteBuffer)) {
+      bb = new ByteBuffer(bb);
+    }
+
+    var definitionCount = bb.readVarUint();
+    var definitions = [];
+
+    // Read in the schema
+    for (var i = 0; i < definitionCount; i++) {
+      var definitionName = bb.readString();
+      var kind = bb.readByte();
+      var fieldCount = bb.readVarUint();
+      var fields = [];
+
+      for (var j = 0; j < fieldCount; j++) {
+        var fieldName = bb.readString();
+        var type = bb.readVarInt();
+        var value = bb.readVarUint();
+
+        fields.push({
+          name: fieldName,
+          line: 0,
+          column: 0,
+          type: type >> 1,
+          isArray: !!(type & 1),
+          value: value,
+        });
+      }
+
+      definitions.push({
+        name: definitionName,
+        line: 0,
+        column: 0,
+        kind: kinds[kind],
+        fields: fields,
+      });
+    }
+
+    // Bind type names afterwards
+    for (var i = 0; i < definitionCount; i++) {
+      var fields = definitions[i].fields;
+      for (var j = 0; j < fields.length; j++) {
+        var field = fields[j];
+        field.type = field.type < 0 ? types[-field.type - 1] : definitions[field.type].name;
+      }
+    }
+
+    return {
+      package: null,
+      definitions: definitions,
+    };
+  }
+
+  function encodeBinarySchema(schema) {
+    if (typeof schema === 'string') {
+      schema = kiwi.parseSchema(schema);
+    }
+
+    var bb = new ByteBuffer();
+    var definitions = schema.definitions;
+    var definitionIndex = {};
+
+    bb.writeVarUint(definitions.length);
+
+    for (var i = 0; i < definitions.length; i++) {
+      definitionIndex[definitions[i].name] = i;
+    }
+
+    for (var i = 0; i < definitions.length; i++) {
+      var definition = definitions[i];
+
+      bb.writeString(definition.name);
+      bb.writeByte(kinds.indexOf(definition.kind));
+      bb.writeVarUint(definition.fields.length);
+
+      for (var j = 0; j < definition.fields.length; j++) {
+        var field = definition.fields[j];
+        var type = types.indexOf(field.type);
+
+        type = type === -1 ? definitionIndex[field.type] : -1 - type;
+        type = (type << 1) | field.isArray;
+
+        bb.writeString(field.name);
+        bb.writeVarInt(type);
+        bb.writeVarUint(field.value);
+      }
+    }
+
+    return bb.toUint8Array();
+  }
+
+  kiwi.decodeBinarySchema = decodeBinarySchema;
+  kiwi.encodeBinarySchema = encodeBinarySchema;
+}());
+
 // JavaScript Compiler
 (function() {
   var ByteBuffer = kiwi.ByteBuffer;
