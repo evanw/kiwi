@@ -491,8 +491,8 @@ namespace kiwi {
             }
 
             case KIND_STRUCT: {
-              for (auto &field : definition.fields) {
-                if (!_skipField(bb, field)) return false;
+              for (auto &item : definition.fields) {
+                if (!_skipField(bb, item)) return false;
               }
               break;
             }
