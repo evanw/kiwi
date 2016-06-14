@@ -1,6 +1,7 @@
 @import {
   def require(name string) dynamic
   def it(name string, callback fn())
+  const __dirname string
 
   namespace JSON {
     def stringify(value dynamic) string
@@ -10,6 +11,7 @@
 @entry
 def main {
   var assert = require("assert")
+  var fs = require("fs")
 
   it("struct bool", => {
     var check = (i bool, o List<int>) => {
@@ -311,5 +313,20 @@ def main {
     check(null, [0])
     check(test.RecursiveMessage.new, [1, 0, 0])
     check(nested, [1, 1, 0, 0, 0])
+  })
+
+  it("binary schema", => {
+    var schema = test1.BinarySchema.new
+    schema.parse(Uint8Array.new(fs.readFileSync(__dirname + "/test2-schema.bkiwi")))
+
+    var bytes1 = Uint8Array.new([1, 2, 2, 128, 0, 0, 0, 128, 0, 0, 128, 0])
+    assert.deepEqual(test1.Message.decode(bytes1).encode, bytes1)
+    assert.deepEqual(test1.Message.decode(bytes1, schema).encode, bytes1)
+    assert.deepEqual(test2.Message.decode(bytes1).encode, bytes1)
+
+    var bytes2 = Uint8Array.new([1, 2, 2, 128, 0, 0, 0, 128, 0, 0, 128, 3, 1, 0, 4, 0, 0])
+    assert.throws(=> test1.Message.decode(bytes2))
+    assert.deepEqual(test1.Message.decode(bytes2, schema).encode, bytes1)
+    assert.deepEqual(test2.Message.decode(bytes2).encode, bytes2)
   })
 }

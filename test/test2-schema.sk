@@ -1,0 +1,283 @@
+namespace test2 {
+  class BinarySchema {
+    var _schema = Kiwi.BinarySchema.new
+    var _indexMessage = 0
+
+    def parse(bytes Uint8Array) {
+      _schema.parse(Kiwi.ByteBuffer.new(bytes))
+      _indexMessage = _schema.findDefinition("Message")
+    }
+
+    def skipMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexMessage, id)
+    }
+  }
+
+  class Struct {
+    var _flags0 = 0
+    var _a double = 0.0
+    var _b double = 0.0
+
+    def has_a bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def a double {
+      assert(has_a)
+      return _a
+    }
+
+    def a=(value double) {
+      _a = value
+      _flags0 |= 1
+    }
+
+    def has_b bool {
+      return (_flags0 & 2) != 0
+    }
+
+    def b double {
+      assert(has_b)
+      return _b
+    }
+
+    def b=(value double) {
+      _b = value
+      _flags0 |= 2
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_a)
+      bb.writeVarFloat(_a)
+
+      assert(has_b)
+      bb.writeVarFloat(_b)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace Struct {
+    def decode(bytes Uint8Array) Struct {
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
+    }
+
+    def decode(bytes Uint8Array, schema BinarySchema) Struct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) Struct {
+      var self = new
+      self.a = bb.readVarFloat
+      self.b = bb.readVarFloat
+      return self
+    }
+  }
+
+  class Message {
+    var _flags0 = 0
+    var _x int = 0
+    var _y Struct = null
+    var _z Struct2 = null
+    var _w Message = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x int {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value int) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def has_y bool {
+      return (_flags0 & 2) != 0
+    }
+
+    def y Struct {
+      assert(has_y)
+      return _y
+    }
+
+    def y=(value Struct) {
+      _y = value
+      _flags0 |= 2
+    }
+
+    def has_z bool {
+      return (_flags0 & 4) != 0
+    }
+
+    def z Struct2 {
+      assert(has_z)
+      return _z
+    }
+
+    def z=(value Struct2) {
+      _z = value
+      _flags0 |= 4
+    }
+
+    def has_w bool {
+      return (_flags0 & 8) != 0
+    }
+
+    def w Message {
+      assert(has_w)
+      return _w
+    }
+
+    def w=(value Message) {
+      _w = value
+      _flags0 |= 8
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_x {
+        bb.writeVarUint(1)
+        bb.writeVarInt(_x)
+      }
+
+      if has_y {
+        bb.writeVarUint(2)
+        _y.encode(bb)
+      }
+
+      if has_z {
+        bb.writeVarUint(3)
+        _z.encode(bb)
+      }
+
+      if has_w {
+        bb.writeVarUint(4)
+        _w.encode(bb)
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace Message {
+    def decode(bytes Uint8Array) Message {
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
+    }
+
+    def decode(bytes Uint8Array, schema BinarySchema) Message {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) Message {
+      var self = new
+      while true {
+        var type = bb.readByte
+        switch type {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            self.x = bb.readVarInt
+          }
+
+          case 2 {
+            self.y = Struct.decode(bb, schema)
+          }
+
+          case 3 {
+            self.z = Struct2.decode(bb, schema)
+          }
+
+          case 4 {
+            self.w = Message.decode(bb, schema)
+          }
+
+          default {
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipMessageField(bb, type) }
+          }
+        }
+      }
+      return self
+    }
+  }
+
+  class Struct2 {
+    var _flags0 = 0
+    var _u bool = false
+    var _v bool = false
+
+    def has_u bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def u bool {
+      assert(has_u)
+      return _u
+    }
+
+    def u=(value bool) {
+      _u = value
+      _flags0 |= 1
+    }
+
+    def has_v bool {
+      return (_flags0 & 2) != 0
+    }
+
+    def v bool {
+      assert(has_v)
+      return _v
+    }
+
+    def v=(value bool) {
+      _v = value
+      _flags0 |= 2
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_u)
+      bb.writeByte(_u as int)
+
+      assert(has_v)
+      bb.writeByte(_v as int)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace Struct2 {
+    def decode(bytes Uint8Array) Struct2 {
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
+    }
+
+    def decode(bytes Uint8Array, schema BinarySchema) Struct2 {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) Struct2 {
+      var self = new
+      self.u = bb.readByte as bool
+      self.v = bb.readByte as bool
+      return self
+    }
+  }
+}

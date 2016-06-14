@@ -14,9 +14,19 @@ var usage = [
   '  --js [PATH]         Generate JavaScript code.',
   '  --cpp [PATH]        Generate C++ code.',
   '  --skew [PATH]       Generate Skew code.',
+  '  --binary [PATH]     Encode the schema as a binary blob.',
   '  --root-type [NAME]  Set the root type for JSON.',
   '  --to-json [PATH]    Convert a binary file to JSON.',
   '  --from-json [PATH]  Convert a JSON file to binary.',
+  '',
+  'Examples:',
+  '',
+  '  kiwic --schema test.kiwi --js test.h',
+  '  kiwic --schema test.kiwi --cpp test.h',
+  '  kiwic --schema test.kiwi --skew test.sk',
+  '  kiwic --schema test.kiwi --binary test.bkiwi',
+  '  kiwic --schema test.kiwi --root-type Test --from-json buffer.json',
+  '  kiwic --schema test.kiwi --root-type Test --to-json buffer.bin',
   '',
 ].join('\n');
 
@@ -26,6 +36,7 @@ var main = exports.main = function(args) {
     '--js': null,
     '--cpp': null,
     '--skew': null,
+    '--binary': null,
     '--root-type': null,
     '--to-json': null,
     '--from-json': null,
@@ -92,6 +103,11 @@ var main = exports.main = function(args) {
   // Generate Skew code
   if (flags['--skew'] !== null) {
     fs.writeFileSync(flags['--skew'], kiwi.compileSchemaSkew(content));
+  }
+
+  // Generate a binary schema file
+  if (flags['--binary'] !== null) {
+    fs.writeFileSync(flags['--binary'], Buffer(kiwi.encodeBinarySchema(content)));
   }
 
   // Convert a binary file to JSON

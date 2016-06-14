@@ -1,4 +1,108 @@
 namespace test {
+  class BinarySchema {
+    var _schema = Kiwi.BinarySchema.new
+    var _indexBoolMessage = 0
+    var _indexByteMessage = 0
+    var _indexIntMessage = 0
+    var _indexUintMessage = 0
+    var _indexFloatMessage = 0
+    var _indexStringMessage = 0
+    var _indexCompoundMessage = 0
+    var _indexNestedMessage = 0
+    var _indexBoolArrayMessage = 0
+    var _indexByteArrayMessage = 0
+    var _indexIntArrayMessage = 0
+    var _indexUintArrayMessage = 0
+    var _indexFloatArrayMessage = 0
+    var _indexStringArrayMessage = 0
+    var _indexCompoundArrayMessage = 0
+    var _indexRecursiveMessage = 0
+
+    def parse(bytes Uint8Array) {
+      _schema.parse(Kiwi.ByteBuffer.new(bytes))
+      _indexBoolMessage = _schema.findDefinition("BoolMessage")
+      _indexByteMessage = _schema.findDefinition("ByteMessage")
+      _indexIntMessage = _schema.findDefinition("IntMessage")
+      _indexUintMessage = _schema.findDefinition("UintMessage")
+      _indexFloatMessage = _schema.findDefinition("FloatMessage")
+      _indexStringMessage = _schema.findDefinition("StringMessage")
+      _indexCompoundMessage = _schema.findDefinition("CompoundMessage")
+      _indexNestedMessage = _schema.findDefinition("NestedMessage")
+      _indexBoolArrayMessage = _schema.findDefinition("BoolArrayMessage")
+      _indexByteArrayMessage = _schema.findDefinition("ByteArrayMessage")
+      _indexIntArrayMessage = _schema.findDefinition("IntArrayMessage")
+      _indexUintArrayMessage = _schema.findDefinition("UintArrayMessage")
+      _indexFloatArrayMessage = _schema.findDefinition("FloatArrayMessage")
+      _indexStringArrayMessage = _schema.findDefinition("StringArrayMessage")
+      _indexCompoundArrayMessage = _schema.findDefinition("CompoundArrayMessage")
+      _indexRecursiveMessage = _schema.findDefinition("RecursiveMessage")
+    }
+
+    def skipBoolMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexBoolMessage, id)
+    }
+
+    def skipByteMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexByteMessage, id)
+    }
+
+    def skipIntMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexIntMessage, id)
+    }
+
+    def skipUintMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexUintMessage, id)
+    }
+
+    def skipFloatMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexFloatMessage, id)
+    }
+
+    def skipStringMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexStringMessage, id)
+    }
+
+    def skipCompoundMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexCompoundMessage, id)
+    }
+
+    def skipNestedMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexNestedMessage, id)
+    }
+
+    def skipBoolArrayMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexBoolArrayMessage, id)
+    }
+
+    def skipByteArrayMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexByteArrayMessage, id)
+    }
+
+    def skipIntArrayMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexIntArrayMessage, id)
+    }
+
+    def skipUintArrayMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexUintArrayMessage, id)
+    }
+
+    def skipFloatArrayMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexFloatArrayMessage, id)
+    }
+
+    def skipStringArrayMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexStringArrayMessage, id)
+    }
+
+    def skipCompoundArrayMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexCompoundArrayMessage, id)
+    }
+
+    def skipRecursiveMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexRecursiveMessage, id)
+    }
+  }
+
   enum Enum {
     A
     B
@@ -80,10 +184,14 @@ namespace test {
 
   namespace EnumStruct {
     def decode(bytes Uint8Array) EnumStruct {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) EnumStruct {
+    def decode(bytes Uint8Array, schema BinarySchema) EnumStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) EnumStruct {
       var self = new
       var count = 0
       self.x = Enum.decode(bb.readVarUint)
@@ -128,10 +236,14 @@ namespace test {
 
   namespace BoolStruct {
     def decode(bytes Uint8Array) BoolStruct {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) BoolStruct {
+    def decode(bytes Uint8Array, schema BinarySchema) BoolStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) BoolStruct {
       var self = new
       self.x = bb.readByte as bool
       return self
@@ -170,10 +282,14 @@ namespace test {
 
   namespace ByteStruct {
     def decode(bytes Uint8Array) ByteStruct {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) ByteStruct {
+    def decode(bytes Uint8Array, schema BinarySchema) ByteStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) ByteStruct {
       var self = new
       self.x = bb.readByte
       return self
@@ -212,10 +328,14 @@ namespace test {
 
   namespace IntStruct {
     def decode(bytes Uint8Array) IntStruct {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) IntStruct {
+    def decode(bytes Uint8Array, schema BinarySchema) IntStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) IntStruct {
       var self = new
       self.x = bb.readVarInt
       return self
@@ -254,10 +374,14 @@ namespace test {
 
   namespace UintStruct {
     def decode(bytes Uint8Array) UintStruct {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) UintStruct {
+    def decode(bytes Uint8Array, schema BinarySchema) UintStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) UintStruct {
       var self = new
       self.x = bb.readVarUint
       return self
@@ -296,10 +420,14 @@ namespace test {
 
   namespace FloatStruct {
     def decode(bytes Uint8Array) FloatStruct {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) FloatStruct {
+    def decode(bytes Uint8Array, schema BinarySchema) FloatStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) FloatStruct {
       var self = new
       self.x = bb.readVarFloat
       return self
@@ -338,10 +466,14 @@ namespace test {
 
   namespace StringStruct {
     def decode(bytes Uint8Array) StringStruct {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) StringStruct {
+    def decode(bytes Uint8Array, schema BinarySchema) StringStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) StringStruct {
       var self = new
       self.x = bb.readString
       return self
@@ -398,10 +530,14 @@ namespace test {
 
   namespace CompoundStruct {
     def decode(bytes Uint8Array) CompoundStruct {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) CompoundStruct {
+    def decode(bytes Uint8Array, schema BinarySchema) CompoundStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) CompoundStruct {
       var self = new
       self.x = bb.readVarUint
       self.y = bb.readVarUint
@@ -477,13 +613,17 @@ namespace test {
 
   namespace NestedStruct {
     def decode(bytes Uint8Array) NestedStruct {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) NestedStruct {
+    def decode(bytes Uint8Array, schema BinarySchema) NestedStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) NestedStruct {
       var self = new
       self.a = bb.readVarUint
-      self.b = CompoundStruct.decode(bb)
+      self.b = CompoundStruct.decode(bb, schema)
       self.c = bb.readVarUint
       return self
     }
@@ -525,13 +665,18 @@ namespace test {
 
   namespace BoolMessage {
     def decode(bytes Uint8Array) BoolMessage {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) BoolMessage {
+    def decode(bytes Uint8Array, schema BinarySchema) BoolMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) BoolMessage {
       var self = new
       while true {
-        switch bb.readByte {
+        var type = bb.readByte
+        switch type {
           case 0 {
             break
           }
@@ -541,7 +686,8 @@ namespace test {
           }
 
           default {
-            Kiwi.DecodeError.throwInvalidMessage
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipBoolMessageField(bb, type) }
           }
         }
       }
@@ -585,13 +731,18 @@ namespace test {
 
   namespace ByteMessage {
     def decode(bytes Uint8Array) ByteMessage {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) ByteMessage {
+    def decode(bytes Uint8Array, schema BinarySchema) ByteMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) ByteMessage {
       var self = new
       while true {
-        switch bb.readByte {
+        var type = bb.readByte
+        switch type {
           case 0 {
             break
           }
@@ -601,7 +752,8 @@ namespace test {
           }
 
           default {
-            Kiwi.DecodeError.throwInvalidMessage
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipByteMessageField(bb, type) }
           }
         }
       }
@@ -645,13 +797,18 @@ namespace test {
 
   namespace IntMessage {
     def decode(bytes Uint8Array) IntMessage {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) IntMessage {
+    def decode(bytes Uint8Array, schema BinarySchema) IntMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) IntMessage {
       var self = new
       while true {
-        switch bb.readByte {
+        var type = bb.readByte
+        switch type {
           case 0 {
             break
           }
@@ -661,7 +818,8 @@ namespace test {
           }
 
           default {
-            Kiwi.DecodeError.throwInvalidMessage
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipIntMessageField(bb, type) }
           }
         }
       }
@@ -705,13 +863,18 @@ namespace test {
 
   namespace UintMessage {
     def decode(bytes Uint8Array) UintMessage {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) UintMessage {
+    def decode(bytes Uint8Array, schema BinarySchema) UintMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) UintMessage {
       var self = new
       while true {
-        switch bb.readByte {
+        var type = bb.readByte
+        switch type {
           case 0 {
             break
           }
@@ -721,7 +884,8 @@ namespace test {
           }
 
           default {
-            Kiwi.DecodeError.throwInvalidMessage
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipUintMessageField(bb, type) }
           }
         }
       }
@@ -765,13 +929,18 @@ namespace test {
 
   namespace FloatMessage {
     def decode(bytes Uint8Array) FloatMessage {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) FloatMessage {
+    def decode(bytes Uint8Array, schema BinarySchema) FloatMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) FloatMessage {
       var self = new
       while true {
-        switch bb.readByte {
+        var type = bb.readByte
+        switch type {
           case 0 {
             break
           }
@@ -781,7 +950,8 @@ namespace test {
           }
 
           default {
-            Kiwi.DecodeError.throwInvalidMessage
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipFloatMessageField(bb, type) }
           }
         }
       }
@@ -825,13 +995,18 @@ namespace test {
 
   namespace StringMessage {
     def decode(bytes Uint8Array) StringMessage {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) StringMessage {
+    def decode(bytes Uint8Array, schema BinarySchema) StringMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) StringMessage {
       var self = new
       while true {
-        switch bb.readByte {
+        var type = bb.readByte
+        switch type {
           case 0 {
             break
           }
@@ -841,7 +1016,8 @@ namespace test {
           }
 
           default {
-            Kiwi.DecodeError.throwInvalidMessage
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipStringMessageField(bb, type) }
           }
         }
       }
@@ -905,13 +1081,18 @@ namespace test {
 
   namespace CompoundMessage {
     def decode(bytes Uint8Array) CompoundMessage {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) CompoundMessage {
+    def decode(bytes Uint8Array, schema BinarySchema) CompoundMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) CompoundMessage {
       var self = new
       while true {
-        switch bb.readByte {
+        var type = bb.readByte
+        switch type {
           case 0 {
             break
           }
@@ -925,7 +1106,8 @@ namespace test {
           }
 
           default {
-            Kiwi.DecodeError.throwInvalidMessage
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipCompoundMessageField(bb, type) }
           }
         }
       }
@@ -1009,13 +1191,18 @@ namespace test {
 
   namespace NestedMessage {
     def decode(bytes Uint8Array) NestedMessage {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) NestedMessage {
+    def decode(bytes Uint8Array, schema BinarySchema) NestedMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) NestedMessage {
       var self = new
       while true {
-        switch bb.readByte {
+        var type = bb.readByte
+        switch type {
           case 0 {
             break
           }
@@ -1025,7 +1212,7 @@ namespace test {
           }
 
           case 2 {
-            self.b = CompoundMessage.decode(bb)
+            self.b = CompoundMessage.decode(bb, schema)
           }
 
           case 3 {
@@ -1033,7 +1220,8 @@ namespace test {
           }
 
           default {
-            Kiwi.DecodeError.throwInvalidMessage
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipNestedMessageField(bb, type) }
           }
         }
       }
@@ -1076,10 +1264,14 @@ namespace test {
 
   namespace BoolArrayStruct {
     def decode(bytes Uint8Array) BoolArrayStruct {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) BoolArrayStruct {
+    def decode(bytes Uint8Array, schema BinarySchema) BoolArrayStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) BoolArrayStruct {
       var self = new
       var count = 0
       count = bb.readVarUint
@@ -1126,10 +1318,14 @@ namespace test {
 
   namespace ByteArrayStruct {
     def decode(bytes Uint8Array) ByteArrayStruct {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) ByteArrayStruct {
+    def decode(bytes Uint8Array, schema BinarySchema) ByteArrayStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) ByteArrayStruct {
       var self = new
       var count = 0
       count = bb.readVarUint
@@ -1176,10 +1372,14 @@ namespace test {
 
   namespace IntArrayStruct {
     def decode(bytes Uint8Array) IntArrayStruct {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) IntArrayStruct {
+    def decode(bytes Uint8Array, schema BinarySchema) IntArrayStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) IntArrayStruct {
       var self = new
       var count = 0
       count = bb.readVarUint
@@ -1226,10 +1426,14 @@ namespace test {
 
   namespace UintArrayStruct {
     def decode(bytes Uint8Array) UintArrayStruct {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) UintArrayStruct {
+    def decode(bytes Uint8Array, schema BinarySchema) UintArrayStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) UintArrayStruct {
       var self = new
       var count = 0
       count = bb.readVarUint
@@ -1276,10 +1480,14 @@ namespace test {
 
   namespace FloatArrayStruct {
     def decode(bytes Uint8Array) FloatArrayStruct {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) FloatArrayStruct {
+    def decode(bytes Uint8Array, schema BinarySchema) FloatArrayStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) FloatArrayStruct {
       var self = new
       var count = 0
       count = bb.readVarUint
@@ -1326,10 +1534,14 @@ namespace test {
 
   namespace StringArrayStruct {
     def decode(bytes Uint8Array) StringArrayStruct {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) StringArrayStruct {
+    def decode(bytes Uint8Array, schema BinarySchema) StringArrayStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) StringArrayStruct {
       var self = new
       var count = 0
       count = bb.readVarUint
@@ -1397,10 +1609,14 @@ namespace test {
 
   namespace CompoundArrayStruct {
     def decode(bytes Uint8Array) CompoundArrayStruct {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) CompoundArrayStruct {
+    def decode(bytes Uint8Array, schema BinarySchema) CompoundArrayStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) CompoundArrayStruct {
       var self = new
       var count = 0
       count = bb.readVarUint
@@ -1456,14 +1672,19 @@ namespace test {
 
   namespace BoolArrayMessage {
     def decode(bytes Uint8Array) BoolArrayMessage {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) BoolArrayMessage {
+    def decode(bytes Uint8Array, schema BinarySchema) BoolArrayMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) BoolArrayMessage {
       var self = new
       var count = 0
       while true {
-        switch bb.readByte {
+        var type = bb.readByte
+        switch type {
           case 0 {
             break
           }
@@ -1477,7 +1698,8 @@ namespace test {
           }
 
           default {
-            Kiwi.DecodeError.throwInvalidMessage
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipBoolArrayMessageField(bb, type) }
           }
         }
       }
@@ -1524,14 +1746,19 @@ namespace test {
 
   namespace ByteArrayMessage {
     def decode(bytes Uint8Array) ByteArrayMessage {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) ByteArrayMessage {
+    def decode(bytes Uint8Array, schema BinarySchema) ByteArrayMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) ByteArrayMessage {
       var self = new
       var count = 0
       while true {
-        switch bb.readByte {
+        var type = bb.readByte
+        switch type {
           case 0 {
             break
           }
@@ -1545,7 +1772,8 @@ namespace test {
           }
 
           default {
-            Kiwi.DecodeError.throwInvalidMessage
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipByteArrayMessageField(bb, type) }
           }
         }
       }
@@ -1592,14 +1820,19 @@ namespace test {
 
   namespace IntArrayMessage {
     def decode(bytes Uint8Array) IntArrayMessage {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) IntArrayMessage {
+    def decode(bytes Uint8Array, schema BinarySchema) IntArrayMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) IntArrayMessage {
       var self = new
       var count = 0
       while true {
-        switch bb.readByte {
+        var type = bb.readByte
+        switch type {
           case 0 {
             break
           }
@@ -1613,7 +1846,8 @@ namespace test {
           }
 
           default {
-            Kiwi.DecodeError.throwInvalidMessage
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipIntArrayMessageField(bb, type) }
           }
         }
       }
@@ -1660,14 +1894,19 @@ namespace test {
 
   namespace UintArrayMessage {
     def decode(bytes Uint8Array) UintArrayMessage {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) UintArrayMessage {
+    def decode(bytes Uint8Array, schema BinarySchema) UintArrayMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) UintArrayMessage {
       var self = new
       var count = 0
       while true {
-        switch bb.readByte {
+        var type = bb.readByte
+        switch type {
           case 0 {
             break
           }
@@ -1681,7 +1920,8 @@ namespace test {
           }
 
           default {
-            Kiwi.DecodeError.throwInvalidMessage
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipUintArrayMessageField(bb, type) }
           }
         }
       }
@@ -1728,14 +1968,19 @@ namespace test {
 
   namespace FloatArrayMessage {
     def decode(bytes Uint8Array) FloatArrayMessage {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) FloatArrayMessage {
+    def decode(bytes Uint8Array, schema BinarySchema) FloatArrayMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) FloatArrayMessage {
       var self = new
       var count = 0
       while true {
-        switch bb.readByte {
+        var type = bb.readByte
+        switch type {
           case 0 {
             break
           }
@@ -1749,7 +1994,8 @@ namespace test {
           }
 
           default {
-            Kiwi.DecodeError.throwInvalidMessage
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipFloatArrayMessageField(bb, type) }
           }
         }
       }
@@ -1796,14 +2042,19 @@ namespace test {
 
   namespace StringArrayMessage {
     def decode(bytes Uint8Array) StringArrayMessage {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) StringArrayMessage {
+    def decode(bytes Uint8Array, schema BinarySchema) StringArrayMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) StringArrayMessage {
       var self = new
       var count = 0
       while true {
-        switch bb.readByte {
+        var type = bb.readByte
+        switch type {
           case 0 {
             break
           }
@@ -1817,7 +2068,8 @@ namespace test {
           }
 
           default {
-            Kiwi.DecodeError.throwInvalidMessage
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipStringArrayMessageField(bb, type) }
           }
         }
       }
@@ -1887,14 +2139,19 @@ namespace test {
 
   namespace CompoundArrayMessage {
     def decode(bytes Uint8Array) CompoundArrayMessage {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) CompoundArrayMessage {
+    def decode(bytes Uint8Array, schema BinarySchema) CompoundArrayMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) CompoundArrayMessage {
       var self = new
       var count = 0
       while true {
-        switch bb.readByte {
+        var type = bb.readByte
+        switch type {
           case 0 {
             break
           }
@@ -1916,7 +2173,8 @@ namespace test {
           }
 
           default {
-            Kiwi.DecodeError.throwInvalidMessage
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipCompoundArrayMessageField(bb, type) }
           }
         }
       }
@@ -1960,23 +2218,29 @@ namespace test {
 
   namespace RecursiveMessage {
     def decode(bytes Uint8Array) RecursiveMessage {
-      return decode(Kiwi.ByteBuffer.new(bytes))
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
     }
 
-    def decode(bb Kiwi.ByteBuffer) RecursiveMessage {
+    def decode(bytes Uint8Array, schema BinarySchema) RecursiveMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) RecursiveMessage {
       var self = new
       while true {
-        switch bb.readByte {
+        var type = bb.readByte
+        switch type {
           case 0 {
             break
           }
 
           case 1 {
-            self.x = RecursiveMessage.decode(bb)
+            self.x = RecursiveMessage.decode(bb, schema)
           }
 
           default {
-            Kiwi.DecodeError.throwInvalidMessage
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipRecursiveMessageField(bb, type) }
           }
         }
       }

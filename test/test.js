@@ -250,7 +250,7 @@ it('recursive message', function() {
 });
 
 it('binary schema', function() {
-  var compiledSchema = kiwi.compileSchema(kiwi.decodeBinarySchema(kiwi.encodeBinarySchema(schemaText)));
+  var compiledSchema = kiwi.compileSchema(kiwi.encodeBinarySchema(schemaText));
 
   function check(message) {
     assert.deepEqual(

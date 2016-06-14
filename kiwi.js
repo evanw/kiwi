@@ -13,6 +13,18 @@ var kiwi = exports || kiwi || {}, exports;
     throw error;
   }
 
+  function convertSchema(schema) {
+    if (typeof schema === 'string') {
+      return kiwi.parseSchema(schema);
+    }
+
+    if (schema instanceof Uint8Array || schema instanceof kiwi.ByteBuffer) {
+      return kiwi.decodeBinarySchema(schema);
+    }
+
+    return schema;
+  }
+
 // ByteBuffer
 (function() {
   var int32 = new Int32Array(1);
@@ -561,9 +573,7 @@ var kiwi = exports || kiwi || {}, exports;
   }
 
   function encodeBinarySchema(schema) {
-    if (typeof schema === 'string') {
-      schema = kiwi.parseSchema(schema);
-    }
+    schema = convertSchema(schema);
 
     var bb = new ByteBuffer();
     var definitions = schema.definitions;
@@ -806,9 +816,7 @@ var kiwi = exports || kiwi || {}, exports;
   }
 
   function compileSchemaJS(schema) {
-    if (typeof schema === 'string') {
-      schema = kiwi.parseSchema(schema);
-    }
+    schema = convertSchema(schema);
 
     var definitions = {};
     var name = schema.package;
@@ -926,9 +934,7 @@ var kiwi = exports || kiwi || {}, exports;
   }
 
   function compileSchemaCPP(schema) {
-    if (typeof schema === 'string') {
-      schema = kiwi.parseSchema(schema);
-    }
+    schema = convertSchema(schema);
 
     var definitions = {};
     var cpp = [];
@@ -1435,9 +1441,7 @@ var kiwi = exports || kiwi || {}, exports;
   }
 
   function compileSchemaSkew(schema) {
-    if (typeof schema === 'string') {
-      schema = kiwi.parseSchema(schema);
-    }
+    schema = convertSchema(schema);
 
     var definitions = {};
     var indent = '';
@@ -1452,6 +1456,42 @@ var kiwi = exports || kiwi || {}, exports;
       var definition = schema.definitions[i];
       definitions[definition.name] = definition;
     }
+
+    lines.push(indent + 'class BinarySchema {');
+    lines.push(indent + '  var _schema = Kiwi.BinarySchema.new');
+
+    for (var i = 0; i < schema.definitions.length; i++) {
+      var definition = schema.definitions[i];
+      if (definition.kind === 'MESSAGE') {
+        lines.push(indent + '  var _index' + definition.name + ' = 0');
+      }
+    }
+
+    lines.push('');
+    lines.push(indent + '  def parse(bytes Uint8Array) {');
+    lines.push(indent + '    _schema.parse(Kiwi.ByteBuffer.new(bytes))');
+
+    for (var i = 0; i < schema.definitions.length; i++) {
+      var definition = schema.definitions[i];
+      if (definition.kind === 'MESSAGE') {
+        lines.push(indent + '    _index' + definition.name + ' = _schema.findDefinition("' + definition.name + '")');
+      }
+    }
+
+    lines.push(indent + '  }');
+
+    for (var i = 0; i < schema.definitions.length; i++) {
+      var definition = schema.definitions[i];
+      if (definition.kind === 'MESSAGE') {
+      lines.push('');
+        lines.push(indent + '  def skip' + definition.name + 'Field(bb Kiwi.ByteBuffer, id int) {');
+        lines.push(indent + '    _schema.skipField(bb, _index' + definition.name + ', id)');
+        lines.push(indent + '  }');
+      }
+    }
+
+    lines.push(indent + '}');
+    lines.push('');
 
     for (var i = 0; i < schema.definitions.length; i++) {
       var definition = schema.definitions[i];
@@ -1635,11 +1675,15 @@ var kiwi = exports || kiwi || {}, exports;
 
           lines.push(indent + 'namespace ' + definition.name + ' {');
           lines.push(indent + '  def decode(bytes Uint8Array) ' + definition.name + ' {');
-          lines.push(indent + '    return decode(Kiwi.ByteBuffer.new(bytes))');
+          lines.push(indent + '    return decode(Kiwi.ByteBuffer.new(bytes), null)');
+          lines.push(indent + '  }');
+          lines.push('');
+          lines.push(indent + '  def decode(bytes Uint8Array, schema BinarySchema) ' + definition.name + ' {');
+          lines.push(indent + '    return decode(Kiwi.ByteBuffer.new(bytes), schema)');
           lines.push(indent + '  }');
           lines.push('');
 
-          lines.push(indent + '  def decode(bb Kiwi.ByteBuffer) ' + definition.name + ' {');
+          lines.push(indent + '  def decode(bb Kiwi.ByteBuffer, schema BinarySchema) ' + definition.name + ' {');
           lines.push(indent + '    var self = new');
 
           for (var j = 0; j < definition.fields.length; j++) {
@@ -1653,7 +1697,8 @@ var kiwi = exports || kiwi || {}, exports;
 
           if (definition.kind === 'MESSAGE') {
             lines.push(indent + '    while true {');
-            lines.push(indent + '      switch bb.readByte {');
+            lines.push(indent + '      var type = bb.readByte');
+            lines.push(indent + '      switch type {');
             lines.push(indent + '        case 0 {');
             lines.push(indent + '          break');
             lines.push(indent + '        }');
@@ -1703,7 +1748,7 @@ var kiwi = exports || kiwi || {}, exports;
                 } else if (type.kind === 'ENUM') {
                   code = type.name + '.decode(bb.readVarUint)';
                 } else {
-                  code = type.name + '.decode(bb)';
+                  code = type.name + '.decode(bb, schema)';
                 }
               }
             }
@@ -1730,7 +1775,8 @@ var kiwi = exports || kiwi || {}, exports;
 
           if (definition.kind === 'MESSAGE') {
             lines.push(indent + '        default {');
-            lines.push(indent + '          Kiwi.DecodeError.throwInvalidMessage');
+            lines.push(indent + '          if schema == null { Kiwi.DecodeError.throwInvalidMessage }');
+            lines.push(indent + '          else { schema.skip' + definition.name + 'Field(bb, type) }');
             lines.push(indent + '        }');
             lines.push(indent + '      }');
             lines.push(indent + '    }');

@@ -1,0 +1,11 @@
+package test1;
+
+struct Struct {
+  float a;
+  float b;
+}
+
+message Message {
+  int x = 1;
+  Struct y = 2;
+}

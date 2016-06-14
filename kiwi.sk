@@ -22,6 +22,10 @@ namespace Kiwi {
     def throwMissingRequiredField(name string) {
       throw new("Missing required field \"\(name)\"")
     }
+
+    def throwInvalidSchema {
+      throw new("Invalid schema")
+    }
   }
 
   class ByteBuffer {
@@ -231,6 +235,114 @@ namespace Kiwi {
 
       # Strings are null-terminated
       writeByte(0)
+    }
+  }
+
+  class BinarySchema {
+    var _definitions List<Definition> = []
+
+    def parse(bb ByteBuffer) {
+      _definitions = []
+      var definitionCount = bb.readVarUint
+
+      for i in 0..definitionCount {
+        var name = bb.readString
+        var kind = bb.readByte as Kind
+        var fields List<Field> = []
+
+        if kind != .ENUM && kind != .STRUCT && kind != .MESSAGE {
+          DecodeError.throwInvalidSchema
+        }
+
+        for j in 0..bb.readVarUint {
+          var field = Field.new(bb.readString, bb.readVarInt, bb.readByte as bool, bb.readVarUint)
+          if field.type < TYPE_STRING || field.type >= definitionCount {
+            DecodeError.throwInvalidSchema
+          }
+          fields.append(field)
+        }
+
+        _definitions.append(Definition.new(name, kind, fields))
+      }
+    }
+
+    def findDefinition(definition string) int {
+      for i in 0.._definitions.count {
+        if _definitions[i].name == definition {
+          return i
+        }
+      }
+
+      DecodeError.throwInvalidSchema
+      return -1
+    }
+
+    def skipField(bb ByteBuffer, definition int, field int) {
+      if definition >= 0 && definition < _definitions.count {
+        for item in _definitions[definition].fields {
+          if item.value == field {
+            _skipField(bb, item)
+            break
+          }
+        }
+      }
+    }
+
+    def _skipField(bb ByteBuffer, field Field) {
+      for i in 0..field.isArray ? bb.readVarUint : 1 {
+        switch field.type {
+          case TYPE_BOOL, TYPE_BYTE { bb.readByte }
+          case TYPE_INT, TYPE_UINT { bb.readVarUint }
+          case TYPE_FLOAT { bb.readVarFloat }
+          case TYPE_STRING { while bb.readByte != 0 {} }
+
+          default {
+            assert(field.type >= 0 && field.type < _definitions.count)
+            var definition = _definitions[field.type]
+
+            switch definition.kind {
+              case .ENUM { bb.readVarUint }
+              case .STRUCT { for nested in definition.fields { _skipField(bb, nested) } }
+              case .MESSAGE {
+                while true {
+                  var id = bb.readVarUint
+                  if id == 0 { break }
+                  skipField(bb, field.type, id)
+                }
+              }
+              default { assert(false) }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  namespace BinarySchema {
+    const TYPE_BOOL = -1
+    const TYPE_BYTE = -2
+    const TYPE_INT = -3
+    const TYPE_UINT = -4
+    const TYPE_FLOAT = -5
+    const TYPE_STRING = -6
+
+    class Field {
+      const name string
+      const type int
+      const isArray bool
+      const value int
+    }
+
+    enum Kind {
+      ENUM
+      STRUCT
+      MESSAGE
+    }
+
+    class Definition {
+      const name string
+      const kind Kind
+      const fields List<Field>
     }
   }
 }
