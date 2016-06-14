@@ -408,7 +408,7 @@ namespace kiwi {
             !bb.readByte(field.isArray) ||
             !bb.readVarUint(field.value) ||
             field.type < TYPE_STRING ||
-            field.type >= definitionCount) {
+            field.type >= (int32_t)definitionCount) {
           return false;
         }
       }
