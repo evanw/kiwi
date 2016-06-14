@@ -39,7 +39,6 @@ class FloatArrayMessage;
 class StringArrayMessage;
 class CompoundArrayMessage;
 class RecursiveMessage;
-class RequiredField;
 
 class EnumStruct {
 public:
@@ -532,20 +531,6 @@ public:
 private:
   uint32_t _flags[1] = {};
   RecursiveMessage *_data_x = {};
-};
-
-class RequiredField {
-public:
-  int32_t *x();
-  const int32_t *x() const;
-  void set_x(const int32_t &value);
-
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);
-
-private:
-  uint32_t _flags[1] = {};
-  int32_t _data_x = {};
 };
 
 #ifdef IMPLEMENT_SCHEMA_H
@@ -1712,43 +1697,6 @@ bool RecursiveMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
       case 1:
         _data_x = _pool.allocate<RecursiveMessage>();
         if (!_data_x->decode(_bb, _pool)) return false;
-        break;
-      default: return false;
-    }
-  }
-}
-
-int32_t *RequiredField::x() {
-  return _flags[0] & 1 ? &_data_x : nullptr;
-}
-
-const int32_t *RequiredField::x() const {
-  return _flags[0] & 1 ? &_data_x : nullptr;
-}
-
-void RequiredField::set_x(const int32_t &value) {
-  _flags[0] |= 1; _data_x = value;
-}
-
-bool RequiredField::encode(kiwi::ByteBuffer &_bb) {
-  if (x() == nullptr) return false;
-  _bb.writeVarUint(1);
-  _bb.writeVarInt(_data_x);
-  _bb.writeVarUint(0);
-  return true;
-}
-
-bool RequiredField::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {
-  while (true) {
-    uint32_t _type;
-    if (!_bb.readVarUint(_type)) return false;
-    switch (_type) {
-      case 0:
-        if (x() == nullptr) return false;
-        return true;
-      case 1:
-        if (!_bb.readVarInt(_data_x)) return false;
-        set_x(_data_x);
         break;
       default: return false;
     }

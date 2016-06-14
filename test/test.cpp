@@ -490,40 +490,6 @@ static void testRecursiveMessage() {
   assert(!a2.x()->x()->x());
 }
 
-static void testRequiredField() {
-  puts("testRequiredField");
-
-  {
-    kiwi::ByteBuffer bb;
-    test::RequiredField s;
-    assert(!s.encode(bb));
-  }
-
-  {
-    kiwi::ByteBuffer bb;
-    kiwi::MemoryPool pool;
-    test::RequiredField s;
-    s.set_x(0);
-    assert(s.encode(bb));
-  }
-
-  {
-    std::vector<uint8_t> o{0};
-    kiwi::ByteBuffer bb(o.data(), o.size());
-    kiwi::MemoryPool pool;
-    test::RequiredField s;
-    assert(!s.decode(bb, pool));
-  }
-
-  {
-    std::vector<uint8_t> o{1, 0, 0};
-    kiwi::ByteBuffer bb(o.data(), o.size());
-    kiwi::MemoryPool pool;
-    test::RequiredField s;
-    assert(s.decode(bb, pool));
-  }
-}
-
 int main() {
   testStructBool();
   testStructByte();
@@ -544,7 +510,6 @@ int main() {
   testMessageNested();
 
   testRecursiveMessage();
-  testRequiredField();
 
   puts("all tests passed");
   return 0;

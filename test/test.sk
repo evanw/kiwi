@@ -312,15 +312,4 @@ def main {
     check(test.RecursiveMessage.new, [1, 0, 0])
     check(nested, [1, 1, 0, 0, 0])
   })
-
-  it("required field", => {
-    var message = test.RequiredField.new
-    message.x = 0
-
-    assert.throws(=> test.RequiredField.new.encode, dynamic.Object)
-    assert.doesNotThrow(=> message.encode, dynamic.Object)
-
-    assert.throws(=> test.RequiredField.decode(Uint8Array.new([0])), dynamic.Object)
-    assert.doesNotThrow(=> test.RequiredField.decode(Uint8Array.new([1, 1, 0])), dynamic.Object)
-  })
 }

@@ -246,11 +246,3 @@ it('recursive message', function() {
   check({x: {}}, [1, 0, 0]);
   check({x: {x: {}}}, [1, 1, 0, 0, 0]);
 });
-
-it('required field', function() {
-  assert.throws(function() { schema.encodeRequiredField({}); }, Error);
-  assert.doesNotThrow(function() { schema.encodeRequiredField({x: 0}); }, Error);
-
-  assert.throws(function() { schema.decodeRequiredField(new Uint8Array([0])); }, Error);
-  assert.doesNotThrow(function() { schema.decodeRequiredField(new Uint8Array([1, 1, 0])); }, Error);
-});

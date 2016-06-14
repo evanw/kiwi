@@ -42,4 +42,3 @@ message StringArrayMessage { string[] x = 1; }
 message CompoundArrayMessage { uint[] x = 1; uint[] y = 2; }
 
 message RecursiveMessage { RecursiveMessage x = 1; }
-message RequiredField { required int x = 1; }

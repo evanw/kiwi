@@ -31,7 +31,7 @@ Non-goals:
 
 * **enum:** A `uint` with a restricted set of values that are identified by name. New fields can be added to any message while maintaining backwards compatibility.
 * **struct:** A compound value with a fixed set of fields that are always required and written out in order. New fields cannot be added to a struct once that struct is in use.
-* **message:** A compound value with optional fields. A field can be made required using the `required` keyword. New fields can be added to any message while maintaining backwards compatibility.
+* **message:** A compound value with optional fields. New fields can be added to any message while maintaining backwards compatibility.
 
 ## Example Schema
 
@@ -50,7 +50,7 @@ struct Color {
 }
 
 message Example {
-  required uint clientID = 1;
+  uint clientID = 1;
   Type type = 2;
   Color[] colors = 3;
 }

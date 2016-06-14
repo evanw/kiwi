@@ -251,7 +251,6 @@ var kiwi = exports || kiwi || {}, exports;
   var structKeyword = /^struct$/;
   var messageKeyword = /^message$/;
   var packageKeyword = /^package$/;
-  var requiredKeyword = /^required$/;
 
   function tokenize(text) {
     var parts = text.split(regex);
@@ -346,7 +345,6 @@ var kiwi = exports || kiwi || {}, exports;
 
       // Parse fields
       while (!eat(rightBrace)) {
-        var isRequired = kind === 'STRUCT' || eat(requiredKeyword);
         var type = null;
         var isArray = false;
 
@@ -380,7 +378,6 @@ var kiwi = exports || kiwi || {}, exports;
           column: field.column,
           type: type,
           isArray: isArray,
-          isRequired: isRequired,
           value: value !== null ? value.text | 0 : fields.length + 1,
         });
       }
@@ -508,14 +505,6 @@ var kiwi = exports || kiwi || {}, exports;
       lines.push('  while (true) {');
       lines.push('    switch (bb.readByte()) {');
       lines.push('    case 0:');
-
-      for (var i = 0; i < definition.fields.length; i++) {
-        var field = definition.fields[i];
-        if (field.isRequired) {
-          lines.push('      if (result[' + quote(field.name) + '] == null) throw new Error(' + quote('Missing required field ' + quote(field.name)) + ');');
-        }
-      }
-
       lines.push('      return result;');
       lines.push('');
       indent = '      ';
@@ -682,7 +671,7 @@ var kiwi = exports || kiwi || {}, exports;
         lines.push('    ' + code);
       }
 
-      if (field.isRequired) {
+      if (definition.kind === 'STRUCT') {
         lines.push('  } else {');
         lines.push('    throw new Error(' + quote('Missing required field ' + quote(field.name)) + ');');
       }
@@ -1056,7 +1045,7 @@ var kiwi = exports || kiwi || {}, exports;
             }
 
             var indent = '  ';
-            if (field.isRequired) {
+            if (definition.kind === 'STRUCT') {
               cpp.push('  if (' + field.name + '() == nullptr) return false;');
             } else {
               cpp.push('  if (' + field.name + '() != nullptr) {');
@@ -1074,7 +1063,7 @@ var kiwi = exports || kiwi || {}, exports;
               cpp.push(indent + code);
             }
 
-            if (!field.isRequired) {
+            if (definition.kind !== 'STRUCT') {
               cpp.push('  }');
             }
           }
@@ -1102,14 +1091,6 @@ var kiwi = exports || kiwi || {}, exports;
             cpp.push('    if (!_bb.readVarUint(_type)) return false;');
             cpp.push('    switch (_type) {');
             cpp.push('      case 0:');
-
-            for (var j = 0; j < fields.length; j++) {
-              var field = fields[j];
-              if (field.isRequired) {
-                cpp.push('        if (' + field.name + '() == nullptr) return false;');
-              }
-            }
-
             cpp.push('        return true;');
           }
 
@@ -1443,7 +1424,7 @@ var kiwi = exports || kiwi || {}, exports;
 
             var nestedIndent = indent + '    ';
 
-            if (field.isRequired) {
+            if (definition.kind === 'STRUCT') {
               lines.push(nestedIndent + 'assert(has_' + field.name + ')');
             } else {
               lines.push(nestedIndent + 'if has_' + field.name + ' {');
@@ -1463,7 +1444,7 @@ var kiwi = exports || kiwi || {}, exports;
               lines.push(nestedIndent + code);
             }
 
-            if (!field.isRequired) {
+            if (definition.kind !== 'STRUCT') {
               lines.push(indent + '    }');
             }
 
@@ -1509,16 +1490,6 @@ var kiwi = exports || kiwi || {}, exports;
             lines.push(indent + '    while true {');
             lines.push(indent + '      switch bb.readByte {');
             lines.push(indent + '        case 0 {');
-
-            for (var j = 0; j < definition.fields.length; j++) {
-              var field = definition.fields[j];
-              if (field.isRequired) {
-                lines.push(indent + '          if !self.has_' + field.name + ' {');
-                lines.push(indent + '            Kiwi.DecodeError.throwMissingRequiredField(' + quote(field.name) + ')');
-                lines.push(indent + '          }');
-              }
-            }
-
             lines.push(indent + '          break');
             lines.push(indent + '        }');
             lines.push('');
