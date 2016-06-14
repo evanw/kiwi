@@ -118,6 +118,49 @@ namespace kiwi {
     Chunk *_first = nullptr;
     Chunk *_last = nullptr;
   };
+
+  ////////////////////////////////////////////////////////////////////////////////
+
+  class BinarySchema {
+  public:
+    bool parse(ByteBuffer &bb);
+    bool findDefinition(const char *definition, uint32_t &index) const;
+    bool skipField(ByteBuffer &bb, uint32_t definition, uint32_t field) const;
+
+  private:
+    enum {
+      TYPE_BOOL = -1,
+      TYPE_BYTE = -2,
+      TYPE_INT = -3,
+      TYPE_UINT = -4,
+      TYPE_FLOAT = -5,
+      TYPE_STRING = -6,
+    };
+
+    struct Field {
+      String name;
+      int32_t type = 0;
+      bool isArray = false;
+      uint32_t value = 0;
+    };
+
+    enum {
+      KIND_ENUM = 0,
+      KIND_STRUCT = 1,
+      KIND_MESSAGE = 2,
+    };
+
+    struct Definition {
+      String name;
+      uint8_t kind = 0;
+      Array<Field> fields;
+    };
+
+    bool _skipField(ByteBuffer &bb, const Field &field) const;
+
+    MemoryPool _pool;
+    Array<Definition> _definitions;
+  };
 }
 
 #ifdef IMPLEMENT_KIWI_H
@@ -331,6 +374,149 @@ namespace kiwi {
     char *c_str = allocate<char>(count + 1);
     memcpy(c_str, text, count);
     return String(c_str);
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+
+  bool kiwi::BinarySchema::parse(ByteBuffer &bb) {
+    uint32_t definitionCount = 0;
+
+    _definitions = {};
+    _pool.clear();
+
+    if (!bb.readVarUint(definitionCount)) {
+      return false;
+    }
+
+    _definitions = _pool.array<Definition>(definitionCount);
+
+    for (auto &definition : _definitions) {
+      uint32_t fieldCount = 0;
+
+      if (!bb.readString(definition.name, _pool) ||
+          !bb.readByte(definition.kind) ||
+          !bb.readVarUint(fieldCount) ||
+          (definition.kind != KIND_ENUM && definition.kind != KIND_STRUCT && definition.kind != KIND_MESSAGE)) {
+        return false;
+      }
+
+      definition.fields = _pool.array<Field>(fieldCount);
+
+      for (auto &field : definition.fields) {
+        if (!bb.readString(field.name, _pool) ||
+            !bb.readVarInt(field.type) ||
+            !bb.readByte(field.isArray) ||
+            !bb.readVarUint(field.value) ||
+            field.type < TYPE_STRING ||
+            field.type >= definitionCount) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  bool kiwi::BinarySchema::findDefinition(const char *definition, uint32_t &index) const {
+    for (uint32_t i = 0; i < _definitions.size(); i++) {
+      auto &item = _definitions[i];
+      if (item.name == String(definition)) {
+        index = i;
+        return true;
+      }
+    }
+
+    index = -1;
+    return false;
+  }
+
+  bool kiwi::BinarySchema::skipField(ByteBuffer &bb, uint32_t definition, uint32_t field) const {
+    if (definition < _definitions.size()) {
+      for (auto &item : _definitions[definition].fields) {
+        if (item.value == field) {
+          return _skipField(bb, item);
+        }
+      }
+    }
+
+    return false;
+  }
+
+  bool kiwi::BinarySchema::_skipField(ByteBuffer &bb, const Field &field) const {
+    uint32_t count = 1;
+
+    if (field.isArray && !bb.readVarUint(count)) {
+      return false;
+    }
+
+    while (count-- > 0) {
+      switch (field.type) {
+        case TYPE_BOOL:
+        case TYPE_BYTE: {
+          uint8_t dummy = 0;
+          if (!bb.readByte(dummy)) return false;
+          break;
+        }
+
+        case TYPE_INT:
+        case TYPE_UINT: {
+          uint32_t dummy = 0;
+          if (!bb.readVarUint(dummy)) return false;
+          break;
+        }
+
+        case TYPE_FLOAT: {
+          float dummy = 0;
+          if (!bb.readVarFloat(dummy)) return false;
+          break;
+        }
+
+        case TYPE_STRING: {
+          uint8_t value = 0;
+          do {
+            if (!bb.readByte(value)) return false;
+          } while (value);
+          break;
+        }
+
+        default: {
+          assert(field.type >= 0 && (uint32_t)field.type < _definitions.size());
+          auto &definition = _definitions[field.type];
+
+          switch (definition.kind) {
+            case KIND_ENUM: {
+              uint32_t dummy;
+              if (!bb.readVarUint(dummy)) return false;
+              break;
+            }
+
+            case KIND_STRUCT: {
+              for (auto &field : definition.fields) {
+                if (!_skipField(bb, field)) return false;
+              }
+              break;
+            }
+
+            case KIND_MESSAGE: {
+              uint32_t id = 0;
+              while (true) {
+                if (!bb.readVarUint(id)) return false;
+                if (!id) break;
+                if (!skipField(bb, field.type, id)) return false;
+              }
+              break;
+            }
+
+            default: {
+              assert(false);
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    return true;
   }
 
 #endif

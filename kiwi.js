@@ -510,14 +510,15 @@ var kiwi = exports || kiwi || {}, exports;
       for (var j = 0; j < fieldCount; j++) {
         var fieldName = bb.readString();
         var type = bb.readVarInt();
+        var isArray = !!bb.readByte();
         var value = bb.readVarUint();
 
         fields.push({
           name: fieldName,
           line: 0,
           column: 0,
-          type: type >> 1,
-          isArray: !!(type & 1),
+          type: type,
+          isArray: isArray,
           value: value,
         });
       }
@@ -536,7 +537,20 @@ var kiwi = exports || kiwi || {}, exports;
       var fields = definitions[i].fields;
       for (var j = 0; j < fields.length; j++) {
         var field = fields[j];
-        field.type = field.type < 0 ? types[-field.type - 1] : definitions[field.type].name;
+
+        if (field.type < 0) {
+          if (~field.type >= types.length) {
+            throw new Error('Invalid type ' + field.type);
+          }
+          field.type = types[~field.type];
+        }
+
+        else {
+          if (field.type >= definitions.length) {
+            throw new Error('Invalid type ' + field.type);
+          }
+          field.type = definitions[field.type].name;
+        }
       }
     }
 
@@ -572,11 +586,9 @@ var kiwi = exports || kiwi || {}, exports;
         var field = definition.fields[j];
         var type = types.indexOf(field.type);
 
-        type = type === -1 ? definitionIndex[field.type] : -1 - type;
-        type = (type << 1) | field.isArray;
-
         bb.writeString(field.name);
-        bb.writeVarInt(type);
+        bb.writeVarInt(type === -1 ? definitionIndex[field.type] : ~type);
+        bb.writeByte(+field.isArray);
         bb.writeVarUint(field.value);
       }
     }
@@ -934,6 +946,31 @@ var kiwi = exports || kiwi || {}, exports;
       definitions[definition.name] = definition;
     }
 
+    cpp.push('class BinarySchema {');
+    cpp.push('public:');
+    cpp.push('  bool parse(kiwi::ByteBuffer &bb);');
+
+    for (var i = 0; i < schema.definitions.length; i++) {
+      var definition = schema.definitions[i];
+      if (definition.kind === 'MESSAGE') {
+        cpp.push('  bool skip' + definition.name + 'Field(kiwi::ByteBuffer &bb, uint32_t id) const;');
+      }
+    }
+
+    cpp.push('');
+    cpp.push('private:');
+    cpp.push('  kiwi::BinarySchema _schema;');
+
+    for (var i = 0; i < schema.definitions.length; i++) {
+      var definition = schema.definitions[i];
+      if (definition.kind === 'MESSAGE') {
+        cpp.push('  uint32_t _index' + definition.name + ' = 0;');
+      }
+    }
+
+    cpp.push('};');
+    cpp.push('');
+
     for (var i = 0; i < schema.definitions.length; i++) {
       var definition = schema.definitions[i];
 
@@ -958,6 +995,30 @@ var kiwi = exports || kiwi || {}, exports;
       if (pass === 2) {
         cpp.push('#ifdef IMPLEMENT_SCHEMA_H');
         cpp.push('');
+
+        cpp.push('bool BinarySchema::parse(kiwi::ByteBuffer &bb) {');
+        cpp.push('  if (!_schema.parse(bb)) return false;');
+
+        for (var i = 0; i < schema.definitions.length; i++) {
+          var definition = schema.definitions[i];
+          if (definition.kind === 'MESSAGE') {
+            cpp.push('  if (!_schema.findDefinition("' + definition.name + '", _index' + definition.name + ')) return false;');
+          }
+        }
+
+        cpp.push('  return true;');
+        cpp.push('}');
+        cpp.push('');
+
+        for (var i = 0; i < schema.definitions.length; i++) {
+          var definition = schema.definitions[i];
+          if (definition.kind === 'MESSAGE') {
+            cpp.push('bool BinarySchema::skip' + definition.name + 'Field(kiwi::ByteBuffer &bb, uint32_t id) const {');
+            cpp.push('  return _schema.skipField(bb, _index' + definition.name + ', id);');
+            cpp.push('}');
+            cpp.push('');
+          }
+        }
       }
 
       for (var i = 0; i < schema.definitions.length; i++) {
@@ -1007,7 +1068,7 @@ var kiwi = exports || kiwi || {}, exports;
           }
 
           cpp.push('  bool encode(kiwi::ByteBuffer &bb);');
-          cpp.push('  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);');
+          cpp.push('  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);');
           cpp.push('');
           cpp.push('private:');
           cpp.push('  uint32_t _flags[' + (fields.length + 31 >> 5) + '] = {};');
@@ -1178,7 +1239,7 @@ var kiwi = exports || kiwi || {}, exports;
           cpp.push('}');
           cpp.push('');
 
-          cpp.push('bool ' + definition.name + '::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {');
+          cpp.push('bool ' + definition.name + '::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {');
 
           for (var j = 0; j < fields.length; j++) {
             if (fields[j].isArray) {
@@ -1246,7 +1307,7 @@ var kiwi = exports || kiwi || {}, exports;
                 }
 
                 else {
-                  code = value + (isPointer ? '->' : '.') + 'decode(_bb, _pool)';
+                  code = value + (isPointer ? '->' : '.') + 'decode(_bb, _pool, _schema)';
                 }
               }
             }
@@ -1282,7 +1343,9 @@ var kiwi = exports || kiwi || {}, exports;
           }
 
           if (definition.kind === 'MESSAGE') {
-            cpp.push('      default: return false;');
+            cpp.push('      default:');
+            cpp.push('        if (!_schema || !_schema->skip' + definition.name + 'Field(_bb, _type)) return false;');
+            cpp.push('        break;');
             cpp.push('    }');
             cpp.push('  }');
           }
