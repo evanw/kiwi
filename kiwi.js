@@ -13,6 +13,18 @@ var kiwi = exports || kiwi || {}, exports;
     throw error;
   }
 
+  function convertSchema(schema) {
+    if (typeof schema === 'string') {
+      return kiwi.parseSchema(schema);
+    }
+
+    if (schema instanceof Uint8Array || schema instanceof kiwi.ByteBuffer) {
+      return kiwi.decodeBinarySchema(schema);
+    }
+
+    return schema;
+  }
+
 // ByteBuffer
 (function() {
   var int32 = new Int32Array(1);
@@ -251,7 +263,6 @@ var kiwi = exports || kiwi || {}, exports;
   var structKeyword = /^struct$/;
   var messageKeyword = /^message$/;
   var packageKeyword = /^package$/;
-  var requiredKeyword = /^required$/;
 
   function tokenize(text) {
     var parts = text.split(regex);
@@ -346,7 +357,6 @@ var kiwi = exports || kiwi || {}, exports;
 
       // Parse fields
       while (!eat(rightBrace)) {
-        var isRequired = kind === 'STRUCT' || eat(requiredKeyword);
         var type = null;
         var isArray = false;
 
@@ -380,7 +390,6 @@ var kiwi = exports || kiwi || {}, exports;
           column: field.column,
           type: type,
           isArray: isArray,
-          isRequired: isRequired,
           value: value !== null ? value.text | 0 : fields.length + 1,
         });
       }
@@ -489,6 +498,118 @@ var kiwi = exports || kiwi || {}, exports;
   kiwi.parseSchema = parseSchema;
 }());
 
+// Binary schema support
+(function() {
+  var ByteBuffer = kiwi.ByteBuffer;
+  var types = ['bool', 'byte', 'int', 'uint', 'float', 'string'];
+  var kinds = ['ENUM', 'STRUCT', 'MESSAGE'];
+
+  function decodeBinarySchema(bb) {
+    if (!(bb instanceof ByteBuffer)) {
+      bb = new ByteBuffer(bb);
+    }
+
+    var definitionCount = bb.readVarUint();
+    var definitions = [];
+
+    // Read in the schema
+    for (var i = 0; i < definitionCount; i++) {
+      var definitionName = bb.readString();
+      var kind = bb.readByte();
+      var fieldCount = bb.readVarUint();
+      var fields = [];
+
+      for (var j = 0; j < fieldCount; j++) {
+        var fieldName = bb.readString();
+        var type = bb.readVarInt();
+        var isArray = !!bb.readByte();
+        var value = bb.readVarUint();
+
+        fields.push({
+          name: fieldName,
+          line: 0,
+          column: 0,
+          type: type,
+          isArray: isArray,
+          value: value,
+        });
+      }
+
+      definitions.push({
+        name: definitionName,
+        line: 0,
+        column: 0,
+        kind: kinds[kind],
+        fields: fields,
+      });
+    }
+
+    // Bind type names afterwards
+    for (var i = 0; i < definitionCount; i++) {
+      var fields = definitions[i].fields;
+      for (var j = 0; j < fields.length; j++) {
+        var field = fields[j];
+
+        if (field.type < 0) {
+          if (~field.type >= types.length) {
+            throw new Error('Invalid type ' + field.type);
+          }
+          field.type = types[~field.type];
+        }
+
+        else {
+          if (field.type >= definitions.length) {
+            throw new Error('Invalid type ' + field.type);
+          }
+          field.type = definitions[field.type].name;
+        }
+      }
+    }
+
+    return {
+      package: null,
+      definitions: definitions,
+    };
+  }
+
+  function encodeBinarySchema(schema) {
+    schema = convertSchema(schema);
+
+    var bb = new ByteBuffer();
+    var definitions = schema.definitions;
+    var definitionIndex = {};
+
+    bb.writeVarUint(definitions.length);
+
+    for (var i = 0; i < definitions.length; i++) {
+      definitionIndex[definitions[i].name] = i;
+    }
+
+    for (var i = 0; i < definitions.length; i++) {
+      var definition = definitions[i];
+
+      bb.writeString(definition.name);
+      bb.writeByte(kinds.indexOf(definition.kind));
+      bb.writeVarUint(definition.fields.length);
+
+      for (var j = 0; j < definition.fields.length; j++) {
+        var field = definition.fields[j];
+        var type = types.indexOf(field.type);
+
+        bb.writeString(field.name);
+        bb.writeVarInt(type === -1 ? definitionIndex[field.type] : ~type);
+        bb.writeByte(+field.isArray);
+        bb.writeVarUint(field.value);
+      }
+    }
+
+    return bb.toUint8Array();
+  }
+
+  kiwi.decodeBinarySchema = decodeBinarySchema;
+  kiwi.encodeBinarySchema = encodeBinarySchema;
+}());
+
 // JavaScript Compiler
 (function() {
   var ByteBuffer = kiwi.ByteBuffer;
@@ -508,14 +629,6 @@ var kiwi = exports || kiwi || {}, exports;
       lines.push('  while (true) {');
       lines.push('    switch (bb.readByte()) {');
       lines.push('    case 0:');
-
-      for (var i = 0; i < definition.fields.length; i++) {
-        var field = definition.fields[i];
-        if (field.isRequired) {
-          lines.push('      if (result[' + quote(field.name) + '] == null) throw new Error(' + quote('Missing required field ' + quote(field.name)) + ');');
-        }
-      }
-
       lines.push('      return result;');
       lines.push('');
       indent = '      ';
@@ -682,7 +795,7 @@ var kiwi = exports || kiwi || {}, exports;
         lines.push('    ' + code);
       }
 
-      if (field.isRequired) {
+      if (definition.kind === 'STRUCT') {
         lines.push('  } else {');
         lines.push('    throw new Error(' + quote('Missing required field ' + quote(field.name)) + ');');
       }
@@ -703,9 +816,7 @@ var kiwi = exports || kiwi || {}, exports;
   }
 
   function compileSchemaJS(schema) {
-    if (typeof schema === 'string') {
-      schema = kiwi.parseSchema(schema);
-    }
+    schema = convertSchema(schema);
 
     var definitions = {};
     var name = schema.package;
@@ -823,9 +934,7 @@ var kiwi = exports || kiwi || {}, exports;
   }
 
   function compileSchemaCPP(schema) {
-    if (typeof schema === 'string') {
-      schema = kiwi.parseSchema(schema);
-    }
+    schema = convertSchema(schema);
 
     var definitions = {};
     var cpp = [];
@@ -842,6 +951,31 @@ var kiwi = exports || kiwi || {}, exports;
       var definition = schema.definitions[i];
       definitions[definition.name] = definition;
     }
+
+    cpp.push('class BinarySchema {');
+    cpp.push('public:');
+    cpp.push('  bool parse(kiwi::ByteBuffer &bb);');
+
+    for (var i = 0; i < schema.definitions.length; i++) {
+      var definition = schema.definitions[i];
+      if (definition.kind === 'MESSAGE') {
+        cpp.push('  bool skip' + definition.name + 'Field(kiwi::ByteBuffer &bb, uint32_t id) const;');
+      }
+    }
+
+    cpp.push('');
+    cpp.push('private:');
+    cpp.push('  kiwi::BinarySchema _schema;');
+
+    for (var i = 0; i < schema.definitions.length; i++) {
+      var definition = schema.definitions[i];
+      if (definition.kind === 'MESSAGE') {
+        cpp.push('  uint32_t _index' + definition.name + ' = 0;');
+      }
+    }
+
+    cpp.push('};');
+    cpp.push('');
 
     for (var i = 0; i < schema.definitions.length; i++) {
       var definition = schema.definitions[i];
@@ -863,6 +997,35 @@ var kiwi = exports || kiwi || {}, exports;
 
     for (var pass = 0; pass < 3; pass++) {
       var newline = false;
+
+      if (pass === 2) {
+        cpp.push('#ifdef IMPLEMENT_SCHEMA_H');
+        cpp.push('');
+
+        cpp.push('bool BinarySchema::parse(kiwi::ByteBuffer &bb) {');
+        cpp.push('  if (!_schema.parse(bb)) return false;');
+
+        for (var i = 0; i < schema.definitions.length; i++) {
+          var definition = schema.definitions[i];
+          if (definition.kind === 'MESSAGE') {
+            cpp.push('  if (!_schema.findDefinition("' + definition.name + '", _index' + definition.name + ')) return false;');
+          }
+        }
+
+        cpp.push('  return true;');
+        cpp.push('}');
+        cpp.push('');
+
+        for (var i = 0; i < schema.definitions.length; i++) {
+          var definition = schema.definitions[i];
+          if (definition.kind === 'MESSAGE') {
+            cpp.push('bool BinarySchema::skip' + definition.name + 'Field(kiwi::ByteBuffer &bb, uint32_t id) const {');
+            cpp.push('  return _schema.skipField(bb, _index' + definition.name + ', id);');
+            cpp.push('}');
+            cpp.push('');
+          }
+        }
+      }
 
       for (var i = 0; i < schema.definitions.length; i++) {
         var definition = schema.definitions[i];
@@ -911,7 +1074,7 @@ var kiwi = exports || kiwi || {}, exports;
           }
 
           cpp.push('  bool encode(kiwi::ByteBuffer &bb);');
-          cpp.push('  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool);');
+          cpp.push('  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);');
           cpp.push('');
           cpp.push('private:');
           cpp.push('  uint32_t _flags[' + (fields.length + 31 >> 5) + '] = {};');
@@ -1051,7 +1214,7 @@ var kiwi = exports || kiwi || {}, exports;
             }
 
             var indent = '  ';
-            if (field.isRequired) {
+            if (definition.kind === 'STRUCT') {
               cpp.push('  if (' + field.name + '() == nullptr) return false;');
             } else {
               cpp.push('  if (' + field.name + '() != nullptr) {');
@@ -1069,7 +1232,7 @@ var kiwi = exports || kiwi || {}, exports;
               cpp.push(indent + code);
             }
 
-            if (!field.isRequired) {
+            if (definition.kind !== 'STRUCT') {
               cpp.push('  }');
             }
           }
@@ -1082,7 +1245,7 @@ var kiwi = exports || kiwi || {}, exports;
           cpp.push('}');
           cpp.push('');
 
-          cpp.push('bool ' + definition.name + '::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool) {');
+          cpp.push('bool ' + definition.name + '::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {');
 
           for (var j = 0; j < fields.length; j++) {
             if (fields[j].isArray) {
@@ -1097,14 +1260,6 @@ var kiwi = exports || kiwi || {}, exports;
             cpp.push('    if (!_bb.readVarUint(_type)) return false;');
             cpp.push('    switch (_type) {');
             cpp.push('      case 0:');
-
-            for (var j = 0; j < fields.length; j++) {
-              var field = fields[j];
-              if (field.isRequired) {
-                cpp.push('        if (' + field.name + '() == nullptr) return false;');
-              }
-            }
-
             cpp.push('        return true;');
           }
 
@@ -1158,7 +1313,7 @@ var kiwi = exports || kiwi || {}, exports;
                 }
 
                 else {
-                  code = value + (isPointer ? '->' : '.') + 'decode(_bb, _pool)';
+                  code = value + (isPointer ? '->' : '.') + 'decode(_bb, _pool, _schema)';
                 }
               }
             }
@@ -1194,7 +1349,9 @@ var kiwi = exports || kiwi || {}, exports;
           }
 
           if (definition.kind === 'MESSAGE') {
-            cpp.push('      default: return false;');
+            cpp.push('      default:');
+            cpp.push('        if (!_schema || !_schema->skip' + definition.name + 'Field(_bb, _type)) return false;');
+            cpp.push('        break;');
             cpp.push('    }');
             cpp.push('  }');
           }
@@ -1208,7 +1365,12 @@ var kiwi = exports || kiwi || {}, exports;
         }
       }
 
-      if (newline) cpp.push('');
+      if (pass === 2) {
+        cpp.push('#endif');
+        cpp.push('');
+      }
+
+      else if (newline) cpp.push('');
     }
 
     if (schema.package !== null) {
@@ -1279,9 +1441,7 @@ var kiwi = exports || kiwi || {}, exports;
   }
 
   function compileSchemaSkew(schema) {
-    if (typeof schema === 'string') {
-      schema = kiwi.parseSchema(schema);
-    }
+    schema = convertSchema(schema);
 
     var definitions = {};
     var indent = '';
@@ -1296,6 +1456,42 @@ var kiwi = exports || kiwi || {}, exports;
       var definition = schema.definitions[i];
       definitions[definition.name] = definition;
     }
+
+    lines.push(indent + 'class BinarySchema {');
+    lines.push(indent + '  var _schema = Kiwi.BinarySchema.new');
+
+    for (var i = 0; i < schema.definitions.length; i++) {
+      var definition = schema.definitions[i];
+      if (definition.kind === 'MESSAGE') {
+        lines.push(indent + '  var _index' + definition.name + ' = 0');
+      }
+    }
+
+    lines.push('');
+    lines.push(indent + '  def parse(bytes Uint8Array) {');
+    lines.push(indent + '    _schema.parse(Kiwi.ByteBuffer.new(bytes))');
+
+    for (var i = 0; i < schema.definitions.length; i++) {
+      var definition = schema.definitions[i];
+      if (definition.kind === 'MESSAGE') {
+        lines.push(indent + '    _index' + definition.name + ' = _schema.findDefinition("' + definition.name + '")');
+      }
+    }
+
+    lines.push(indent + '  }');
+
+    for (var i = 0; i < schema.definitions.length; i++) {
+      var definition = schema.definitions[i];
+      if (definition.kind === 'MESSAGE') {
+      lines.push('');
+        lines.push(indent + '  def skip' + definition.name + 'Field(bb Kiwi.ByteBuffer, id int) {');
+        lines.push(indent + '    _schema.skipField(bb, _index' + definition.name + ', id)');
+        lines.push(indent + '  }');
+      }
+    }
+
+    lines.push(indent + '}');
+    lines.push('');
 
     for (var i = 0; i < schema.definitions.length; i++) {
       var definition = schema.definitions[i];
@@ -1433,7 +1629,7 @@ var kiwi = exports || kiwi || {}, exports;
 
             var nestedIndent = indent + '    ';
 
-            if (field.isRequired) {
+            if (definition.kind === 'STRUCT') {
               lines.push(nestedIndent + 'assert(has_' + field.name + ')');
             } else {
               lines.push(nestedIndent + 'if has_' + field.name + ' {');
@@ -1453,7 +1649,7 @@ var kiwi = exports || kiwi || {}, exports;
               lines.push(nestedIndent + code);
             }
 
-            if (!field.isRequired) {
+            if (definition.kind !== 'STRUCT') {
               lines.push(indent + '    }');
             }
 
@@ -1479,11 +1675,15 @@ var kiwi = exports || kiwi || {}, exports;
 
           lines.push(indent + 'namespace ' + definition.name + ' {');
           lines.push(indent + '  def decode(bytes Uint8Array) ' + definition.name + ' {');
-          lines.push(indent + '    return decode(Kiwi.ByteBuffer.new(bytes))');
+          lines.push(indent + '    return decode(Kiwi.ByteBuffer.new(bytes), null)');
+          lines.push(indent + '  }');
+          lines.push('');
+          lines.push(indent + '  def decode(bytes Uint8Array, schema BinarySchema) ' + definition.name + ' {');
+          lines.push(indent + '    return decode(Kiwi.ByteBuffer.new(bytes), schema)');
           lines.push(indent + '  }');
           lines.push('');
 
-          lines.push(indent + '  def decode(bb Kiwi.ByteBuffer) ' + definition.name + ' {');
+          lines.push(indent + '  def decode(bb Kiwi.ByteBuffer, schema BinarySchema) ' + definition.name + ' {');
           lines.push(indent + '    var self = new');
 
           for (var j = 0; j < definition.fields.length; j++) {
@@ -1497,18 +1697,9 @@ var kiwi = exports || kiwi || {}, exports;
 
           if (definition.kind === 'MESSAGE') {
             lines.push(indent + '    while true {');
-            lines.push(indent + '      switch bb.readByte {');
+            lines.push(indent + '      var type = bb.readByte');
+            lines.push(indent + '      switch type {');
             lines.push(indent + '        case 0 {');
-
-            for (var j = 0; j < definition.fields.length; j++) {
-              var field = definition.fields[j];
-              if (field.isRequired) {
-                lines.push(indent + '          if !self.has_' + field.name + ' {');
-                lines.push(indent + '            Kiwi.DecodeError.throwMissingRequiredField(' + quote(field.name) + ')');
-                lines.push(indent + '          }');
-              }
-            }
-
             lines.push(indent + '          break');
             lines.push(indent + '        }');
             lines.push('');
@@ -1557,7 +1748,7 @@ var kiwi = exports || kiwi || {}, exports;
                 } else if (type.kind === 'ENUM') {
                   code = type.name + '.decode(bb.readVarUint)';
                 } else {
-                  code = type.name + '.decode(bb)';
+                  code = type.name + '.decode(bb, schema)';
                 }
               }
             }
@@ -1584,7 +1775,8 @@ var kiwi = exports || kiwi || {}, exports;
 
           if (definition.kind === 'MESSAGE') {
             lines.push(indent + '        default {');
-            lines.push(indent + '          Kiwi.DecodeError.throwInvalidMessage');
+            lines.push(indent + '          if schema == null { Kiwi.DecodeError.throwInvalidMessage }');
+            lines.push(indent + '          else { schema.skip' + definition.name + 'Field(bb, type) }');
             lines.push(indent + '        }');
             lines.push(indent + '      }');
             lines.push(indent + '    }');
