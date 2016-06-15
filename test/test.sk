@@ -17,7 +17,7 @@ def main {
     var check = (i bool, o List<int>) => {
       var message = test.BoolStruct.new
       message.x = i
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(test.BoolStruct.decode(Uint8Array.new(o)), message)
     }
 
@@ -29,7 +29,7 @@ def main {
     var check = (i int, o List<int>) => {
       var message = test.ByteStruct.new
       message.x = i
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(test.ByteStruct.decode(Uint8Array.new(o)), message)
     }
 
@@ -44,7 +44,7 @@ def main {
     var check = (i int, o List<int>) => {
       var message = test.UintStruct.new
       message.x = i
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(test.UintStruct.decode(Uint8Array.new(o)), message)
     }
 
@@ -70,7 +70,7 @@ def main {
     var check = (i int, o List<int>) => {
       var message = test.IntStruct.new
       message.x = i
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(test.IntStruct.decode(Uint8Array.new(o)), message)
     }
 
@@ -100,7 +100,7 @@ def main {
     var check = (i double, o List<int>) => {
       var message = test.FloatStruct.new
       message.x = i
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(JSON.stringify(test.FloatStruct.decode(Uint8Array.new(o))), JSON.stringify(message))
     }
 
@@ -118,7 +118,7 @@ def main {
     var check = (i string, o List<int>) => {
       var message = test.StringStruct.new
       message.x = i
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(test.StringStruct.decode(Uint8Array.new(o)), message)
     }
 
@@ -132,7 +132,7 @@ def main {
       var message = test.CompoundStruct.new
       message.x = x
       message.y = y
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(test.CompoundStruct.decode(Uint8Array.new(o)), message)
     }
 
@@ -150,7 +150,7 @@ def main {
       message.a = a
       message.b = b
       message.c = c
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(test.NestedStruct.decode(Uint8Array.new(o)), message)
     }
 
@@ -163,14 +163,14 @@ def main {
     if true {
       var o = [0]
       var message = test.BoolMessage.new
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(test.BoolMessage.decode(Uint8Array.new(o)), message)
     }
 
     var check = (i bool, o List<int>) => {
       var message = test.BoolMessage.new
       message.x = i
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(test.BoolMessage.decode(Uint8Array.new(o)), message)
     }
 
@@ -182,7 +182,7 @@ def main {
     var check = (i int, o List<int>) => {
       var message = test.ByteMessage.new
       if i != 0 { message.x = i }
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(test.ByteMessage.decode(Uint8Array.new(o)), message)
     }
 
@@ -194,7 +194,7 @@ def main {
     var check = (i int, o List<int>) => {
       var message = test.UintMessage.new
       if i != 0 { message.x = i }
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(test.UintMessage.decode(Uint8Array.new(o)), message)
     }
 
@@ -206,7 +206,7 @@ def main {
     var check = (i int, o List<int>) => {
       var message = test.IntMessage.new
       if i != 0 { message.x = i }
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(test.IntMessage.decode(Uint8Array.new(o)), message)
     }
 
@@ -218,7 +218,7 @@ def main {
     var check = (i double, o List<int>) => {
       var message = test.FloatMessage.new
       if i != 0 { message.x = i }
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(test.FloatMessage.decode(Uint8Array.new(o)), message)
     }
 
@@ -230,7 +230,7 @@ def main {
     var check = (i string, o List<int>) => {
       var message = test.StringMessage.new
       if i != null { message.x = i }
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(test.StringMessage.decode(Uint8Array.new(o)), message)
     }
 
@@ -244,7 +244,7 @@ def main {
       var message = test.CompoundMessage.new
       if x != 0 { message.x = x }
       if y != 0 { message.y = y }
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(test.CompoundMessage.decode(Uint8Array.new(o)), message)
     }
 
@@ -263,7 +263,7 @@ def main {
       if a != 0 { message.a = a }
       if bx != 0 || by != 0 { message.b = b }
       if c != 0 { message.c = c }
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(test.NestedMessage.decode(Uint8Array.new(o)), message)
     }
 
@@ -278,7 +278,7 @@ def main {
     var check = (i List<bool>, o List<int>) => {
       var message = test.BoolArrayStruct.new
       message.x = i
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(test.BoolArrayStruct.decode(Uint8Array.new(o)), message)
     }
 
@@ -290,7 +290,7 @@ def main {
     var check = (i List<bool>, o List<int>) => {
       var message = test.BoolArrayMessage.new
       if i != null { message.x = i }
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(test.BoolArrayMessage.decode(Uint8Array.new(o)), message)
     }
 
@@ -303,7 +303,7 @@ def main {
     var check = (i test.RecursiveMessage, o List<int>) => {
       var message = test.RecursiveMessage.new
       if i != null { message.x = i }
-      assert.deepEqual(message.encode, Uint8Array.new(o))
+      assert.deepEqual(Uint8Array.new(message.encode), Uint8Array.new(o))
       assert.deepEqual(test.RecursiveMessage.decode(Uint8Array.new(o)), message)
     }
 
@@ -320,13 +320,13 @@ def main {
     schema.parse(Uint8Array.new(fs.readFileSync(__dirname + "/test2-schema.bkiwi")))
 
     var bytes1 = Uint8Array.new([1, 2, 2, 128, 0, 0, 0, 128, 0, 0, 128, 0])
-    assert.deepEqual(test1.Message.decode(bytes1).encode, bytes1)
-    assert.deepEqual(test1.Message.decode(bytes1, schema).encode, bytes1)
-    assert.deepEqual(test2.Message.decode(bytes1).encode, bytes1)
+    assert.deepEqual(Uint8Array.new(test1.Message.decode(bytes1).encode), bytes1)
+    assert.deepEqual(Uint8Array.new(test1.Message.decode(bytes1, schema).encode), bytes1)
+    assert.deepEqual(Uint8Array.new(test2.Message.decode(bytes1).encode), bytes1)
 
     var bytes2 = Uint8Array.new([1, 2, 2, 128, 0, 0, 0, 128, 0, 0, 128, 3, 1, 0, 4, 0, 0])
     assert.throws(=> test1.Message.decode(bytes2))
-    assert.deepEqual(test1.Message.decode(bytes2, schema).encode, bytes1)
-    assert.deepEqual(test2.Message.decode(bytes2).encode, bytes2)
+    assert.deepEqual(Uint8Array.new(test1.Message.decode(bytes2, schema).encode), bytes1)
+    assert.deepEqual(Uint8Array.new(test2.Message.decode(bytes2).encode), bytes2)
   })
 }
