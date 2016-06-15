@@ -13,6 +13,7 @@ namespace kiwi {
   public:
     ByteBuffer();
     ByteBuffer(uint8_t *data, size_t size);
+    ByteBuffer(const uint8_t *data, size_t size);
     ~ByteBuffer();
     ByteBuffer(const ByteBuffer &) = delete;
     ByteBuffer &operator = (const ByteBuffer &) = delete;
@@ -43,6 +44,7 @@ namespace kiwi {
     size_t _capacity = 0;
     size_t _index = 0;
     bool _ownsData = false;
+    bool _isConst = false;
   };
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -171,6 +173,9 @@ namespace kiwi {
   kiwi::ByteBuffer::ByteBuffer(uint8_t *data, size_t size) : _data(data), _size(size), _capacity(size) {
   }
 
+  kiwi::ByteBuffer::ByteBuffer(const uint8_t *data, size_t size) : _data(const_cast<uint8_t *>(data)), _size(size), _capacity(size), _isConst(true) {
+  }
+
   kiwi::ByteBuffer::~ByteBuffer() {
     if (_ownsData) {
       delete [] _data;
@@ -269,12 +274,15 @@ namespace kiwi {
   }
 
   void kiwi::ByteBuffer::writeByte(uint8_t value) {
+    assert(!_isConst);
     size_t index = _size;
     _growBy(1);
     _data[index] = value;
   }
 
   void kiwi::ByteBuffer::writeVarFloat(float value) {
+    assert(!_isConst);
+
     // Reinterpret as an integer
     uint32_t bits;
     memcpy(&bits, &value, 4);
@@ -298,6 +306,7 @@ namespace kiwi {
   }
 
   void kiwi::ByteBuffer::writeVarUint(uint32_t value) {
+    assert(!_isConst);
     do {
       uint8_t byte = value & 127;
       value >>= 7;
@@ -306,10 +315,12 @@ namespace kiwi {
   }
 
   void kiwi::ByteBuffer::writeVarInt(int32_t value) {
+    assert(!_isConst);
     writeVarUint((value << 1) ^ (value >> 31));
   }
 
   void kiwi::ByteBuffer::writeString(const char *value) {
+    assert(!_isConst);
     uint32_t count = strlen(value) + 1;
     size_t index = _size;
     _growBy(count);
@@ -317,6 +328,8 @@ namespace kiwi {
   }
 
   void kiwi::ByteBuffer::_growBy(size_t amount) {
+    assert(!_isConst);
+
     if (_size + amount > _capacity) {
       size_t capacity = (_size + amount) * 2;
       uint8_t *data = new uint8_t[capacity];
