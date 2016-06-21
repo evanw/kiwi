@@ -191,6 +191,8 @@ var kiwi = exports || kiwi || {}, exports;
   };
 
   ByteBuffer.prototype.writeString = function(value) {
+    var codePoint;
+
     for (var i = 0; i < value.length; i++) {
       // Decode UTF-16
       var a = value.charCodeAt(i);
