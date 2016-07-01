@@ -1817,7 +1817,6 @@ var kiwi = exports || kiwi || {}, exports;
   function compileSchemaTypeScript(schema) {
     schema = convertSchema(schema);
 
-    var isFirst = true;
     var indent = '';
     var lines = [];
 
@@ -1830,8 +1829,6 @@ var kiwi = exports || kiwi || {}, exports;
       var definition = schema.definitions[i];
 
       if (definition.kind === 'ENUM') {
-        if (isFirst) isFirst = false;
-        else lines.push('');
         lines.push(indent + 'export type ' + definition.name + ' =');
 
         for (var j = 0; j < definition.fields.length; j++) {
@@ -1841,6 +1838,8 @@ var kiwi = exports || kiwi || {}, exports;
         if (!definition.fields.length) {
           lines.push(indent + '  any;');
         }
+
+        lines.push('');
       }
     }
 
@@ -1848,9 +1847,6 @@ var kiwi = exports || kiwi || {}, exports;
       var definition = schema.definitions[i];
 
       if (definition.kind === 'STRUCT' || definition.kind === 'MESSAGE') {
-        if (isFirst) isFirst = false;
-        else lines.push('');
-
         lines.push(indent + 'export interface ' + definition.name + ' {');
 
         for (var j = 0; j < definition.fields.length; j++) {
@@ -1867,12 +1863,26 @@ var kiwi = exports || kiwi || {}, exports;
         }
 
         lines.push(indent + '}');
+        lines.push('');
       }
 
       else if (definition.kind !== 'ENUM') {
         error('Invalid definition kind ' + quote(definition.kind), definition.line, definition.column);
       }
     }
+
+    lines.push(indent + 'export interface Schema {');
+
+    for (var i = 0; i < schema.definitions.length; i++) {
+      var definition = schema.definitions[i];
+
+      if (definition.kind === 'STRUCT' || definition.kind === 'MESSAGE') {
+        lines.push(indent + '  encode' + definition.name + '(message: ' + definition.name + '): Uint8Array;');
+        lines.push(indent + '  decode' + definition.name + '(buffer: Uint8Array): ' + definition.name + ';');
+      }
+    }
+
+    lines.push(indent + '}');
 
     if (schema.package !== null) {
       lines.push('}');

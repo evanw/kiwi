@@ -65,8 +65,6 @@ See [http://evanw.github.io/kiwi/](http://evanw.github.io/kiwi/) for a live demo
 The examples below all assume there's a file called `test.kiwi` that looks like this:
 
 ```
-package test;
-
 message Test {
   int x = 1;
 }
@@ -89,6 +87,26 @@ if (test.x !== undefined) {
 }
 ```
 
+It's also easy to use Kiwi with TypeScript.
+Run `kiwic --schema test.kiwi --ts test.ts` to generate TypeScript type definitions for a schema, which can be used like this:
+
+```ts
+import {Test, Schema} from './test';
+
+declare function require(name: string): any;
+
+var kiwi = require('kiwi-schema');
+var fs = require('fs');
+var schema: Schema = kiwi.compileSchema(fs.readFileSync('test.kiwi', 'utf8'));
+
+var buffer: Uint8Array = schema.encodeTest({x: 123});
+var test: Test = schema.decodeTest(buffer);
+
+if (test.x !== undefined) {
+  console.log('x is', test.x);
+}
+```
+
 ### C++
 
 The file below can be compiled using something like `c++ main.cpp -std=c++11`.
@@ -103,13 +121,13 @@ The `kiwic` command can be installed using `npm install -g kiwi-schema`.
 #include "test.h"
 
 int main() {
-  test::Test message;
+  Test message;
   message.set_x(123);
 
   kiwi::ByteBuffer buffer;
   bool encode_success = message.encode(buffer);
 
-  test::Test message2;
+  Test message2;
   kiwi::MemoryPool pool;
   bool decode_success = message2.decode(buffer, pool);
 
@@ -133,11 +151,11 @@ var console dynamic
 
 @entry
 def main int {
-  var message = test.Test.new
+  var message = Test.new
   message.x = 123
 
   var buffer = message.encode
-  var message2 = test.Test.decode(buffer)
+  var message2 = Test.decode(buffer)
 
   if message2.has_x {
     console.log("x is \(message2.x)")
@@ -217,7 +235,7 @@ int main() {
   assert(encode_success);
 
   // Decoding new data using the old version of the schema will fail
-  // test::Test messageV1;
+  // Test messageV1;
   // kiwi::MemoryPool pool;
   // bool decode_success = messageV1.decode(bufferV2, pool);
   // assert(decode_success);
@@ -225,10 +243,10 @@ int main() {
   // Decoding old data from new data is possible with the new schema
   kiwi::ByteBuffer data;
   readFile("testv2.bkiwi", data);
-  test::BinarySchema schema;
+  BinarySchema schema;
   bool parse_success = schema.parse(data);
   assert(parse_success);
-  test::Test messageV1;
+  Test messageV1;
   kiwi::MemoryPool pool;
   bool decode_success = messageV1.decode(bufferV2, pool, &schema);
   assert(decode_success);
@@ -257,13 +275,13 @@ def main int {
   var bufferV2 = messageV2.encode
 
   # Decoding new data using the old version of the schema will fail
-  # var messageV1 = test.Test.decode(bufferV2)
+  # var messageV1 = Test.decode(bufferV2)
 
   # Decoding old data from new data is possible with the new schema
   var fs = require("fs")
-  var schema = test.BinarySchema.new
+  var schema = BinarySchema.new
   schema.parse(Uint8Array.new(fs.readFileSync("testv2.bkiwi")))
-  var messageV1 = test.Test.decode(bufferV2, schema)
+  var messageV1 = Test.decode(bufferV2, schema)
 
   console.log("x is \(messageV1.x)")
   return 0
