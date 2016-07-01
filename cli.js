@@ -12,6 +12,7 @@ var usage = [
   '  --help              Print this message.',
   '  --schema [PATH]     The schema file to use.',
   '  --js [PATH]         Generate JavaScript code.',
+  '  --ts [PATH]         Generate TypeScript type definitions.',
   '  --cpp [PATH]        Generate C++ code.',
   '  --skew [PATH]       Generate Skew code.',
   '  --binary [PATH]     Encode the schema as a binary blob.',
@@ -34,6 +35,7 @@ var main = exports.main = function(args) {
   var flags = {
     '--schema': null,
     '--js': null,
+    '--ts': null,
     '--cpp': null,
     '--skew': null,
     '--binary': null,
@@ -93,6 +95,11 @@ var main = exports.main = function(args) {
   // Generate JavaScript code
   if (flags['--js'] !== null) {
     fs.writeFileSync(flags['--js'], kiwi.compileSchemaJS(content));
+  }
+
+  // Generate JavaScript code
+  if (flags['--ts'] !== null) {
+    fs.writeFileSync(flags['--ts'], kiwi.compileSchemaTypeScript(content));
   }
 
   // Generate C++ code

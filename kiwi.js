@@ -1810,4 +1810,79 @@ var kiwi = exports || kiwi || {}, exports;
   kiwi.compileSchemaSkew = compileSchemaSkew;
 }());
 
+// TypeScript Compiler
+(function() {
+  var ByteBuffer = kiwi.ByteBuffer;
+
+  function compileSchemaTypeScript(schema) {
+    schema = convertSchema(schema);
+
+    var isFirst = true;
+    var indent = '';
+    var lines = [];
+
+    if (schema.package !== null) {
+      lines.push('export namespace ' + schema.package + ' {');
+      indent += '  ';
+    }
+
+    for (var i = 0; i < schema.definitions.length; i++) {
+      var definition = schema.definitions[i];
+
+      if (definition.kind === 'ENUM') {
+        if (isFirst) isFirst = false;
+        else lines.push('');
+        lines.push(indent + 'export type ' + definition.name + ' =');
+
+        for (var j = 0; j < definition.fields.length; j++) {
+          lines.push(indent + '  ' + JSON.stringify(definition.fields[j].name) + (j + 1 < definition.fields.length ? ' | ' : ';'));
+        }
+
+        if (!definition.fields.length) {
+          lines.push(indent + '  any;');
+        }
+      }
+    }
+
+    for (var i = 0; i < schema.definitions.length; i++) {
+      var definition = schema.definitions[i];
+
+      if (definition.kind === 'STRUCT' || definition.kind === 'MESSAGE') {
+        if (isFirst) isFirst = false;
+        else lines.push('');
+
+        lines.push(indent + 'export interface ' + definition.name + ' {');
+
+        for (var j = 0; j < definition.fields.length; j++) {
+          var field = definition.fields[j];
+          var type;
+
+          switch (field.type) {
+            case 'bool': type = 'boolean'; break;
+            case 'byte': case 'int': case 'uint': case 'float': type = 'number'; break;
+            default: type = field.type; break;
+          }
+
+          lines.push(indent + '  ' + field.name + (definition.kind === 'MESSAGE' ? '?' : '') + ': ' + type + (field.isArray ? '[]' : '') + ';');
+        }
+
+        lines.push(indent + '}');
+      }
+
+      else if (definition.kind !== 'ENUM') {
+        error('Invalid definition kind ' + quote(definition.kind), definition.line, definition.column);
+      }
+    }
+
+    if (schema.package !== null) {
+      lines.push('}');
+    }
+
+    lines.push('');
+    return lines.join('\n');
+  }
+
+  kiwi.compileSchemaTypeScript = compileSchemaTypeScript;
+}());
+
 }());
