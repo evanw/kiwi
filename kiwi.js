@@ -1010,7 +1010,7 @@ var kiwi = exports || kiwi || {}, exports;
         for (var i = 0; i < schema.definitions.length; i++) {
           var definition = schema.definitions[i];
           if (definition.kind === 'MESSAGE') {
-            cpp.push('  if (!_schema.findDefinition("' + definition.name + '", _index' + definition.name + ')) return false;');
+            cpp.push('  _schema.findDefinition("' + definition.name + '", _index' + definition.name + ');');
           }
         }
 

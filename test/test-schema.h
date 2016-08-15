@@ -577,22 +577,22 @@ private:
 
 bool BinarySchema::parse(kiwi::ByteBuffer &bb) {
   if (!_schema.parse(bb)) return false;
-  if (!_schema.findDefinition("BoolMessage", _indexBoolMessage)) return false;
-  if (!_schema.findDefinition("ByteMessage", _indexByteMessage)) return false;
-  if (!_schema.findDefinition("IntMessage", _indexIntMessage)) return false;
-  if (!_schema.findDefinition("UintMessage", _indexUintMessage)) return false;
-  if (!_schema.findDefinition("FloatMessage", _indexFloatMessage)) return false;
-  if (!_schema.findDefinition("StringMessage", _indexStringMessage)) return false;
-  if (!_schema.findDefinition("CompoundMessage", _indexCompoundMessage)) return false;
-  if (!_schema.findDefinition("NestedMessage", _indexNestedMessage)) return false;
-  if (!_schema.findDefinition("BoolArrayMessage", _indexBoolArrayMessage)) return false;
-  if (!_schema.findDefinition("ByteArrayMessage", _indexByteArrayMessage)) return false;
-  if (!_schema.findDefinition("IntArrayMessage", _indexIntArrayMessage)) return false;
-  if (!_schema.findDefinition("UintArrayMessage", _indexUintArrayMessage)) return false;
-  if (!_schema.findDefinition("FloatArrayMessage", _indexFloatArrayMessage)) return false;
-  if (!_schema.findDefinition("StringArrayMessage", _indexStringArrayMessage)) return false;
-  if (!_schema.findDefinition("CompoundArrayMessage", _indexCompoundArrayMessage)) return false;
-  if (!_schema.findDefinition("RecursiveMessage", _indexRecursiveMessage)) return false;
+  _schema.findDefinition("BoolMessage", _indexBoolMessage);
+  _schema.findDefinition("ByteMessage", _indexByteMessage);
+  _schema.findDefinition("IntMessage", _indexIntMessage);
+  _schema.findDefinition("UintMessage", _indexUintMessage);
+  _schema.findDefinition("FloatMessage", _indexFloatMessage);
+  _schema.findDefinition("StringMessage", _indexStringMessage);
+  _schema.findDefinition("CompoundMessage", _indexCompoundMessage);
+  _schema.findDefinition("NestedMessage", _indexNestedMessage);
+  _schema.findDefinition("BoolArrayMessage", _indexBoolArrayMessage);
+  _schema.findDefinition("ByteArrayMessage", _indexByteArrayMessage);
+  _schema.findDefinition("IntArrayMessage", _indexIntArrayMessage);
+  _schema.findDefinition("UintArrayMessage", _indexUintArrayMessage);
+  _schema.findDefinition("FloatArrayMessage", _indexFloatArrayMessage);
+  _schema.findDefinition("StringArrayMessage", _indexStringArrayMessage);
+  _schema.findDefinition("CompoundArrayMessage", _indexCompoundArrayMessage);
+  _schema.findDefinition("RecursiveMessage", _indexRecursiveMessage);
   return true;
 }
 

@@ -4,7 +4,22 @@
 #define IMPLEMENT_SCHEMA_H
 
 #include "test-schema.h"
+#include "test1-schema.h"
+#include "test2-schema.h"
+#include <stdio.h>
 #include <vector>
+
+static bool readFile(const char *path, kiwi::ByteBuffer &bb) {
+  if (FILE *f = fopen(path, "rb")) {
+    int c;
+    while ((c = fgetc(f)) != EOF) {
+      bb.writeByte(c);
+    }
+    fclose(f);
+    return true;
+  }
+  return false;
+}
 
 static void testStructBool() {
   puts("testStructBool");
@@ -490,6 +505,83 @@ static void testRecursiveMessage() {
   assert(!a2.x()->x()->x());
 }
 
+static void testBinarySchema() {
+  puts("testBinarySchema");
+
+  test1::BinarySchema test1_schema1;
+  test1::BinarySchema test1_schema2;
+  test2::BinarySchema test2_schema1;
+  test2::BinarySchema test2_schema2;
+
+  {
+    kiwi::ByteBuffer file;
+    assert(readFile("test1-schema.bkiwi", file));
+    assert(test1_schema1.parse(file));
+  }
+
+  {
+    kiwi::ByteBuffer file;
+    assert(readFile("test2-schema.bkiwi", file));
+    assert(test1_schema2.parse(file));
+  }
+
+  {
+    kiwi::ByteBuffer file;
+    assert(readFile("test1-schema.bkiwi", file));
+    assert(test2_schema1.parse(file));
+  }
+
+  {
+    kiwi::ByteBuffer file;
+    assert(readFile("test2-schema.bkiwi", file));
+    assert(test2_schema2.parse(file));
+  }
+
+  auto check1 = [](const std::vector<uint8_t> &i, test1::BinarySchema *schema, const std::vector<uint8_t> &o) {
+    kiwi::MemoryPool pool;
+    kiwi::ByteBuffer bb(i.data(), i.size());
+    test1::Message message;
+    if (o.empty()) {
+      assert(!message.decode(bb, pool, schema));
+    } else {
+      assert(message.decode(bb, pool, schema));
+      kiwi::ByteBuffer bb2;
+      assert(message.encode(bb2));
+      assert(std::vector<uint8_t>(bb2.data(), bb2.data() + bb2.size()) == o);
+    }
+  };
+
+  auto check2 = [](const std::vector<uint8_t> &i, test2::BinarySchema *schema, const std::vector<uint8_t> &o) {
+    kiwi::MemoryPool pool;
+    kiwi::ByteBuffer bb(i.data(), i.size());
+    test2::Message message;
+    if (o.empty()) {
+      assert(!message.decode(bb, pool, schema));
+    } else {
+      assert(message.decode(bb, pool, schema));
+      kiwi::ByteBuffer bb2;
+      assert(message.encode(bb2));
+      assert(std::vector<uint8_t>(bb2.data(), bb2.data() + bb2.size()) == o);
+    }
+  };
+
+  std::vector<uint8_t> bytes1{1, 2, 2, 128, 0, 0, 0, 128, 0, 0, 128, 0};
+  check1(bytes1, nullptr,        bytes1);
+  check1(bytes1, &test1_schema1, bytes1);
+  check1(bytes1, &test1_schema2, bytes1);
+  check2(bytes1, nullptr,        bytes1);
+  check2(bytes1, &test2_schema1, bytes1);
+  check2(bytes1, &test2_schema2, bytes1);
+
+  std::vector<uint8_t> bytes2{1, 2, 2, 128, 0, 0, 0, 128, 0, 0, 128, 3, 1, 0, 4, 0, 5, 1, 240, 159, 141, 149, 0, 0, 0};
+  check1(bytes2, nullptr,        {});
+  check1(bytes2, &test1_schema1, {});
+  check1(bytes2, &test1_schema2, bytes1);
+  check2(bytes2, nullptr,        bytes2);
+  check2(bytes2, &test2_schema1, bytes2);
+  check2(bytes2, &test2_schema2, bytes2);
+}
+
 int main() {
   testStructBool();
   testStructByte();
@@ -510,6 +602,7 @@ int main() {
   testMessageNested();
 
   testRecursiveMessage();
+  testBinarySchema();
 
   puts("all tests passed");
   return 0;

@@ -439,6 +439,7 @@ namespace kiwi {
       }
     }
 
+    // Ignore fields we're looking for in an old schema
     index = -1;
     return false;
   }

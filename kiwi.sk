@@ -273,7 +273,7 @@ namespace Kiwi {
         }
       }
 
-      DecodeError.throwInvalidSchema
+      # Ignore fields we're looking for in an old schema
       return -1
     }
 
@@ -282,10 +282,12 @@ namespace Kiwi {
         for item in _definitions[definition].fields {
           if item.value == field {
             _skipField(bb, item)
-            break
+            return
           }
         }
       }
+
+      Kiwi.DecodeError.throwInvalidMessage
     }
 
     def _skipField(bb ByteBuffer, field Field) {

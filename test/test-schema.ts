@@ -140,7 +140,7 @@ export namespace test {
     x?: RecursiveMessage;
   }
 
-  interface Schema {
+  export interface Schema {
     encodeEnumStruct(message: EnumStruct): Uint8Array;
     decodeEnumStruct(buffer: Uint8Array): EnumStruct;
     encodeBoolStruct(message: BoolStruct): Uint8Array;

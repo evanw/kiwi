@@ -2,14 +2,20 @@ namespace test2 {
   class BinarySchema {
     var _schema = Kiwi.BinarySchema.new
     var _indexMessage = 0
+    var _indexMessage2 = 0
 
     def parse(bytes Uint8Array) {
       _schema.parse(Kiwi.ByteBuffer.new(bytes))
       _indexMessage = _schema.findDefinition("Message")
+      _indexMessage2 = _schema.findDefinition("Message2")
     }
 
     def skipMessageField(bb Kiwi.ByteBuffer, id int) {
       _schema.skipField(bb, _indexMessage, id)
+    }
+
+    def skipMessage2Field(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexMessage2, id)
     }
   }
 
@@ -83,7 +89,8 @@ namespace test2 {
     var _x int = 0
     var _y Struct = null
     var _z Struct2 = null
-    var _w Message = null
+    var _c Message = null
+    var _d Message2 = null
 
     def has_x bool {
       return (_flags0 & 1) != 0
@@ -127,18 +134,32 @@ namespace test2 {
       _flags0 |= 4
     }
 
-    def has_w bool {
+    def has_c bool {
       return (_flags0 & 8) != 0
     }
 
-    def w Message {
-      assert(has_w)
-      return _w
+    def c Message {
+      assert(has_c)
+      return _c
     }
 
-    def w=(value Message) {
-      _w = value
+    def c=(value Message) {
+      _c = value
       _flags0 |= 8
+    }
+
+    def has_d bool {
+      return (_flags0 & 16) != 0
+    }
+
+    def d Message2 {
+      assert(has_d)
+      return _d
+    }
+
+    def d=(value Message2) {
+      _d = value
+      _flags0 |= 16
     }
 
     def encode(bb Kiwi.ByteBuffer) {
@@ -157,9 +178,14 @@ namespace test2 {
         _z.encode(bb)
       }
 
-      if has_w {
+      if has_c {
         bb.writeVarUint(4)
-        _w.encode(bb)
+        _c.encode(bb)
+      }
+
+      if has_d {
+        bb.writeVarUint(5)
+        _d.encode(bb)
       }
 
       bb.writeVarUint(0)
@@ -203,7 +229,11 @@ namespace test2 {
           }
 
           case 4 {
-            self.w = Message.decode(bb, schema)
+            self.c = Message.decode(bb, schema)
+          }
+
+          case 5 {
+            self.d = Message2.decode(bb, schema)
           }
 
           default {
@@ -277,6 +307,96 @@ namespace test2 {
       var self = new
       self.u = bb.readByte as bool
       self.v = bb.readByte as bool
+      return self
+    }
+  }
+
+  class Message2 {
+    var _flags0 = 0
+    var _e string = null
+    var _f string = null
+
+    def has_e bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def e string {
+      assert(has_e)
+      return _e
+    }
+
+    def e=(value string) {
+      _e = value
+      _flags0 |= 1
+    }
+
+    def has_f bool {
+      return (_flags0 & 2) != 0
+    }
+
+    def f string {
+      assert(has_f)
+      return _f
+    }
+
+    def f=(value string) {
+      _f = value
+      _flags0 |= 2
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_e {
+        bb.writeVarUint(1)
+        bb.writeString(_e)
+      }
+
+      if has_f {
+        bb.writeVarUint(2)
+        bb.writeString(_f)
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace Message2 {
+    def decode(bytes Uint8Array) Message2 {
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
+    }
+
+    def decode(bytes Uint8Array, schema BinarySchema) Message2 {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) Message2 {
+      var self = new
+      while true {
+        var type = bb.readByte
+        switch type {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            self.e = bb.readString
+          }
+
+          case 2 {
+            self.f = bb.readString
+          }
+
+          default {
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipMessage2Field(bb, type) }
+          }
+        }
+      }
       return self
     }
   }

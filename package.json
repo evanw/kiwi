@@ -1,6 +1,6 @@
 {
   "name": "kiwi-schema",
-  "version": "0.0.24",
+  "version": "0.1.0",
   "description": "",
   "main": "kiwi.js",
   "bin": {

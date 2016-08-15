@@ -9,10 +9,16 @@ message Message {
   int x = 1;
   Struct y = 2;
   Struct2 z = 3;
-  Message w = 4;
+  Message c = 4;
+  Message2 d = 5;
 }
 
 struct Struct2 {
   bool u;
   bool v;
+}
+
+message Message2 {
+  string e = 1;
+  string f = 2;
 }

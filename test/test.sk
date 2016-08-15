@@ -316,17 +316,29 @@ def main {
   })
 
   it("binary schema", => {
-    var schema = test1.BinarySchema.new
-    schema.parse(Uint8Array.new(fs.readFileSync(__dirname + "/test2-schema.bkiwi")))
+    var test1_schema1 = test1.BinarySchema.new
+    var test1_schema2 = test1.BinarySchema.new
+    var test2_schema1 = test2.BinarySchema.new
+    var test2_schema2 = test2.BinarySchema.new
+    test1_schema1.parse(Uint8Array.new(fs.readFileSync(__dirname + "/test1-schema.bkiwi")))
+    test1_schema2.parse(Uint8Array.new(fs.readFileSync(__dirname + "/test2-schema.bkiwi")))
+    test2_schema1.parse(Uint8Array.new(fs.readFileSync(__dirname + "/test1-schema.bkiwi")))
+    test2_schema2.parse(Uint8Array.new(fs.readFileSync(__dirname + "/test2-schema.bkiwi")))
 
     var bytes1 = Uint8Array.new([1, 2, 2, 128, 0, 0, 0, 128, 0, 0, 128, 0])
     assert.deepEqual(Uint8Array.new(test1.Message.decode(bytes1).encode), bytes1)
-    assert.deepEqual(Uint8Array.new(test1.Message.decode(bytes1, schema).encode), bytes1)
+    assert.deepEqual(Uint8Array.new(test1.Message.decode(bytes1, test1_schema1).encode), bytes1)
+    assert.deepEqual(Uint8Array.new(test1.Message.decode(bytes1, test1_schema2).encode), bytes1)
     assert.deepEqual(Uint8Array.new(test2.Message.decode(bytes1).encode), bytes1)
+    assert.deepEqual(Uint8Array.new(test2.Message.decode(bytes1, test2_schema1).encode), bytes1)
+    assert.deepEqual(Uint8Array.new(test2.Message.decode(bytes1, test2_schema2).encode), bytes1)
 
-    var bytes2 = Uint8Array.new([1, 2, 2, 128, 0, 0, 0, 128, 0, 0, 128, 3, 1, 0, 4, 0, 0])
+    var bytes2 = Uint8Array.new([1, 2, 2, 128, 0, 0, 0, 128, 0, 0, 128, 3, 1, 0, 4, 0, 5, 1, 240, 159, 141, 149, 0, 0, 0])
     assert.throws(=> test1.Message.decode(bytes2))
-    assert.deepEqual(Uint8Array.new(test1.Message.decode(bytes2, schema).encode), bytes1)
+    assert.throws(=> test1.Message.decode(bytes2, test1_schema1))
+    assert.deepEqual(Uint8Array.new(test1.Message.decode(bytes2, test1_schema2).encode), bytes1)
     assert.deepEqual(Uint8Array.new(test2.Message.decode(bytes2).encode), bytes2)
+    assert.deepEqual(Uint8Array.new(test2.Message.decode(bytes2, test2_schema1).encode), bytes2)
+    assert.deepEqual(Uint8Array.new(test2.Message.decode(bytes2, test2_schema2).encode), bytes2)
   })
 }
