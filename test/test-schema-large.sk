@@ -1,0 +1,5682 @@
+namespace test_large {
+  class BinarySchema {
+    var _schema = Kiwi.BinarySchema.new
+    var _indexMessage = 0
+
+    def parse(bytes Uint8Array) {
+      _schema.parse(Kiwi.ByteBuffer.new(bytes))
+      _indexMessage = _schema.findDefinition("Message")
+    }
+
+    def skipMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexMessage, id)
+    }
+  }
+
+  class Struct {
+    var _flags0 = 0
+    var _flags1 = 0
+    var _flags2 = 0
+    var _flags3 = 0
+    var _flags4 = 0
+    var _f0 int = 0
+    var _f1 int = 0
+    var _f2 int = 0
+    var _f3 int = 0
+    var _f4 int = 0
+    var _f5 int = 0
+    var _f6 int = 0
+    var _f7 int = 0
+    var _f8 int = 0
+    var _f9 int = 0
+    var _f10 int = 0
+    var _f11 int = 0
+    var _f12 int = 0
+    var _f13 int = 0
+    var _f14 int = 0
+    var _f15 int = 0
+    var _f16 int = 0
+    var _f17 int = 0
+    var _f18 int = 0
+    var _f19 int = 0
+    var _f20 int = 0
+    var _f21 int = 0
+    var _f22 int = 0
+    var _f23 int = 0
+    var _f24 int = 0
+    var _f25 int = 0
+    var _f26 int = 0
+    var _f27 int = 0
+    var _f28 int = 0
+    var _f29 int = 0
+    var _f30 int = 0
+    var _f31 int = 0
+    var _f32 int = 0
+    var _f33 int = 0
+    var _f34 int = 0
+    var _f35 int = 0
+    var _f36 int = 0
+    var _f37 int = 0
+    var _f38 int = 0
+    var _f39 int = 0
+    var _f40 int = 0
+    var _f41 int = 0
+    var _f42 int = 0
+    var _f43 int = 0
+    var _f44 int = 0
+    var _f45 int = 0
+    var _f46 int = 0
+    var _f47 int = 0
+    var _f48 int = 0
+    var _f49 int = 0
+    var _f50 int = 0
+    var _f51 int = 0
+    var _f52 int = 0
+    var _f53 int = 0
+    var _f54 int = 0
+    var _f55 int = 0
+    var _f56 int = 0
+    var _f57 int = 0
+    var _f58 int = 0
+    var _f59 int = 0
+    var _f60 int = 0
+    var _f61 int = 0
+    var _f62 int = 0
+    var _f63 int = 0
+    var _f64 int = 0
+    var _f65 int = 0
+    var _f66 int = 0
+    var _f67 int = 0
+    var _f68 int = 0
+    var _f69 int = 0
+    var _f70 int = 0
+    var _f71 int = 0
+    var _f72 int = 0
+    var _f73 int = 0
+    var _f74 int = 0
+    var _f75 int = 0
+    var _f76 int = 0
+    var _f77 int = 0
+    var _f78 int = 0
+    var _f79 int = 0
+    var _f80 int = 0
+    var _f81 int = 0
+    var _f82 int = 0
+    var _f83 int = 0
+    var _f84 int = 0
+    var _f85 int = 0
+    var _f86 int = 0
+    var _f87 int = 0
+    var _f88 int = 0
+    var _f89 int = 0
+    var _f90 int = 0
+    var _f91 int = 0
+    var _f92 int = 0
+    var _f93 int = 0
+    var _f94 int = 0
+    var _f95 int = 0
+    var _f96 int = 0
+    var _f97 int = 0
+    var _f98 int = 0
+    var _f99 int = 0
+    var _f100 int = 0
+    var _f101 int = 0
+    var _f102 int = 0
+    var _f103 int = 0
+    var _f104 int = 0
+    var _f105 int = 0
+    var _f106 int = 0
+    var _f107 int = 0
+    var _f108 int = 0
+    var _f109 int = 0
+    var _f110 int = 0
+    var _f111 int = 0
+    var _f112 int = 0
+    var _f113 int = 0
+    var _f114 int = 0
+    var _f115 int = 0
+    var _f116 int = 0
+    var _f117 int = 0
+    var _f118 int = 0
+    var _f119 int = 0
+    var _f120 int = 0
+    var _f121 int = 0
+    var _f122 int = 0
+    var _f123 int = 0
+    var _f124 int = 0
+    var _f125 int = 0
+    var _f126 int = 0
+    var _f127 int = 0
+    var _f128 int = 0
+    var _f129 int = 0
+
+    def has_f0 bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def f0 int {
+      assert(has_f0)
+      return _f0
+    }
+
+    def f0=(value int) {
+      _f0 = value
+      _flags0 |= 1
+    }
+
+    def has_f1 bool {
+      return (_flags0 & 2) != 0
+    }
+
+    def f1 int {
+      assert(has_f1)
+      return _f1
+    }
+
+    def f1=(value int) {
+      _f1 = value
+      _flags0 |= 2
+    }
+
+    def has_f2 bool {
+      return (_flags0 & 4) != 0
+    }
+
+    def f2 int {
+      assert(has_f2)
+      return _f2
+    }
+
+    def f2=(value int) {
+      _f2 = value
+      _flags0 |= 4
+    }
+
+    def has_f3 bool {
+      return (_flags0 & 8) != 0
+    }
+
+    def f3 int {
+      assert(has_f3)
+      return _f3
+    }
+
+    def f3=(value int) {
+      _f3 = value
+      _flags0 |= 8
+    }
+
+    def has_f4 bool {
+      return (_flags0 & 16) != 0
+    }
+
+    def f4 int {
+      assert(has_f4)
+      return _f4
+    }
+
+    def f4=(value int) {
+      _f4 = value
+      _flags0 |= 16
+    }
+
+    def has_f5 bool {
+      return (_flags0 & 32) != 0
+    }
+
+    def f5 int {
+      assert(has_f5)
+      return _f5
+    }
+
+    def f5=(value int) {
+      _f5 = value
+      _flags0 |= 32
+    }
+
+    def has_f6 bool {
+      return (_flags0 & 64) != 0
+    }
+
+    def f6 int {
+      assert(has_f6)
+      return _f6
+    }
+
+    def f6=(value int) {
+      _f6 = value
+      _flags0 |= 64
+    }
+
+    def has_f7 bool {
+      return (_flags0 & 128) != 0
+    }
+
+    def f7 int {
+      assert(has_f7)
+      return _f7
+    }
+
+    def f7=(value int) {
+      _f7 = value
+      _flags0 |= 128
+    }
+
+    def has_f8 bool {
+      return (_flags0 & 256) != 0
+    }
+
+    def f8 int {
+      assert(has_f8)
+      return _f8
+    }
+
+    def f8=(value int) {
+      _f8 = value
+      _flags0 |= 256
+    }
+
+    def has_f9 bool {
+      return (_flags0 & 512) != 0
+    }
+
+    def f9 int {
+      assert(has_f9)
+      return _f9
+    }
+
+    def f9=(value int) {
+      _f9 = value
+      _flags0 |= 512
+    }
+
+    def has_f10 bool {
+      return (_flags0 & 1024) != 0
+    }
+
+    def f10 int {
+      assert(has_f10)
+      return _f10
+    }
+
+    def f10=(value int) {
+      _f10 = value
+      _flags0 |= 1024
+    }
+
+    def has_f11 bool {
+      return (_flags0 & 2048) != 0
+    }
+
+    def f11 int {
+      assert(has_f11)
+      return _f11
+    }
+
+    def f11=(value int) {
+      _f11 = value
+      _flags0 |= 2048
+    }
+
+    def has_f12 bool {
+      return (_flags0 & 4096) != 0
+    }
+
+    def f12 int {
+      assert(has_f12)
+      return _f12
+    }
+
+    def f12=(value int) {
+      _f12 = value
+      _flags0 |= 4096
+    }
+
+    def has_f13 bool {
+      return (_flags0 & 8192) != 0
+    }
+
+    def f13 int {
+      assert(has_f13)
+      return _f13
+    }
+
+    def f13=(value int) {
+      _f13 = value
+      _flags0 |= 8192
+    }
+
+    def has_f14 bool {
+      return (_flags0 & 16384) != 0
+    }
+
+    def f14 int {
+      assert(has_f14)
+      return _f14
+    }
+
+    def f14=(value int) {
+      _f14 = value
+      _flags0 |= 16384
+    }
+
+    def has_f15 bool {
+      return (_flags0 & 32768) != 0
+    }
+
+    def f15 int {
+      assert(has_f15)
+      return _f15
+    }
+
+    def f15=(value int) {
+      _f15 = value
+      _flags0 |= 32768
+    }
+
+    def has_f16 bool {
+      return (_flags0 & 65536) != 0
+    }
+
+    def f16 int {
+      assert(has_f16)
+      return _f16
+    }
+
+    def f16=(value int) {
+      _f16 = value
+      _flags0 |= 65536
+    }
+
+    def has_f17 bool {
+      return (_flags0 & 131072) != 0
+    }
+
+    def f17 int {
+      assert(has_f17)
+      return _f17
+    }
+
+    def f17=(value int) {
+      _f17 = value
+      _flags0 |= 131072
+    }
+
+    def has_f18 bool {
+      return (_flags0 & 262144) != 0
+    }
+
+    def f18 int {
+      assert(has_f18)
+      return _f18
+    }
+
+    def f18=(value int) {
+      _f18 = value
+      _flags0 |= 262144
+    }
+
+    def has_f19 bool {
+      return (_flags0 & 524288) != 0
+    }
+
+    def f19 int {
+      assert(has_f19)
+      return _f19
+    }
+
+    def f19=(value int) {
+      _f19 = value
+      _flags0 |= 524288
+    }
+
+    def has_f20 bool {
+      return (_flags0 & 1048576) != 0
+    }
+
+    def f20 int {
+      assert(has_f20)
+      return _f20
+    }
+
+    def f20=(value int) {
+      _f20 = value
+      _flags0 |= 1048576
+    }
+
+    def has_f21 bool {
+      return (_flags0 & 2097152) != 0
+    }
+
+    def f21 int {
+      assert(has_f21)
+      return _f21
+    }
+
+    def f21=(value int) {
+      _f21 = value
+      _flags0 |= 2097152
+    }
+
+    def has_f22 bool {
+      return (_flags0 & 4194304) != 0
+    }
+
+    def f22 int {
+      assert(has_f22)
+      return _f22
+    }
+
+    def f22=(value int) {
+      _f22 = value
+      _flags0 |= 4194304
+    }
+
+    def has_f23 bool {
+      return (_flags0 & 8388608) != 0
+    }
+
+    def f23 int {
+      assert(has_f23)
+      return _f23
+    }
+
+    def f23=(value int) {
+      _f23 = value
+      _flags0 |= 8388608
+    }
+
+    def has_f24 bool {
+      return (_flags0 & 16777216) != 0
+    }
+
+    def f24 int {
+      assert(has_f24)
+      return _f24
+    }
+
+    def f24=(value int) {
+      _f24 = value
+      _flags0 |= 16777216
+    }
+
+    def has_f25 bool {
+      return (_flags0 & 33554432) != 0
+    }
+
+    def f25 int {
+      assert(has_f25)
+      return _f25
+    }
+
+    def f25=(value int) {
+      _f25 = value
+      _flags0 |= 33554432
+    }
+
+    def has_f26 bool {
+      return (_flags0 & 67108864) != 0
+    }
+
+    def f26 int {
+      assert(has_f26)
+      return _f26
+    }
+
+    def f26=(value int) {
+      _f26 = value
+      _flags0 |= 67108864
+    }
+
+    def has_f27 bool {
+      return (_flags0 & 134217728) != 0
+    }
+
+    def f27 int {
+      assert(has_f27)
+      return _f27
+    }
+
+    def f27=(value int) {
+      _f27 = value
+      _flags0 |= 134217728
+    }
+
+    def has_f28 bool {
+      return (_flags0 & 268435456) != 0
+    }
+
+    def f28 int {
+      assert(has_f28)
+      return _f28
+    }
+
+    def f28=(value int) {
+      _f28 = value
+      _flags0 |= 268435456
+    }
+
+    def has_f29 bool {
+      return (_flags0 & 536870912) != 0
+    }
+
+    def f29 int {
+      assert(has_f29)
+      return _f29
+    }
+
+    def f29=(value int) {
+      _f29 = value
+      _flags0 |= 536870912
+    }
+
+    def has_f30 bool {
+      return (_flags0 & 1073741824) != 0
+    }
+
+    def f30 int {
+      assert(has_f30)
+      return _f30
+    }
+
+    def f30=(value int) {
+      _f30 = value
+      _flags0 |= 1073741824
+    }
+
+    def has_f31 bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def f31 int {
+      assert(has_f31)
+      return _f31
+    }
+
+    def f31=(value int) {
+      _f31 = value
+      _flags0 |= 1
+    }
+
+    def has_f32 bool {
+      return (_flags1 & 2) != 0
+    }
+
+    def f32 int {
+      assert(has_f32)
+      return _f32
+    }
+
+    def f32=(value int) {
+      _f32 = value
+      _flags1 |= 2
+    }
+
+    def has_f33 bool {
+      return (_flags1 & 4) != 0
+    }
+
+    def f33 int {
+      assert(has_f33)
+      return _f33
+    }
+
+    def f33=(value int) {
+      _f33 = value
+      _flags1 |= 4
+    }
+
+    def has_f34 bool {
+      return (_flags1 & 8) != 0
+    }
+
+    def f34 int {
+      assert(has_f34)
+      return _f34
+    }
+
+    def f34=(value int) {
+      _f34 = value
+      _flags1 |= 8
+    }
+
+    def has_f35 bool {
+      return (_flags1 & 16) != 0
+    }
+
+    def f35 int {
+      assert(has_f35)
+      return _f35
+    }
+
+    def f35=(value int) {
+      _f35 = value
+      _flags1 |= 16
+    }
+
+    def has_f36 bool {
+      return (_flags1 & 32) != 0
+    }
+
+    def f36 int {
+      assert(has_f36)
+      return _f36
+    }
+
+    def f36=(value int) {
+      _f36 = value
+      _flags1 |= 32
+    }
+
+    def has_f37 bool {
+      return (_flags1 & 64) != 0
+    }
+
+    def f37 int {
+      assert(has_f37)
+      return _f37
+    }
+
+    def f37=(value int) {
+      _f37 = value
+      _flags1 |= 64
+    }
+
+    def has_f38 bool {
+      return (_flags1 & 128) != 0
+    }
+
+    def f38 int {
+      assert(has_f38)
+      return _f38
+    }
+
+    def f38=(value int) {
+      _f38 = value
+      _flags1 |= 128
+    }
+
+    def has_f39 bool {
+      return (_flags1 & 256) != 0
+    }
+
+    def f39 int {
+      assert(has_f39)
+      return _f39
+    }
+
+    def f39=(value int) {
+      _f39 = value
+      _flags1 |= 256
+    }
+
+    def has_f40 bool {
+      return (_flags1 & 512) != 0
+    }
+
+    def f40 int {
+      assert(has_f40)
+      return _f40
+    }
+
+    def f40=(value int) {
+      _f40 = value
+      _flags1 |= 512
+    }
+
+    def has_f41 bool {
+      return (_flags1 & 1024) != 0
+    }
+
+    def f41 int {
+      assert(has_f41)
+      return _f41
+    }
+
+    def f41=(value int) {
+      _f41 = value
+      _flags1 |= 1024
+    }
+
+    def has_f42 bool {
+      return (_flags1 & 2048) != 0
+    }
+
+    def f42 int {
+      assert(has_f42)
+      return _f42
+    }
+
+    def f42=(value int) {
+      _f42 = value
+      _flags1 |= 2048
+    }
+
+    def has_f43 bool {
+      return (_flags1 & 4096) != 0
+    }
+
+    def f43 int {
+      assert(has_f43)
+      return _f43
+    }
+
+    def f43=(value int) {
+      _f43 = value
+      _flags1 |= 4096
+    }
+
+    def has_f44 bool {
+      return (_flags1 & 8192) != 0
+    }
+
+    def f44 int {
+      assert(has_f44)
+      return _f44
+    }
+
+    def f44=(value int) {
+      _f44 = value
+      _flags1 |= 8192
+    }
+
+    def has_f45 bool {
+      return (_flags1 & 16384) != 0
+    }
+
+    def f45 int {
+      assert(has_f45)
+      return _f45
+    }
+
+    def f45=(value int) {
+      _f45 = value
+      _flags1 |= 16384
+    }
+
+    def has_f46 bool {
+      return (_flags1 & 32768) != 0
+    }
+
+    def f46 int {
+      assert(has_f46)
+      return _f46
+    }
+
+    def f46=(value int) {
+      _f46 = value
+      _flags1 |= 32768
+    }
+
+    def has_f47 bool {
+      return (_flags1 & 65536) != 0
+    }
+
+    def f47 int {
+      assert(has_f47)
+      return _f47
+    }
+
+    def f47=(value int) {
+      _f47 = value
+      _flags1 |= 65536
+    }
+
+    def has_f48 bool {
+      return (_flags1 & 131072) != 0
+    }
+
+    def f48 int {
+      assert(has_f48)
+      return _f48
+    }
+
+    def f48=(value int) {
+      _f48 = value
+      _flags1 |= 131072
+    }
+
+    def has_f49 bool {
+      return (_flags1 & 262144) != 0
+    }
+
+    def f49 int {
+      assert(has_f49)
+      return _f49
+    }
+
+    def f49=(value int) {
+      _f49 = value
+      _flags1 |= 262144
+    }
+
+    def has_f50 bool {
+      return (_flags1 & 524288) != 0
+    }
+
+    def f50 int {
+      assert(has_f50)
+      return _f50
+    }
+
+    def f50=(value int) {
+      _f50 = value
+      _flags1 |= 524288
+    }
+
+    def has_f51 bool {
+      return (_flags1 & 1048576) != 0
+    }
+
+    def f51 int {
+      assert(has_f51)
+      return _f51
+    }
+
+    def f51=(value int) {
+      _f51 = value
+      _flags1 |= 1048576
+    }
+
+    def has_f52 bool {
+      return (_flags1 & 2097152) != 0
+    }
+
+    def f52 int {
+      assert(has_f52)
+      return _f52
+    }
+
+    def f52=(value int) {
+      _f52 = value
+      _flags1 |= 2097152
+    }
+
+    def has_f53 bool {
+      return (_flags1 & 4194304) != 0
+    }
+
+    def f53 int {
+      assert(has_f53)
+      return _f53
+    }
+
+    def f53=(value int) {
+      _f53 = value
+      _flags1 |= 4194304
+    }
+
+    def has_f54 bool {
+      return (_flags1 & 8388608) != 0
+    }
+
+    def f54 int {
+      assert(has_f54)
+      return _f54
+    }
+
+    def f54=(value int) {
+      _f54 = value
+      _flags1 |= 8388608
+    }
+
+    def has_f55 bool {
+      return (_flags1 & 16777216) != 0
+    }
+
+    def f55 int {
+      assert(has_f55)
+      return _f55
+    }
+
+    def f55=(value int) {
+      _f55 = value
+      _flags1 |= 16777216
+    }
+
+    def has_f56 bool {
+      return (_flags1 & 33554432) != 0
+    }
+
+    def f56 int {
+      assert(has_f56)
+      return _f56
+    }
+
+    def f56=(value int) {
+      _f56 = value
+      _flags1 |= 33554432
+    }
+
+    def has_f57 bool {
+      return (_flags1 & 67108864) != 0
+    }
+
+    def f57 int {
+      assert(has_f57)
+      return _f57
+    }
+
+    def f57=(value int) {
+      _f57 = value
+      _flags1 |= 67108864
+    }
+
+    def has_f58 bool {
+      return (_flags1 & 134217728) != 0
+    }
+
+    def f58 int {
+      assert(has_f58)
+      return _f58
+    }
+
+    def f58=(value int) {
+      _f58 = value
+      _flags1 |= 134217728
+    }
+
+    def has_f59 bool {
+      return (_flags1 & 268435456) != 0
+    }
+
+    def f59 int {
+      assert(has_f59)
+      return _f59
+    }
+
+    def f59=(value int) {
+      _f59 = value
+      _flags1 |= 268435456
+    }
+
+    def has_f60 bool {
+      return (_flags1 & 536870912) != 0
+    }
+
+    def f60 int {
+      assert(has_f60)
+      return _f60
+    }
+
+    def f60=(value int) {
+      _f60 = value
+      _flags1 |= 536870912
+    }
+
+    def has_f61 bool {
+      return (_flags1 & 1073741824) != 0
+    }
+
+    def f61 int {
+      assert(has_f61)
+      return _f61
+    }
+
+    def f61=(value int) {
+      _f61 = value
+      _flags1 |= 1073741824
+    }
+
+    def has_f62 bool {
+      return (_flags1 & 1) != 0
+    }
+
+    def f62 int {
+      assert(has_f62)
+      return _f62
+    }
+
+    def f62=(value int) {
+      _f62 = value
+      _flags1 |= 1
+    }
+
+    def has_f63 bool {
+      return (_flags1 & 2) != 0
+    }
+
+    def f63 int {
+      assert(has_f63)
+      return _f63
+    }
+
+    def f63=(value int) {
+      _f63 = value
+      _flags1 |= 2
+    }
+
+    def has_f64 bool {
+      return (_flags2 & 4) != 0
+    }
+
+    def f64 int {
+      assert(has_f64)
+      return _f64
+    }
+
+    def f64=(value int) {
+      _f64 = value
+      _flags2 |= 4
+    }
+
+    def has_f65 bool {
+      return (_flags2 & 8) != 0
+    }
+
+    def f65 int {
+      assert(has_f65)
+      return _f65
+    }
+
+    def f65=(value int) {
+      _f65 = value
+      _flags2 |= 8
+    }
+
+    def has_f66 bool {
+      return (_flags2 & 16) != 0
+    }
+
+    def f66 int {
+      assert(has_f66)
+      return _f66
+    }
+
+    def f66=(value int) {
+      _f66 = value
+      _flags2 |= 16
+    }
+
+    def has_f67 bool {
+      return (_flags2 & 32) != 0
+    }
+
+    def f67 int {
+      assert(has_f67)
+      return _f67
+    }
+
+    def f67=(value int) {
+      _f67 = value
+      _flags2 |= 32
+    }
+
+    def has_f68 bool {
+      return (_flags2 & 64) != 0
+    }
+
+    def f68 int {
+      assert(has_f68)
+      return _f68
+    }
+
+    def f68=(value int) {
+      _f68 = value
+      _flags2 |= 64
+    }
+
+    def has_f69 bool {
+      return (_flags2 & 128) != 0
+    }
+
+    def f69 int {
+      assert(has_f69)
+      return _f69
+    }
+
+    def f69=(value int) {
+      _f69 = value
+      _flags2 |= 128
+    }
+
+    def has_f70 bool {
+      return (_flags2 & 256) != 0
+    }
+
+    def f70 int {
+      assert(has_f70)
+      return _f70
+    }
+
+    def f70=(value int) {
+      _f70 = value
+      _flags2 |= 256
+    }
+
+    def has_f71 bool {
+      return (_flags2 & 512) != 0
+    }
+
+    def f71 int {
+      assert(has_f71)
+      return _f71
+    }
+
+    def f71=(value int) {
+      _f71 = value
+      _flags2 |= 512
+    }
+
+    def has_f72 bool {
+      return (_flags2 & 1024) != 0
+    }
+
+    def f72 int {
+      assert(has_f72)
+      return _f72
+    }
+
+    def f72=(value int) {
+      _f72 = value
+      _flags2 |= 1024
+    }
+
+    def has_f73 bool {
+      return (_flags2 & 2048) != 0
+    }
+
+    def f73 int {
+      assert(has_f73)
+      return _f73
+    }
+
+    def f73=(value int) {
+      _f73 = value
+      _flags2 |= 2048
+    }
+
+    def has_f74 bool {
+      return (_flags2 & 4096) != 0
+    }
+
+    def f74 int {
+      assert(has_f74)
+      return _f74
+    }
+
+    def f74=(value int) {
+      _f74 = value
+      _flags2 |= 4096
+    }
+
+    def has_f75 bool {
+      return (_flags2 & 8192) != 0
+    }
+
+    def f75 int {
+      assert(has_f75)
+      return _f75
+    }
+
+    def f75=(value int) {
+      _f75 = value
+      _flags2 |= 8192
+    }
+
+    def has_f76 bool {
+      return (_flags2 & 16384) != 0
+    }
+
+    def f76 int {
+      assert(has_f76)
+      return _f76
+    }
+
+    def f76=(value int) {
+      _f76 = value
+      _flags2 |= 16384
+    }
+
+    def has_f77 bool {
+      return (_flags2 & 32768) != 0
+    }
+
+    def f77 int {
+      assert(has_f77)
+      return _f77
+    }
+
+    def f77=(value int) {
+      _f77 = value
+      _flags2 |= 32768
+    }
+
+    def has_f78 bool {
+      return (_flags2 & 65536) != 0
+    }
+
+    def f78 int {
+      assert(has_f78)
+      return _f78
+    }
+
+    def f78=(value int) {
+      _f78 = value
+      _flags2 |= 65536
+    }
+
+    def has_f79 bool {
+      return (_flags2 & 131072) != 0
+    }
+
+    def f79 int {
+      assert(has_f79)
+      return _f79
+    }
+
+    def f79=(value int) {
+      _f79 = value
+      _flags2 |= 131072
+    }
+
+    def has_f80 bool {
+      return (_flags2 & 262144) != 0
+    }
+
+    def f80 int {
+      assert(has_f80)
+      return _f80
+    }
+
+    def f80=(value int) {
+      _f80 = value
+      _flags2 |= 262144
+    }
+
+    def has_f81 bool {
+      return (_flags2 & 524288) != 0
+    }
+
+    def f81 int {
+      assert(has_f81)
+      return _f81
+    }
+
+    def f81=(value int) {
+      _f81 = value
+      _flags2 |= 524288
+    }
+
+    def has_f82 bool {
+      return (_flags2 & 1048576) != 0
+    }
+
+    def f82 int {
+      assert(has_f82)
+      return _f82
+    }
+
+    def f82=(value int) {
+      _f82 = value
+      _flags2 |= 1048576
+    }
+
+    def has_f83 bool {
+      return (_flags2 & 2097152) != 0
+    }
+
+    def f83 int {
+      assert(has_f83)
+      return _f83
+    }
+
+    def f83=(value int) {
+      _f83 = value
+      _flags2 |= 2097152
+    }
+
+    def has_f84 bool {
+      return (_flags2 & 4194304) != 0
+    }
+
+    def f84 int {
+      assert(has_f84)
+      return _f84
+    }
+
+    def f84=(value int) {
+      _f84 = value
+      _flags2 |= 4194304
+    }
+
+    def has_f85 bool {
+      return (_flags2 & 8388608) != 0
+    }
+
+    def f85 int {
+      assert(has_f85)
+      return _f85
+    }
+
+    def f85=(value int) {
+      _f85 = value
+      _flags2 |= 8388608
+    }
+
+    def has_f86 bool {
+      return (_flags2 & 16777216) != 0
+    }
+
+    def f86 int {
+      assert(has_f86)
+      return _f86
+    }
+
+    def f86=(value int) {
+      _f86 = value
+      _flags2 |= 16777216
+    }
+
+    def has_f87 bool {
+      return (_flags2 & 33554432) != 0
+    }
+
+    def f87 int {
+      assert(has_f87)
+      return _f87
+    }
+
+    def f87=(value int) {
+      _f87 = value
+      _flags2 |= 33554432
+    }
+
+    def has_f88 bool {
+      return (_flags2 & 67108864) != 0
+    }
+
+    def f88 int {
+      assert(has_f88)
+      return _f88
+    }
+
+    def f88=(value int) {
+      _f88 = value
+      _flags2 |= 67108864
+    }
+
+    def has_f89 bool {
+      return (_flags2 & 134217728) != 0
+    }
+
+    def f89 int {
+      assert(has_f89)
+      return _f89
+    }
+
+    def f89=(value int) {
+      _f89 = value
+      _flags2 |= 134217728
+    }
+
+    def has_f90 bool {
+      return (_flags2 & 268435456) != 0
+    }
+
+    def f90 int {
+      assert(has_f90)
+      return _f90
+    }
+
+    def f90=(value int) {
+      _f90 = value
+      _flags2 |= 268435456
+    }
+
+    def has_f91 bool {
+      return (_flags2 & 536870912) != 0
+    }
+
+    def f91 int {
+      assert(has_f91)
+      return _f91
+    }
+
+    def f91=(value int) {
+      _f91 = value
+      _flags2 |= 536870912
+    }
+
+    def has_f92 bool {
+      return (_flags2 & 1073741824) != 0
+    }
+
+    def f92 int {
+      assert(has_f92)
+      return _f92
+    }
+
+    def f92=(value int) {
+      _f92 = value
+      _flags2 |= 1073741824
+    }
+
+    def has_f93 bool {
+      return (_flags2 & 1) != 0
+    }
+
+    def f93 int {
+      assert(has_f93)
+      return _f93
+    }
+
+    def f93=(value int) {
+      _f93 = value
+      _flags2 |= 1
+    }
+
+    def has_f94 bool {
+      return (_flags2 & 2) != 0
+    }
+
+    def f94 int {
+      assert(has_f94)
+      return _f94
+    }
+
+    def f94=(value int) {
+      _f94 = value
+      _flags2 |= 2
+    }
+
+    def has_f95 bool {
+      return (_flags2 & 4) != 0
+    }
+
+    def f95 int {
+      assert(has_f95)
+      return _f95
+    }
+
+    def f95=(value int) {
+      _f95 = value
+      _flags2 |= 4
+    }
+
+    def has_f96 bool {
+      return (_flags3 & 8) != 0
+    }
+
+    def f96 int {
+      assert(has_f96)
+      return _f96
+    }
+
+    def f96=(value int) {
+      _f96 = value
+      _flags3 |= 8
+    }
+
+    def has_f97 bool {
+      return (_flags3 & 16) != 0
+    }
+
+    def f97 int {
+      assert(has_f97)
+      return _f97
+    }
+
+    def f97=(value int) {
+      _f97 = value
+      _flags3 |= 16
+    }
+
+    def has_f98 bool {
+      return (_flags3 & 32) != 0
+    }
+
+    def f98 int {
+      assert(has_f98)
+      return _f98
+    }
+
+    def f98=(value int) {
+      _f98 = value
+      _flags3 |= 32
+    }
+
+    def has_f99 bool {
+      return (_flags3 & 64) != 0
+    }
+
+    def f99 int {
+      assert(has_f99)
+      return _f99
+    }
+
+    def f99=(value int) {
+      _f99 = value
+      _flags3 |= 64
+    }
+
+    def has_f100 bool {
+      return (_flags3 & 128) != 0
+    }
+
+    def f100 int {
+      assert(has_f100)
+      return _f100
+    }
+
+    def f100=(value int) {
+      _f100 = value
+      _flags3 |= 128
+    }
+
+    def has_f101 bool {
+      return (_flags3 & 256) != 0
+    }
+
+    def f101 int {
+      assert(has_f101)
+      return _f101
+    }
+
+    def f101=(value int) {
+      _f101 = value
+      _flags3 |= 256
+    }
+
+    def has_f102 bool {
+      return (_flags3 & 512) != 0
+    }
+
+    def f102 int {
+      assert(has_f102)
+      return _f102
+    }
+
+    def f102=(value int) {
+      _f102 = value
+      _flags3 |= 512
+    }
+
+    def has_f103 bool {
+      return (_flags3 & 1024) != 0
+    }
+
+    def f103 int {
+      assert(has_f103)
+      return _f103
+    }
+
+    def f103=(value int) {
+      _f103 = value
+      _flags3 |= 1024
+    }
+
+    def has_f104 bool {
+      return (_flags3 & 2048) != 0
+    }
+
+    def f104 int {
+      assert(has_f104)
+      return _f104
+    }
+
+    def f104=(value int) {
+      _f104 = value
+      _flags3 |= 2048
+    }
+
+    def has_f105 bool {
+      return (_flags3 & 4096) != 0
+    }
+
+    def f105 int {
+      assert(has_f105)
+      return _f105
+    }
+
+    def f105=(value int) {
+      _f105 = value
+      _flags3 |= 4096
+    }
+
+    def has_f106 bool {
+      return (_flags3 & 8192) != 0
+    }
+
+    def f106 int {
+      assert(has_f106)
+      return _f106
+    }
+
+    def f106=(value int) {
+      _f106 = value
+      _flags3 |= 8192
+    }
+
+    def has_f107 bool {
+      return (_flags3 & 16384) != 0
+    }
+
+    def f107 int {
+      assert(has_f107)
+      return _f107
+    }
+
+    def f107=(value int) {
+      _f107 = value
+      _flags3 |= 16384
+    }
+
+    def has_f108 bool {
+      return (_flags3 & 32768) != 0
+    }
+
+    def f108 int {
+      assert(has_f108)
+      return _f108
+    }
+
+    def f108=(value int) {
+      _f108 = value
+      _flags3 |= 32768
+    }
+
+    def has_f109 bool {
+      return (_flags3 & 65536) != 0
+    }
+
+    def f109 int {
+      assert(has_f109)
+      return _f109
+    }
+
+    def f109=(value int) {
+      _f109 = value
+      _flags3 |= 65536
+    }
+
+    def has_f110 bool {
+      return (_flags3 & 131072) != 0
+    }
+
+    def f110 int {
+      assert(has_f110)
+      return _f110
+    }
+
+    def f110=(value int) {
+      _f110 = value
+      _flags3 |= 131072
+    }
+
+    def has_f111 bool {
+      return (_flags3 & 262144) != 0
+    }
+
+    def f111 int {
+      assert(has_f111)
+      return _f111
+    }
+
+    def f111=(value int) {
+      _f111 = value
+      _flags3 |= 262144
+    }
+
+    def has_f112 bool {
+      return (_flags3 & 524288) != 0
+    }
+
+    def f112 int {
+      assert(has_f112)
+      return _f112
+    }
+
+    def f112=(value int) {
+      _f112 = value
+      _flags3 |= 524288
+    }
+
+    def has_f113 bool {
+      return (_flags3 & 1048576) != 0
+    }
+
+    def f113 int {
+      assert(has_f113)
+      return _f113
+    }
+
+    def f113=(value int) {
+      _f113 = value
+      _flags3 |= 1048576
+    }
+
+    def has_f114 bool {
+      return (_flags3 & 2097152) != 0
+    }
+
+    def f114 int {
+      assert(has_f114)
+      return _f114
+    }
+
+    def f114=(value int) {
+      _f114 = value
+      _flags3 |= 2097152
+    }
+
+    def has_f115 bool {
+      return (_flags3 & 4194304) != 0
+    }
+
+    def f115 int {
+      assert(has_f115)
+      return _f115
+    }
+
+    def f115=(value int) {
+      _f115 = value
+      _flags3 |= 4194304
+    }
+
+    def has_f116 bool {
+      return (_flags3 & 8388608) != 0
+    }
+
+    def f116 int {
+      assert(has_f116)
+      return _f116
+    }
+
+    def f116=(value int) {
+      _f116 = value
+      _flags3 |= 8388608
+    }
+
+    def has_f117 bool {
+      return (_flags3 & 16777216) != 0
+    }
+
+    def f117 int {
+      assert(has_f117)
+      return _f117
+    }
+
+    def f117=(value int) {
+      _f117 = value
+      _flags3 |= 16777216
+    }
+
+    def has_f118 bool {
+      return (_flags3 & 33554432) != 0
+    }
+
+    def f118 int {
+      assert(has_f118)
+      return _f118
+    }
+
+    def f118=(value int) {
+      _f118 = value
+      _flags3 |= 33554432
+    }
+
+    def has_f119 bool {
+      return (_flags3 & 67108864) != 0
+    }
+
+    def f119 int {
+      assert(has_f119)
+      return _f119
+    }
+
+    def f119=(value int) {
+      _f119 = value
+      _flags3 |= 67108864
+    }
+
+    def has_f120 bool {
+      return (_flags3 & 134217728) != 0
+    }
+
+    def f120 int {
+      assert(has_f120)
+      return _f120
+    }
+
+    def f120=(value int) {
+      _f120 = value
+      _flags3 |= 134217728
+    }
+
+    def has_f121 bool {
+      return (_flags3 & 268435456) != 0
+    }
+
+    def f121 int {
+      assert(has_f121)
+      return _f121
+    }
+
+    def f121=(value int) {
+      _f121 = value
+      _flags3 |= 268435456
+    }
+
+    def has_f122 bool {
+      return (_flags3 & 536870912) != 0
+    }
+
+    def f122 int {
+      assert(has_f122)
+      return _f122
+    }
+
+    def f122=(value int) {
+      _f122 = value
+      _flags3 |= 536870912
+    }
+
+    def has_f123 bool {
+      return (_flags3 & 1073741824) != 0
+    }
+
+    def f123 int {
+      assert(has_f123)
+      return _f123
+    }
+
+    def f123=(value int) {
+      _f123 = value
+      _flags3 |= 1073741824
+    }
+
+    def has_f124 bool {
+      return (_flags3 & 1) != 0
+    }
+
+    def f124 int {
+      assert(has_f124)
+      return _f124
+    }
+
+    def f124=(value int) {
+      _f124 = value
+      _flags3 |= 1
+    }
+
+    def has_f125 bool {
+      return (_flags3 & 2) != 0
+    }
+
+    def f125 int {
+      assert(has_f125)
+      return _f125
+    }
+
+    def f125=(value int) {
+      _f125 = value
+      _flags3 |= 2
+    }
+
+    def has_f126 bool {
+      return (_flags3 & 4) != 0
+    }
+
+    def f126 int {
+      assert(has_f126)
+      return _f126
+    }
+
+    def f126=(value int) {
+      _f126 = value
+      _flags3 |= 4
+    }
+
+    def has_f127 bool {
+      return (_flags3 & 8) != 0
+    }
+
+    def f127 int {
+      assert(has_f127)
+      return _f127
+    }
+
+    def f127=(value int) {
+      _f127 = value
+      _flags3 |= 8
+    }
+
+    def has_f128 bool {
+      return (_flags4 & 16) != 0
+    }
+
+    def f128 int {
+      assert(has_f128)
+      return _f128
+    }
+
+    def f128=(value int) {
+      _f128 = value
+      _flags4 |= 16
+    }
+
+    def has_f129 bool {
+      return (_flags4 & 32) != 0
+    }
+
+    def f129 int {
+      assert(has_f129)
+      return _f129
+    }
+
+    def f129=(value int) {
+      _f129 = value
+      _flags4 |= 32
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_f0)
+      bb.writeVarInt(_f0)
+
+      assert(has_f1)
+      bb.writeVarInt(_f1)
+
+      assert(has_f2)
+      bb.writeVarInt(_f2)
+
+      assert(has_f3)
+      bb.writeVarInt(_f3)
+
+      assert(has_f4)
+      bb.writeVarInt(_f4)
+
+      assert(has_f5)
+      bb.writeVarInt(_f5)
+
+      assert(has_f6)
+      bb.writeVarInt(_f6)
+
+      assert(has_f7)
+      bb.writeVarInt(_f7)
+
+      assert(has_f8)
+      bb.writeVarInt(_f8)
+
+      assert(has_f9)
+      bb.writeVarInt(_f9)
+
+      assert(has_f10)
+      bb.writeVarInt(_f10)
+
+      assert(has_f11)
+      bb.writeVarInt(_f11)
+
+      assert(has_f12)
+      bb.writeVarInt(_f12)
+
+      assert(has_f13)
+      bb.writeVarInt(_f13)
+
+      assert(has_f14)
+      bb.writeVarInt(_f14)
+
+      assert(has_f15)
+      bb.writeVarInt(_f15)
+
+      assert(has_f16)
+      bb.writeVarInt(_f16)
+
+      assert(has_f17)
+      bb.writeVarInt(_f17)
+
+      assert(has_f18)
+      bb.writeVarInt(_f18)
+
+      assert(has_f19)
+      bb.writeVarInt(_f19)
+
+      assert(has_f20)
+      bb.writeVarInt(_f20)
+
+      assert(has_f21)
+      bb.writeVarInt(_f21)
+
+      assert(has_f22)
+      bb.writeVarInt(_f22)
+
+      assert(has_f23)
+      bb.writeVarInt(_f23)
+
+      assert(has_f24)
+      bb.writeVarInt(_f24)
+
+      assert(has_f25)
+      bb.writeVarInt(_f25)
+
+      assert(has_f26)
+      bb.writeVarInt(_f26)
+
+      assert(has_f27)
+      bb.writeVarInt(_f27)
+
+      assert(has_f28)
+      bb.writeVarInt(_f28)
+
+      assert(has_f29)
+      bb.writeVarInt(_f29)
+
+      assert(has_f30)
+      bb.writeVarInt(_f30)
+
+      assert(has_f31)
+      bb.writeVarInt(_f31)
+
+      assert(has_f32)
+      bb.writeVarInt(_f32)
+
+      assert(has_f33)
+      bb.writeVarInt(_f33)
+
+      assert(has_f34)
+      bb.writeVarInt(_f34)
+
+      assert(has_f35)
+      bb.writeVarInt(_f35)
+
+      assert(has_f36)
+      bb.writeVarInt(_f36)
+
+      assert(has_f37)
+      bb.writeVarInt(_f37)
+
+      assert(has_f38)
+      bb.writeVarInt(_f38)
+
+      assert(has_f39)
+      bb.writeVarInt(_f39)
+
+      assert(has_f40)
+      bb.writeVarInt(_f40)
+
+      assert(has_f41)
+      bb.writeVarInt(_f41)
+
+      assert(has_f42)
+      bb.writeVarInt(_f42)
+
+      assert(has_f43)
+      bb.writeVarInt(_f43)
+
+      assert(has_f44)
+      bb.writeVarInt(_f44)
+
+      assert(has_f45)
+      bb.writeVarInt(_f45)
+
+      assert(has_f46)
+      bb.writeVarInt(_f46)
+
+      assert(has_f47)
+      bb.writeVarInt(_f47)
+
+      assert(has_f48)
+      bb.writeVarInt(_f48)
+
+      assert(has_f49)
+      bb.writeVarInt(_f49)
+
+      assert(has_f50)
+      bb.writeVarInt(_f50)
+
+      assert(has_f51)
+      bb.writeVarInt(_f51)
+
+      assert(has_f52)
+      bb.writeVarInt(_f52)
+
+      assert(has_f53)
+      bb.writeVarInt(_f53)
+
+      assert(has_f54)
+      bb.writeVarInt(_f54)
+
+      assert(has_f55)
+      bb.writeVarInt(_f55)
+
+      assert(has_f56)
+      bb.writeVarInt(_f56)
+
+      assert(has_f57)
+      bb.writeVarInt(_f57)
+
+      assert(has_f58)
+      bb.writeVarInt(_f58)
+
+      assert(has_f59)
+      bb.writeVarInt(_f59)
+
+      assert(has_f60)
+      bb.writeVarInt(_f60)
+
+      assert(has_f61)
+      bb.writeVarInt(_f61)
+
+      assert(has_f62)
+      bb.writeVarInt(_f62)
+
+      assert(has_f63)
+      bb.writeVarInt(_f63)
+
+      assert(has_f64)
+      bb.writeVarInt(_f64)
+
+      assert(has_f65)
+      bb.writeVarInt(_f65)
+
+      assert(has_f66)
+      bb.writeVarInt(_f66)
+
+      assert(has_f67)
+      bb.writeVarInt(_f67)
+
+      assert(has_f68)
+      bb.writeVarInt(_f68)
+
+      assert(has_f69)
+      bb.writeVarInt(_f69)
+
+      assert(has_f70)
+      bb.writeVarInt(_f70)
+
+      assert(has_f71)
+      bb.writeVarInt(_f71)
+
+      assert(has_f72)
+      bb.writeVarInt(_f72)
+
+      assert(has_f73)
+      bb.writeVarInt(_f73)
+
+      assert(has_f74)
+      bb.writeVarInt(_f74)
+
+      assert(has_f75)
+      bb.writeVarInt(_f75)
+
+      assert(has_f76)
+      bb.writeVarInt(_f76)
+
+      assert(has_f77)
+      bb.writeVarInt(_f77)
+
+      assert(has_f78)
+      bb.writeVarInt(_f78)
+
+      assert(has_f79)
+      bb.writeVarInt(_f79)
+
+      assert(has_f80)
+      bb.writeVarInt(_f80)
+
+      assert(has_f81)
+      bb.writeVarInt(_f81)
+
+      assert(has_f82)
+      bb.writeVarInt(_f82)
+
+      assert(has_f83)
+      bb.writeVarInt(_f83)
+
+      assert(has_f84)
+      bb.writeVarInt(_f84)
+
+      assert(has_f85)
+      bb.writeVarInt(_f85)
+
+      assert(has_f86)
+      bb.writeVarInt(_f86)
+
+      assert(has_f87)
+      bb.writeVarInt(_f87)
+
+      assert(has_f88)
+      bb.writeVarInt(_f88)
+
+      assert(has_f89)
+      bb.writeVarInt(_f89)
+
+      assert(has_f90)
+      bb.writeVarInt(_f90)
+
+      assert(has_f91)
+      bb.writeVarInt(_f91)
+
+      assert(has_f92)
+      bb.writeVarInt(_f92)
+
+      assert(has_f93)
+      bb.writeVarInt(_f93)
+
+      assert(has_f94)
+      bb.writeVarInt(_f94)
+
+      assert(has_f95)
+      bb.writeVarInt(_f95)
+
+      assert(has_f96)
+      bb.writeVarInt(_f96)
+
+      assert(has_f97)
+      bb.writeVarInt(_f97)
+
+      assert(has_f98)
+      bb.writeVarInt(_f98)
+
+      assert(has_f99)
+      bb.writeVarInt(_f99)
+
+      assert(has_f100)
+      bb.writeVarInt(_f100)
+
+      assert(has_f101)
+      bb.writeVarInt(_f101)
+
+      assert(has_f102)
+      bb.writeVarInt(_f102)
+
+      assert(has_f103)
+      bb.writeVarInt(_f103)
+
+      assert(has_f104)
+      bb.writeVarInt(_f104)
+
+      assert(has_f105)
+      bb.writeVarInt(_f105)
+
+      assert(has_f106)
+      bb.writeVarInt(_f106)
+
+      assert(has_f107)
+      bb.writeVarInt(_f107)
+
+      assert(has_f108)
+      bb.writeVarInt(_f108)
+
+      assert(has_f109)
+      bb.writeVarInt(_f109)
+
+      assert(has_f110)
+      bb.writeVarInt(_f110)
+
+      assert(has_f111)
+      bb.writeVarInt(_f111)
+
+      assert(has_f112)
+      bb.writeVarInt(_f112)
+
+      assert(has_f113)
+      bb.writeVarInt(_f113)
+
+      assert(has_f114)
+      bb.writeVarInt(_f114)
+
+      assert(has_f115)
+      bb.writeVarInt(_f115)
+
+      assert(has_f116)
+      bb.writeVarInt(_f116)
+
+      assert(has_f117)
+      bb.writeVarInt(_f117)
+
+      assert(has_f118)
+      bb.writeVarInt(_f118)
+
+      assert(has_f119)
+      bb.writeVarInt(_f119)
+
+      assert(has_f120)
+      bb.writeVarInt(_f120)
+
+      assert(has_f121)
+      bb.writeVarInt(_f121)
+
+      assert(has_f122)
+      bb.writeVarInt(_f122)
+
+      assert(has_f123)
+      bb.writeVarInt(_f123)
+
+      assert(has_f124)
+      bb.writeVarInt(_f124)
+
+      assert(has_f125)
+      bb.writeVarInt(_f125)
+
+      assert(has_f126)
+      bb.writeVarInt(_f126)
+
+      assert(has_f127)
+      bb.writeVarInt(_f127)
+
+      assert(has_f128)
+      bb.writeVarInt(_f128)
+
+      assert(has_f129)
+      bb.writeVarInt(_f129)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace Struct {
+    def decode(bytes Uint8Array) Struct {
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
+    }
+
+    def decode(bytes Uint8Array, schema BinarySchema) Struct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) Struct {
+      var self = new
+      self.f0 = bb.readVarInt
+      self.f1 = bb.readVarInt
+      self.f2 = bb.readVarInt
+      self.f3 = bb.readVarInt
+      self.f4 = bb.readVarInt
+      self.f5 = bb.readVarInt
+      self.f6 = bb.readVarInt
+      self.f7 = bb.readVarInt
+      self.f8 = bb.readVarInt
+      self.f9 = bb.readVarInt
+      self.f10 = bb.readVarInt
+      self.f11 = bb.readVarInt
+      self.f12 = bb.readVarInt
+      self.f13 = bb.readVarInt
+      self.f14 = bb.readVarInt
+      self.f15 = bb.readVarInt
+      self.f16 = bb.readVarInt
+      self.f17 = bb.readVarInt
+      self.f18 = bb.readVarInt
+      self.f19 = bb.readVarInt
+      self.f20 = bb.readVarInt
+      self.f21 = bb.readVarInt
+      self.f22 = bb.readVarInt
+      self.f23 = bb.readVarInt
+      self.f24 = bb.readVarInt
+      self.f25 = bb.readVarInt
+      self.f26 = bb.readVarInt
+      self.f27 = bb.readVarInt
+      self.f28 = bb.readVarInt
+      self.f29 = bb.readVarInt
+      self.f30 = bb.readVarInt
+      self.f31 = bb.readVarInt
+      self.f32 = bb.readVarInt
+      self.f33 = bb.readVarInt
+      self.f34 = bb.readVarInt
+      self.f35 = bb.readVarInt
+      self.f36 = bb.readVarInt
+      self.f37 = bb.readVarInt
+      self.f38 = bb.readVarInt
+      self.f39 = bb.readVarInt
+      self.f40 = bb.readVarInt
+      self.f41 = bb.readVarInt
+      self.f42 = bb.readVarInt
+      self.f43 = bb.readVarInt
+      self.f44 = bb.readVarInt
+      self.f45 = bb.readVarInt
+      self.f46 = bb.readVarInt
+      self.f47 = bb.readVarInt
+      self.f48 = bb.readVarInt
+      self.f49 = bb.readVarInt
+      self.f50 = bb.readVarInt
+      self.f51 = bb.readVarInt
+      self.f52 = bb.readVarInt
+      self.f53 = bb.readVarInt
+      self.f54 = bb.readVarInt
+      self.f55 = bb.readVarInt
+      self.f56 = bb.readVarInt
+      self.f57 = bb.readVarInt
+      self.f58 = bb.readVarInt
+      self.f59 = bb.readVarInt
+      self.f60 = bb.readVarInt
+      self.f61 = bb.readVarInt
+      self.f62 = bb.readVarInt
+      self.f63 = bb.readVarInt
+      self.f64 = bb.readVarInt
+      self.f65 = bb.readVarInt
+      self.f66 = bb.readVarInt
+      self.f67 = bb.readVarInt
+      self.f68 = bb.readVarInt
+      self.f69 = bb.readVarInt
+      self.f70 = bb.readVarInt
+      self.f71 = bb.readVarInt
+      self.f72 = bb.readVarInt
+      self.f73 = bb.readVarInt
+      self.f74 = bb.readVarInt
+      self.f75 = bb.readVarInt
+      self.f76 = bb.readVarInt
+      self.f77 = bb.readVarInt
+      self.f78 = bb.readVarInt
+      self.f79 = bb.readVarInt
+      self.f80 = bb.readVarInt
+      self.f81 = bb.readVarInt
+      self.f82 = bb.readVarInt
+      self.f83 = bb.readVarInt
+      self.f84 = bb.readVarInt
+      self.f85 = bb.readVarInt
+      self.f86 = bb.readVarInt
+      self.f87 = bb.readVarInt
+      self.f88 = bb.readVarInt
+      self.f89 = bb.readVarInt
+      self.f90 = bb.readVarInt
+      self.f91 = bb.readVarInt
+      self.f92 = bb.readVarInt
+      self.f93 = bb.readVarInt
+      self.f94 = bb.readVarInt
+      self.f95 = bb.readVarInt
+      self.f96 = bb.readVarInt
+      self.f97 = bb.readVarInt
+      self.f98 = bb.readVarInt
+      self.f99 = bb.readVarInt
+      self.f100 = bb.readVarInt
+      self.f101 = bb.readVarInt
+      self.f102 = bb.readVarInt
+      self.f103 = bb.readVarInt
+      self.f104 = bb.readVarInt
+      self.f105 = bb.readVarInt
+      self.f106 = bb.readVarInt
+      self.f107 = bb.readVarInt
+      self.f108 = bb.readVarInt
+      self.f109 = bb.readVarInt
+      self.f110 = bb.readVarInt
+      self.f111 = bb.readVarInt
+      self.f112 = bb.readVarInt
+      self.f113 = bb.readVarInt
+      self.f114 = bb.readVarInt
+      self.f115 = bb.readVarInt
+      self.f116 = bb.readVarInt
+      self.f117 = bb.readVarInt
+      self.f118 = bb.readVarInt
+      self.f119 = bb.readVarInt
+      self.f120 = bb.readVarInt
+      self.f121 = bb.readVarInt
+      self.f122 = bb.readVarInt
+      self.f123 = bb.readVarInt
+      self.f124 = bb.readVarInt
+      self.f125 = bb.readVarInt
+      self.f126 = bb.readVarInt
+      self.f127 = bb.readVarInt
+      self.f128 = bb.readVarInt
+      self.f129 = bb.readVarInt
+      return self
+    }
+  }
+
+  class Message {
+    var _flags0 = 0
+    var _flags1 = 0
+    var _flags2 = 0
+    var _flags3 = 0
+    var _flags4 = 0
+    var _f0 int = 0
+    var _f1 int = 0
+    var _f2 int = 0
+    var _f3 int = 0
+    var _f4 int = 0
+    var _f5 int = 0
+    var _f6 int = 0
+    var _f7 int = 0
+    var _f8 int = 0
+    var _f9 int = 0
+    var _f10 int = 0
+    var _f11 int = 0
+    var _f12 int = 0
+    var _f13 int = 0
+    var _f14 int = 0
+    var _f15 int = 0
+    var _f16 int = 0
+    var _f17 int = 0
+    var _f18 int = 0
+    var _f19 int = 0
+    var _f20 int = 0
+    var _f21 int = 0
+    var _f22 int = 0
+    var _f23 int = 0
+    var _f24 int = 0
+    var _f25 int = 0
+    var _f26 int = 0
+    var _f27 int = 0
+    var _f28 int = 0
+    var _f29 int = 0
+    var _f30 int = 0
+    var _f31 int = 0
+    var _f32 int = 0
+    var _f33 int = 0
+    var _f34 int = 0
+    var _f35 int = 0
+    var _f36 int = 0
+    var _f37 int = 0
+    var _f38 int = 0
+    var _f39 int = 0
+    var _f40 int = 0
+    var _f41 int = 0
+    var _f42 int = 0
+    var _f43 int = 0
+    var _f44 int = 0
+    var _f45 int = 0
+    var _f46 int = 0
+    var _f47 int = 0
+    var _f48 int = 0
+    var _f49 int = 0
+    var _f50 int = 0
+    var _f51 int = 0
+    var _f52 int = 0
+    var _f53 int = 0
+    var _f54 int = 0
+    var _f55 int = 0
+    var _f56 int = 0
+    var _f57 int = 0
+    var _f58 int = 0
+    var _f59 int = 0
+    var _f60 int = 0
+    var _f61 int = 0
+    var _f62 int = 0
+    var _f63 int = 0
+    var _f64 int = 0
+    var _f65 int = 0
+    var _f66 int = 0
+    var _f67 int = 0
+    var _f68 int = 0
+    var _f69 int = 0
+    var _f70 int = 0
+    var _f71 int = 0
+    var _f72 int = 0
+    var _f73 int = 0
+    var _f74 int = 0
+    var _f75 int = 0
+    var _f76 int = 0
+    var _f77 int = 0
+    var _f78 int = 0
+    var _f79 int = 0
+    var _f80 int = 0
+    var _f81 int = 0
+    var _f82 int = 0
+    var _f83 int = 0
+    var _f84 int = 0
+    var _f85 int = 0
+    var _f86 int = 0
+    var _f87 int = 0
+    var _f88 int = 0
+    var _f89 int = 0
+    var _f90 int = 0
+    var _f91 int = 0
+    var _f92 int = 0
+    var _f93 int = 0
+    var _f94 int = 0
+    var _f95 int = 0
+    var _f96 int = 0
+    var _f97 int = 0
+    var _f98 int = 0
+    var _f99 int = 0
+    var _f100 int = 0
+    var _f101 int = 0
+    var _f102 int = 0
+    var _f103 int = 0
+    var _f104 int = 0
+    var _f105 int = 0
+    var _f106 int = 0
+    var _f107 int = 0
+    var _f108 int = 0
+    var _f109 int = 0
+    var _f110 int = 0
+    var _f111 int = 0
+    var _f112 int = 0
+    var _f113 int = 0
+    var _f114 int = 0
+    var _f115 int = 0
+    var _f116 int = 0
+    var _f117 int = 0
+    var _f118 int = 0
+    var _f119 int = 0
+    var _f120 int = 0
+    var _f121 int = 0
+    var _f122 int = 0
+    var _f123 int = 0
+    var _f124 int = 0
+    var _f125 int = 0
+    var _f126 int = 0
+    var _f127 int = 0
+    var _f128 int = 0
+    var _f129 int = 0
+
+    def has_f0 bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def f0 int {
+      assert(has_f0)
+      return _f0
+    }
+
+    def f0=(value int) {
+      _f0 = value
+      _flags0 |= 1
+    }
+
+    def has_f1 bool {
+      return (_flags0 & 2) != 0
+    }
+
+    def f1 int {
+      assert(has_f1)
+      return _f1
+    }
+
+    def f1=(value int) {
+      _f1 = value
+      _flags0 |= 2
+    }
+
+    def has_f2 bool {
+      return (_flags0 & 4) != 0
+    }
+
+    def f2 int {
+      assert(has_f2)
+      return _f2
+    }
+
+    def f2=(value int) {
+      _f2 = value
+      _flags0 |= 4
+    }
+
+    def has_f3 bool {
+      return (_flags0 & 8) != 0
+    }
+
+    def f3 int {
+      assert(has_f3)
+      return _f3
+    }
+
+    def f3=(value int) {
+      _f3 = value
+      _flags0 |= 8
+    }
+
+    def has_f4 bool {
+      return (_flags0 & 16) != 0
+    }
+
+    def f4 int {
+      assert(has_f4)
+      return _f4
+    }
+
+    def f4=(value int) {
+      _f4 = value
+      _flags0 |= 16
+    }
+
+    def has_f5 bool {
+      return (_flags0 & 32) != 0
+    }
+
+    def f5 int {
+      assert(has_f5)
+      return _f5
+    }
+
+    def f5=(value int) {
+      _f5 = value
+      _flags0 |= 32
+    }
+
+    def has_f6 bool {
+      return (_flags0 & 64) != 0
+    }
+
+    def f6 int {
+      assert(has_f6)
+      return _f6
+    }
+
+    def f6=(value int) {
+      _f6 = value
+      _flags0 |= 64
+    }
+
+    def has_f7 bool {
+      return (_flags0 & 128) != 0
+    }
+
+    def f7 int {
+      assert(has_f7)
+      return _f7
+    }
+
+    def f7=(value int) {
+      _f7 = value
+      _flags0 |= 128
+    }
+
+    def has_f8 bool {
+      return (_flags0 & 256) != 0
+    }
+
+    def f8 int {
+      assert(has_f8)
+      return _f8
+    }
+
+    def f8=(value int) {
+      _f8 = value
+      _flags0 |= 256
+    }
+
+    def has_f9 bool {
+      return (_flags0 & 512) != 0
+    }
+
+    def f9 int {
+      assert(has_f9)
+      return _f9
+    }
+
+    def f9=(value int) {
+      _f9 = value
+      _flags0 |= 512
+    }
+
+    def has_f10 bool {
+      return (_flags0 & 1024) != 0
+    }
+
+    def f10 int {
+      assert(has_f10)
+      return _f10
+    }
+
+    def f10=(value int) {
+      _f10 = value
+      _flags0 |= 1024
+    }
+
+    def has_f11 bool {
+      return (_flags0 & 2048) != 0
+    }
+
+    def f11 int {
+      assert(has_f11)
+      return _f11
+    }
+
+    def f11=(value int) {
+      _f11 = value
+      _flags0 |= 2048
+    }
+
+    def has_f12 bool {
+      return (_flags0 & 4096) != 0
+    }
+
+    def f12 int {
+      assert(has_f12)
+      return _f12
+    }
+
+    def f12=(value int) {
+      _f12 = value
+      _flags0 |= 4096
+    }
+
+    def has_f13 bool {
+      return (_flags0 & 8192) != 0
+    }
+
+    def f13 int {
+      assert(has_f13)
+      return _f13
+    }
+
+    def f13=(value int) {
+      _f13 = value
+      _flags0 |= 8192
+    }
+
+    def has_f14 bool {
+      return (_flags0 & 16384) != 0
+    }
+
+    def f14 int {
+      assert(has_f14)
+      return _f14
+    }
+
+    def f14=(value int) {
+      _f14 = value
+      _flags0 |= 16384
+    }
+
+    def has_f15 bool {
+      return (_flags0 & 32768) != 0
+    }
+
+    def f15 int {
+      assert(has_f15)
+      return _f15
+    }
+
+    def f15=(value int) {
+      _f15 = value
+      _flags0 |= 32768
+    }
+
+    def has_f16 bool {
+      return (_flags0 & 65536) != 0
+    }
+
+    def f16 int {
+      assert(has_f16)
+      return _f16
+    }
+
+    def f16=(value int) {
+      _f16 = value
+      _flags0 |= 65536
+    }
+
+    def has_f17 bool {
+      return (_flags0 & 131072) != 0
+    }
+
+    def f17 int {
+      assert(has_f17)
+      return _f17
+    }
+
+    def f17=(value int) {
+      _f17 = value
+      _flags0 |= 131072
+    }
+
+    def has_f18 bool {
+      return (_flags0 & 262144) != 0
+    }
+
+    def f18 int {
+      assert(has_f18)
+      return _f18
+    }
+
+    def f18=(value int) {
+      _f18 = value
+      _flags0 |= 262144
+    }
+
+    def has_f19 bool {
+      return (_flags0 & 524288) != 0
+    }
+
+    def f19 int {
+      assert(has_f19)
+      return _f19
+    }
+
+    def f19=(value int) {
+      _f19 = value
+      _flags0 |= 524288
+    }
+
+    def has_f20 bool {
+      return (_flags0 & 1048576) != 0
+    }
+
+    def f20 int {
+      assert(has_f20)
+      return _f20
+    }
+
+    def f20=(value int) {
+      _f20 = value
+      _flags0 |= 1048576
+    }
+
+    def has_f21 bool {
+      return (_flags0 & 2097152) != 0
+    }
+
+    def f21 int {
+      assert(has_f21)
+      return _f21
+    }
+
+    def f21=(value int) {
+      _f21 = value
+      _flags0 |= 2097152
+    }
+
+    def has_f22 bool {
+      return (_flags0 & 4194304) != 0
+    }
+
+    def f22 int {
+      assert(has_f22)
+      return _f22
+    }
+
+    def f22=(value int) {
+      _f22 = value
+      _flags0 |= 4194304
+    }
+
+    def has_f23 bool {
+      return (_flags0 & 8388608) != 0
+    }
+
+    def f23 int {
+      assert(has_f23)
+      return _f23
+    }
+
+    def f23=(value int) {
+      _f23 = value
+      _flags0 |= 8388608
+    }
+
+    def has_f24 bool {
+      return (_flags0 & 16777216) != 0
+    }
+
+    def f24 int {
+      assert(has_f24)
+      return _f24
+    }
+
+    def f24=(value int) {
+      _f24 = value
+      _flags0 |= 16777216
+    }
+
+    def has_f25 bool {
+      return (_flags0 & 33554432) != 0
+    }
+
+    def f25 int {
+      assert(has_f25)
+      return _f25
+    }
+
+    def f25=(value int) {
+      _f25 = value
+      _flags0 |= 33554432
+    }
+
+    def has_f26 bool {
+      return (_flags0 & 67108864) != 0
+    }
+
+    def f26 int {
+      assert(has_f26)
+      return _f26
+    }
+
+    def f26=(value int) {
+      _f26 = value
+      _flags0 |= 67108864
+    }
+
+    def has_f27 bool {
+      return (_flags0 & 134217728) != 0
+    }
+
+    def f27 int {
+      assert(has_f27)
+      return _f27
+    }
+
+    def f27=(value int) {
+      _f27 = value
+      _flags0 |= 134217728
+    }
+
+    def has_f28 bool {
+      return (_flags0 & 268435456) != 0
+    }
+
+    def f28 int {
+      assert(has_f28)
+      return _f28
+    }
+
+    def f28=(value int) {
+      _f28 = value
+      _flags0 |= 268435456
+    }
+
+    def has_f29 bool {
+      return (_flags0 & 536870912) != 0
+    }
+
+    def f29 int {
+      assert(has_f29)
+      return _f29
+    }
+
+    def f29=(value int) {
+      _f29 = value
+      _flags0 |= 536870912
+    }
+
+    def has_f30 bool {
+      return (_flags0 & 1073741824) != 0
+    }
+
+    def f30 int {
+      assert(has_f30)
+      return _f30
+    }
+
+    def f30=(value int) {
+      _f30 = value
+      _flags0 |= 1073741824
+    }
+
+    def has_f31 bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def f31 int {
+      assert(has_f31)
+      return _f31
+    }
+
+    def f31=(value int) {
+      _f31 = value
+      _flags0 |= 1
+    }
+
+    def has_f32 bool {
+      return (_flags1 & 2) != 0
+    }
+
+    def f32 int {
+      assert(has_f32)
+      return _f32
+    }
+
+    def f32=(value int) {
+      _f32 = value
+      _flags1 |= 2
+    }
+
+    def has_f33 bool {
+      return (_flags1 & 4) != 0
+    }
+
+    def f33 int {
+      assert(has_f33)
+      return _f33
+    }
+
+    def f33=(value int) {
+      _f33 = value
+      _flags1 |= 4
+    }
+
+    def has_f34 bool {
+      return (_flags1 & 8) != 0
+    }
+
+    def f34 int {
+      assert(has_f34)
+      return _f34
+    }
+
+    def f34=(value int) {
+      _f34 = value
+      _flags1 |= 8
+    }
+
+    def has_f35 bool {
+      return (_flags1 & 16) != 0
+    }
+
+    def f35 int {
+      assert(has_f35)
+      return _f35
+    }
+
+    def f35=(value int) {
+      _f35 = value
+      _flags1 |= 16
+    }
+
+    def has_f36 bool {
+      return (_flags1 & 32) != 0
+    }
+
+    def f36 int {
+      assert(has_f36)
+      return _f36
+    }
+
+    def f36=(value int) {
+      _f36 = value
+      _flags1 |= 32
+    }
+
+    def has_f37 bool {
+      return (_flags1 & 64) != 0
+    }
+
+    def f37 int {
+      assert(has_f37)
+      return _f37
+    }
+
+    def f37=(value int) {
+      _f37 = value
+      _flags1 |= 64
+    }
+
+    def has_f38 bool {
+      return (_flags1 & 128) != 0
+    }
+
+    def f38 int {
+      assert(has_f38)
+      return _f38
+    }
+
+    def f38=(value int) {
+      _f38 = value
+      _flags1 |= 128
+    }
+
+    def has_f39 bool {
+      return (_flags1 & 256) != 0
+    }
+
+    def f39 int {
+      assert(has_f39)
+      return _f39
+    }
+
+    def f39=(value int) {
+      _f39 = value
+      _flags1 |= 256
+    }
+
+    def has_f40 bool {
+      return (_flags1 & 512) != 0
+    }
+
+    def f40 int {
+      assert(has_f40)
+      return _f40
+    }
+
+    def f40=(value int) {
+      _f40 = value
+      _flags1 |= 512
+    }
+
+    def has_f41 bool {
+      return (_flags1 & 1024) != 0
+    }
+
+    def f41 int {
+      assert(has_f41)
+      return _f41
+    }
+
+    def f41=(value int) {
+      _f41 = value
+      _flags1 |= 1024
+    }
+
+    def has_f42 bool {
+      return (_flags1 & 2048) != 0
+    }
+
+    def f42 int {
+      assert(has_f42)
+      return _f42
+    }
+
+    def f42=(value int) {
+      _f42 = value
+      _flags1 |= 2048
+    }
+
+    def has_f43 bool {
+      return (_flags1 & 4096) != 0
+    }
+
+    def f43 int {
+      assert(has_f43)
+      return _f43
+    }
+
+    def f43=(value int) {
+      _f43 = value
+      _flags1 |= 4096
+    }
+
+    def has_f44 bool {
+      return (_flags1 & 8192) != 0
+    }
+
+    def f44 int {
+      assert(has_f44)
+      return _f44
+    }
+
+    def f44=(value int) {
+      _f44 = value
+      _flags1 |= 8192
+    }
+
+    def has_f45 bool {
+      return (_flags1 & 16384) != 0
+    }
+
+    def f45 int {
+      assert(has_f45)
+      return _f45
+    }
+
+    def f45=(value int) {
+      _f45 = value
+      _flags1 |= 16384
+    }
+
+    def has_f46 bool {
+      return (_flags1 & 32768) != 0
+    }
+
+    def f46 int {
+      assert(has_f46)
+      return _f46
+    }
+
+    def f46=(value int) {
+      _f46 = value
+      _flags1 |= 32768
+    }
+
+    def has_f47 bool {
+      return (_flags1 & 65536) != 0
+    }
+
+    def f47 int {
+      assert(has_f47)
+      return _f47
+    }
+
+    def f47=(value int) {
+      _f47 = value
+      _flags1 |= 65536
+    }
+
+    def has_f48 bool {
+      return (_flags1 & 131072) != 0
+    }
+
+    def f48 int {
+      assert(has_f48)
+      return _f48
+    }
+
+    def f48=(value int) {
+      _f48 = value
+      _flags1 |= 131072
+    }
+
+    def has_f49 bool {
+      return (_flags1 & 262144) != 0
+    }
+
+    def f49 int {
+      assert(has_f49)
+      return _f49
+    }
+
+    def f49=(value int) {
+      _f49 = value
+      _flags1 |= 262144
+    }
+
+    def has_f50 bool {
+      return (_flags1 & 524288) != 0
+    }
+
+    def f50 int {
+      assert(has_f50)
+      return _f50
+    }
+
+    def f50=(value int) {
+      _f50 = value
+      _flags1 |= 524288
+    }
+
+    def has_f51 bool {
+      return (_flags1 & 1048576) != 0
+    }
+
+    def f51 int {
+      assert(has_f51)
+      return _f51
+    }
+
+    def f51=(value int) {
+      _f51 = value
+      _flags1 |= 1048576
+    }
+
+    def has_f52 bool {
+      return (_flags1 & 2097152) != 0
+    }
+
+    def f52 int {
+      assert(has_f52)
+      return _f52
+    }
+
+    def f52=(value int) {
+      _f52 = value
+      _flags1 |= 2097152
+    }
+
+    def has_f53 bool {
+      return (_flags1 & 4194304) != 0
+    }
+
+    def f53 int {
+      assert(has_f53)
+      return _f53
+    }
+
+    def f53=(value int) {
+      _f53 = value
+      _flags1 |= 4194304
+    }
+
+    def has_f54 bool {
+      return (_flags1 & 8388608) != 0
+    }
+
+    def f54 int {
+      assert(has_f54)
+      return _f54
+    }
+
+    def f54=(value int) {
+      _f54 = value
+      _flags1 |= 8388608
+    }
+
+    def has_f55 bool {
+      return (_flags1 & 16777216) != 0
+    }
+
+    def f55 int {
+      assert(has_f55)
+      return _f55
+    }
+
+    def f55=(value int) {
+      _f55 = value
+      _flags1 |= 16777216
+    }
+
+    def has_f56 bool {
+      return (_flags1 & 33554432) != 0
+    }
+
+    def f56 int {
+      assert(has_f56)
+      return _f56
+    }
+
+    def f56=(value int) {
+      _f56 = value
+      _flags1 |= 33554432
+    }
+
+    def has_f57 bool {
+      return (_flags1 & 67108864) != 0
+    }
+
+    def f57 int {
+      assert(has_f57)
+      return _f57
+    }
+
+    def f57=(value int) {
+      _f57 = value
+      _flags1 |= 67108864
+    }
+
+    def has_f58 bool {
+      return (_flags1 & 134217728) != 0
+    }
+
+    def f58 int {
+      assert(has_f58)
+      return _f58
+    }
+
+    def f58=(value int) {
+      _f58 = value
+      _flags1 |= 134217728
+    }
+
+    def has_f59 bool {
+      return (_flags1 & 268435456) != 0
+    }
+
+    def f59 int {
+      assert(has_f59)
+      return _f59
+    }
+
+    def f59=(value int) {
+      _f59 = value
+      _flags1 |= 268435456
+    }
+
+    def has_f60 bool {
+      return (_flags1 & 536870912) != 0
+    }
+
+    def f60 int {
+      assert(has_f60)
+      return _f60
+    }
+
+    def f60=(value int) {
+      _f60 = value
+      _flags1 |= 536870912
+    }
+
+    def has_f61 bool {
+      return (_flags1 & 1073741824) != 0
+    }
+
+    def f61 int {
+      assert(has_f61)
+      return _f61
+    }
+
+    def f61=(value int) {
+      _f61 = value
+      _flags1 |= 1073741824
+    }
+
+    def has_f62 bool {
+      return (_flags1 & 1) != 0
+    }
+
+    def f62 int {
+      assert(has_f62)
+      return _f62
+    }
+
+    def f62=(value int) {
+      _f62 = value
+      _flags1 |= 1
+    }
+
+    def has_f63 bool {
+      return (_flags1 & 2) != 0
+    }
+
+    def f63 int {
+      assert(has_f63)
+      return _f63
+    }
+
+    def f63=(value int) {
+      _f63 = value
+      _flags1 |= 2
+    }
+
+    def has_f64 bool {
+      return (_flags2 & 4) != 0
+    }
+
+    def f64 int {
+      assert(has_f64)
+      return _f64
+    }
+
+    def f64=(value int) {
+      _f64 = value
+      _flags2 |= 4
+    }
+
+    def has_f65 bool {
+      return (_flags2 & 8) != 0
+    }
+
+    def f65 int {
+      assert(has_f65)
+      return _f65
+    }
+
+    def f65=(value int) {
+      _f65 = value
+      _flags2 |= 8
+    }
+
+    def has_f66 bool {
+      return (_flags2 & 16) != 0
+    }
+
+    def f66 int {
+      assert(has_f66)
+      return _f66
+    }
+
+    def f66=(value int) {
+      _f66 = value
+      _flags2 |= 16
+    }
+
+    def has_f67 bool {
+      return (_flags2 & 32) != 0
+    }
+
+    def f67 int {
+      assert(has_f67)
+      return _f67
+    }
+
+    def f67=(value int) {
+      _f67 = value
+      _flags2 |= 32
+    }
+
+    def has_f68 bool {
+      return (_flags2 & 64) != 0
+    }
+
+    def f68 int {
+      assert(has_f68)
+      return _f68
+    }
+
+    def f68=(value int) {
+      _f68 = value
+      _flags2 |= 64
+    }
+
+    def has_f69 bool {
+      return (_flags2 & 128) != 0
+    }
+
+    def f69 int {
+      assert(has_f69)
+      return _f69
+    }
+
+    def f69=(value int) {
+      _f69 = value
+      _flags2 |= 128
+    }
+
+    def has_f70 bool {
+      return (_flags2 & 256) != 0
+    }
+
+    def f70 int {
+      assert(has_f70)
+      return _f70
+    }
+
+    def f70=(value int) {
+      _f70 = value
+      _flags2 |= 256
+    }
+
+    def has_f71 bool {
+      return (_flags2 & 512) != 0
+    }
+
+    def f71 int {
+      assert(has_f71)
+      return _f71
+    }
+
+    def f71=(value int) {
+      _f71 = value
+      _flags2 |= 512
+    }
+
+    def has_f72 bool {
+      return (_flags2 & 1024) != 0
+    }
+
+    def f72 int {
+      assert(has_f72)
+      return _f72
+    }
+
+    def f72=(value int) {
+      _f72 = value
+      _flags2 |= 1024
+    }
+
+    def has_f73 bool {
+      return (_flags2 & 2048) != 0
+    }
+
+    def f73 int {
+      assert(has_f73)
+      return _f73
+    }
+
+    def f73=(value int) {
+      _f73 = value
+      _flags2 |= 2048
+    }
+
+    def has_f74 bool {
+      return (_flags2 & 4096) != 0
+    }
+
+    def f74 int {
+      assert(has_f74)
+      return _f74
+    }
+
+    def f74=(value int) {
+      _f74 = value
+      _flags2 |= 4096
+    }
+
+    def has_f75 bool {
+      return (_flags2 & 8192) != 0
+    }
+
+    def f75 int {
+      assert(has_f75)
+      return _f75
+    }
+
+    def f75=(value int) {
+      _f75 = value
+      _flags2 |= 8192
+    }
+
+    def has_f76 bool {
+      return (_flags2 & 16384) != 0
+    }
+
+    def f76 int {
+      assert(has_f76)
+      return _f76
+    }
+
+    def f76=(value int) {
+      _f76 = value
+      _flags2 |= 16384
+    }
+
+    def has_f77 bool {
+      return (_flags2 & 32768) != 0
+    }
+
+    def f77 int {
+      assert(has_f77)
+      return _f77
+    }
+
+    def f77=(value int) {
+      _f77 = value
+      _flags2 |= 32768
+    }
+
+    def has_f78 bool {
+      return (_flags2 & 65536) != 0
+    }
+
+    def f78 int {
+      assert(has_f78)
+      return _f78
+    }
+
+    def f78=(value int) {
+      _f78 = value
+      _flags2 |= 65536
+    }
+
+    def has_f79 bool {
+      return (_flags2 & 131072) != 0
+    }
+
+    def f79 int {
+      assert(has_f79)
+      return _f79
+    }
+
+    def f79=(value int) {
+      _f79 = value
+      _flags2 |= 131072
+    }
+
+    def has_f80 bool {
+      return (_flags2 & 262144) != 0
+    }
+
+    def f80 int {
+      assert(has_f80)
+      return _f80
+    }
+
+    def f80=(value int) {
+      _f80 = value
+      _flags2 |= 262144
+    }
+
+    def has_f81 bool {
+      return (_flags2 & 524288) != 0
+    }
+
+    def f81 int {
+      assert(has_f81)
+      return _f81
+    }
+
+    def f81=(value int) {
+      _f81 = value
+      _flags2 |= 524288
+    }
+
+    def has_f82 bool {
+      return (_flags2 & 1048576) != 0
+    }
+
+    def f82 int {
+      assert(has_f82)
+      return _f82
+    }
+
+    def f82=(value int) {
+      _f82 = value
+      _flags2 |= 1048576
+    }
+
+    def has_f83 bool {
+      return (_flags2 & 2097152) != 0
+    }
+
+    def f83 int {
+      assert(has_f83)
+      return _f83
+    }
+
+    def f83=(value int) {
+      _f83 = value
+      _flags2 |= 2097152
+    }
+
+    def has_f84 bool {
+      return (_flags2 & 4194304) != 0
+    }
+
+    def f84 int {
+      assert(has_f84)
+      return _f84
+    }
+
+    def f84=(value int) {
+      _f84 = value
+      _flags2 |= 4194304
+    }
+
+    def has_f85 bool {
+      return (_flags2 & 8388608) != 0
+    }
+
+    def f85 int {
+      assert(has_f85)
+      return _f85
+    }
+
+    def f85=(value int) {
+      _f85 = value
+      _flags2 |= 8388608
+    }
+
+    def has_f86 bool {
+      return (_flags2 & 16777216) != 0
+    }
+
+    def f86 int {
+      assert(has_f86)
+      return _f86
+    }
+
+    def f86=(value int) {
+      _f86 = value
+      _flags2 |= 16777216
+    }
+
+    def has_f87 bool {
+      return (_flags2 & 33554432) != 0
+    }
+
+    def f87 int {
+      assert(has_f87)
+      return _f87
+    }
+
+    def f87=(value int) {
+      _f87 = value
+      _flags2 |= 33554432
+    }
+
+    def has_f88 bool {
+      return (_flags2 & 67108864) != 0
+    }
+
+    def f88 int {
+      assert(has_f88)
+      return _f88
+    }
+
+    def f88=(value int) {
+      _f88 = value
+      _flags2 |= 67108864
+    }
+
+    def has_f89 bool {
+      return (_flags2 & 134217728) != 0
+    }
+
+    def f89 int {
+      assert(has_f89)
+      return _f89
+    }
+
+    def f89=(value int) {
+      _f89 = value
+      _flags2 |= 134217728
+    }
+
+    def has_f90 bool {
+      return (_flags2 & 268435456) != 0
+    }
+
+    def f90 int {
+      assert(has_f90)
+      return _f90
+    }
+
+    def f90=(value int) {
+      _f90 = value
+      _flags2 |= 268435456
+    }
+
+    def has_f91 bool {
+      return (_flags2 & 536870912) != 0
+    }
+
+    def f91 int {
+      assert(has_f91)
+      return _f91
+    }
+
+    def f91=(value int) {
+      _f91 = value
+      _flags2 |= 536870912
+    }
+
+    def has_f92 bool {
+      return (_flags2 & 1073741824) != 0
+    }
+
+    def f92 int {
+      assert(has_f92)
+      return _f92
+    }
+
+    def f92=(value int) {
+      _f92 = value
+      _flags2 |= 1073741824
+    }
+
+    def has_f93 bool {
+      return (_flags2 & 1) != 0
+    }
+
+    def f93 int {
+      assert(has_f93)
+      return _f93
+    }
+
+    def f93=(value int) {
+      _f93 = value
+      _flags2 |= 1
+    }
+
+    def has_f94 bool {
+      return (_flags2 & 2) != 0
+    }
+
+    def f94 int {
+      assert(has_f94)
+      return _f94
+    }
+
+    def f94=(value int) {
+      _f94 = value
+      _flags2 |= 2
+    }
+
+    def has_f95 bool {
+      return (_flags2 & 4) != 0
+    }
+
+    def f95 int {
+      assert(has_f95)
+      return _f95
+    }
+
+    def f95=(value int) {
+      _f95 = value
+      _flags2 |= 4
+    }
+
+    def has_f96 bool {
+      return (_flags3 & 8) != 0
+    }
+
+    def f96 int {
+      assert(has_f96)
+      return _f96
+    }
+
+    def f96=(value int) {
+      _f96 = value
+      _flags3 |= 8
+    }
+
+    def has_f97 bool {
+      return (_flags3 & 16) != 0
+    }
+
+    def f97 int {
+      assert(has_f97)
+      return _f97
+    }
+
+    def f97=(value int) {
+      _f97 = value
+      _flags3 |= 16
+    }
+
+    def has_f98 bool {
+      return (_flags3 & 32) != 0
+    }
+
+    def f98 int {
+      assert(has_f98)
+      return _f98
+    }
+
+    def f98=(value int) {
+      _f98 = value
+      _flags3 |= 32
+    }
+
+    def has_f99 bool {
+      return (_flags3 & 64) != 0
+    }
+
+    def f99 int {
+      assert(has_f99)
+      return _f99
+    }
+
+    def f99=(value int) {
+      _f99 = value
+      _flags3 |= 64
+    }
+
+    def has_f100 bool {
+      return (_flags3 & 128) != 0
+    }
+
+    def f100 int {
+      assert(has_f100)
+      return _f100
+    }
+
+    def f100=(value int) {
+      _f100 = value
+      _flags3 |= 128
+    }
+
+    def has_f101 bool {
+      return (_flags3 & 256) != 0
+    }
+
+    def f101 int {
+      assert(has_f101)
+      return _f101
+    }
+
+    def f101=(value int) {
+      _f101 = value
+      _flags3 |= 256
+    }
+
+    def has_f102 bool {
+      return (_flags3 & 512) != 0
+    }
+
+    def f102 int {
+      assert(has_f102)
+      return _f102
+    }
+
+    def f102=(value int) {
+      _f102 = value
+      _flags3 |= 512
+    }
+
+    def has_f103 bool {
+      return (_flags3 & 1024) != 0
+    }
+
+    def f103 int {
+      assert(has_f103)
+      return _f103
+    }
+
+    def f103=(value int) {
+      _f103 = value
+      _flags3 |= 1024
+    }
+
+    def has_f104 bool {
+      return (_flags3 & 2048) != 0
+    }
+
+    def f104 int {
+      assert(has_f104)
+      return _f104
+    }
+
+    def f104=(value int) {
+      _f104 = value
+      _flags3 |= 2048
+    }
+
+    def has_f105 bool {
+      return (_flags3 & 4096) != 0
+    }
+
+    def f105 int {
+      assert(has_f105)
+      return _f105
+    }
+
+    def f105=(value int) {
+      _f105 = value
+      _flags3 |= 4096
+    }
+
+    def has_f106 bool {
+      return (_flags3 & 8192) != 0
+    }
+
+    def f106 int {
+      assert(has_f106)
+      return _f106
+    }
+
+    def f106=(value int) {
+      _f106 = value
+      _flags3 |= 8192
+    }
+
+    def has_f107 bool {
+      return (_flags3 & 16384) != 0
+    }
+
+    def f107 int {
+      assert(has_f107)
+      return _f107
+    }
+
+    def f107=(value int) {
+      _f107 = value
+      _flags3 |= 16384
+    }
+
+    def has_f108 bool {
+      return (_flags3 & 32768) != 0
+    }
+
+    def f108 int {
+      assert(has_f108)
+      return _f108
+    }
+
+    def f108=(value int) {
+      _f108 = value
+      _flags3 |= 32768
+    }
+
+    def has_f109 bool {
+      return (_flags3 & 65536) != 0
+    }
+
+    def f109 int {
+      assert(has_f109)
+      return _f109
+    }
+
+    def f109=(value int) {
+      _f109 = value
+      _flags3 |= 65536
+    }
+
+    def has_f110 bool {
+      return (_flags3 & 131072) != 0
+    }
+
+    def f110 int {
+      assert(has_f110)
+      return _f110
+    }
+
+    def f110=(value int) {
+      _f110 = value
+      _flags3 |= 131072
+    }
+
+    def has_f111 bool {
+      return (_flags3 & 262144) != 0
+    }
+
+    def f111 int {
+      assert(has_f111)
+      return _f111
+    }
+
+    def f111=(value int) {
+      _f111 = value
+      _flags3 |= 262144
+    }
+
+    def has_f112 bool {
+      return (_flags3 & 524288) != 0
+    }
+
+    def f112 int {
+      assert(has_f112)
+      return _f112
+    }
+
+    def f112=(value int) {
+      _f112 = value
+      _flags3 |= 524288
+    }
+
+    def has_f113 bool {
+      return (_flags3 & 1048576) != 0
+    }
+
+    def f113 int {
+      assert(has_f113)
+      return _f113
+    }
+
+    def f113=(value int) {
+      _f113 = value
+      _flags3 |= 1048576
+    }
+
+    def has_f114 bool {
+      return (_flags3 & 2097152) != 0
+    }
+
+    def f114 int {
+      assert(has_f114)
+      return _f114
+    }
+
+    def f114=(value int) {
+      _f114 = value
+      _flags3 |= 2097152
+    }
+
+    def has_f115 bool {
+      return (_flags3 & 4194304) != 0
+    }
+
+    def f115 int {
+      assert(has_f115)
+      return _f115
+    }
+
+    def f115=(value int) {
+      _f115 = value
+      _flags3 |= 4194304
+    }
+
+    def has_f116 bool {
+      return (_flags3 & 8388608) != 0
+    }
+
+    def f116 int {
+      assert(has_f116)
+      return _f116
+    }
+
+    def f116=(value int) {
+      _f116 = value
+      _flags3 |= 8388608
+    }
+
+    def has_f117 bool {
+      return (_flags3 & 16777216) != 0
+    }
+
+    def f117 int {
+      assert(has_f117)
+      return _f117
+    }
+
+    def f117=(value int) {
+      _f117 = value
+      _flags3 |= 16777216
+    }
+
+    def has_f118 bool {
+      return (_flags3 & 33554432) != 0
+    }
+
+    def f118 int {
+      assert(has_f118)
+      return _f118
+    }
+
+    def f118=(value int) {
+      _f118 = value
+      _flags3 |= 33554432
+    }
+
+    def has_f119 bool {
+      return (_flags3 & 67108864) != 0
+    }
+
+    def f119 int {
+      assert(has_f119)
+      return _f119
+    }
+
+    def f119=(value int) {
+      _f119 = value
+      _flags3 |= 67108864
+    }
+
+    def has_f120 bool {
+      return (_flags3 & 134217728) != 0
+    }
+
+    def f120 int {
+      assert(has_f120)
+      return _f120
+    }
+
+    def f120=(value int) {
+      _f120 = value
+      _flags3 |= 134217728
+    }
+
+    def has_f121 bool {
+      return (_flags3 & 268435456) != 0
+    }
+
+    def f121 int {
+      assert(has_f121)
+      return _f121
+    }
+
+    def f121=(value int) {
+      _f121 = value
+      _flags3 |= 268435456
+    }
+
+    def has_f122 bool {
+      return (_flags3 & 536870912) != 0
+    }
+
+    def f122 int {
+      assert(has_f122)
+      return _f122
+    }
+
+    def f122=(value int) {
+      _f122 = value
+      _flags3 |= 536870912
+    }
+
+    def has_f123 bool {
+      return (_flags3 & 1073741824) != 0
+    }
+
+    def f123 int {
+      assert(has_f123)
+      return _f123
+    }
+
+    def f123=(value int) {
+      _f123 = value
+      _flags3 |= 1073741824
+    }
+
+    def has_f124 bool {
+      return (_flags3 & 1) != 0
+    }
+
+    def f124 int {
+      assert(has_f124)
+      return _f124
+    }
+
+    def f124=(value int) {
+      _f124 = value
+      _flags3 |= 1
+    }
+
+    def has_f125 bool {
+      return (_flags3 & 2) != 0
+    }
+
+    def f125 int {
+      assert(has_f125)
+      return _f125
+    }
+
+    def f125=(value int) {
+      _f125 = value
+      _flags3 |= 2
+    }
+
+    def has_f126 bool {
+      return (_flags3 & 4) != 0
+    }
+
+    def f126 int {
+      assert(has_f126)
+      return _f126
+    }
+
+    def f126=(value int) {
+      _f126 = value
+      _flags3 |= 4
+    }
+
+    def has_f127 bool {
+      return (_flags3 & 8) != 0
+    }
+
+    def f127 int {
+      assert(has_f127)
+      return _f127
+    }
+
+    def f127=(value int) {
+      _f127 = value
+      _flags3 |= 8
+    }
+
+    def has_f128 bool {
+      return (_flags4 & 16) != 0
+    }
+
+    def f128 int {
+      assert(has_f128)
+      return _f128
+    }
+
+    def f128=(value int) {
+      _f128 = value
+      _flags4 |= 16
+    }
+
+    def has_f129 bool {
+      return (_flags4 & 32) != 0
+    }
+
+    def f129 int {
+      assert(has_f129)
+      return _f129
+    }
+
+    def f129=(value int) {
+      _f129 = value
+      _flags4 |= 32
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_f0 {
+        bb.writeVarUint(1)
+        bb.writeVarInt(_f0)
+      }
+
+      if has_f1 {
+        bb.writeVarUint(2)
+        bb.writeVarInt(_f1)
+      }
+
+      if has_f2 {
+        bb.writeVarUint(3)
+        bb.writeVarInt(_f2)
+      }
+
+      if has_f3 {
+        bb.writeVarUint(4)
+        bb.writeVarInt(_f3)
+      }
+
+      if has_f4 {
+        bb.writeVarUint(5)
+        bb.writeVarInt(_f4)
+      }
+
+      if has_f5 {
+        bb.writeVarUint(6)
+        bb.writeVarInt(_f5)
+      }
+
+      if has_f6 {
+        bb.writeVarUint(7)
+        bb.writeVarInt(_f6)
+      }
+
+      if has_f7 {
+        bb.writeVarUint(8)
+        bb.writeVarInt(_f7)
+      }
+
+      if has_f8 {
+        bb.writeVarUint(9)
+        bb.writeVarInt(_f8)
+      }
+
+      if has_f9 {
+        bb.writeVarUint(10)
+        bb.writeVarInt(_f9)
+      }
+
+      if has_f10 {
+        bb.writeVarUint(11)
+        bb.writeVarInt(_f10)
+      }
+
+      if has_f11 {
+        bb.writeVarUint(12)
+        bb.writeVarInt(_f11)
+      }
+
+      if has_f12 {
+        bb.writeVarUint(13)
+        bb.writeVarInt(_f12)
+      }
+
+      if has_f13 {
+        bb.writeVarUint(14)
+        bb.writeVarInt(_f13)
+      }
+
+      if has_f14 {
+        bb.writeVarUint(15)
+        bb.writeVarInt(_f14)
+      }
+
+      if has_f15 {
+        bb.writeVarUint(16)
+        bb.writeVarInt(_f15)
+      }
+
+      if has_f16 {
+        bb.writeVarUint(17)
+        bb.writeVarInt(_f16)
+      }
+
+      if has_f17 {
+        bb.writeVarUint(18)
+        bb.writeVarInt(_f17)
+      }
+
+      if has_f18 {
+        bb.writeVarUint(19)
+        bb.writeVarInt(_f18)
+      }
+
+      if has_f19 {
+        bb.writeVarUint(20)
+        bb.writeVarInt(_f19)
+      }
+
+      if has_f20 {
+        bb.writeVarUint(21)
+        bb.writeVarInt(_f20)
+      }
+
+      if has_f21 {
+        bb.writeVarUint(22)
+        bb.writeVarInt(_f21)
+      }
+
+      if has_f22 {
+        bb.writeVarUint(23)
+        bb.writeVarInt(_f22)
+      }
+
+      if has_f23 {
+        bb.writeVarUint(24)
+        bb.writeVarInt(_f23)
+      }
+
+      if has_f24 {
+        bb.writeVarUint(25)
+        bb.writeVarInt(_f24)
+      }
+
+      if has_f25 {
+        bb.writeVarUint(26)
+        bb.writeVarInt(_f25)
+      }
+
+      if has_f26 {
+        bb.writeVarUint(27)
+        bb.writeVarInt(_f26)
+      }
+
+      if has_f27 {
+        bb.writeVarUint(28)
+        bb.writeVarInt(_f27)
+      }
+
+      if has_f28 {
+        bb.writeVarUint(29)
+        bb.writeVarInt(_f28)
+      }
+
+      if has_f29 {
+        bb.writeVarUint(30)
+        bb.writeVarInt(_f29)
+      }
+
+      if has_f30 {
+        bb.writeVarUint(31)
+        bb.writeVarInt(_f30)
+      }
+
+      if has_f31 {
+        bb.writeVarUint(32)
+        bb.writeVarInt(_f31)
+      }
+
+      if has_f32 {
+        bb.writeVarUint(33)
+        bb.writeVarInt(_f32)
+      }
+
+      if has_f33 {
+        bb.writeVarUint(34)
+        bb.writeVarInt(_f33)
+      }
+
+      if has_f34 {
+        bb.writeVarUint(35)
+        bb.writeVarInt(_f34)
+      }
+
+      if has_f35 {
+        bb.writeVarUint(36)
+        bb.writeVarInt(_f35)
+      }
+
+      if has_f36 {
+        bb.writeVarUint(37)
+        bb.writeVarInt(_f36)
+      }
+
+      if has_f37 {
+        bb.writeVarUint(38)
+        bb.writeVarInt(_f37)
+      }
+
+      if has_f38 {
+        bb.writeVarUint(39)
+        bb.writeVarInt(_f38)
+      }
+
+      if has_f39 {
+        bb.writeVarUint(40)
+        bb.writeVarInt(_f39)
+      }
+
+      if has_f40 {
+        bb.writeVarUint(41)
+        bb.writeVarInt(_f40)
+      }
+
+      if has_f41 {
+        bb.writeVarUint(42)
+        bb.writeVarInt(_f41)
+      }
+
+      if has_f42 {
+        bb.writeVarUint(43)
+        bb.writeVarInt(_f42)
+      }
+
+      if has_f43 {
+        bb.writeVarUint(44)
+        bb.writeVarInt(_f43)
+      }
+
+      if has_f44 {
+        bb.writeVarUint(45)
+        bb.writeVarInt(_f44)
+      }
+
+      if has_f45 {
+        bb.writeVarUint(46)
+        bb.writeVarInt(_f45)
+      }
+
+      if has_f46 {
+        bb.writeVarUint(47)
+        bb.writeVarInt(_f46)
+      }
+
+      if has_f47 {
+        bb.writeVarUint(48)
+        bb.writeVarInt(_f47)
+      }
+
+      if has_f48 {
+        bb.writeVarUint(49)
+        bb.writeVarInt(_f48)
+      }
+
+      if has_f49 {
+        bb.writeVarUint(50)
+        bb.writeVarInt(_f49)
+      }
+
+      if has_f50 {
+        bb.writeVarUint(51)
+        bb.writeVarInt(_f50)
+      }
+
+      if has_f51 {
+        bb.writeVarUint(52)
+        bb.writeVarInt(_f51)
+      }
+
+      if has_f52 {
+        bb.writeVarUint(53)
+        bb.writeVarInt(_f52)
+      }
+
+      if has_f53 {
+        bb.writeVarUint(54)
+        bb.writeVarInt(_f53)
+      }
+
+      if has_f54 {
+        bb.writeVarUint(55)
+        bb.writeVarInt(_f54)
+      }
+
+      if has_f55 {
+        bb.writeVarUint(56)
+        bb.writeVarInt(_f55)
+      }
+
+      if has_f56 {
+        bb.writeVarUint(57)
+        bb.writeVarInt(_f56)
+      }
+
+      if has_f57 {
+        bb.writeVarUint(58)
+        bb.writeVarInt(_f57)
+      }
+
+      if has_f58 {
+        bb.writeVarUint(59)
+        bb.writeVarInt(_f58)
+      }
+
+      if has_f59 {
+        bb.writeVarUint(60)
+        bb.writeVarInt(_f59)
+      }
+
+      if has_f60 {
+        bb.writeVarUint(61)
+        bb.writeVarInt(_f60)
+      }
+
+      if has_f61 {
+        bb.writeVarUint(62)
+        bb.writeVarInt(_f61)
+      }
+
+      if has_f62 {
+        bb.writeVarUint(63)
+        bb.writeVarInt(_f62)
+      }
+
+      if has_f63 {
+        bb.writeVarUint(64)
+        bb.writeVarInt(_f63)
+      }
+
+      if has_f64 {
+        bb.writeVarUint(65)
+        bb.writeVarInt(_f64)
+      }
+
+      if has_f65 {
+        bb.writeVarUint(66)
+        bb.writeVarInt(_f65)
+      }
+
+      if has_f66 {
+        bb.writeVarUint(67)
+        bb.writeVarInt(_f66)
+      }
+
+      if has_f67 {
+        bb.writeVarUint(68)
+        bb.writeVarInt(_f67)
+      }
+
+      if has_f68 {
+        bb.writeVarUint(69)
+        bb.writeVarInt(_f68)
+      }
+
+      if has_f69 {
+        bb.writeVarUint(70)
+        bb.writeVarInt(_f69)
+      }
+
+      if has_f70 {
+        bb.writeVarUint(71)
+        bb.writeVarInt(_f70)
+      }
+
+      if has_f71 {
+        bb.writeVarUint(72)
+        bb.writeVarInt(_f71)
+      }
+
+      if has_f72 {
+        bb.writeVarUint(73)
+        bb.writeVarInt(_f72)
+      }
+
+      if has_f73 {
+        bb.writeVarUint(74)
+        bb.writeVarInt(_f73)
+      }
+
+      if has_f74 {
+        bb.writeVarUint(75)
+        bb.writeVarInt(_f74)
+      }
+
+      if has_f75 {
+        bb.writeVarUint(76)
+        bb.writeVarInt(_f75)
+      }
+
+      if has_f76 {
+        bb.writeVarUint(77)
+        bb.writeVarInt(_f76)
+      }
+
+      if has_f77 {
+        bb.writeVarUint(78)
+        bb.writeVarInt(_f77)
+      }
+
+      if has_f78 {
+        bb.writeVarUint(79)
+        bb.writeVarInt(_f78)
+      }
+
+      if has_f79 {
+        bb.writeVarUint(80)
+        bb.writeVarInt(_f79)
+      }
+
+      if has_f80 {
+        bb.writeVarUint(81)
+        bb.writeVarInt(_f80)
+      }
+
+      if has_f81 {
+        bb.writeVarUint(82)
+        bb.writeVarInt(_f81)
+      }
+
+      if has_f82 {
+        bb.writeVarUint(83)
+        bb.writeVarInt(_f82)
+      }
+
+      if has_f83 {
+        bb.writeVarUint(84)
+        bb.writeVarInt(_f83)
+      }
+
+      if has_f84 {
+        bb.writeVarUint(85)
+        bb.writeVarInt(_f84)
+      }
+
+      if has_f85 {
+        bb.writeVarUint(86)
+        bb.writeVarInt(_f85)
+      }
+
+      if has_f86 {
+        bb.writeVarUint(87)
+        bb.writeVarInt(_f86)
+      }
+
+      if has_f87 {
+        bb.writeVarUint(88)
+        bb.writeVarInt(_f87)
+      }
+
+      if has_f88 {
+        bb.writeVarUint(89)
+        bb.writeVarInt(_f88)
+      }
+
+      if has_f89 {
+        bb.writeVarUint(90)
+        bb.writeVarInt(_f89)
+      }
+
+      if has_f90 {
+        bb.writeVarUint(91)
+        bb.writeVarInt(_f90)
+      }
+
+      if has_f91 {
+        bb.writeVarUint(92)
+        bb.writeVarInt(_f91)
+      }
+
+      if has_f92 {
+        bb.writeVarUint(93)
+        bb.writeVarInt(_f92)
+      }
+
+      if has_f93 {
+        bb.writeVarUint(94)
+        bb.writeVarInt(_f93)
+      }
+
+      if has_f94 {
+        bb.writeVarUint(95)
+        bb.writeVarInt(_f94)
+      }
+
+      if has_f95 {
+        bb.writeVarUint(96)
+        bb.writeVarInt(_f95)
+      }
+
+      if has_f96 {
+        bb.writeVarUint(97)
+        bb.writeVarInt(_f96)
+      }
+
+      if has_f97 {
+        bb.writeVarUint(98)
+        bb.writeVarInt(_f97)
+      }
+
+      if has_f98 {
+        bb.writeVarUint(99)
+        bb.writeVarInt(_f98)
+      }
+
+      if has_f99 {
+        bb.writeVarUint(100)
+        bb.writeVarInt(_f99)
+      }
+
+      if has_f100 {
+        bb.writeVarUint(101)
+        bb.writeVarInt(_f100)
+      }
+
+      if has_f101 {
+        bb.writeVarUint(102)
+        bb.writeVarInt(_f101)
+      }
+
+      if has_f102 {
+        bb.writeVarUint(103)
+        bb.writeVarInt(_f102)
+      }
+
+      if has_f103 {
+        bb.writeVarUint(104)
+        bb.writeVarInt(_f103)
+      }
+
+      if has_f104 {
+        bb.writeVarUint(105)
+        bb.writeVarInt(_f104)
+      }
+
+      if has_f105 {
+        bb.writeVarUint(106)
+        bb.writeVarInt(_f105)
+      }
+
+      if has_f106 {
+        bb.writeVarUint(107)
+        bb.writeVarInt(_f106)
+      }
+
+      if has_f107 {
+        bb.writeVarUint(108)
+        bb.writeVarInt(_f107)
+      }
+
+      if has_f108 {
+        bb.writeVarUint(109)
+        bb.writeVarInt(_f108)
+      }
+
+      if has_f109 {
+        bb.writeVarUint(110)
+        bb.writeVarInt(_f109)
+      }
+
+      if has_f110 {
+        bb.writeVarUint(111)
+        bb.writeVarInt(_f110)
+      }
+
+      if has_f111 {
+        bb.writeVarUint(112)
+        bb.writeVarInt(_f111)
+      }
+
+      if has_f112 {
+        bb.writeVarUint(113)
+        bb.writeVarInt(_f112)
+      }
+
+      if has_f113 {
+        bb.writeVarUint(114)
+        bb.writeVarInt(_f113)
+      }
+
+      if has_f114 {
+        bb.writeVarUint(115)
+        bb.writeVarInt(_f114)
+      }
+
+      if has_f115 {
+        bb.writeVarUint(116)
+        bb.writeVarInt(_f115)
+      }
+
+      if has_f116 {
+        bb.writeVarUint(117)
+        bb.writeVarInt(_f116)
+      }
+
+      if has_f117 {
+        bb.writeVarUint(118)
+        bb.writeVarInt(_f117)
+      }
+
+      if has_f118 {
+        bb.writeVarUint(119)
+        bb.writeVarInt(_f118)
+      }
+
+      if has_f119 {
+        bb.writeVarUint(120)
+        bb.writeVarInt(_f119)
+      }
+
+      if has_f120 {
+        bb.writeVarUint(121)
+        bb.writeVarInt(_f120)
+      }
+
+      if has_f121 {
+        bb.writeVarUint(122)
+        bb.writeVarInt(_f121)
+      }
+
+      if has_f122 {
+        bb.writeVarUint(123)
+        bb.writeVarInt(_f122)
+      }
+
+      if has_f123 {
+        bb.writeVarUint(124)
+        bb.writeVarInt(_f123)
+      }
+
+      if has_f124 {
+        bb.writeVarUint(125)
+        bb.writeVarInt(_f124)
+      }
+
+      if has_f125 {
+        bb.writeVarUint(126)
+        bb.writeVarInt(_f125)
+      }
+
+      if has_f126 {
+        bb.writeVarUint(127)
+        bb.writeVarInt(_f126)
+      }
+
+      if has_f127 {
+        bb.writeVarUint(128)
+        bb.writeVarInt(_f127)
+      }
+
+      if has_f128 {
+        bb.writeVarUint(129)
+        bb.writeVarInt(_f128)
+      }
+
+      if has_f129 {
+        bb.writeVarUint(130)
+        bb.writeVarInt(_f129)
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace Message {
+    def decode(bytes Uint8Array) Message {
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
+    }
+
+    def decode(bytes Uint8Array, schema BinarySchema) Message {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) Message {
+      var self = new
+      while true {
+        var type = bb.readVarUint
+        switch type {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            self.f0 = bb.readVarInt
+          }
+
+          case 2 {
+            self.f1 = bb.readVarInt
+          }
+
+          case 3 {
+            self.f2 = bb.readVarInt
+          }
+
+          case 4 {
+            self.f3 = bb.readVarInt
+          }
+
+          case 5 {
+            self.f4 = bb.readVarInt
+          }
+
+          case 6 {
+            self.f5 = bb.readVarInt
+          }
+
+          case 7 {
+            self.f6 = bb.readVarInt
+          }
+
+          case 8 {
+            self.f7 = bb.readVarInt
+          }
+
+          case 9 {
+            self.f8 = bb.readVarInt
+          }
+
+          case 10 {
+            self.f9 = bb.readVarInt
+          }
+
+          case 11 {
+            self.f10 = bb.readVarInt
+          }
+
+          case 12 {
+            self.f11 = bb.readVarInt
+          }
+
+          case 13 {
+            self.f12 = bb.readVarInt
+          }
+
+          case 14 {
+            self.f13 = bb.readVarInt
+          }
+
+          case 15 {
+            self.f14 = bb.readVarInt
+          }
+
+          case 16 {
+            self.f15 = bb.readVarInt
+          }
+
+          case 17 {
+            self.f16 = bb.readVarInt
+          }
+
+          case 18 {
+            self.f17 = bb.readVarInt
+          }
+
+          case 19 {
+            self.f18 = bb.readVarInt
+          }
+
+          case 20 {
+            self.f19 = bb.readVarInt
+          }
+
+          case 21 {
+            self.f20 = bb.readVarInt
+          }
+
+          case 22 {
+            self.f21 = bb.readVarInt
+          }
+
+          case 23 {
+            self.f22 = bb.readVarInt
+          }
+
+          case 24 {
+            self.f23 = bb.readVarInt
+          }
+
+          case 25 {
+            self.f24 = bb.readVarInt
+          }
+
+          case 26 {
+            self.f25 = bb.readVarInt
+          }
+
+          case 27 {
+            self.f26 = bb.readVarInt
+          }
+
+          case 28 {
+            self.f27 = bb.readVarInt
+          }
+
+          case 29 {
+            self.f28 = bb.readVarInt
+          }
+
+          case 30 {
+            self.f29 = bb.readVarInt
+          }
+
+          case 31 {
+            self.f30 = bb.readVarInt
+          }
+
+          case 32 {
+            self.f31 = bb.readVarInt
+          }
+
+          case 33 {
+            self.f32 = bb.readVarInt
+          }
+
+          case 34 {
+            self.f33 = bb.readVarInt
+          }
+
+          case 35 {
+            self.f34 = bb.readVarInt
+          }
+
+          case 36 {
+            self.f35 = bb.readVarInt
+          }
+
+          case 37 {
+            self.f36 = bb.readVarInt
+          }
+
+          case 38 {
+            self.f37 = bb.readVarInt
+          }
+
+          case 39 {
+            self.f38 = bb.readVarInt
+          }
+
+          case 40 {
+            self.f39 = bb.readVarInt
+          }
+
+          case 41 {
+            self.f40 = bb.readVarInt
+          }
+
+          case 42 {
+            self.f41 = bb.readVarInt
+          }
+
+          case 43 {
+            self.f42 = bb.readVarInt
+          }
+
+          case 44 {
+            self.f43 = bb.readVarInt
+          }
+
+          case 45 {
+            self.f44 = bb.readVarInt
+          }
+
+          case 46 {
+            self.f45 = bb.readVarInt
+          }
+
+          case 47 {
+            self.f46 = bb.readVarInt
+          }
+
+          case 48 {
+            self.f47 = bb.readVarInt
+          }
+
+          case 49 {
+            self.f48 = bb.readVarInt
+          }
+
+          case 50 {
+            self.f49 = bb.readVarInt
+          }
+
+          case 51 {
+            self.f50 = bb.readVarInt
+          }
+
+          case 52 {
+            self.f51 = bb.readVarInt
+          }
+
+          case 53 {
+            self.f52 = bb.readVarInt
+          }
+
+          case 54 {
+            self.f53 = bb.readVarInt
+          }
+
+          case 55 {
+            self.f54 = bb.readVarInt
+          }
+
+          case 56 {
+            self.f55 = bb.readVarInt
+          }
+
+          case 57 {
+            self.f56 = bb.readVarInt
+          }
+
+          case 58 {
+            self.f57 = bb.readVarInt
+          }
+
+          case 59 {
+            self.f58 = bb.readVarInt
+          }
+
+          case 60 {
+            self.f59 = bb.readVarInt
+          }
+
+          case 61 {
+            self.f60 = bb.readVarInt
+          }
+
+          case 62 {
+            self.f61 = bb.readVarInt
+          }
+
+          case 63 {
+            self.f62 = bb.readVarInt
+          }
+
+          case 64 {
+            self.f63 = bb.readVarInt
+          }
+
+          case 65 {
+            self.f64 = bb.readVarInt
+          }
+
+          case 66 {
+            self.f65 = bb.readVarInt
+          }
+
+          case 67 {
+            self.f66 = bb.readVarInt
+          }
+
+          case 68 {
+            self.f67 = bb.readVarInt
+          }
+
+          case 69 {
+            self.f68 = bb.readVarInt
+          }
+
+          case 70 {
+            self.f69 = bb.readVarInt
+          }
+
+          case 71 {
+            self.f70 = bb.readVarInt
+          }
+
+          case 72 {
+            self.f71 = bb.readVarInt
+          }
+
+          case 73 {
+            self.f72 = bb.readVarInt
+          }
+
+          case 74 {
+            self.f73 = bb.readVarInt
+          }
+
+          case 75 {
+            self.f74 = bb.readVarInt
+          }
+
+          case 76 {
+            self.f75 = bb.readVarInt
+          }
+
+          case 77 {
+            self.f76 = bb.readVarInt
+          }
+
+          case 78 {
+            self.f77 = bb.readVarInt
+          }
+
+          case 79 {
+            self.f78 = bb.readVarInt
+          }
+
+          case 80 {
+            self.f79 = bb.readVarInt
+          }
+
+          case 81 {
+            self.f80 = bb.readVarInt
+          }
+
+          case 82 {
+            self.f81 = bb.readVarInt
+          }
+
+          case 83 {
+            self.f82 = bb.readVarInt
+          }
+
+          case 84 {
+            self.f83 = bb.readVarInt
+          }
+
+          case 85 {
+            self.f84 = bb.readVarInt
+          }
+
+          case 86 {
+            self.f85 = bb.readVarInt
+          }
+
+          case 87 {
+            self.f86 = bb.readVarInt
+          }
+
+          case 88 {
+            self.f87 = bb.readVarInt
+          }
+
+          case 89 {
+            self.f88 = bb.readVarInt
+          }
+
+          case 90 {
+            self.f89 = bb.readVarInt
+          }
+
+          case 91 {
+            self.f90 = bb.readVarInt
+          }
+
+          case 92 {
+            self.f91 = bb.readVarInt
+          }
+
+          case 93 {
+            self.f92 = bb.readVarInt
+          }
+
+          case 94 {
+            self.f93 = bb.readVarInt
+          }
+
+          case 95 {
+            self.f94 = bb.readVarInt
+          }
+
+          case 96 {
+            self.f95 = bb.readVarInt
+          }
+
+          case 97 {
+            self.f96 = bb.readVarInt
+          }
+
+          case 98 {
+            self.f97 = bb.readVarInt
+          }
+
+          case 99 {
+            self.f98 = bb.readVarInt
+          }
+
+          case 100 {
+            self.f99 = bb.readVarInt
+          }
+
+          case 101 {
+            self.f100 = bb.readVarInt
+          }
+
+          case 102 {
+            self.f101 = bb.readVarInt
+          }
+
+          case 103 {
+            self.f102 = bb.readVarInt
+          }
+
+          case 104 {
+            self.f103 = bb.readVarInt
+          }
+
+          case 105 {
+            self.f104 = bb.readVarInt
+          }
+
+          case 106 {
+            self.f105 = bb.readVarInt
+          }
+
+          case 107 {
+            self.f106 = bb.readVarInt
+          }
+
+          case 108 {
+            self.f107 = bb.readVarInt
+          }
+
+          case 109 {
+            self.f108 = bb.readVarInt
+          }
+
+          case 110 {
+            self.f109 = bb.readVarInt
+          }
+
+          case 111 {
+            self.f110 = bb.readVarInt
+          }
+
+          case 112 {
+            self.f111 = bb.readVarInt
+          }
+
+          case 113 {
+            self.f112 = bb.readVarInt
+          }
+
+          case 114 {
+            self.f113 = bb.readVarInt
+          }
+
+          case 115 {
+            self.f114 = bb.readVarInt
+          }
+
+          case 116 {
+            self.f115 = bb.readVarInt
+          }
+
+          case 117 {
+            self.f116 = bb.readVarInt
+          }
+
+          case 118 {
+            self.f117 = bb.readVarInt
+          }
+
+          case 119 {
+            self.f118 = bb.readVarInt
+          }
+
+          case 120 {
+            self.f119 = bb.readVarInt
+          }
+
+          case 121 {
+            self.f120 = bb.readVarInt
+          }
+
+          case 122 {
+            self.f121 = bb.readVarInt
+          }
+
+          case 123 {
+            self.f122 = bb.readVarInt
+          }
+
+          case 124 {
+            self.f123 = bb.readVarInt
+          }
+
+          case 125 {
+            self.f124 = bb.readVarInt
+          }
+
+          case 126 {
+            self.f125 = bb.readVarInt
+          }
+
+          case 127 {
+            self.f126 = bb.readVarInt
+          }
+
+          case 128 {
+            self.f127 = bb.readVarInt
+          }
+
+          case 129 {
+            self.f128 = bb.readVarInt
+          }
+
+          case 130 {
+            self.f129 = bb.readVarInt
+          }
+
+          default {
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipMessageField(bb, type) }
+          }
+        }
+      }
+      return self
+    }
+  }
+}

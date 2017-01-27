@@ -262,3 +262,22 @@ it('binary schema', function() {
   check({a: 1, b: {}, c: 4});
   check({a: 1, b: {x: 2, y: 3}, c: 4});
 });
+
+var largeSchemaText = fs.readFileSync(__dirname + '/test-schema-large.kiwi', 'utf8');
+var largeSchema = kiwi.compileSchema(largeSchemaText);
+
+it('struct with many fields', function() {
+  var object = {};
+  for (var i = 0; i < 130; i++) object['f' + i] = i;
+
+  var encoded = largeSchema.encodeStruct(object);
+  assert.deepEqual(object, largeSchema.decodeStruct(encoded));
+});
+
+it('message with many fields', function() {
+  var object = {};
+  for (var i = 0; i < 130; i++) object['f' + i] = i;
+
+  var encoded = largeSchema.encodeMessage(object);
+  assert.deepEqual(object, largeSchema.decodeMessage(encoded));
+});

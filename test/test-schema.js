@@ -269,7 +269,7 @@ test["decodeBoolMessage"] = function(bb) {
   }
 
   while (true) {
-    switch (bb.readByte()) {
+    switch (bb.readVarUint()) {
     case 0:
       return result;
 
@@ -304,7 +304,7 @@ test["decodeByteMessage"] = function(bb) {
   }
 
   while (true) {
-    switch (bb.readByte()) {
+    switch (bb.readVarUint()) {
     case 0:
       return result;
 
@@ -339,7 +339,7 @@ test["decodeIntMessage"] = function(bb) {
   }
 
   while (true) {
-    switch (bb.readByte()) {
+    switch (bb.readVarUint()) {
     case 0:
       return result;
 
@@ -374,7 +374,7 @@ test["decodeUintMessage"] = function(bb) {
   }
 
   while (true) {
-    switch (bb.readByte()) {
+    switch (bb.readVarUint()) {
     case 0:
       return result;
 
@@ -409,7 +409,7 @@ test["decodeFloatMessage"] = function(bb) {
   }
 
   while (true) {
-    switch (bb.readByte()) {
+    switch (bb.readVarUint()) {
     case 0:
       return result;
 
@@ -444,7 +444,7 @@ test["decodeStringMessage"] = function(bb) {
   }
 
   while (true) {
-    switch (bb.readByte()) {
+    switch (bb.readVarUint()) {
     case 0:
       return result;
 
@@ -479,7 +479,7 @@ test["decodeCompoundMessage"] = function(bb) {
   }
 
   while (true) {
-    switch (bb.readByte()) {
+    switch (bb.readVarUint()) {
     case 0:
       return result;
 
@@ -524,7 +524,7 @@ test["decodeNestedMessage"] = function(bb) {
   }
 
   while (true) {
-    switch (bb.readByte()) {
+    switch (bb.readVarUint()) {
     case 0:
       return result;
 
@@ -811,7 +811,7 @@ test["decodeBoolArrayMessage"] = function(bb) {
   }
 
   while (true) {
-    switch (bb.readByte()) {
+    switch (bb.readVarUint()) {
     case 0:
       return result;
 
@@ -853,7 +853,7 @@ test["decodeByteArrayMessage"] = function(bb) {
   }
 
   while (true) {
-    switch (bb.readByte()) {
+    switch (bb.readVarUint()) {
     case 0:
       return result;
 
@@ -895,7 +895,7 @@ test["decodeIntArrayMessage"] = function(bb) {
   }
 
   while (true) {
-    switch (bb.readByte()) {
+    switch (bb.readVarUint()) {
     case 0:
       return result;
 
@@ -937,7 +937,7 @@ test["decodeUintArrayMessage"] = function(bb) {
   }
 
   while (true) {
-    switch (bb.readByte()) {
+    switch (bb.readVarUint()) {
     case 0:
       return result;
 
@@ -979,7 +979,7 @@ test["decodeFloatArrayMessage"] = function(bb) {
   }
 
   while (true) {
-    switch (bb.readByte()) {
+    switch (bb.readVarUint()) {
     case 0:
       return result;
 
@@ -1021,7 +1021,7 @@ test["decodeStringArrayMessage"] = function(bb) {
   }
 
   while (true) {
-    switch (bb.readByte()) {
+    switch (bb.readVarUint()) {
     case 0:
       return result;
 
@@ -1063,7 +1063,7 @@ test["decodeCompoundArrayMessage"] = function(bb) {
   }
 
   while (true) {
-    switch (bb.readByte()) {
+    switch (bb.readVarUint()) {
     case 0:
       return result;
 
@@ -1122,7 +1122,7 @@ test["decodeRecursiveMessage"] = function(bb) {
   }
 
   while (true) {
-    switch (bb.readByte()) {
+    switch (bb.readVarUint()) {
     case 0:
       return result;
 

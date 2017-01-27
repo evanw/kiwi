@@ -1,0 +1,33 @@
+package test_large;
+
+struct Struct {
+  int f0;   int f1;   int f2;   int f3;   int f4;   int f5;   int f6;   int f7;   int f8;   int f9;
+  int f10;  int f11;  int f12;  int f13;  int f14;  int f15;  int f16;  int f17;  int f18;  int f19;
+  int f20;  int f21;  int f22;  int f23;  int f24;  int f25;  int f26;  int f27;  int f28;  int f29;
+  int f30;  int f31;  int f32;  int f33;  int f34;  int f35;  int f36;  int f37;  int f38;  int f39;
+  int f40;  int f41;  int f42;  int f43;  int f44;  int f45;  int f46;  int f47;  int f48;  int f49;
+  int f50;  int f51;  int f52;  int f53;  int f54;  int f55;  int f56;  int f57;  int f58;  int f59;
+  int f60;  int f61;  int f62;  int f63;  int f64;  int f65;  int f66;  int f67;  int f68;  int f69;
+  int f70;  int f71;  int f72;  int f73;  int f74;  int f75;  int f76;  int f77;  int f78;  int f79;
+  int f80;  int f81;  int f82;  int f83;  int f84;  int f85;  int f86;  int f87;  int f88;  int f89;
+  int f90;  int f91;  int f92;  int f93;  int f94;  int f95;  int f96;  int f97;  int f98;  int f99;
+  int f100; int f101; int f102; int f103; int f104; int f105; int f106; int f107; int f108; int f109;
+  int f110; int f111; int f112; int f113; int f114; int f115; int f116; int f117; int f118; int f119;
+  int f120; int f121; int f122; int f123; int f124; int f125; int f126; int f127; int f128; int f129;
+}
+
+message Message {
+  int f0 = 1;     int f1 = 2;     int f2 = 3;     int f3 = 4;     int f4 = 5;     int f5 = 6;     int f6 = 7;     int f7 = 8;     int f8 = 9;     int f9 = 10;
+  int f10 = 11;   int f11 = 12;   int f12 = 13;   int f13 = 14;   int f14 = 15;   int f15 = 16;   int f16 = 17;   int f17 = 18;   int f18 = 19;   int f19 = 20;
+  int f20 = 21;   int f21 = 22;   int f22 = 23;   int f23 = 24;   int f24 = 25;   int f25 = 26;   int f26 = 27;   int f27 = 28;   int f28 = 29;   int f29 = 30;
+  int f30 = 31;   int f31 = 32;   int f32 = 33;   int f33 = 34;   int f34 = 35;   int f35 = 36;   int f36 = 37;   int f37 = 38;   int f38 = 39;   int f39 = 40;
+  int f40 = 41;   int f41 = 42;   int f42 = 43;   int f43 = 44;   int f44 = 45;   int f45 = 46;   int f46 = 47;   int f47 = 48;   int f48 = 49;   int f49 = 50;
+  int f50 = 51;   int f51 = 52;   int f52 = 53;   int f53 = 54;   int f54 = 55;   int f55 = 56;   int f56 = 57;   int f57 = 58;   int f58 = 59;   int f59 = 60;
+  int f60 = 61;   int f61 = 62;   int f62 = 63;   int f63 = 64;   int f64 = 65;   int f65 = 66;   int f66 = 67;   int f67 = 68;   int f68 = 69;   int f69 = 70;
+  int f70 = 71;   int f71 = 72;   int f72 = 73;   int f73 = 74;   int f74 = 75;   int f75 = 76;   int f76 = 77;   int f77 = 78;   int f78 = 79;   int f79 = 80;
+  int f80 = 81;   int f81 = 82;   int f82 = 83;   int f83 = 84;   int f84 = 85;   int f85 = 86;   int f86 = 87;   int f87 = 88;   int f88 = 89;   int f89 = 90;
+  int f90 = 91;   int f91 = 92;   int f92 = 93;   int f93 = 94;   int f94 = 95;   int f95 = 96;   int f96 = 97;   int f97 = 98;   int f98 = 99;   int f99 = 100;
+  int f100 = 101; int f101 = 102; int f102 = 103; int f103 = 104; int f104 = 105; int f105 = 106; int f106 = 107; int f107 = 108; int f108 = 109; int f109 = 110;
+  int f110 = 111; int f111 = 112; int f112 = 113; int f113 = 114; int f114 = 115; int f115 = 116; int f116 = 117; int f117 = 118; int f118 = 119; int f119 = 120;
+  int f120 = 121; int f121 = 122; int f122 = 123; int f123 = 124; int f124 = 125; int f125 = 126; int f126 = 127; int f127 = 128; int f128 = 129; int f129 = 130;
+}

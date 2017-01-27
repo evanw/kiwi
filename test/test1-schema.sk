@@ -144,7 +144,7 @@ namespace test1 {
     def decode(bb Kiwi.ByteBuffer, schema BinarySchema) Message {
       var self = new
       while true {
-        var type = bb.readByte
+        var type = bb.readVarUint
         switch type {
           case 0 {
             break

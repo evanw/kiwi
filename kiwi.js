@@ -629,7 +629,7 @@ var kiwi = exports || kiwi || {}, exports;
 
     if (definition.kind === 'MESSAGE') {
       lines.push('  while (true) {');
-      lines.push('    switch (bb.readByte()) {');
+      lines.push('    switch (bb.readVarUint()) {');
       lines.push('    case 0:');
       lines.push('      return result;');
       lines.push('');
@@ -1699,7 +1699,7 @@ var kiwi = exports || kiwi || {}, exports;
 
           if (definition.kind === 'MESSAGE') {
             lines.push(indent + '    while true {');
-            lines.push(indent + '      var type = bb.readByte');
+            lines.push(indent + '      var type = bb.readVarUint');
             lines.push(indent + '      switch type {');
             lines.push(indent + '        case 0 {');
             lines.push(indent + '          break');

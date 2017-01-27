@@ -675,7 +675,7 @@ namespace test {
     def decode(bb Kiwi.ByteBuffer, schema BinarySchema) BoolMessage {
       var self = new
       while true {
-        var type = bb.readByte
+        var type = bb.readVarUint
         switch type {
           case 0 {
             break
@@ -741,7 +741,7 @@ namespace test {
     def decode(bb Kiwi.ByteBuffer, schema BinarySchema) ByteMessage {
       var self = new
       while true {
-        var type = bb.readByte
+        var type = bb.readVarUint
         switch type {
           case 0 {
             break
@@ -807,7 +807,7 @@ namespace test {
     def decode(bb Kiwi.ByteBuffer, schema BinarySchema) IntMessage {
       var self = new
       while true {
-        var type = bb.readByte
+        var type = bb.readVarUint
         switch type {
           case 0 {
             break
@@ -873,7 +873,7 @@ namespace test {
     def decode(bb Kiwi.ByteBuffer, schema BinarySchema) UintMessage {
       var self = new
       while true {
-        var type = bb.readByte
+        var type = bb.readVarUint
         switch type {
           case 0 {
             break
@@ -939,7 +939,7 @@ namespace test {
     def decode(bb Kiwi.ByteBuffer, schema BinarySchema) FloatMessage {
       var self = new
       while true {
-        var type = bb.readByte
+        var type = bb.readVarUint
         switch type {
           case 0 {
             break
@@ -1005,7 +1005,7 @@ namespace test {
     def decode(bb Kiwi.ByteBuffer, schema BinarySchema) StringMessage {
       var self = new
       while true {
-        var type = bb.readByte
+        var type = bb.readVarUint
         switch type {
           case 0 {
             break
@@ -1091,7 +1091,7 @@ namespace test {
     def decode(bb Kiwi.ByteBuffer, schema BinarySchema) CompoundMessage {
       var self = new
       while true {
-        var type = bb.readByte
+        var type = bb.readVarUint
         switch type {
           case 0 {
             break
@@ -1201,7 +1201,7 @@ namespace test {
     def decode(bb Kiwi.ByteBuffer, schema BinarySchema) NestedMessage {
       var self = new
       while true {
-        var type = bb.readByte
+        var type = bb.readVarUint
         switch type {
           case 0 {
             break
@@ -1683,7 +1683,7 @@ namespace test {
       var self = new
       var count = 0
       while true {
-        var type = bb.readByte
+        var type = bb.readVarUint
         switch type {
           case 0 {
             break
@@ -1757,7 +1757,7 @@ namespace test {
       var self = new
       var count = 0
       while true {
-        var type = bb.readByte
+        var type = bb.readVarUint
         switch type {
           case 0 {
             break
@@ -1831,7 +1831,7 @@ namespace test {
       var self = new
       var count = 0
       while true {
-        var type = bb.readByte
+        var type = bb.readVarUint
         switch type {
           case 0 {
             break
@@ -1905,7 +1905,7 @@ namespace test {
       var self = new
       var count = 0
       while true {
-        var type = bb.readByte
+        var type = bb.readVarUint
         switch type {
           case 0 {
             break
@@ -1979,7 +1979,7 @@ namespace test {
       var self = new
       var count = 0
       while true {
-        var type = bb.readByte
+        var type = bb.readVarUint
         switch type {
           case 0 {
             break
@@ -2053,7 +2053,7 @@ namespace test {
       var self = new
       var count = 0
       while true {
-        var type = bb.readByte
+        var type = bb.readVarUint
         switch type {
           case 0 {
             break
@@ -2150,7 +2150,7 @@ namespace test {
       var self = new
       var count = 0
       while true {
-        var type = bb.readByte
+        var type = bb.readVarUint
         switch type {
           case 0 {
             break
@@ -2228,7 +2228,7 @@ namespace test {
     def decode(bb Kiwi.ByteBuffer, schema BinarySchema) RecursiveMessage {
       var self = new
       while true {
-        var type = bb.readByte
+        var type = bb.readVarUint
         switch type {
           case 0 {
             break

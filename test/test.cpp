@@ -6,6 +6,7 @@
 #include "test-schema.h"
 #include "test1-schema.h"
 #include "test2-schema.h"
+#include "test-schema-large.h"
 #include <stdio.h>
 #include <vector>
 
@@ -582,6 +583,85 @@ static void testBinarySchema() {
   check2(bytes2, &test2_schema2, bytes2);
 }
 
+#define SET_10(n0, n1, n2, n3, n4, n5, n6, n7, n8, n9)  \
+  x.set_f ## n0(n0); \
+  x.set_f ## n1(n1); \
+  x.set_f ## n2(n2); \
+  x.set_f ## n3(n3); \
+  x.set_f ## n4(n4); \
+  x.set_f ## n5(n5); \
+  x.set_f ## n6(n6); \
+  x.set_f ## n7(n7); \
+  x.set_f ## n8(n8); \
+  x.set_f ## n9(n9);
+
+#define GET_10(n0, n1, n2, n3, n4, n5, n6, n7, n8, n9)  \
+  ptr = x.f ## n0(); assert(ptr && *ptr == n0); \
+  ptr = x.f ## n1(); assert(ptr && *ptr == n1); \
+  ptr = x.f ## n2(); assert(ptr && *ptr == n2); \
+  ptr = x.f ## n3(); assert(ptr && *ptr == n3); \
+  ptr = x.f ## n4(); assert(ptr && *ptr == n4); \
+  ptr = x.f ## n5(); assert(ptr && *ptr == n5); \
+  ptr = x.f ## n6(); assert(ptr && *ptr == n6); \
+  ptr = x.f ## n7(); assert(ptr && *ptr == n7); \
+  ptr = x.f ## n8(); assert(ptr && *ptr == n8); \
+  ptr = x.f ## n9(); assert(ptr && *ptr == n9);
+
+#define REPEAT(OP) \
+  OP ## _10(0, 1, 2, 3, 4, 5, 6, 7, 8, 9); \
+  OP ## _10(10, 11, 12, 13, 14, 15, 16, 17, 18, 19); \
+  OP ## _10(20, 21, 22, 23, 24, 25, 26, 27, 28, 29); \
+  OP ## _10(30, 31, 32, 33, 34, 35, 36, 37, 38, 39); \
+  OP ## _10(40, 41, 42, 43, 44, 45, 46, 47, 48, 49); \
+  OP ## _10(50, 51, 52, 53, 54, 55, 56, 57, 58, 59); \
+  OP ## _10(60, 61, 62, 63, 64, 65, 66, 67, 68, 69); \
+  OP ## _10(70, 71, 72, 73, 74, 75, 76, 77, 78, 79); \
+  OP ## _10(80, 81, 82, 83, 84, 85, 86, 87, 88, 89); \
+  OP ## _10(90, 91, 92, 93, 94, 95, 96, 97, 98, 99); \
+  OP ## _10(100, 101, 102, 103, 104, 105, 106, 107, 108, 109); \
+  OP ## _10(110, 111, 112, 113, 114, 115, 116, 117, 118, 119); \
+  OP ## _10(120, 121, 122, 123, 124, 125, 126, 127, 128, 129); \
+
+static void testLargeStruct() {
+  puts("testLargeStruct");
+
+  test_large::Struct x;
+
+  REPEAT(SET)
+
+  kiwi::ByteBuffer bb;
+  kiwi::MemoryPool pool;
+  test_large::Struct x2;
+  int *ptr;
+
+  assert(x.encode(bb));
+  assert(x2.decode(bb, pool));
+
+  REPEAT(GET)
+}
+
+static void testLargeMessage() {
+  puts("testLargeMessage");
+
+  test_large::Message x;
+
+  REPEAT(SET)
+
+  kiwi::ByteBuffer bb;
+  kiwi::MemoryPool pool;
+  test_large::Message x2;
+  int *ptr;
+
+  assert(x.encode(bb));
+  assert(x2.decode(bb, pool));
+
+  REPEAT(GET)
+}
+
+#undef SET
+#undef GET
+#undef REPEAT
+
 int main() {
   testStructBool();
   testStructByte();
@@ -603,6 +683,9 @@ int main() {
 
   testRecursiveMessage();
   testBinarySchema();
+
+  testLargeStruct();
+  testLargeMessage();
 
   puts("all tests passed");
   return 0;
