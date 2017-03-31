@@ -21,6 +21,8 @@ class Message2;
 
 class Struct {
 public:
+  Struct() { (void)_flags; }
+
   float *a();
   const float *a() const;
   void set_a(const float &value);
@@ -40,6 +42,8 @@ private:
 
 class Message {
 public:
+  Message() { (void)_flags; }
+
   int32_t *x();
   const int32_t *x() const;
   void set_x(const int32_t &value);
@@ -74,6 +78,8 @@ private:
 
 class Struct2 {
 public:
+  Struct2() { (void)_flags; }
+
   bool *u();
   const bool *u() const;
   void set_u(const bool &value);
@@ -93,6 +99,8 @@ private:
 
 class Message2 {
 public:
+  Message2() { (void)_flags; }
+
   kiwi::String *e();
   const kiwi::String *e() const;
   void set_e(const kiwi::String &value);

@@ -1047,6 +1047,10 @@ var kiwi = exports || kiwi || {}, exports;
           cpp.push('class ' + definition.name + ' {');
           cpp.push('public:');
 
+          // This may not actually be used, so silence warnings about "Private fields '_flags' is not used"
+          cpp.push('  ' + definition.name + '() { (void)_flags; }');
+          cpp.push('');
+
           for (var j = 0; j < fields.length; j++) {
             var field = fields[j];
             var name = cppFieldName(field);

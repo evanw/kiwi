@@ -17,6 +17,8 @@ class Message;
 
 class Struct {
 public:
+  Struct() { (void)_flags; }
+
   float *a();
   const float *a() const;
   void set_a(const float &value);
@@ -36,6 +38,8 @@ private:
 
 class Message {
 public:
+  Message() { (void)_flags; }
+
   int32_t *x();
   const int32_t *x() const;
   void set_x(const int32_t &value);

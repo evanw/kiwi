@@ -82,6 +82,8 @@ class RecursiveMessage;
 
 class EnumStruct {
 public:
+  EnumStruct() { (void)_flags; }
+
   Enum *x();
   const Enum *x() const;
   void set_x(const Enum &value);
@@ -101,6 +103,8 @@ private:
 
 class BoolStruct {
 public:
+  BoolStruct() { (void)_flags; }
+
   bool *x();
   const bool *x() const;
   void set_x(const bool &value);
@@ -115,6 +119,8 @@ private:
 
 class ByteStruct {
 public:
+  ByteStruct() { (void)_flags; }
+
   uint8_t *x();
   const uint8_t *x() const;
   void set_x(const uint8_t &value);
@@ -129,6 +135,8 @@ private:
 
 class IntStruct {
 public:
+  IntStruct() { (void)_flags; }
+
   int32_t *x();
   const int32_t *x() const;
   void set_x(const int32_t &value);
@@ -143,6 +151,8 @@ private:
 
 class UintStruct {
 public:
+  UintStruct() { (void)_flags; }
+
   uint32_t *x();
   const uint32_t *x() const;
   void set_x(const uint32_t &value);
@@ -157,6 +167,8 @@ private:
 
 class FloatStruct {
 public:
+  FloatStruct() { (void)_flags; }
+
   float *x();
   const float *x() const;
   void set_x(const float &value);
@@ -171,6 +183,8 @@ private:
 
 class StringStruct {
 public:
+  StringStruct() { (void)_flags; }
+
   kiwi::String *x();
   const kiwi::String *x() const;
   void set_x(const kiwi::String &value);
@@ -185,6 +199,8 @@ private:
 
 class CompoundStruct {
 public:
+  CompoundStruct() { (void)_flags; }
+
   uint32_t *x();
   const uint32_t *x() const;
   void set_x(const uint32_t &value);
@@ -204,6 +220,8 @@ private:
 
 class NestedStruct {
 public:
+  NestedStruct() { (void)_flags; }
+
   uint32_t *a();
   const uint32_t *a() const;
   void set_a(const uint32_t &value);
@@ -228,6 +246,8 @@ private:
 
 class BoolMessage {
 public:
+  BoolMessage() { (void)_flags; }
+
   bool *x();
   const bool *x() const;
   void set_x(const bool &value);
@@ -242,6 +262,8 @@ private:
 
 class ByteMessage {
 public:
+  ByteMessage() { (void)_flags; }
+
   uint8_t *x();
   const uint8_t *x() const;
   void set_x(const uint8_t &value);
@@ -256,6 +278,8 @@ private:
 
 class IntMessage {
 public:
+  IntMessage() { (void)_flags; }
+
   int32_t *x();
   const int32_t *x() const;
   void set_x(const int32_t &value);
@@ -270,6 +294,8 @@ private:
 
 class UintMessage {
 public:
+  UintMessage() { (void)_flags; }
+
   uint32_t *x();
   const uint32_t *x() const;
   void set_x(const uint32_t &value);
@@ -284,6 +310,8 @@ private:
 
 class FloatMessage {
 public:
+  FloatMessage() { (void)_flags; }
+
   float *x();
   const float *x() const;
   void set_x(const float &value);
@@ -298,6 +326,8 @@ private:
 
 class StringMessage {
 public:
+  StringMessage() { (void)_flags; }
+
   kiwi::String *x();
   const kiwi::String *x() const;
   void set_x(const kiwi::String &value);
@@ -312,6 +342,8 @@ private:
 
 class CompoundMessage {
 public:
+  CompoundMessage() { (void)_flags; }
+
   uint32_t *x();
   const uint32_t *x() const;
   void set_x(const uint32_t &value);
@@ -331,6 +363,8 @@ private:
 
 class NestedMessage {
 public:
+  NestedMessage() { (void)_flags; }
+
   uint32_t *a();
   const uint32_t *a() const;
   void set_a(const uint32_t &value);
@@ -355,6 +389,8 @@ private:
 
 class BoolArrayStruct {
 public:
+  BoolArrayStruct() { (void)_flags; }
+
   kiwi::Array<bool> *x();
   const kiwi::Array<bool> *x() const;
   kiwi::Array<bool> &set_x(kiwi::MemoryPool &pool, uint32_t count);
@@ -369,6 +405,8 @@ private:
 
 class ByteArrayStruct {
 public:
+  ByteArrayStruct() { (void)_flags; }
+
   kiwi::Array<uint8_t> *x();
   const kiwi::Array<uint8_t> *x() const;
   kiwi::Array<uint8_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
@@ -383,6 +421,8 @@ private:
 
 class IntArrayStruct {
 public:
+  IntArrayStruct() { (void)_flags; }
+
   kiwi::Array<int32_t> *x();
   const kiwi::Array<int32_t> *x() const;
   kiwi::Array<int32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
@@ -397,6 +437,8 @@ private:
 
 class UintArrayStruct {
 public:
+  UintArrayStruct() { (void)_flags; }
+
   kiwi::Array<uint32_t> *x();
   const kiwi::Array<uint32_t> *x() const;
   kiwi::Array<uint32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
@@ -411,6 +453,8 @@ private:
 
 class FloatArrayStruct {
 public:
+  FloatArrayStruct() { (void)_flags; }
+
   kiwi::Array<float> *x();
   const kiwi::Array<float> *x() const;
   kiwi::Array<float> &set_x(kiwi::MemoryPool &pool, uint32_t count);
@@ -425,6 +469,8 @@ private:
 
 class StringArrayStruct {
 public:
+  StringArrayStruct() { (void)_flags; }
+
   kiwi::Array<kiwi::String> *x();
   const kiwi::Array<kiwi::String> *x() const;
   kiwi::Array<kiwi::String> &set_x(kiwi::MemoryPool &pool, uint32_t count);
@@ -439,6 +485,8 @@ private:
 
 class CompoundArrayStruct {
 public:
+  CompoundArrayStruct() { (void)_flags; }
+
   kiwi::Array<uint32_t> *x();
   const kiwi::Array<uint32_t> *x() const;
   kiwi::Array<uint32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
@@ -458,6 +506,8 @@ private:
 
 class BoolArrayMessage {
 public:
+  BoolArrayMessage() { (void)_flags; }
+
   kiwi::Array<bool> *x();
   const kiwi::Array<bool> *x() const;
   kiwi::Array<bool> &set_x(kiwi::MemoryPool &pool, uint32_t count);
@@ -472,6 +522,8 @@ private:
 
 class ByteArrayMessage {
 public:
+  ByteArrayMessage() { (void)_flags; }
+
   kiwi::Array<uint8_t> *x();
   const kiwi::Array<uint8_t> *x() const;
   kiwi::Array<uint8_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
@@ -486,6 +538,8 @@ private:
 
 class IntArrayMessage {
 public:
+  IntArrayMessage() { (void)_flags; }
+
   kiwi::Array<int32_t> *x();
   const kiwi::Array<int32_t> *x() const;
   kiwi::Array<int32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
@@ -500,6 +554,8 @@ private:
 
 class UintArrayMessage {
 public:
+  UintArrayMessage() { (void)_flags; }
+
   kiwi::Array<uint32_t> *x();
   const kiwi::Array<uint32_t> *x() const;
   kiwi::Array<uint32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
@@ -514,6 +570,8 @@ private:
 
 class FloatArrayMessage {
 public:
+  FloatArrayMessage() { (void)_flags; }
+
   kiwi::Array<float> *x();
   const kiwi::Array<float> *x() const;
   kiwi::Array<float> &set_x(kiwi::MemoryPool &pool, uint32_t count);
@@ -528,6 +586,8 @@ private:
 
 class StringArrayMessage {
 public:
+  StringArrayMessage() { (void)_flags; }
+
   kiwi::Array<kiwi::String> *x();
   const kiwi::Array<kiwi::String> *x() const;
   kiwi::Array<kiwi::String> &set_x(kiwi::MemoryPool &pool, uint32_t count);
@@ -542,6 +602,8 @@ private:
 
 class CompoundArrayMessage {
 public:
+  CompoundArrayMessage() { (void)_flags; }
+
   kiwi::Array<uint32_t> *x();
   const kiwi::Array<uint32_t> *x() const;
   kiwi::Array<uint32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
@@ -561,6 +623,8 @@ private:
 
 class RecursiveMessage {
 public:
+  RecursiveMessage() { (void)_flags; }
+
   RecursiveMessage *x();
   const RecursiveMessage *x() const;
   void set_x(RecursiveMessage *value);

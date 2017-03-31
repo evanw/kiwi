@@ -174,6 +174,7 @@ namespace kiwi {
   }
 
   kiwi::ByteBuffer::ByteBuffer(const uint8_t *data, size_t size) : _data(const_cast<uint8_t *>(data)), _size(size), _capacity(size), _isConst(true) {
+    (void)_isConst;
   }
 
   kiwi::ByteBuffer::~ByteBuffer() {
