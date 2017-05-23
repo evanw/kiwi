@@ -191,6 +191,8 @@ var kiwi = exports || kiwi || {}, exports;
   };
 
   ByteBuffer.prototype.writeString = function(value) {
+    var codePoint;
+
     for (var i = 0; i < value.length; i++) {
       // Decode UTF-16
       var a = value.charCodeAt(i);
@@ -627,7 +629,7 @@ var kiwi = exports || kiwi || {}, exports;
 
     if (definition.kind === 'MESSAGE') {
       lines.push('  while (true) {');
-      lines.push('    switch (bb.readByte()) {');
+      lines.push('    switch (bb.readVarUint()) {');
       lines.push('    case 0:');
       lines.push('      return result;');
       lines.push('');
@@ -1008,7 +1010,7 @@ var kiwi = exports || kiwi || {}, exports;
         for (var i = 0; i < schema.definitions.length; i++) {
           var definition = schema.definitions[i];
           if (definition.kind === 'MESSAGE') {
-            cpp.push('  if (!_schema.findDefinition("' + definition.name + '", _index' + definition.name + ')) return false;');
+            cpp.push('  _schema.findDefinition("' + definition.name + '", _index' + definition.name + ');');
           }
         }
 
@@ -1044,6 +1046,10 @@ var kiwi = exports || kiwi || {}, exports;
         else if (pass === 1) {
           cpp.push('class ' + definition.name + ' {');
           cpp.push('public:');
+
+          // This may not actually be used, so silence warnings about "Private fields '_flags' is not used"
+          cpp.push('  ' + definition.name + '() { (void)_flags; }');
+          cpp.push('');
 
           for (var j = 0; j < fields.length; j++) {
             var field = fields[j];
@@ -1697,7 +1703,7 @@ var kiwi = exports || kiwi || {}, exports;
 
           if (definition.kind === 'MESSAGE') {
             lines.push(indent + '    while true {');
-            lines.push(indent + '      var type = bb.readByte');
+            lines.push(indent + '      var type = bb.readVarUint');
             lines.push(indent + '      switch type {');
             lines.push(indent + '        case 0 {');
             lines.push(indent + '          break');
@@ -1806,6 +1812,91 @@ var kiwi = exports || kiwi || {}, exports;
   }
 
   kiwi.compileSchemaSkew = compileSchemaSkew;
+}());
+
+// TypeScript Compiler
+(function() {
+  var ByteBuffer = kiwi.ByteBuffer;
+
+  function compileSchemaTypeScript(schema) {
+    schema = convertSchema(schema);
+
+    var indent = '';
+    var lines = [];
+
+    if (schema.package !== null) {
+      lines.push('export namespace ' + schema.package + ' {');
+      indent += '  ';
+    }
+
+    for (var i = 0; i < schema.definitions.length; i++) {
+      var definition = schema.definitions[i];
+
+      if (definition.kind === 'ENUM') {
+        lines.push(indent + 'export type ' + definition.name + ' =');
+
+        for (var j = 0; j < definition.fields.length; j++) {
+          lines.push(indent + '  ' + JSON.stringify(definition.fields[j].name) + (j + 1 < definition.fields.length ? ' | ' : ';'));
+        }
+
+        if (!definition.fields.length) {
+          lines.push(indent + '  any;');
+        }
+
+        lines.push('');
+      }
+    }
+
+    for (var i = 0; i < schema.definitions.length; i++) {
+      var definition = schema.definitions[i];
+
+      if (definition.kind === 'STRUCT' || definition.kind === 'MESSAGE') {
+        lines.push(indent + 'export interface ' + definition.name + ' {');
+
+        for (var j = 0; j < definition.fields.length; j++) {
+          var field = definition.fields[j];
+          var type;
+
+          switch (field.type) {
+            case 'bool': type = 'boolean'; break;
+            case 'byte': case 'int': case 'uint': case 'float': type = 'number'; break;
+            default: type = field.type; break;
+          }
+
+          lines.push(indent + '  ' + field.name + (definition.kind === 'MESSAGE' ? '?' : '') + ': ' + type + (field.isArray ? '[]' : '') + ';');
+        }
+
+        lines.push(indent + '}');
+        lines.push('');
+      }
+
+      else if (definition.kind !== 'ENUM') {
+        error('Invalid definition kind ' + quote(definition.kind), definition.line, definition.column);
+      }
+    }
+
+    lines.push(indent + 'export interface Schema {');
+
+    for (var i = 0; i < schema.definitions.length; i++) {
+      var definition = schema.definitions[i];
+
+      if (definition.kind === 'STRUCT' || definition.kind === 'MESSAGE') {
+        lines.push(indent + '  encode' + definition.name + '(message: ' + definition.name + '): Uint8Array;');
+        lines.push(indent + '  decode' + definition.name + '(buffer: Uint8Array): ' + definition.name + ';');
+      }
+    }
+
+    lines.push(indent + '}');
+
+    if (schema.package !== null) {
+      lines.push('}');
+    }
+
+    lines.push('');
+    return lines.join('\n');
+  }
+
+  kiwi.compileSchemaTypeScript = compileSchemaTypeScript;
 }());
 
 }());
