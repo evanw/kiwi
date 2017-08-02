@@ -153,17 +153,20 @@ bool Message::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const Binar
     switch (_type) {
       case 0:
         return true;
-      case 1:
+      case 1: {
         if (!_bb.readVarInt(_data_x)) return false;
         set_x(_data_x);
         break;
-      case 2:
+      }
+      case 2: {
         _data_y = _pool.allocate<Struct>();
         if (!_data_y->decode(_bb, _pool, _schema)) return false;
         break;
-      default:
+      }
+      default: {
         if (!_schema || !_schema->skipMessageField(_bb, _type)) return false;
         break;
+      }
     }
   }
 }

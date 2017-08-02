@@ -1149,3 +1149,197 @@ test["encodeRecursiveMessage"] = function(message, bb) {
 
   if (isTopLevel) return bb.toUint8Array();
 };
+
+test["decodeNonDeprecatedMessage"] = function(bb) {
+  var result = {};
+  if (!(bb instanceof this.ByteBuffer)) {
+    bb = new this.ByteBuffer(bb);
+  }
+
+  while (true) {
+    switch (bb.readVarUint()) {
+    case 0:
+      return result;
+
+    case 1:
+      result["a"] = bb.readVarUint();
+      break;
+
+    case 2:
+      result["b"] = bb.readVarUint();
+      break;
+
+    case 3:
+      var values = result["c"] = [];
+      var length = bb.readVarUint();
+      while (length-- > 0) values.push(bb.readVarUint());
+      break;
+
+    case 4:
+      var values = result["d"] = [];
+      var length = bb.readVarUint();
+      while (length-- > 0) values.push(bb.readVarUint());
+      break;
+
+    case 5:
+      result["e"] = this["decodeByteStruct"](bb);
+      break;
+
+    case 6:
+      result["f"] = this["decodeByteStruct"](bb);
+      break;
+
+    case 7:
+      result["g"] = bb.readVarUint();
+      break;
+
+    default:
+      throw new Error("Attempted to parse invalid message");
+    }
+  }
+};
+
+test["encodeNonDeprecatedMessage"] = function(message, bb) {
+  var isTopLevel = !bb;
+  if (isTopLevel) bb = new this.ByteBuffer();
+
+  var value = message["a"];
+  if (value != null) {
+    bb.writeVarUint(1);
+    bb.writeVarUint(value);
+  }
+
+  var value = message["b"];
+  if (value != null) {
+    bb.writeVarUint(2);
+    bb.writeVarUint(value);
+  }
+
+  var value = message["c"];
+  if (value != null) {
+    bb.writeVarUint(3);
+    var values = value, n = values.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < n; i++) {
+      value = values[i];
+      bb.writeVarUint(value);
+    }
+  }
+
+  var value = message["d"];
+  if (value != null) {
+    bb.writeVarUint(4);
+    var values = value, n = values.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < n; i++) {
+      value = values[i];
+      bb.writeVarUint(value);
+    }
+  }
+
+  var value = message["e"];
+  if (value != null) {
+    bb.writeVarUint(5);
+    this["encodeByteStruct"](value, bb);
+  }
+
+  var value = message["f"];
+  if (value != null) {
+    bb.writeVarUint(6);
+    this["encodeByteStruct"](value, bb);
+  }
+
+  var value = message["g"];
+  if (value != null) {
+    bb.writeVarUint(7);
+    bb.writeVarUint(value);
+  }
+  bb.writeVarUint(0);
+
+  if (isTopLevel) return bb.toUint8Array();
+};
+
+test["decodeDeprecatedMessage"] = function(bb) {
+  var result = {};
+  if (!(bb instanceof this.ByteBuffer)) {
+    bb = new this.ByteBuffer(bb);
+  }
+
+  while (true) {
+    switch (bb.readVarUint()) {
+    case 0:
+      return result;
+
+    case 1:
+      result["a"] = bb.readVarUint();
+      break;
+
+    case 2:
+      bb.readVarUint();
+      break;
+
+    case 3:
+      var values = result["c"] = [];
+      var length = bb.readVarUint();
+      while (length-- > 0) values.push(bb.readVarUint());
+      break;
+
+    case 4:
+      var length = bb.readVarUint();
+      while (length-- > 0) bb.readVarUint();
+      break;
+
+    case 5:
+      result["e"] = this["decodeByteStruct"](bb);
+      break;
+
+    case 6:
+      this["decodeByteStruct"](bb);
+      break;
+
+    case 7:
+      result["g"] = bb.readVarUint();
+      break;
+
+    default:
+      throw new Error("Attempted to parse invalid message");
+    }
+  }
+};
+
+test["encodeDeprecatedMessage"] = function(message, bb) {
+  var isTopLevel = !bb;
+  if (isTopLevel) bb = new this.ByteBuffer();
+
+  var value = message["a"];
+  if (value != null) {
+    bb.writeVarUint(1);
+    bb.writeVarUint(value);
+  }
+
+  var value = message["c"];
+  if (value != null) {
+    bb.writeVarUint(3);
+    var values = value, n = values.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < n; i++) {
+      value = values[i];
+      bb.writeVarUint(value);
+    }
+  }
+
+  var value = message["e"];
+  if (value != null) {
+    bb.writeVarUint(5);
+    this["encodeByteStruct"](value, bb);
+  }
+
+  var value = message["g"];
+  if (value != null) {
+    bb.writeVarUint(7);
+    bb.writeVarUint(value);
+  }
+  bb.writeVarUint(0);
+
+  if (isTopLevel) return bb.toUint8Array();
+};

@@ -2,8 +2,10 @@
 #define KIWI_H
 
 #include <assert.h>
+#include <initializer_list>
 #include <memory.h>
 #include <stdlib.h>
+#include <string.h>
 
 namespace kiwi {
   class String;
@@ -76,6 +78,8 @@ namespace kiwi {
     T *end() { return _data + _size; }
     uint32_t size() const { return _size; }
     T &operator [] (uint32_t index) { assert(index < _size); return _data[index]; }
+    void set(const T *data, size_t size) { assert(size == _size); memcpy(_data, data, (size < _size ? size : _size) * sizeof(T)); }
+    void set(const std::initializer_list<T> &data) { set(data.begin(), data.size()); }
 
     const T *data() const { return _data; }
     const T *begin() const { return _data; }

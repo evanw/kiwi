@@ -641,4 +641,34 @@ def main {
     var encoded = m.encode
     assert.deepEqual(m, test_large.Message.decode(encoded))
   })
+
+  it("message with deprecated fields", => {
+    var nonDeprecated = test.NonDeprecatedMessage.new
+    nonDeprecated.a = 1
+    nonDeprecated.b = 2
+    nonDeprecated.c = [3, 4, 5]
+    nonDeprecated.d = [6, 7, 8]
+    nonDeprecated.e = test.ByteStruct.new
+    nonDeprecated.e.x = 123
+    nonDeprecated.f = test.ByteStruct.new
+    nonDeprecated.f.x = 234
+    nonDeprecated.g = 9
+
+    var nonDeprecated2 = test.NonDeprecatedMessage.new
+    nonDeprecated2.a = 1
+    nonDeprecated2.c = [3, 4, 5]
+    nonDeprecated2.e = test.ByteStruct.new
+    nonDeprecated2.e.x = 123
+    nonDeprecated2.g = 9
+
+    var deprecated = test.DeprecatedMessage.new
+    deprecated.a = 1
+    deprecated.c = [3, 4, 5]
+    deprecated.e = test.ByteStruct.new
+    deprecated.e.x = 123
+    deprecated.g = 9
+
+    assert.deepEqual(test.DeprecatedMessage.decode(nonDeprecated.encode), deprecated)
+    assert.deepEqual(test.NonDeprecatedMessage.decode(deprecated.encode), nonDeprecated2)
+  })
 }

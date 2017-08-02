@@ -267,29 +267,35 @@ bool Message::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const Binar
     switch (_type) {
       case 0:
         return true;
-      case 1:
+      case 1: {
         if (!_bb.readVarInt(_data_x)) return false;
         set_x(_data_x);
         break;
-      case 2:
+      }
+      case 2: {
         _data_y = _pool.allocate<Struct>();
         if (!_data_y->decode(_bb, _pool, _schema)) return false;
         break;
-      case 3:
+      }
+      case 3: {
         _data_z = _pool.allocate<Struct2>();
         if (!_data_z->decode(_bb, _pool, _schema)) return false;
         break;
-      case 4:
+      }
+      case 4: {
         _data_c = _pool.allocate<Message>();
         if (!_data_c->decode(_bb, _pool, _schema)) return false;
         break;
-      case 5:
+      }
+      case 5: {
         _data_d = _pool.allocate<Message2>();
         if (!_data_d->decode(_bb, _pool, _schema)) return false;
         break;
-      default:
+      }
+      default: {
         if (!_schema || !_schema->skipMessageField(_bb, _type)) return false;
         break;
+      }
     }
   }
 }
@@ -378,17 +384,20 @@ bool Message2::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const Bina
     switch (_type) {
       case 0:
         return true;
-      case 1:
+      case 1: {
         if (!_bb.readString(_data_e, _pool)) return false;
         set_e(_data_e);
         break;
-      case 2:
+      }
+      case 2: {
         if (!_bb.readString(_data_f, _pool)) return false;
         set_f(_data_f);
         break;
-      default:
+      }
+      default: {
         if (!_schema || !_schema->skipMessage2Field(_bb, _type)) return false;
         break;
+      }
     }
   }
 }

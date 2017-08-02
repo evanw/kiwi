@@ -42,3 +42,23 @@ message StringArrayMessage { string[] x = 1; }
 message CompoundArrayMessage { uint[] x = 1; uint[] y = 2; }
 
 message RecursiveMessage { RecursiveMessage x = 1; }
+
+message NonDeprecatedMessage {
+  uint a = 1;
+  uint b = 2;
+  uint[] c = 3;
+  uint[] d = 4;
+  ByteStruct e = 5;
+  ByteStruct f = 6;
+  uint g = 7;
+}
+
+message DeprecatedMessage {
+  uint a = 1;
+  uint b = 2 [deprecated];
+  uint[] c = 3;
+  uint[] d = 4 [deprecated];
+  ByteStruct e = 5;
+  ByteStruct f = 6 [deprecated];
+  uint g = 7;
+}

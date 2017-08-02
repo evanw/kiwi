@@ -483,6 +483,60 @@ static void testMessageNested() {
   check(234, 5, 6, 123, {1, 234, 1, 2, 1, 5, 2, 6, 0, 3, 123, 0});
 }
 
+static void testStructByteArray() {
+  puts("testStructByteArray");
+
+  auto check = [](std::vector<uint8_t> i, std::vector<uint8_t> o) {
+    kiwi::ByteBuffer bb;
+    kiwi::MemoryPool pool;
+
+    test::ByteArrayStruct message;
+    message.set_x(pool, i.size()).set(i.data(), i.size());
+
+    assert(message.encode(bb));
+    assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
+
+    kiwi::ByteBuffer bb2(o.data(), o.size());
+    test::ByteArrayStruct message2;
+    assert(message2.decode(bb2, pool));
+    assert(message2.x());
+    assert(std::vector<uint8_t>(message2.x()->begin(), message2.x()->end()) == i);
+  };
+
+  check({}, {0});
+  check({123, 234}, {2, 123, 234});
+}
+
+static void testMessageByteArray() {
+  puts("testMessageByteArray");
+
+  auto check = [](bool present, std::vector<uint8_t> i, std::vector<uint8_t> o) {
+    kiwi::ByteBuffer bb;
+    kiwi::MemoryPool pool;
+
+    test::ByteArrayMessage message;
+    if (present) message.set_x(pool, i.size()).set(i.data(), i.size());
+
+    assert(message.encode(bb));
+    assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
+
+    kiwi::ByteBuffer bb2(o.data(), o.size());
+    test::ByteArrayMessage message2;
+    assert(message2.decode(bb2, pool));
+
+    if (present) {
+      assert(message2.x());
+      assert(std::vector<uint8_t>(message2.x()->begin(), message2.x()->end()) == i);
+    } else {
+      assert(!message2.x());
+    }
+  };
+
+  check(false, {}, {0});
+  check(true, {}, {1, 0, 0});
+  check(true, {123, 234}, {1, 2, 123, 234, 0});
+}
+
 static void testRecursiveMessage() {
   puts("testRecursiveMessage");
 
@@ -662,6 +716,58 @@ static void testLargeMessage() {
 #undef GET
 #undef REPEAT
 
+static void testDeprecatedFields() {
+  puts("testDeprecatedFields");
+
+  kiwi::ByteBuffer bb;
+  kiwi::MemoryPool pool;
+
+  test::NonDeprecatedMessage nonDeprecated;
+  nonDeprecated.set_a(1);
+  nonDeprecated.set_b(2);
+  nonDeprecated.set_c(pool, 3).set({3, 4, 5});
+  nonDeprecated.set_d(pool, 3).set({6, 7, 8});
+  nonDeprecated.set_e(pool.allocate<test::ByteStruct>());
+  nonDeprecated.e()->set_x(123);
+  nonDeprecated.set_f(pool.allocate<test::ByteStruct>());
+  nonDeprecated.f()->set_x(234);
+  nonDeprecated.set_g(9);
+
+  test::DeprecatedMessage deprecated;
+  assert(nonDeprecated.encode(bb));
+  assert(deprecated.decode(bb, pool));
+
+  assert(deprecated.a());
+  assert(deprecated.c());
+  assert(deprecated.e());
+  assert(deprecated.g());
+
+  assert(*deprecated.a() == 1);
+  assert(std::vector<uint32_t>(deprecated.c()->begin(), deprecated.c()->end()) == (std::vector<uint32_t>{3, 4, 5}));
+  assert(deprecated.e()->x());
+  assert(*deprecated.e()->x() == 123);
+  assert(*deprecated.g() == 9);
+
+  kiwi::ByteBuffer bb2;
+  test::NonDeprecatedMessage nonDeprecated2;
+  assert(deprecated.encode(bb2));
+  assert(nonDeprecated2.decode(bb2, pool));
+
+  assert(nonDeprecated2.a());
+  assert(!nonDeprecated2.b());
+  assert(nonDeprecated2.c());
+  assert(!nonDeprecated2.d());
+  assert(nonDeprecated2.e());
+  assert(!nonDeprecated2.f());
+  assert(nonDeprecated2.g());
+
+  assert(*nonDeprecated2.a() == 1);
+  assert(std::vector<uint32_t>(nonDeprecated2.c()->begin(), nonDeprecated2.c()->end()) == (std::vector<uint32_t>{3, 4, 5}));
+  assert(nonDeprecated2.e()->x());
+  assert(*nonDeprecated2.e()->x() == 123);
+  assert(*nonDeprecated2.g() == 9);
+}
+
 int main() {
   testStructBool();
   testStructByte();
@@ -681,11 +787,15 @@ int main() {
   testMessageCompound();
   testMessageNested();
 
+  testStructByteArray();
+  testMessageByteArray();
+
   testRecursiveMessage();
   testBinarySchema();
 
   testLargeStruct();
   testLargeMessage();
+  testDeprecatedFields();
 
   puts("all tests passed");
   return 0;

@@ -140,6 +140,23 @@ export namespace test {
     x?: RecursiveMessage;
   }
 
+  export interface NonDeprecatedMessage {
+    a?: number;
+    b?: number;
+    c?: number[];
+    d?: number[];
+    e?: ByteStruct;
+    f?: ByteStruct;
+    g?: number;
+  }
+
+  export interface DeprecatedMessage {
+    a?: number;
+    c?: number[];
+    e?: ByteStruct;
+    g?: number;
+  }
+
   export interface Schema {
     encodeEnumStruct(message: EnumStruct): Uint8Array;
     decodeEnumStruct(buffer: Uint8Array): EnumStruct;
@@ -205,5 +222,9 @@ export namespace test {
     decodeCompoundArrayMessage(buffer: Uint8Array): CompoundArrayMessage;
     encodeRecursiveMessage(message: RecursiveMessage): Uint8Array;
     decodeRecursiveMessage(buffer: Uint8Array): RecursiveMessage;
+    encodeNonDeprecatedMessage(message: NonDeprecatedMessage): Uint8Array;
+    decodeNonDeprecatedMessage(buffer: Uint8Array): NonDeprecatedMessage;
+    encodeDeprecatedMessage(message: DeprecatedMessage): Uint8Array;
+    decodeDeprecatedMessage(buffer: Uint8Array): DeprecatedMessage;
   }
 }

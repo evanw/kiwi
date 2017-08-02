@@ -5529,529 +5529,660 @@ bool Message::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const Binar
     switch (_type) {
       case 0:
         return true;
-      case 1:
+      case 1: {
         if (!_bb.readVarInt(_data_f0)) return false;
         set_f0(_data_f0);
         break;
-      case 2:
+      }
+      case 2: {
         if (!_bb.readVarInt(_data_f1)) return false;
         set_f1(_data_f1);
         break;
-      case 3:
+      }
+      case 3: {
         if (!_bb.readVarInt(_data_f2)) return false;
         set_f2(_data_f2);
         break;
-      case 4:
+      }
+      case 4: {
         if (!_bb.readVarInt(_data_f3)) return false;
         set_f3(_data_f3);
         break;
-      case 5:
+      }
+      case 5: {
         if (!_bb.readVarInt(_data_f4)) return false;
         set_f4(_data_f4);
         break;
-      case 6:
+      }
+      case 6: {
         if (!_bb.readVarInt(_data_f5)) return false;
         set_f5(_data_f5);
         break;
-      case 7:
+      }
+      case 7: {
         if (!_bb.readVarInt(_data_f6)) return false;
         set_f6(_data_f6);
         break;
-      case 8:
+      }
+      case 8: {
         if (!_bb.readVarInt(_data_f7)) return false;
         set_f7(_data_f7);
         break;
-      case 9:
+      }
+      case 9: {
         if (!_bb.readVarInt(_data_f8)) return false;
         set_f8(_data_f8);
         break;
-      case 10:
+      }
+      case 10: {
         if (!_bb.readVarInt(_data_f9)) return false;
         set_f9(_data_f9);
         break;
-      case 11:
+      }
+      case 11: {
         if (!_bb.readVarInt(_data_f10)) return false;
         set_f10(_data_f10);
         break;
-      case 12:
+      }
+      case 12: {
         if (!_bb.readVarInt(_data_f11)) return false;
         set_f11(_data_f11);
         break;
-      case 13:
+      }
+      case 13: {
         if (!_bb.readVarInt(_data_f12)) return false;
         set_f12(_data_f12);
         break;
-      case 14:
+      }
+      case 14: {
         if (!_bb.readVarInt(_data_f13)) return false;
         set_f13(_data_f13);
         break;
-      case 15:
+      }
+      case 15: {
         if (!_bb.readVarInt(_data_f14)) return false;
         set_f14(_data_f14);
         break;
-      case 16:
+      }
+      case 16: {
         if (!_bb.readVarInt(_data_f15)) return false;
         set_f15(_data_f15);
         break;
-      case 17:
+      }
+      case 17: {
         if (!_bb.readVarInt(_data_f16)) return false;
         set_f16(_data_f16);
         break;
-      case 18:
+      }
+      case 18: {
         if (!_bb.readVarInt(_data_f17)) return false;
         set_f17(_data_f17);
         break;
-      case 19:
+      }
+      case 19: {
         if (!_bb.readVarInt(_data_f18)) return false;
         set_f18(_data_f18);
         break;
-      case 20:
+      }
+      case 20: {
         if (!_bb.readVarInt(_data_f19)) return false;
         set_f19(_data_f19);
         break;
-      case 21:
+      }
+      case 21: {
         if (!_bb.readVarInt(_data_f20)) return false;
         set_f20(_data_f20);
         break;
-      case 22:
+      }
+      case 22: {
         if (!_bb.readVarInt(_data_f21)) return false;
         set_f21(_data_f21);
         break;
-      case 23:
+      }
+      case 23: {
         if (!_bb.readVarInt(_data_f22)) return false;
         set_f22(_data_f22);
         break;
-      case 24:
+      }
+      case 24: {
         if (!_bb.readVarInt(_data_f23)) return false;
         set_f23(_data_f23);
         break;
-      case 25:
+      }
+      case 25: {
         if (!_bb.readVarInt(_data_f24)) return false;
         set_f24(_data_f24);
         break;
-      case 26:
+      }
+      case 26: {
         if (!_bb.readVarInt(_data_f25)) return false;
         set_f25(_data_f25);
         break;
-      case 27:
+      }
+      case 27: {
         if (!_bb.readVarInt(_data_f26)) return false;
         set_f26(_data_f26);
         break;
-      case 28:
+      }
+      case 28: {
         if (!_bb.readVarInt(_data_f27)) return false;
         set_f27(_data_f27);
         break;
-      case 29:
+      }
+      case 29: {
         if (!_bb.readVarInt(_data_f28)) return false;
         set_f28(_data_f28);
         break;
-      case 30:
+      }
+      case 30: {
         if (!_bb.readVarInt(_data_f29)) return false;
         set_f29(_data_f29);
         break;
-      case 31:
+      }
+      case 31: {
         if (!_bb.readVarInt(_data_f30)) return false;
         set_f30(_data_f30);
         break;
-      case 32:
+      }
+      case 32: {
         if (!_bb.readVarInt(_data_f31)) return false;
         set_f31(_data_f31);
         break;
-      case 33:
+      }
+      case 33: {
         if (!_bb.readVarInt(_data_f32)) return false;
         set_f32(_data_f32);
         break;
-      case 34:
+      }
+      case 34: {
         if (!_bb.readVarInt(_data_f33)) return false;
         set_f33(_data_f33);
         break;
-      case 35:
+      }
+      case 35: {
         if (!_bb.readVarInt(_data_f34)) return false;
         set_f34(_data_f34);
         break;
-      case 36:
+      }
+      case 36: {
         if (!_bb.readVarInt(_data_f35)) return false;
         set_f35(_data_f35);
         break;
-      case 37:
+      }
+      case 37: {
         if (!_bb.readVarInt(_data_f36)) return false;
         set_f36(_data_f36);
         break;
-      case 38:
+      }
+      case 38: {
         if (!_bb.readVarInt(_data_f37)) return false;
         set_f37(_data_f37);
         break;
-      case 39:
+      }
+      case 39: {
         if (!_bb.readVarInt(_data_f38)) return false;
         set_f38(_data_f38);
         break;
-      case 40:
+      }
+      case 40: {
         if (!_bb.readVarInt(_data_f39)) return false;
         set_f39(_data_f39);
         break;
-      case 41:
+      }
+      case 41: {
         if (!_bb.readVarInt(_data_f40)) return false;
         set_f40(_data_f40);
         break;
-      case 42:
+      }
+      case 42: {
         if (!_bb.readVarInt(_data_f41)) return false;
         set_f41(_data_f41);
         break;
-      case 43:
+      }
+      case 43: {
         if (!_bb.readVarInt(_data_f42)) return false;
         set_f42(_data_f42);
         break;
-      case 44:
+      }
+      case 44: {
         if (!_bb.readVarInt(_data_f43)) return false;
         set_f43(_data_f43);
         break;
-      case 45:
+      }
+      case 45: {
         if (!_bb.readVarInt(_data_f44)) return false;
         set_f44(_data_f44);
         break;
-      case 46:
+      }
+      case 46: {
         if (!_bb.readVarInt(_data_f45)) return false;
         set_f45(_data_f45);
         break;
-      case 47:
+      }
+      case 47: {
         if (!_bb.readVarInt(_data_f46)) return false;
         set_f46(_data_f46);
         break;
-      case 48:
+      }
+      case 48: {
         if (!_bb.readVarInt(_data_f47)) return false;
         set_f47(_data_f47);
         break;
-      case 49:
+      }
+      case 49: {
         if (!_bb.readVarInt(_data_f48)) return false;
         set_f48(_data_f48);
         break;
-      case 50:
+      }
+      case 50: {
         if (!_bb.readVarInt(_data_f49)) return false;
         set_f49(_data_f49);
         break;
-      case 51:
+      }
+      case 51: {
         if (!_bb.readVarInt(_data_f50)) return false;
         set_f50(_data_f50);
         break;
-      case 52:
+      }
+      case 52: {
         if (!_bb.readVarInt(_data_f51)) return false;
         set_f51(_data_f51);
         break;
-      case 53:
+      }
+      case 53: {
         if (!_bb.readVarInt(_data_f52)) return false;
         set_f52(_data_f52);
         break;
-      case 54:
+      }
+      case 54: {
         if (!_bb.readVarInt(_data_f53)) return false;
         set_f53(_data_f53);
         break;
-      case 55:
+      }
+      case 55: {
         if (!_bb.readVarInt(_data_f54)) return false;
         set_f54(_data_f54);
         break;
-      case 56:
+      }
+      case 56: {
         if (!_bb.readVarInt(_data_f55)) return false;
         set_f55(_data_f55);
         break;
-      case 57:
+      }
+      case 57: {
         if (!_bb.readVarInt(_data_f56)) return false;
         set_f56(_data_f56);
         break;
-      case 58:
+      }
+      case 58: {
         if (!_bb.readVarInt(_data_f57)) return false;
         set_f57(_data_f57);
         break;
-      case 59:
+      }
+      case 59: {
         if (!_bb.readVarInt(_data_f58)) return false;
         set_f58(_data_f58);
         break;
-      case 60:
+      }
+      case 60: {
         if (!_bb.readVarInt(_data_f59)) return false;
         set_f59(_data_f59);
         break;
-      case 61:
+      }
+      case 61: {
         if (!_bb.readVarInt(_data_f60)) return false;
         set_f60(_data_f60);
         break;
-      case 62:
+      }
+      case 62: {
         if (!_bb.readVarInt(_data_f61)) return false;
         set_f61(_data_f61);
         break;
-      case 63:
+      }
+      case 63: {
         if (!_bb.readVarInt(_data_f62)) return false;
         set_f62(_data_f62);
         break;
-      case 64:
+      }
+      case 64: {
         if (!_bb.readVarInt(_data_f63)) return false;
         set_f63(_data_f63);
         break;
-      case 65:
+      }
+      case 65: {
         if (!_bb.readVarInt(_data_f64)) return false;
         set_f64(_data_f64);
         break;
-      case 66:
+      }
+      case 66: {
         if (!_bb.readVarInt(_data_f65)) return false;
         set_f65(_data_f65);
         break;
-      case 67:
+      }
+      case 67: {
         if (!_bb.readVarInt(_data_f66)) return false;
         set_f66(_data_f66);
         break;
-      case 68:
+      }
+      case 68: {
         if (!_bb.readVarInt(_data_f67)) return false;
         set_f67(_data_f67);
         break;
-      case 69:
+      }
+      case 69: {
         if (!_bb.readVarInt(_data_f68)) return false;
         set_f68(_data_f68);
         break;
-      case 70:
+      }
+      case 70: {
         if (!_bb.readVarInt(_data_f69)) return false;
         set_f69(_data_f69);
         break;
-      case 71:
+      }
+      case 71: {
         if (!_bb.readVarInt(_data_f70)) return false;
         set_f70(_data_f70);
         break;
-      case 72:
+      }
+      case 72: {
         if (!_bb.readVarInt(_data_f71)) return false;
         set_f71(_data_f71);
         break;
-      case 73:
+      }
+      case 73: {
         if (!_bb.readVarInt(_data_f72)) return false;
         set_f72(_data_f72);
         break;
-      case 74:
+      }
+      case 74: {
         if (!_bb.readVarInt(_data_f73)) return false;
         set_f73(_data_f73);
         break;
-      case 75:
+      }
+      case 75: {
         if (!_bb.readVarInt(_data_f74)) return false;
         set_f74(_data_f74);
         break;
-      case 76:
+      }
+      case 76: {
         if (!_bb.readVarInt(_data_f75)) return false;
         set_f75(_data_f75);
         break;
-      case 77:
+      }
+      case 77: {
         if (!_bb.readVarInt(_data_f76)) return false;
         set_f76(_data_f76);
         break;
-      case 78:
+      }
+      case 78: {
         if (!_bb.readVarInt(_data_f77)) return false;
         set_f77(_data_f77);
         break;
-      case 79:
+      }
+      case 79: {
         if (!_bb.readVarInt(_data_f78)) return false;
         set_f78(_data_f78);
         break;
-      case 80:
+      }
+      case 80: {
         if (!_bb.readVarInt(_data_f79)) return false;
         set_f79(_data_f79);
         break;
-      case 81:
+      }
+      case 81: {
         if (!_bb.readVarInt(_data_f80)) return false;
         set_f80(_data_f80);
         break;
-      case 82:
+      }
+      case 82: {
         if (!_bb.readVarInt(_data_f81)) return false;
         set_f81(_data_f81);
         break;
-      case 83:
+      }
+      case 83: {
         if (!_bb.readVarInt(_data_f82)) return false;
         set_f82(_data_f82);
         break;
-      case 84:
+      }
+      case 84: {
         if (!_bb.readVarInt(_data_f83)) return false;
         set_f83(_data_f83);
         break;
-      case 85:
+      }
+      case 85: {
         if (!_bb.readVarInt(_data_f84)) return false;
         set_f84(_data_f84);
         break;
-      case 86:
+      }
+      case 86: {
         if (!_bb.readVarInt(_data_f85)) return false;
         set_f85(_data_f85);
         break;
-      case 87:
+      }
+      case 87: {
         if (!_bb.readVarInt(_data_f86)) return false;
         set_f86(_data_f86);
         break;
-      case 88:
+      }
+      case 88: {
         if (!_bb.readVarInt(_data_f87)) return false;
         set_f87(_data_f87);
         break;
-      case 89:
+      }
+      case 89: {
         if (!_bb.readVarInt(_data_f88)) return false;
         set_f88(_data_f88);
         break;
-      case 90:
+      }
+      case 90: {
         if (!_bb.readVarInt(_data_f89)) return false;
         set_f89(_data_f89);
         break;
-      case 91:
+      }
+      case 91: {
         if (!_bb.readVarInt(_data_f90)) return false;
         set_f90(_data_f90);
         break;
-      case 92:
+      }
+      case 92: {
         if (!_bb.readVarInt(_data_f91)) return false;
         set_f91(_data_f91);
         break;
-      case 93:
+      }
+      case 93: {
         if (!_bb.readVarInt(_data_f92)) return false;
         set_f92(_data_f92);
         break;
-      case 94:
+      }
+      case 94: {
         if (!_bb.readVarInt(_data_f93)) return false;
         set_f93(_data_f93);
         break;
-      case 95:
+      }
+      case 95: {
         if (!_bb.readVarInt(_data_f94)) return false;
         set_f94(_data_f94);
         break;
-      case 96:
+      }
+      case 96: {
         if (!_bb.readVarInt(_data_f95)) return false;
         set_f95(_data_f95);
         break;
-      case 97:
+      }
+      case 97: {
         if (!_bb.readVarInt(_data_f96)) return false;
         set_f96(_data_f96);
         break;
-      case 98:
+      }
+      case 98: {
         if (!_bb.readVarInt(_data_f97)) return false;
         set_f97(_data_f97);
         break;
-      case 99:
+      }
+      case 99: {
         if (!_bb.readVarInt(_data_f98)) return false;
         set_f98(_data_f98);
         break;
-      case 100:
+      }
+      case 100: {
         if (!_bb.readVarInt(_data_f99)) return false;
         set_f99(_data_f99);
         break;
-      case 101:
+      }
+      case 101: {
         if (!_bb.readVarInt(_data_f100)) return false;
         set_f100(_data_f100);
         break;
-      case 102:
+      }
+      case 102: {
         if (!_bb.readVarInt(_data_f101)) return false;
         set_f101(_data_f101);
         break;
-      case 103:
+      }
+      case 103: {
         if (!_bb.readVarInt(_data_f102)) return false;
         set_f102(_data_f102);
         break;
-      case 104:
+      }
+      case 104: {
         if (!_bb.readVarInt(_data_f103)) return false;
         set_f103(_data_f103);
         break;
-      case 105:
+      }
+      case 105: {
         if (!_bb.readVarInt(_data_f104)) return false;
         set_f104(_data_f104);
         break;
-      case 106:
+      }
+      case 106: {
         if (!_bb.readVarInt(_data_f105)) return false;
         set_f105(_data_f105);
         break;
-      case 107:
+      }
+      case 107: {
         if (!_bb.readVarInt(_data_f106)) return false;
         set_f106(_data_f106);
         break;
-      case 108:
+      }
+      case 108: {
         if (!_bb.readVarInt(_data_f107)) return false;
         set_f107(_data_f107);
         break;
-      case 109:
+      }
+      case 109: {
         if (!_bb.readVarInt(_data_f108)) return false;
         set_f108(_data_f108);
         break;
-      case 110:
+      }
+      case 110: {
         if (!_bb.readVarInt(_data_f109)) return false;
         set_f109(_data_f109);
         break;
-      case 111:
+      }
+      case 111: {
         if (!_bb.readVarInt(_data_f110)) return false;
         set_f110(_data_f110);
         break;
-      case 112:
+      }
+      case 112: {
         if (!_bb.readVarInt(_data_f111)) return false;
         set_f111(_data_f111);
         break;
-      case 113:
+      }
+      case 113: {
         if (!_bb.readVarInt(_data_f112)) return false;
         set_f112(_data_f112);
         break;
-      case 114:
+      }
+      case 114: {
         if (!_bb.readVarInt(_data_f113)) return false;
         set_f113(_data_f113);
         break;
-      case 115:
+      }
+      case 115: {
         if (!_bb.readVarInt(_data_f114)) return false;
         set_f114(_data_f114);
         break;
-      case 116:
+      }
+      case 116: {
         if (!_bb.readVarInt(_data_f115)) return false;
         set_f115(_data_f115);
         break;
-      case 117:
+      }
+      case 117: {
         if (!_bb.readVarInt(_data_f116)) return false;
         set_f116(_data_f116);
         break;
-      case 118:
+      }
+      case 118: {
         if (!_bb.readVarInt(_data_f117)) return false;
         set_f117(_data_f117);
         break;
-      case 119:
+      }
+      case 119: {
         if (!_bb.readVarInt(_data_f118)) return false;
         set_f118(_data_f118);
         break;
-      case 120:
+      }
+      case 120: {
         if (!_bb.readVarInt(_data_f119)) return false;
         set_f119(_data_f119);
         break;
-      case 121:
+      }
+      case 121: {
         if (!_bb.readVarInt(_data_f120)) return false;
         set_f120(_data_f120);
         break;
-      case 122:
+      }
+      case 122: {
         if (!_bb.readVarInt(_data_f121)) return false;
         set_f121(_data_f121);
         break;
-      case 123:
+      }
+      case 123: {
         if (!_bb.readVarInt(_data_f122)) return false;
         set_f122(_data_f122);
         break;
-      case 124:
+      }
+      case 124: {
         if (!_bb.readVarInt(_data_f123)) return false;
         set_f123(_data_f123);
         break;
-      case 125:
+      }
+      case 125: {
         if (!_bb.readVarInt(_data_f124)) return false;
         set_f124(_data_f124);
         break;
-      case 126:
+      }
+      case 126: {
         if (!_bb.readVarInt(_data_f125)) return false;
         set_f125(_data_f125);
         break;
-      case 127:
+      }
+      case 127: {
         if (!_bb.readVarInt(_data_f126)) return false;
         set_f126(_data_f126);
         break;
-      case 128:
+      }
+      case 128: {
         if (!_bb.readVarInt(_data_f127)) return false;
         set_f127(_data_f127);
         break;
-      case 129:
+      }
+      case 129: {
         if (!_bb.readVarInt(_data_f128)) return false;
         set_f128(_data_f128);
         break;
-      case 130:
+      }
+      case 130: {
         if (!_bb.readVarInt(_data_f129)) return false;
         set_f129(_data_f129);
         break;
-      default:
+      }
+      default: {
         if (!_schema || !_schema->skipMessageField(_bb, _type)) return false;
         break;
+      }
     }
   }
 }

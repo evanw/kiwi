@@ -281,3 +281,25 @@ it('message with many fields', function() {
   var encoded = largeSchema.encodeMessage(object);
   assert.deepEqual(object, largeSchema.decodeMessage(encoded));
 });
+
+it('message with deprecated fields', function() {
+  var nonDeprecated = {
+    a: 1,
+    b: 2,
+    c: [3, 4, 5],
+    d: [6, 7, 8],
+    e: {x: 123},
+    f: {x: 234},
+    g: 9,
+  };
+
+  var deprecated = {
+    a: 1,
+    c: [3, 4, 5],
+    e: {x: 123},
+    g: 9,
+  };
+
+  assert.deepEqual(schema.decodeDeprecatedMessage(schema.encodeNonDeprecatedMessage(nonDeprecated)), deprecated);
+  assert.deepEqual(schema.decodeNonDeprecatedMessage(schema.encodeDeprecatedMessage(nonDeprecated)), deprecated);
+});

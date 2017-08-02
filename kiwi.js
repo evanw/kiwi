@@ -251,7 +251,7 @@ var kiwi = exports || kiwi || {}, exports;
     'package',
   ];
 
-  var regex = /((?:-|\b)\d+\b|[=;{}]|\[\]|\b[A-Za-z_][A-Za-z0-9_]*\b|\/\/.*|\s+)/g;
+  var regex = /((?:-|\b)\d+\b|[=;{}]|\[\]|\[deprecated\]|\b[A-Za-z_][A-Za-z0-9_]*\b|\/\/.*|\s+)/g;
   var identifier = /^[A-Za-z_][A-Za-z0-9_]*$/;
   var whitespace = /^\/\/.*|\s+$/;
   var equals = /^=$/;
@@ -265,6 +265,7 @@ var kiwi = exports || kiwi || {}, exports;
   var structKeyword = /^struct$/;
   var messageKeyword = /^message$/;
   var packageKeyword = /^package$/;
+  var deprecatedToken = /^\[deprecated\]$/;
 
   function tokenize(text) {
     var parts = text.split(regex);
@@ -361,6 +362,7 @@ var kiwi = exports || kiwi || {}, exports;
       while (!eat(rightBrace)) {
         var type = null;
         var isArray = false;
+        var isDeprecated = false;
 
         // Enums don't have types
         if (kind !== 'ENUM') {
@@ -384,6 +386,15 @@ var kiwi = exports || kiwi || {}, exports;
           }
         }
 
+        var deprecated = current();
+        if (eat(deprecatedToken)) {
+          if (kind !== 'MESSAGE') {
+            error('Cannot deprecate this field', deprecated.line, deprecated.column);
+          }
+
+          isDeprecated = true;
+        }
+
         expect(semicolon, '";"');
 
         fields.push({
@@ -392,6 +403,7 @@ var kiwi = exports || kiwi || {}, exports;
           column: field.column,
           type: type,
           isArray: isArray,
+          isDeprecated: isDeprecated,
           value: value !== null ? value.text | 0 : fields.length + 1,
         });
       }
@@ -524,7 +536,7 @@ var kiwi = exports || kiwi || {}, exports;
       for (var j = 0; j < fieldCount; j++) {
         var fieldName = bb.readString();
         var type = bb.readVarInt();
-        var isArray = !!bb.readByte();
+        var isArray = !!(bb.readByte() & 1);
         var value = bb.readVarUint();
 
         fields.push({
@@ -533,6 +545,7 @@ var kiwi = exports || kiwi || {}, exports;
           column: 0,
           type: type,
           isArray: isArray,
+          isDeprecated: false,
           value: value,
         });
       }
@@ -600,7 +613,7 @@ var kiwi = exports || kiwi || {}, exports;
 
         bb.writeString(field.name);
         bb.writeVarInt(type === -1 ? definitionIndex[field.type] : ~type);
-        bb.writeByte(+field.isArray);
+        bb.writeByte(field.isArray ? 1 : 0);
         bb.writeVarUint(field.value);
       }
     }
@@ -688,13 +701,22 @@ var kiwi = exports || kiwi || {}, exports;
       }
 
       if (field.isArray) {
-        lines.push(indent + 'var values = result[' + quote(field.name) + '] = [];');
-        lines.push(indent + 'var length = bb.readVarUint();');
-        lines.push(indent + 'while (length-- > 0) values.push(' + code + ');');
+        if (field.isDeprecated) {
+          lines.push(indent + 'var length = bb.readVarUint();');
+          lines.push(indent + 'while (length-- > 0) ' + code + ';');
+        } else {
+          lines.push(indent + 'var values = result[' + quote(field.name) + '] = [];');
+          lines.push(indent + 'var length = bb.readVarUint();');
+          lines.push(indent + 'while (length-- > 0) values.push(' + code + ');');
+        }
       }
 
       else {
-        lines.push(indent + 'result[' + quote(field.name) + '] = ' + code + ';');
+        if (field.isDeprecated) {
+          lines.push(indent + code + ';');
+        } else {
+          lines.push(indent + 'result[' + quote(field.name) + '] = ' + code + ';');
+        }
       }
 
       if (definition.kind === 'MESSAGE') {
@@ -729,6 +751,10 @@ var kiwi = exports || kiwi || {}, exports;
     for (var j = 0; j < definition.fields.length; j++) {
       var field = definition.fields[j];
       var code;
+
+      if (field.isDeprecated) {
+        continue;
+      }
 
       switch (field.type) {
         case 'bool': {
@@ -1053,6 +1079,11 @@ var kiwi = exports || kiwi || {}, exports;
 
           for (var j = 0; j < fields.length; j++) {
             var field = fields[j];
+
+            if (field.isDeprecated) {
+              continue;
+            }
+
             var name = cppFieldName(field);
             var type = cppType(definitions, field, field.isArray);
             var flagIndex = cppFlagIndex(j);
@@ -1087,6 +1118,11 @@ var kiwi = exports || kiwi || {}, exports;
 
           for (var j = 0; j < fields.length; j++) {
             var field = fields[j];
+
+            if (field.isDeprecated) {
+              continue;
+            }
+
             var name = cppFieldName(field);
             var type = cppType(definitions, field, field.isArray);
 
@@ -1108,6 +1144,10 @@ var kiwi = exports || kiwi || {}, exports;
             var type = cppType(definitions, field, field.isArray);
             var flagIndex = cppFlagIndex(j);
             var flagMask = cppFlagMask(j);
+
+            if (field.isDeprecated) {
+              continue;
+            }
 
             if (cppIsFieldPointer(definitions, field)) {
               cpp.push(type + ' *' + definition.name + '::' + field.name + '() {');
@@ -1165,6 +1205,11 @@ var kiwi = exports || kiwi || {}, exports;
 
           for (var j = 0; j < fields.length; j++) {
             var field = fields[j];
+
+            if (field.isDeprecated) {
+              continue;
+            }
+
             var name = cppFieldName(field);
             var value = field.isArray ? '_it' : name;
             var flagIndex = cppFlagIndex(j);
@@ -1328,36 +1373,54 @@ var kiwi = exports || kiwi || {}, exports;
             var indent = '  ';
 
             if (definition.kind === 'MESSAGE') {
-              cpp.push('      case ' + field.value + ':');
+              cpp.push('      case ' + field.value + ': {');
               indent = '        ';
             }
 
             if (field.isArray) {
               cpp.push(indent + 'if (!_bb.readVarUint(_count)) return false;');
-              cpp.push(indent + 'for (' + type + ' &_it : set_' + field.name + '(_pool, _count)) if (!' + code + ') return false;');
+              if (field.isDeprecated) {
+                cpp.push(indent + 'for (' + type + ' &_it : _pool.array<' + cppType(definitions, field, false) + '>(_count)) if (!' + code + ') return false;');
+              } else {
+                cpp.push(indent + 'for (' + type + ' &_it : set_' + field.name + '(_pool, _count)) if (!' + code + ') return false;');
+              }
             }
 
             else {
-              if (isPointer) {
-                cpp.push(indent + name + ' = _pool.allocate<' + type + '>();');
+              if (field.isDeprecated) {
+                if (isPointer) {
+                  cpp.push(indent + type + ' *' + name + ' = _pool.allocate<' + type + '>();');
+                } else {
+                  cpp.push(indent + type + ' ' + name + ' = {};');
+                }
+
+                cpp.push(indent + 'if (!' + code + ') return false;');
               }
 
-              cpp.push(indent + 'if (!' + code + ') return false;');
+              else {
+                if (isPointer) {
+                  cpp.push(indent + name + ' = _pool.allocate<' + type + '>();');
+                }
 
-              if (!isPointer) {
-                cpp.push(indent + 'set_' + field.name + '(' + name + ');');
+                cpp.push(indent + 'if (!' + code + ') return false;');
+
+                if (!isPointer) {
+                  cpp.push(indent + 'set_' + field.name + '(' + name + ');');
+                }
               }
             }
 
             if (definition.kind === 'MESSAGE') {
               cpp.push('        break;');
+              cpp.push('      }');
             }
           }
 
           if (definition.kind === 'MESSAGE') {
-            cpp.push('      default:');
+            cpp.push('      default: {');
             cpp.push('        if (!_schema || !_schema->skip' + definition.name + 'Field(_bb, _type)) return false;');
             cpp.push('        break;');
+            cpp.push('      }');
             cpp.push('    }');
             cpp.push('  }');
           }
@@ -1489,7 +1552,7 @@ var kiwi = exports || kiwi || {}, exports;
     for (var i = 0; i < schema.definitions.length; i++) {
       var definition = schema.definitions[i];
       if (definition.kind === 'MESSAGE') {
-      lines.push('');
+        lines.push('');
         lines.push(indent + '  def skip' + definition.name + 'Field(bb Kiwi.ByteBuffer, id int) {');
         lines.push(indent + '    _schema.skipField(bb, _index' + definition.name + ', id)');
         lines.push(indent + '  }');
@@ -1550,6 +1613,9 @@ var kiwi = exports || kiwi || {}, exports;
 
           for (var j = 0; j < definition.fields.length; j++) {
             var field = definition.fields[j];
+            if (field.isDeprecated) {
+              continue;
+            }
             lines.push(indent + '  var _' + field.name + ' ' + skewTypeForField(field) + ' = ' + skewDefaultValueForField(definitions, field));
           }
 
@@ -1557,6 +1623,11 @@ var kiwi = exports || kiwi || {}, exports;
 
           for (var j = 0; j < definition.fields.length; j++) {
             var field = definition.fields[j];
+
+            if (field.isDeprecated) {
+              continue;
+            }
+
             var type = skewTypeForField(field);
             var flags = '_flags' + (j >> 5);
             var mask = '' + (1 << (j % 31));
@@ -1583,6 +1654,11 @@ var kiwi = exports || kiwi || {}, exports;
 
           for (var j = 0; j < definition.fields.length; j++) {
             var field = definition.fields[j];
+
+            if (field.isDeprecated) {
+              continue;
+            }
+
             var value = '_' + field.name;
             var code;
 
@@ -1764,13 +1840,23 @@ var kiwi = exports || kiwi || {}, exports;
             }
 
             if (field.isArray) {
-              lines.push(nestedIndent + '  count = bb.readVarUint');
-              lines.push(nestedIndent + '  self.' + field.name + ' = []');
-              lines.push(nestedIndent + '  for array = self._' + field.name + '; count != 0; count-- {');
-              lines.push(nestedIndent + '    array.append(' + code + ')');
-              lines.push(nestedIndent + '  }');
+              if (field.isDeprecated) {
+                lines.push(nestedIndent + '  for i in 0..bb.readVarUint {');
+                lines.push(nestedIndent + '    ' + code);
+                lines.push(nestedIndent + '  }');
+              } else {
+                lines.push(nestedIndent + '  count = bb.readVarUint');
+                lines.push(nestedIndent + '  self.' + field.name + ' = []');
+                lines.push(nestedIndent + '  for array = self._' + field.name + '; count != 0; count-- {');
+                lines.push(nestedIndent + '    array.append(' + code + ')');
+                lines.push(nestedIndent + '  }');
+              }
             } else {
-              lines.push(nestedIndent + '  self.' + field.name + ' = ' + code);
+              if (field.isDeprecated) {
+                lines.push(nestedIndent + '  ' + code);
+              } else {
+                lines.push(nestedIndent + '  self.' + field.name + ' = ' + code);
+              }
             }
 
             if (definition.kind === 'MESSAGE') {
@@ -1856,6 +1942,10 @@ var kiwi = exports || kiwi || {}, exports;
         for (var j = 0; j < definition.fields.length; j++) {
           var field = definition.fields[j];
           var type;
+
+          if (field.isDeprecated) {
+            continue;
+          }
 
           switch (field.type) {
             case 'bool': type = 'boolean'; break;
