@@ -1343,3 +1343,205 @@ test["encodeDeprecatedMessage"] = function(message, bb) {
 
   if (isTopLevel) return bb.toUint8Array();
 };
+
+test["decodeSortedStruct"] = function(bb) {
+  var result = {};
+  if (!(bb instanceof this.ByteBuffer)) {
+    bb = new this.ByteBuffer(bb);
+  }
+
+  result["a1"] = !!bb.readByte();
+  result["b1"] = bb.readByte();
+  result["c1"] = bb.readVarInt();
+  result["d1"] = bb.readVarUint();
+  result["e1"] = bb.readVarFloat();
+  result["f1"] = bb.readString();
+  result["a2"] = !!bb.readByte();
+  result["b2"] = bb.readByte();
+  result["c2"] = bb.readVarInt();
+  result["d2"] = bb.readVarUint();
+  result["e2"] = bb.readVarFloat();
+  result["f2"] = bb.readString();
+  var values = result["a3"] = [];
+  var length = bb.readVarUint();
+  while (length-- > 0) values.push(!!bb.readByte());
+  var values = result["b3"] = [];
+  var length = bb.readVarUint();
+  while (length-- > 0) values.push(bb.readByte());
+  var values = result["c3"] = [];
+  var length = bb.readVarUint();
+  while (length-- > 0) values.push(bb.readVarInt());
+  var values = result["d3"] = [];
+  var length = bb.readVarUint();
+  while (length-- > 0) values.push(bb.readVarUint());
+  var values = result["e3"] = [];
+  var length = bb.readVarUint();
+  while (length-- > 0) values.push(bb.readVarFloat());
+  var values = result["f3"] = [];
+  var length = bb.readVarUint();
+  while (length-- > 0) values.push(bb.readString());
+  return result;
+};
+
+test["encodeSortedStruct"] = function(message, bb) {
+  var isTopLevel = !bb;
+  if (isTopLevel) bb = new this.ByteBuffer();
+
+  var value = message["a1"];
+  if (value != null) {
+    bb.writeByte(value);
+  } else {
+    throw new Error("Missing required field \"a1\"");
+  }
+
+  var value = message["b1"];
+  if (value != null) {
+    bb.writeByte(value);
+  } else {
+    throw new Error("Missing required field \"b1\"");
+  }
+
+  var value = message["c1"];
+  if (value != null) {
+    bb.writeVarInt(value);
+  } else {
+    throw new Error("Missing required field \"c1\"");
+  }
+
+  var value = message["d1"];
+  if (value != null) {
+    bb.writeVarUint(value);
+  } else {
+    throw new Error("Missing required field \"d1\"");
+  }
+
+  var value = message["e1"];
+  if (value != null) {
+    bb.writeVarFloat(value);
+  } else {
+    throw new Error("Missing required field \"e1\"");
+  }
+
+  var value = message["f1"];
+  if (value != null) {
+    bb.writeString(value);
+  } else {
+    throw new Error("Missing required field \"f1\"");
+  }
+
+  var value = message["a2"];
+  if (value != null) {
+    bb.writeByte(value);
+  } else {
+    throw new Error("Missing required field \"a2\"");
+  }
+
+  var value = message["b2"];
+  if (value != null) {
+    bb.writeByte(value);
+  } else {
+    throw new Error("Missing required field \"b2\"");
+  }
+
+  var value = message["c2"];
+  if (value != null) {
+    bb.writeVarInt(value);
+  } else {
+    throw new Error("Missing required field \"c2\"");
+  }
+
+  var value = message["d2"];
+  if (value != null) {
+    bb.writeVarUint(value);
+  } else {
+    throw new Error("Missing required field \"d2\"");
+  }
+
+  var value = message["e2"];
+  if (value != null) {
+    bb.writeVarFloat(value);
+  } else {
+    throw new Error("Missing required field \"e2\"");
+  }
+
+  var value = message["f2"];
+  if (value != null) {
+    bb.writeString(value);
+  } else {
+    throw new Error("Missing required field \"f2\"");
+  }
+
+  var value = message["a3"];
+  if (value != null) {
+    var values = value, n = values.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < n; i++) {
+      value = values[i];
+      bb.writeByte(value);
+    }
+  } else {
+    throw new Error("Missing required field \"a3\"");
+  }
+
+  var value = message["b3"];
+  if (value != null) {
+    var values = value, n = values.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < n; i++) {
+      value = values[i];
+      bb.writeByte(value);
+    }
+  } else {
+    throw new Error("Missing required field \"b3\"");
+  }
+
+  var value = message["c3"];
+  if (value != null) {
+    var values = value, n = values.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < n; i++) {
+      value = values[i];
+      bb.writeVarInt(value);
+    }
+  } else {
+    throw new Error("Missing required field \"c3\"");
+  }
+
+  var value = message["d3"];
+  if (value != null) {
+    var values = value, n = values.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < n; i++) {
+      value = values[i];
+      bb.writeVarUint(value);
+    }
+  } else {
+    throw new Error("Missing required field \"d3\"");
+  }
+
+  var value = message["e3"];
+  if (value != null) {
+    var values = value, n = values.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < n; i++) {
+      value = values[i];
+      bb.writeVarFloat(value);
+    }
+  } else {
+    throw new Error("Missing required field \"e3\"");
+  }
+
+  var value = message["f3"];
+  if (value != null) {
+    var values = value, n = values.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < n; i++) {
+      value = values[i];
+      bb.writeString(value);
+    }
+  } else {
+    throw new Error("Missing required field \"f3\"");
+  }
+
+  if (isTopLevel) return bb.toUint8Array();
+};

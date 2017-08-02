@@ -85,6 +85,7 @@ class CompoundArrayMessage;
 class RecursiveMessage;
 class NonDeprecatedMessage;
 class DeprecatedMessage;
+class SortedStruct;
 
 class EnumStruct {
 public:
@@ -245,8 +246,8 @@ public:
 
 private:
   uint32_t _flags[1] = {};
-  uint32_t _data_a = {};
   CompoundStruct *_data_b = {};
+  uint32_t _data_a = {};
   uint32_t _data_c = {};
 };
 
@@ -388,8 +389,8 @@ public:
 
 private:
   uint32_t _flags[1] = {};
-  uint32_t _data_a = {};
   CompoundMessage *_data_b = {};
+  uint32_t _data_a = {};
   uint32_t _data_c = {};
 };
 
@@ -680,12 +681,12 @@ public:
 
 private:
   uint32_t _flags[1] = {};
-  uint32_t _data_a = {};
-  uint32_t _data_b = {};
   kiwi::Array<uint32_t> _data_c = {};
   kiwi::Array<uint32_t> _data_d = {};
   ByteStruct *_data_e = {};
   ByteStruct *_data_f = {};
+  uint32_t _data_a = {};
+  uint32_t _data_b = {};
   uint32_t _data_g = {};
 };
 
@@ -714,10 +715,111 @@ public:
 
 private:
   uint32_t _flags[1] = {};
-  uint32_t _data_a = {};
   kiwi::Array<uint32_t> _data_c = {};
   ByteStruct *_data_e = {};
+  uint32_t _data_a = {};
   uint32_t _data_g = {};
+};
+
+class SortedStruct {
+public:
+  SortedStruct() { (void)_flags; }
+
+  bool *a1();
+  const bool *a1() const;
+  void set_a1(const bool &value);
+
+  uint8_t *b1();
+  const uint8_t *b1() const;
+  void set_b1(const uint8_t &value);
+
+  int32_t *c1();
+  const int32_t *c1() const;
+  void set_c1(const int32_t &value);
+
+  uint32_t *d1();
+  const uint32_t *d1() const;
+  void set_d1(const uint32_t &value);
+
+  float *e1();
+  const float *e1() const;
+  void set_e1(const float &value);
+
+  kiwi::String *f1();
+  const kiwi::String *f1() const;
+  void set_f1(const kiwi::String &value);
+
+  bool *a2();
+  const bool *a2() const;
+  void set_a2(const bool &value);
+
+  uint8_t *b2();
+  const uint8_t *b2() const;
+  void set_b2(const uint8_t &value);
+
+  int32_t *c2();
+  const int32_t *c2() const;
+  void set_c2(const int32_t &value);
+
+  uint32_t *d2();
+  const uint32_t *d2() const;
+  void set_d2(const uint32_t &value);
+
+  float *e2();
+  const float *e2() const;
+  void set_e2(const float &value);
+
+  kiwi::String *f2();
+  const kiwi::String *f2() const;
+  void set_f2(const kiwi::String &value);
+
+  kiwi::Array<bool> *a3();
+  const kiwi::Array<bool> *a3() const;
+  kiwi::Array<bool> &set_a3(kiwi::MemoryPool &pool, uint32_t count);
+
+  kiwi::Array<uint8_t> *b3();
+  const kiwi::Array<uint8_t> *b3() const;
+  kiwi::Array<uint8_t> &set_b3(kiwi::MemoryPool &pool, uint32_t count);
+
+  kiwi::Array<int32_t> *c3();
+  const kiwi::Array<int32_t> *c3() const;
+  kiwi::Array<int32_t> &set_c3(kiwi::MemoryPool &pool, uint32_t count);
+
+  kiwi::Array<uint32_t> *d3();
+  const kiwi::Array<uint32_t> *d3() const;
+  kiwi::Array<uint32_t> &set_d3(kiwi::MemoryPool &pool, uint32_t count);
+
+  kiwi::Array<float> *e3();
+  const kiwi::Array<float> *e3() const;
+  kiwi::Array<float> &set_e3(kiwi::MemoryPool &pool, uint32_t count);
+
+  kiwi::Array<kiwi::String> *f3();
+  const kiwi::Array<kiwi::String> *f3() const;
+  kiwi::Array<kiwi::String> &set_f3(kiwi::MemoryPool &pool, uint32_t count);
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+
+private:
+  uint32_t _flags[1] = {};
+  kiwi::String _data_f1 = {};
+  kiwi::String _data_f2 = {};
+  kiwi::Array<bool> _data_a3 = {};
+  kiwi::Array<uint8_t> _data_b3 = {};
+  kiwi::Array<int32_t> _data_c3 = {};
+  kiwi::Array<uint32_t> _data_d3 = {};
+  kiwi::Array<float> _data_e3 = {};
+  kiwi::Array<kiwi::String> _data_f3 = {};
+  int32_t _data_c1 = {};
+  uint32_t _data_d1 = {};
+  float _data_e1 = {};
+  int32_t _data_c2 = {};
+  uint32_t _data_d2 = {};
+  float _data_e2 = {};
+  bool _data_a1 = {};
+  uint8_t _data_b1 = {};
+  bool _data_a2 = {};
+  uint8_t _data_b2 = {};
 };
 
 #ifdef IMPLEMENT_SCHEMA_H
@@ -2342,6 +2444,309 @@ bool DeprecatedMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, c
       }
     }
   }
+}
+
+bool *SortedStruct::a1() {
+  return _flags[0] & 1 ? &_data_a1 : nullptr;
+}
+
+const bool *SortedStruct::a1() const {
+  return _flags[0] & 1 ? &_data_a1 : nullptr;
+}
+
+void SortedStruct::set_a1(const bool &value) {
+  _flags[0] |= 1; _data_a1 = value;
+}
+
+uint8_t *SortedStruct::b1() {
+  return _flags[0] & 2 ? &_data_b1 : nullptr;
+}
+
+const uint8_t *SortedStruct::b1() const {
+  return _flags[0] & 2 ? &_data_b1 : nullptr;
+}
+
+void SortedStruct::set_b1(const uint8_t &value) {
+  _flags[0] |= 2; _data_b1 = value;
+}
+
+int32_t *SortedStruct::c1() {
+  return _flags[0] & 4 ? &_data_c1 : nullptr;
+}
+
+const int32_t *SortedStruct::c1() const {
+  return _flags[0] & 4 ? &_data_c1 : nullptr;
+}
+
+void SortedStruct::set_c1(const int32_t &value) {
+  _flags[0] |= 4; _data_c1 = value;
+}
+
+uint32_t *SortedStruct::d1() {
+  return _flags[0] & 8 ? &_data_d1 : nullptr;
+}
+
+const uint32_t *SortedStruct::d1() const {
+  return _flags[0] & 8 ? &_data_d1 : nullptr;
+}
+
+void SortedStruct::set_d1(const uint32_t &value) {
+  _flags[0] |= 8; _data_d1 = value;
+}
+
+float *SortedStruct::e1() {
+  return _flags[0] & 16 ? &_data_e1 : nullptr;
+}
+
+const float *SortedStruct::e1() const {
+  return _flags[0] & 16 ? &_data_e1 : nullptr;
+}
+
+void SortedStruct::set_e1(const float &value) {
+  _flags[0] |= 16; _data_e1 = value;
+}
+
+kiwi::String *SortedStruct::f1() {
+  return _flags[0] & 32 ? &_data_f1 : nullptr;
+}
+
+const kiwi::String *SortedStruct::f1() const {
+  return _flags[0] & 32 ? &_data_f1 : nullptr;
+}
+
+void SortedStruct::set_f1(const kiwi::String &value) {
+  _flags[0] |= 32; _data_f1 = value;
+}
+
+bool *SortedStruct::a2() {
+  return _flags[0] & 64 ? &_data_a2 : nullptr;
+}
+
+const bool *SortedStruct::a2() const {
+  return _flags[0] & 64 ? &_data_a2 : nullptr;
+}
+
+void SortedStruct::set_a2(const bool &value) {
+  _flags[0] |= 64; _data_a2 = value;
+}
+
+uint8_t *SortedStruct::b2() {
+  return _flags[0] & 128 ? &_data_b2 : nullptr;
+}
+
+const uint8_t *SortedStruct::b2() const {
+  return _flags[0] & 128 ? &_data_b2 : nullptr;
+}
+
+void SortedStruct::set_b2(const uint8_t &value) {
+  _flags[0] |= 128; _data_b2 = value;
+}
+
+int32_t *SortedStruct::c2() {
+  return _flags[0] & 256 ? &_data_c2 : nullptr;
+}
+
+const int32_t *SortedStruct::c2() const {
+  return _flags[0] & 256 ? &_data_c2 : nullptr;
+}
+
+void SortedStruct::set_c2(const int32_t &value) {
+  _flags[0] |= 256; _data_c2 = value;
+}
+
+uint32_t *SortedStruct::d2() {
+  return _flags[0] & 512 ? &_data_d2 : nullptr;
+}
+
+const uint32_t *SortedStruct::d2() const {
+  return _flags[0] & 512 ? &_data_d2 : nullptr;
+}
+
+void SortedStruct::set_d2(const uint32_t &value) {
+  _flags[0] |= 512; _data_d2 = value;
+}
+
+float *SortedStruct::e2() {
+  return _flags[0] & 1024 ? &_data_e2 : nullptr;
+}
+
+const float *SortedStruct::e2() const {
+  return _flags[0] & 1024 ? &_data_e2 : nullptr;
+}
+
+void SortedStruct::set_e2(const float &value) {
+  _flags[0] |= 1024; _data_e2 = value;
+}
+
+kiwi::String *SortedStruct::f2() {
+  return _flags[0] & 2048 ? &_data_f2 : nullptr;
+}
+
+const kiwi::String *SortedStruct::f2() const {
+  return _flags[0] & 2048 ? &_data_f2 : nullptr;
+}
+
+void SortedStruct::set_f2(const kiwi::String &value) {
+  _flags[0] |= 2048; _data_f2 = value;
+}
+
+kiwi::Array<bool> *SortedStruct::a3() {
+  return _flags[0] & 4096 ? &_data_a3 : nullptr;
+}
+
+const kiwi::Array<bool> *SortedStruct::a3() const {
+  return _flags[0] & 4096 ? &_data_a3 : nullptr;
+}
+
+kiwi::Array<bool> &SortedStruct::set_a3(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 4096; return _data_a3 = pool.array<bool>(count);
+}
+
+kiwi::Array<uint8_t> *SortedStruct::b3() {
+  return _flags[0] & 8192 ? &_data_b3 : nullptr;
+}
+
+const kiwi::Array<uint8_t> *SortedStruct::b3() const {
+  return _flags[0] & 8192 ? &_data_b3 : nullptr;
+}
+
+kiwi::Array<uint8_t> &SortedStruct::set_b3(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 8192; return _data_b3 = pool.array<uint8_t>(count);
+}
+
+kiwi::Array<int32_t> *SortedStruct::c3() {
+  return _flags[0] & 16384 ? &_data_c3 : nullptr;
+}
+
+const kiwi::Array<int32_t> *SortedStruct::c3() const {
+  return _flags[0] & 16384 ? &_data_c3 : nullptr;
+}
+
+kiwi::Array<int32_t> &SortedStruct::set_c3(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 16384; return _data_c3 = pool.array<int32_t>(count);
+}
+
+kiwi::Array<uint32_t> *SortedStruct::d3() {
+  return _flags[0] & 32768 ? &_data_d3 : nullptr;
+}
+
+const kiwi::Array<uint32_t> *SortedStruct::d3() const {
+  return _flags[0] & 32768 ? &_data_d3 : nullptr;
+}
+
+kiwi::Array<uint32_t> &SortedStruct::set_d3(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 32768; return _data_d3 = pool.array<uint32_t>(count);
+}
+
+kiwi::Array<float> *SortedStruct::e3() {
+  return _flags[0] & 65536 ? &_data_e3 : nullptr;
+}
+
+const kiwi::Array<float> *SortedStruct::e3() const {
+  return _flags[0] & 65536 ? &_data_e3 : nullptr;
+}
+
+kiwi::Array<float> &SortedStruct::set_e3(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 65536; return _data_e3 = pool.array<float>(count);
+}
+
+kiwi::Array<kiwi::String> *SortedStruct::f3() {
+  return _flags[0] & 131072 ? &_data_f3 : nullptr;
+}
+
+const kiwi::Array<kiwi::String> *SortedStruct::f3() const {
+  return _flags[0] & 131072 ? &_data_f3 : nullptr;
+}
+
+kiwi::Array<kiwi::String> &SortedStruct::set_f3(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 131072; return _data_f3 = pool.array<kiwi::String>(count);
+}
+
+bool SortedStruct::encode(kiwi::ByteBuffer &_bb) {
+  if (a1() == nullptr) return false;
+  _bb.writeByte(_data_a1);
+  if (b1() == nullptr) return false;
+  _bb.writeByte(_data_b1);
+  if (c1() == nullptr) return false;
+  _bb.writeVarInt(_data_c1);
+  if (d1() == nullptr) return false;
+  _bb.writeVarUint(_data_d1);
+  if (e1() == nullptr) return false;
+  _bb.writeVarFloat(_data_e1);
+  if (f1() == nullptr) return false;
+  _bb.writeString(_data_f1.c_str());
+  if (a2() == nullptr) return false;
+  _bb.writeByte(_data_a2);
+  if (b2() == nullptr) return false;
+  _bb.writeByte(_data_b2);
+  if (c2() == nullptr) return false;
+  _bb.writeVarInt(_data_c2);
+  if (d2() == nullptr) return false;
+  _bb.writeVarUint(_data_d2);
+  if (e2() == nullptr) return false;
+  _bb.writeVarFloat(_data_e2);
+  if (f2() == nullptr) return false;
+  _bb.writeString(_data_f2.c_str());
+  if (a3() == nullptr) return false;
+  _bb.writeVarUint(_data_a3.size());
+  for (bool &_it : _data_a3) _bb.writeByte(_it);
+  if (b3() == nullptr) return false;
+  _bb.writeVarUint(_data_b3.size());
+  for (uint8_t &_it : _data_b3) _bb.writeByte(_it);
+  if (c3() == nullptr) return false;
+  _bb.writeVarUint(_data_c3.size());
+  for (int32_t &_it : _data_c3) _bb.writeVarInt(_it);
+  if (d3() == nullptr) return false;
+  _bb.writeVarUint(_data_d3.size());
+  for (uint32_t &_it : _data_d3) _bb.writeVarUint(_it);
+  if (e3() == nullptr) return false;
+  _bb.writeVarUint(_data_e3.size());
+  for (float &_it : _data_e3) _bb.writeVarFloat(_it);
+  if (f3() == nullptr) return false;
+  _bb.writeVarUint(_data_f3.size());
+  for (kiwi::String &_it : _data_f3) _bb.writeString(_it.c_str());
+  return true;
+}
+
+bool SortedStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+  uint32_t _count;
+  if (!_bb.readByte(_data_a1)) return false;
+  set_a1(_data_a1);
+  if (!_bb.readByte(_data_b1)) return false;
+  set_b1(_data_b1);
+  if (!_bb.readVarInt(_data_c1)) return false;
+  set_c1(_data_c1);
+  if (!_bb.readVarUint(_data_d1)) return false;
+  set_d1(_data_d1);
+  if (!_bb.readVarFloat(_data_e1)) return false;
+  set_e1(_data_e1);
+  if (!_bb.readString(_data_f1, _pool)) return false;
+  set_f1(_data_f1);
+  if (!_bb.readByte(_data_a2)) return false;
+  set_a2(_data_a2);
+  if (!_bb.readByte(_data_b2)) return false;
+  set_b2(_data_b2);
+  if (!_bb.readVarInt(_data_c2)) return false;
+  set_c2(_data_c2);
+  if (!_bb.readVarUint(_data_d2)) return false;
+  set_d2(_data_d2);
+  if (!_bb.readVarFloat(_data_e2)) return false;
+  set_e2(_data_e2);
+  if (!_bb.readString(_data_f2, _pool)) return false;
+  set_f2(_data_f2);
+  if (!_bb.readVarUint(_count)) return false;
+  for (bool &_it : set_a3(_pool, _count)) if (!_bb.readByte(_it)) return false;
+  if (!_bb.readVarUint(_count)) return false;
+  for (uint8_t &_it : set_b3(_pool, _count)) if (!_bb.readByte(_it)) return false;
+  if (!_bb.readVarUint(_count)) return false;
+  for (int32_t &_it : set_c3(_pool, _count)) if (!_bb.readVarInt(_it)) return false;
+  if (!_bb.readVarUint(_count)) return false;
+  for (uint32_t &_it : set_d3(_pool, _count)) if (!_bb.readVarUint(_it)) return false;
+  if (!_bb.readVarUint(_count)) return false;
+  for (float &_it : set_e3(_pool, _count)) if (!_bb.readVarFloat(_it)) return false;
+  if (!_bb.readVarUint(_count)) return false;
+  for (kiwi::String &_it : set_f3(_pool, _count)) if (!_bb.readString(_it, _pool)) return false;
+  return true;
 }
 
 #endif

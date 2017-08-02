@@ -1116,8 +1116,17 @@ var kiwi = exports || kiwi || {}, exports;
           cpp.push('private:');
           cpp.push('  uint32_t _flags[' + (fields.length + 31 >> 5) + '] = {};');
 
-          for (var j = 0; j < fields.length; j++) {
-            var field = fields[j];
+          // Sort fields by size since that makes the resulting struct smaller
+          var sizes = {'bool': 1, 'byte': 1, 'int': 4, 'uint': 4, 'float': 4};
+          var sortedFields = fields.slice().sort(function(a, b) {
+            var sizeA = !a.isArray && sizes[a.type] || 8;
+            var sizeB = !b.isArray && sizes[b.type] || 8;
+            if (sizeA !== sizeB) return sizeB - sizeA;
+            return fields.indexOf(a) - fields.indexOf(b); // Make sure the sort is stable
+          });
+
+          for (var j = 0; j < sortedFields.length; j++) {
+            var field = sortedFields[j];
 
             if (field.isDeprecated) {
               continue;

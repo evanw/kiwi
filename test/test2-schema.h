@@ -69,11 +69,11 @@ public:
 
 private:
   uint32_t _flags[1] = {};
-  int32_t _data_x = {};
   Struct *_data_y = {};
   Struct2 *_data_z = {};
   Message *_data_c = {};
   Message2 *_data_d = {};
+  int32_t _data_x = {};
 };
 
 class Struct2 {

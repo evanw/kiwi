@@ -62,3 +62,27 @@ message DeprecatedMessage {
   ByteStruct f = 6 [deprecated];
   uint g = 7;
 }
+
+// This tests sorting of fields in C++
+struct SortedStruct {
+  bool a1;
+  byte b1;
+  int c1;
+  uint d1;
+  float e1;
+  string f1;
+
+  bool a2;
+  byte b2;
+  int c2;
+  uint d2;
+  float e2;
+  string f2;
+
+  bool[] a3;
+  byte[] b3;
+  int[] c3;
+  uint[] d3;
+  float[] e3;
+  string[] f3;
+}

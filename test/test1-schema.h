@@ -53,8 +53,8 @@ public:
 
 private:
   uint32_t _flags[1] = {};
-  int32_t _data_x = {};
   Struct *_data_y = {};
+  int32_t _data_x = {};
 };
 
 #ifdef IMPLEMENT_SCHEMA_H

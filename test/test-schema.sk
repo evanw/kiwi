@@ -2644,4 +2644,416 @@ namespace test {
       return self
     }
   }
+
+  class SortedStruct {
+    var _flags0 = 0
+    var _a1 bool = false
+    var _b1 int = 0
+    var _c1 int = 0
+    var _d1 int = 0
+    var _e1 double = 0.0
+    var _f1 string = null
+    var _a2 bool = false
+    var _b2 int = 0
+    var _c2 int = 0
+    var _d2 int = 0
+    var _e2 double = 0.0
+    var _f2 string = null
+    var _a3 List<bool> = null
+    var _b3 List<int> = null
+    var _c3 List<int> = null
+    var _d3 List<int> = null
+    var _e3 List<double> = null
+    var _f3 List<string> = null
+
+    def has_a1 bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def a1 bool {
+      assert(has_a1)
+      return _a1
+    }
+
+    def a1=(value bool) {
+      _a1 = value
+      _flags0 |= 1
+    }
+
+    def has_b1 bool {
+      return (_flags0 & 2) != 0
+    }
+
+    def b1 int {
+      assert(has_b1)
+      return _b1
+    }
+
+    def b1=(value int) {
+      _b1 = value
+      _flags0 |= 2
+    }
+
+    def has_c1 bool {
+      return (_flags0 & 4) != 0
+    }
+
+    def c1 int {
+      assert(has_c1)
+      return _c1
+    }
+
+    def c1=(value int) {
+      _c1 = value
+      _flags0 |= 4
+    }
+
+    def has_d1 bool {
+      return (_flags0 & 8) != 0
+    }
+
+    def d1 int {
+      assert(has_d1)
+      return _d1
+    }
+
+    def d1=(value int) {
+      _d1 = value
+      _flags0 |= 8
+    }
+
+    def has_e1 bool {
+      return (_flags0 & 16) != 0
+    }
+
+    def e1 double {
+      assert(has_e1)
+      return _e1
+    }
+
+    def e1=(value double) {
+      _e1 = value
+      _flags0 |= 16
+    }
+
+    def has_f1 bool {
+      return (_flags0 & 32) != 0
+    }
+
+    def f1 string {
+      assert(has_f1)
+      return _f1
+    }
+
+    def f1=(value string) {
+      _f1 = value
+      _flags0 |= 32
+    }
+
+    def has_a2 bool {
+      return (_flags0 & 64) != 0
+    }
+
+    def a2 bool {
+      assert(has_a2)
+      return _a2
+    }
+
+    def a2=(value bool) {
+      _a2 = value
+      _flags0 |= 64
+    }
+
+    def has_b2 bool {
+      return (_flags0 & 128) != 0
+    }
+
+    def b2 int {
+      assert(has_b2)
+      return _b2
+    }
+
+    def b2=(value int) {
+      _b2 = value
+      _flags0 |= 128
+    }
+
+    def has_c2 bool {
+      return (_flags0 & 256) != 0
+    }
+
+    def c2 int {
+      assert(has_c2)
+      return _c2
+    }
+
+    def c2=(value int) {
+      _c2 = value
+      _flags0 |= 256
+    }
+
+    def has_d2 bool {
+      return (_flags0 & 512) != 0
+    }
+
+    def d2 int {
+      assert(has_d2)
+      return _d2
+    }
+
+    def d2=(value int) {
+      _d2 = value
+      _flags0 |= 512
+    }
+
+    def has_e2 bool {
+      return (_flags0 & 1024) != 0
+    }
+
+    def e2 double {
+      assert(has_e2)
+      return _e2
+    }
+
+    def e2=(value double) {
+      _e2 = value
+      _flags0 |= 1024
+    }
+
+    def has_f2 bool {
+      return (_flags0 & 2048) != 0
+    }
+
+    def f2 string {
+      assert(has_f2)
+      return _f2
+    }
+
+    def f2=(value string) {
+      _f2 = value
+      _flags0 |= 2048
+    }
+
+    def has_a3 bool {
+      return (_flags0 & 4096) != 0
+    }
+
+    def a3 List<bool> {
+      assert(has_a3)
+      return _a3
+    }
+
+    def a3=(value List<bool>) {
+      _a3 = value
+      _flags0 |= 4096
+    }
+
+    def has_b3 bool {
+      return (_flags0 & 8192) != 0
+    }
+
+    def b3 List<int> {
+      assert(has_b3)
+      return _b3
+    }
+
+    def b3=(value List<int>) {
+      _b3 = value
+      _flags0 |= 8192
+    }
+
+    def has_c3 bool {
+      return (_flags0 & 16384) != 0
+    }
+
+    def c3 List<int> {
+      assert(has_c3)
+      return _c3
+    }
+
+    def c3=(value List<int>) {
+      _c3 = value
+      _flags0 |= 16384
+    }
+
+    def has_d3 bool {
+      return (_flags0 & 32768) != 0
+    }
+
+    def d3 List<int> {
+      assert(has_d3)
+      return _d3
+    }
+
+    def d3=(value List<int>) {
+      _d3 = value
+      _flags0 |= 32768
+    }
+
+    def has_e3 bool {
+      return (_flags0 & 65536) != 0
+    }
+
+    def e3 List<double> {
+      assert(has_e3)
+      return _e3
+    }
+
+    def e3=(value List<double>) {
+      _e3 = value
+      _flags0 |= 65536
+    }
+
+    def has_f3 bool {
+      return (_flags0 & 131072) != 0
+    }
+
+    def f3 List<string> {
+      assert(has_f3)
+      return _f3
+    }
+
+    def f3=(value List<string>) {
+      _f3 = value
+      _flags0 |= 131072
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_a1)
+      bb.writeByte(_a1 as int)
+
+      assert(has_b1)
+      bb.writeByte(_b1)
+
+      assert(has_c1)
+      bb.writeVarInt(_c1)
+
+      assert(has_d1)
+      bb.writeVarUint(_d1)
+
+      assert(has_e1)
+      bb.writeVarFloat(_e1)
+
+      assert(has_f1)
+      bb.writeString(_f1)
+
+      assert(has_a2)
+      bb.writeByte(_a2 as int)
+
+      assert(has_b2)
+      bb.writeByte(_b2)
+
+      assert(has_c2)
+      bb.writeVarInt(_c2)
+
+      assert(has_d2)
+      bb.writeVarUint(_d2)
+
+      assert(has_e2)
+      bb.writeVarFloat(_e2)
+
+      assert(has_f2)
+      bb.writeString(_f2)
+
+      assert(has_a3)
+      bb.writeVarUint(_a3.count)
+      for value in _a3 {
+        bb.writeByte(value as int)
+      }
+
+      assert(has_b3)
+      bb.writeVarUint(_b3.count)
+      for value in _b3 {
+        bb.writeByte(value)
+      }
+
+      assert(has_c3)
+      bb.writeVarUint(_c3.count)
+      for value in _c3 {
+        bb.writeVarInt(value)
+      }
+
+      assert(has_d3)
+      bb.writeVarUint(_d3.count)
+      for value in _d3 {
+        bb.writeVarUint(value)
+      }
+
+      assert(has_e3)
+      bb.writeVarUint(_e3.count)
+      for value in _e3 {
+        bb.writeVarFloat(value)
+      }
+
+      assert(has_f3)
+      bb.writeVarUint(_f3.count)
+      for value in _f3 {
+        bb.writeString(value)
+      }
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace SortedStruct {
+    def decode(bytes Uint8Array) SortedStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
+    }
+
+    def decode(bytes Uint8Array, schema BinarySchema) SortedStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) SortedStruct {
+      var self = new
+      var count = 0
+      self.a1 = bb.readByte as bool
+      self.b1 = bb.readByte
+      self.c1 = bb.readVarInt
+      self.d1 = bb.readVarUint
+      self.e1 = bb.readVarFloat
+      self.f1 = bb.readString
+      self.a2 = bb.readByte as bool
+      self.b2 = bb.readByte
+      self.c2 = bb.readVarInt
+      self.d2 = bb.readVarUint
+      self.e2 = bb.readVarFloat
+      self.f2 = bb.readString
+      count = bb.readVarUint
+      self.a3 = []
+      for array = self._a3; count != 0; count-- {
+        array.append(bb.readByte as bool)
+      }
+      count = bb.readVarUint
+      self.b3 = []
+      for array = self._b3; count != 0; count-- {
+        array.append(bb.readByte)
+      }
+      count = bb.readVarUint
+      self.c3 = []
+      for array = self._c3; count != 0; count-- {
+        array.append(bb.readVarInt)
+      }
+      count = bb.readVarUint
+      self.d3 = []
+      for array = self._d3; count != 0; count-- {
+        array.append(bb.readVarUint)
+      }
+      count = bb.readVarUint
+      self.e3 = []
+      for array = self._e3; count != 0; count-- {
+        array.append(bb.readVarFloat)
+      }
+      count = bb.readVarUint
+      self.f3 = []
+      for array = self._f3; count != 0; count-- {
+        array.append(bb.readString)
+      }
+      return self
+    }
+  }
 }

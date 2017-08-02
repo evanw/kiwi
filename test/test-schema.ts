@@ -157,6 +157,27 @@ export namespace test {
     g?: number;
   }
 
+  export interface SortedStruct {
+    a1: boolean;
+    b1: number;
+    c1: number;
+    d1: number;
+    e1: number;
+    f1: string;
+    a2: boolean;
+    b2: number;
+    c2: number;
+    d2: number;
+    e2: number;
+    f2: string;
+    a3: boolean[];
+    b3: number[];
+    c3: number[];
+    d3: number[];
+    e3: number[];
+    f3: string[];
+  }
+
   export interface Schema {
     encodeEnumStruct(message: EnumStruct): Uint8Array;
     decodeEnumStruct(buffer: Uint8Array): EnumStruct;
@@ -226,5 +247,7 @@ export namespace test {
     decodeNonDeprecatedMessage(buffer: Uint8Array): NonDeprecatedMessage;
     encodeDeprecatedMessage(message: DeprecatedMessage): Uint8Array;
     decodeDeprecatedMessage(buffer: Uint8Array): DeprecatedMessage;
+    encodeSortedStruct(message: SortedStruct): Uint8Array;
+    decodeSortedStruct(buffer: Uint8Array): SortedStruct;
   }
 }
