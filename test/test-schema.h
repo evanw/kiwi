@@ -10,6 +10,7 @@ public:
   bool skipIntMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
   bool skipUintMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
   bool skipFloatMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
+  bool skipFloat32ArrayMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
   bool skipStringMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
   bool skipCompoundMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
   bool skipNestedMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
@@ -31,6 +32,7 @@ private:
   uint32_t _indexIntMessage = 0;
   uint32_t _indexUintMessage = 0;
   uint32_t _indexFloatMessage = 0;
+  uint32_t _indexFloat32ArrayMessage = 0;
   uint32_t _indexStringMessage = 0;
   uint32_t _indexCompoundMessage = 0;
   uint32_t _indexNestedMessage = 0;
@@ -65,6 +67,7 @@ class ByteMessage;
 class IntMessage;
 class UintMessage;
 class FloatMessage;
+class Float32ArrayMessage;
 class StringMessage;
 class CompoundMessage;
 class NestedMessage;
@@ -329,6 +332,22 @@ public:
 private:
   uint32_t _flags[1] = {};
   float _data_x = {};
+};
+
+class Float32ArrayMessage {
+public:
+  Float32ArrayMessage() { (void)_flags; }
+
+  kiwi::Array<float> *x();
+  const kiwi::Array<float> *x() const;
+  kiwi::Array<float> &set_x(kiwi::MemoryPool &pool, uint32_t count);
+
+  bool encode(kiwi::ByteBuffer &bb);
+  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+
+private:
+  uint32_t _flags[1] = {};
+  kiwi::Array<float> _data_x = {};
 };
 
 class StringMessage {
@@ -831,6 +850,7 @@ bool BinarySchema::parse(kiwi::ByteBuffer &bb) {
   _schema.findDefinition("IntMessage", _indexIntMessage);
   _schema.findDefinition("UintMessage", _indexUintMessage);
   _schema.findDefinition("FloatMessage", _indexFloatMessage);
+  _schema.findDefinition("Float32ArrayMessage", _indexFloat32ArrayMessage);
   _schema.findDefinition("StringMessage", _indexStringMessage);
   _schema.findDefinition("CompoundMessage", _indexCompoundMessage);
   _schema.findDefinition("NestedMessage", _indexNestedMessage);
@@ -865,6 +885,10 @@ bool BinarySchema::skipUintMessageField(kiwi::ByteBuffer &bb, uint32_t id) const
 
 bool BinarySchema::skipFloatMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexFloatMessage, id);
+}
+
+bool BinarySchema::skipFloat32ArrayMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+  return _schema.skipField(bb, _indexFloat32ArrayMessage, id);
 }
 
 bool BinarySchema::skipStringMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
@@ -1400,6 +1424,49 @@ bool FloatMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const 
       }
       default: {
         if (!_schema || !_schema->skipFloatMessageField(_bb, _type)) return false;
+        break;
+      }
+    }
+  }
+}
+
+kiwi::Array<float> *Float32ArrayMessage::x() {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+const kiwi::Array<float> *Float32ArrayMessage::x() const {
+  return _flags[0] & 1 ? &_data_x : nullptr;
+}
+
+kiwi::Array<float> &Float32ArrayMessage::set_x(kiwi::MemoryPool &pool, uint32_t count) {
+  _flags[0] |= 1; return _data_x = pool.array<float>(count);
+}
+
+bool Float32ArrayMessage::encode(kiwi::ByteBuffer &_bb) {
+  if (x() != nullptr) {
+    _bb.writeVarUint(1);
+    _bb.writeVarUint(_data_x.size());
+    for (float &_it : _data_x) _bb.writeVarFloat(_it);
+  }
+  _bb.writeVarUint(0);
+  return true;
+}
+
+bool Float32ArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+  uint32_t _count;
+  while (true) {
+    uint32_t _type;
+    if (!_bb.readVarUint(_type)) return false;
+    switch (_type) {
+      case 0:
+        return true;
+      case 1: {
+        if (!_bb.readVarUint(_count)) return false;
+        for (float &_it : set_x(_pool, _count)) if (!_bb.readVarFloat(_it)) return false;
+        break;
+      }
+      default: {
+        if (!_schema || !_schema->skipFloat32ArrayMessageField(_bb, _type)) return false;
         break;
       }
     }

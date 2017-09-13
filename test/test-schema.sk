@@ -6,6 +6,7 @@ namespace test {
     var _indexIntMessage = 0
     var _indexUintMessage = 0
     var _indexFloatMessage = 0
+    var _indexFloat32ArrayMessage = 0
     var _indexStringMessage = 0
     var _indexCompoundMessage = 0
     var _indexNestedMessage = 0
@@ -27,6 +28,7 @@ namespace test {
       _indexIntMessage = _schema.findDefinition("IntMessage")
       _indexUintMessage = _schema.findDefinition("UintMessage")
       _indexFloatMessage = _schema.findDefinition("FloatMessage")
+      _indexFloat32ArrayMessage = _schema.findDefinition("Float32ArrayMessage")
       _indexStringMessage = _schema.findDefinition("StringMessage")
       _indexCompoundMessage = _schema.findDefinition("CompoundMessage")
       _indexNestedMessage = _schema.findDefinition("NestedMessage")
@@ -60,6 +62,10 @@ namespace test {
 
     def skipFloatMessageField(bb Kiwi.ByteBuffer, id int) {
       _schema.skipField(bb, _indexFloatMessage, id)
+    }
+
+    def skipFloat32ArrayMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexFloat32ArrayMessage, id)
     }
 
     def skipStringMessageField(bb Kiwi.ByteBuffer, id int) {
@@ -964,6 +970,80 @@ namespace test {
           default {
             if schema == null { Kiwi.DecodeError.throwInvalidMessage }
             else { schema.skipFloatMessageField(bb, type) }
+          }
+        }
+      }
+      return self
+    }
+  }
+
+  class Float32ArrayMessage {
+    var _flags0 = 0
+    var _x List<double> = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x List<double> {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value List<double>) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_x {
+        bb.writeVarUint(1)
+        bb.writeVarUint(_x.count)
+        for value in _x {
+          bb.writeVarFloat(value)
+        }
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace Float32ArrayMessage {
+    def decode(bytes Uint8Array) Float32ArrayMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
+    }
+
+    def decode(bytes Uint8Array, schema BinarySchema) Float32ArrayMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) Float32ArrayMessage {
+      var self = new
+      var count = 0
+      while true {
+        var type = bb.readVarUint
+        switch type {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            count = bb.readVarUint
+            self.x = []
+            for array = self._x; count != 0; count-- {
+              array.append(bb.readVarFloat)
+            }
+          }
+
+          default {
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipFloat32ArrayMessageField(bb, type) }
           }
         }
       }

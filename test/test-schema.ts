@@ -63,6 +63,10 @@ export namespace test {
     x?: number;
   }
 
+  export interface Float32ArrayMessage {
+    x?: Float32Array;
+  }
+
   export interface StringMessage {
     x?: string;
   }
@@ -207,6 +211,8 @@ export namespace test {
     decodeUintMessage(buffer: Uint8Array): UintMessage;
     encodeFloatMessage(message: FloatMessage): Uint8Array;
     decodeFloatMessage(buffer: Uint8Array): FloatMessage;
+    encodeFloat32ArrayMessage(message: Float32ArrayMessage): Uint8Array;
+    decodeFloat32ArrayMessage(buffer: Uint8Array): Float32ArrayMessage;
     encodeStringMessage(message: StringMessage): Uint8Array;
     decodeStringMessage(buffer: Uint8Array): StringMessage;
     encodeCompoundMessage(message: CompoundMessage): Uint8Array;
