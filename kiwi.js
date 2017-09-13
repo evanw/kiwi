@@ -243,6 +243,7 @@ var kiwi = exports || kiwi || {}, exports;
     'int',
     'string',
     'uint',
+    'float32', // float32[] is a Float32Array in Javascript, float[] everywhere else
   ];
 
   // These are special names on the object returned by compileSchema()
@@ -674,7 +675,8 @@ var kiwi = exports || kiwi || {}, exports;
           break;
         }
 
-        case 'float': {
+        case 'float':
+        case 'float32': {
           code = 'bb.readVarFloat()';
           break;
         }
@@ -703,11 +705,18 @@ var kiwi = exports || kiwi || {}, exports;
       if (field.isArray) {
         if (field.isDeprecated) {
           lines.push(indent + 'var length = bb.readVarUint();');
-          lines.push(indent + 'while (length-- > 0) ' + code + ';');
+          lines.push(indent + 'while (length-- > 0) ' + code + ';');        
         } else {
-          lines.push(indent + 'var values = result[' + quote(field.name) + '] = [];');
-          lines.push(indent + 'var length = bb.readVarUint();');
-          lines.push(indent + 'while (length-- > 0) values.push(' + code + ');');
+          if (field.type == "float32"){
+            lines.push(indent + 'var length = bb.readVarUint();');
+            lines.push(indent + 'var values = result[' + quote(field.name) + '] = new Float32Array(length);');
+            lines.push(indent + 'var c = 0;');
+            lines.push(indent + 'while (length-- > 0) { values[c] = (' + code + '); c++ }');  
+          } else {
+            lines.push(indent + 'var values = result[' + quote(field.name) + '] = [];');
+            lines.push(indent + 'var length = bb.readVarUint();');
+            lines.push(indent + 'while (length-- > 0) values.push(' + code + ');');  
+          }
         }
       }
 
@@ -777,7 +786,8 @@ var kiwi = exports || kiwi || {}, exports;
           break;
         }
 
-        case 'float': {
+        case 'float':
+        case 'float32': {
           code = 'bb.writeVarFloat(value);';
           break;
         }
@@ -923,7 +933,8 @@ var kiwi = exports || kiwi || {}, exports;
       case 'byte': type = 'uint8_t'; break;
       case 'int': type = 'int32_t'; break;
       case 'uint': type = 'uint32_t'; break;
-      case 'float': type = 'float'; break;
+      case 'float':
+      case 'float32': type = 'float'; break;
       case 'string': type = 'kiwi::String'; break;
 
       default: {
@@ -1246,7 +1257,8 @@ var kiwi = exports || kiwi || {}, exports;
                 break;
               }
 
-              case 'float': {
+              case 'float':
+              case 'float32': {
                 code = '_bb.writeVarFloat(' + value + ');';
                 break;
               }
@@ -1351,7 +1363,8 @@ var kiwi = exports || kiwi || {}, exports;
                 break;
               }
 
-              case 'float': {
+              case 'float':
+              case 'float32': {
                 code = '_bb.readVarFloat(' + value + ')';
                 break;
               }
@@ -1482,7 +1495,8 @@ var kiwi = exports || kiwi || {}, exports;
       case 'byte':
       case 'int':
       case 'uint': return '0';
-      case 'float': return '0.0';
+      case 'float':
+      case 'float32': return '0.0';
       case 'string': return 'null';
     }
 
@@ -1506,7 +1520,8 @@ var kiwi = exports || kiwi || {}, exports;
       case 'byte':
       case 'int':
       case 'uint': type = 'int'; break;
-      case 'float': type = 'double'; break;
+      case 'float':
+      case 'float32': type = 'double'; break;
       case 'string': type = 'string'; break;
       default: type = field.type; break;
     }
@@ -1696,7 +1711,8 @@ var kiwi = exports || kiwi || {}, exports;
                 break;
               }
 
-              case 'float': {
+              case 'float':
+              case 'float32': {
                 code = 'bb.writeVarFloat(' + value + ')';
                 break;
               }
@@ -1822,7 +1838,8 @@ var kiwi = exports || kiwi || {}, exports;
                 break;
               }
 
-              case 'float': {
+              case 'float':
+              case 'float32': {
                 code = 'bb.readVarFloat';
                 break;
               }
@@ -1959,6 +1976,7 @@ var kiwi = exports || kiwi || {}, exports;
           switch (field.type) {
             case 'bool': type = 'boolean'; break;
             case 'byte': case 'int': case 'uint': case 'float': type = 'number'; break;
+            case 'float32': type = 'Float32Array'; field.isArray = false; break;
             default: type = field.type; break;
           }
 

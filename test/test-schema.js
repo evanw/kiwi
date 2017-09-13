@@ -437,6 +437,49 @@ test["encodeFloatMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
+test["decodeFloat32ArrayMessage"] = function(bb) {
+  var result = {};
+  if (!(bb instanceof this.ByteBuffer)) {
+    bb = new this.ByteBuffer(bb);
+  }
+
+  while (true) {
+    switch (bb.readVarUint()) {
+    case 0:
+      return result;
+
+    case 1:
+      var length = bb.readVarUint();
+      var values = result["x"] = new Float32Array(length);
+      var c = 0;
+      while (length-- > 0) { values[c] = (bb.readVarFloat()); c++ }
+      break;
+
+    default:
+      throw new Error("Attempted to parse invalid message");
+    }
+  }
+};
+
+test["encodeFloat32ArrayMessage"] = function(message, bb) {
+  var isTopLevel = !bb;
+  if (isTopLevel) bb = new this.ByteBuffer();
+
+  var value = message["x"];
+  if (value != null) {
+    bb.writeVarUint(1);
+    var values = value, n = values.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < n; i++) {
+      value = values[i];
+      bb.writeVarFloat(value);
+    }
+  }
+  bb.writeVarUint(0);
+
+  if (isTopLevel) return bb.toUint8Array();
+};
+
 test["decodeStringMessage"] = function(bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {

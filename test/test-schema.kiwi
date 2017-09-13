@@ -21,6 +21,7 @@ message ByteMessage { byte x = 1; }
 message IntMessage { int x = 1; }
 message UintMessage { uint x = 1; }
 message FloatMessage { float x = 1; }
+message Float32ArrayMessage { float32[] x = 1; }
 message StringMessage { string x = 1; }
 message CompoundMessage { uint x = 1; uint y = 2; }
 message NestedMessage { uint a = 1; CompoundMessage b = 2; uint c = 3; }
