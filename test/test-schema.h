@@ -2,6 +2,9 @@
 
 namespace test {
 
+#ifndef INCLUDE_TEST_H
+#define INCLUDE_TEST_H
+
 class BinarySchema {
 public:
   bool parse(kiwi::ByteBuffer &bb);
@@ -822,6 +825,7 @@ private:
   uint8_t _data_b2 = {};
 };
 
+#endif
 #ifdef IMPLEMENT_SCHEMA_H
 
 bool BinarySchema::parse(kiwi::ByteBuffer &bb) {

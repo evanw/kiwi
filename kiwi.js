@@ -973,6 +973,9 @@ var kiwi = exports || kiwi || {}, exports;
     if (schema.package !== null) {
       cpp.push('namespace ' + schema.package + ' {');
       cpp.push('');
+      cpp.push('#ifndef INCLUDE_' + schema.package.toUpperCase() + '_H');
+      cpp.push('#define INCLUDE_' + schema.package.toUpperCase() + '_H');
+      cpp.push('');
     }
 
     for (var i = 0; i < schema.definitions.length; i++) {
@@ -1027,6 +1030,10 @@ var kiwi = exports || kiwi || {}, exports;
       var newline = false;
 
       if (pass === 2) {
+        if (schema.package !== null) {
+          cpp.push('#endif');
+        }
+
         cpp.push('#ifdef IMPLEMENT_SCHEMA_H');
         cpp.push('');
 

@@ -2,6 +2,9 @@
 
 namespace test_large {
 
+#ifndef INCLUDE_TEST_LARGE_H
+#define INCLUDE_TEST_LARGE_H
+
 class BinarySchema {
 public:
   bool parse(kiwi::ByteBuffer &bb);
@@ -1337,6 +1340,7 @@ private:
   int32_t _data_f129 = {};
 };
 
+#endif
 #ifdef IMPLEMENT_SCHEMA_H
 
 bool BinarySchema::parse(kiwi::ByteBuffer &bb) {
