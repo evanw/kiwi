@@ -9,16 +9,17 @@ var usage = [
   '',
   'Options:',
   '',
-  '  --help              Print this message.',
-  '  --schema [PATH]     The schema file to use.',
-  '  --js [PATH]         Generate JavaScript code.',
-  '  --ts [PATH]         Generate TypeScript type definitions.',
-  '  --cpp [PATH]        Generate C++ code.',
-  '  --skew [PATH]       Generate Skew code.',
-  '  --binary [PATH]     Encode the schema as a binary blob.',
-  '  --root-type [NAME]  Set the root type for JSON.',
-  '  --to-json [PATH]    Convert a binary file to JSON.',
-  '  --from-json [PATH]  Convert a JSON file to binary.',
+  '  --help                Print this message.',
+  '  --schema [PATH]       The schema file to use.',
+  '  --js [PATH]           Generate JavaScript code.',
+  '  --ts [PATH]           Generate TypeScript type definitions.',
+  '  --cpp [PATH]          Generate C++ code (tree style).',
+  '  --callback-cpp [PATH] Generate C++ code (callback style).',
+  '  --skew [PATH]         Generate Skew code.',
+  '  --binary [PATH]       Encode the schema as a binary blob.',
+  '  --root-type [NAME]    Set the root type for JSON.',
+  '  --to-json [PATH]      Convert a binary file to JSON.',
+  '  --from-json [PATH]    Convert a JSON file to binary.',
   '',
   'Examples:',
   '',
@@ -37,6 +38,7 @@ var main = exports.main = function(args) {
     '--js': null,
     '--ts': null,
     '--cpp': null,
+    '--callback-cpp': null,
     '--skew': null,
     '--binary': null,
     '--root-type': null,
@@ -105,6 +107,9 @@ var main = exports.main = function(args) {
   // Generate C++ code
   if (flags['--cpp'] !== null) {
     fs.writeFileSync(flags['--cpp'], kiwi.compileSchemaCPP(content));
+  }
+  if (flags['--callback-cpp'] !== null) {
+    fs.writeFileSync(flags['--callback-cpp'], kiwi.compileSchemaCallbackCPP(content));
   }
 
   // Generate Skew code

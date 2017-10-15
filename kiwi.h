@@ -29,6 +29,7 @@ namespace kiwi {
     bool readVarFloat(float &result);
     bool readVarUint(uint32_t &result);
     bool readVarInt(int32_t &result);
+    bool readString(const char *&result);
     bool readString(String &result, MemoryPool &pool);
 
     void writeByte(uint8_t value);
@@ -262,6 +263,16 @@ namespace kiwi {
     }
 
     result = value & 1 ? ~(value >> 1) : value >> 1;
+    return true;
+  }
+
+  bool kiwi::ByteBuffer::readString(const char *&result) {
+    result = reinterpret_cast<const char *>(_data) + _index;
+
+    do {
+      if (_index >= _size) return false;
+    } while (_data[_index++] != '\0');
+
     return true;
   }
 

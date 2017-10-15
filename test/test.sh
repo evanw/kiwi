@@ -14,6 +14,11 @@ node ../cli.js --schema ./test-schema.kiwi --cpp ./test-schema.h && \
   ./a.out && \
   rm ./a.out
 
+node ../cli.js --schema ./test-schema.kiwi --callback-cpp ./test-schema-callback.h && \
+  c++ ./test-callback.cpp -std=c++11 -I.. && \
+  ./a.out && \
+  rm ./a.out
+
 node ../cli.js --schema ./test-schema.kiwi --skew ./test-schema.sk && \
   node ../cli.js --schema ./test1-schema.kiwi --skew ./test1-schema.sk && \
   node ../cli.js --schema ./test2-schema.kiwi --skew ./test2-schema.sk && \
