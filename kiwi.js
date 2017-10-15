@@ -1931,7 +1931,7 @@ var kiwi = exports || kiwi || {}, exports;
         lines.push(indent + 'export type ' + definition.name + ' =');
 
         for (var j = 0; j < definition.fields.length; j++) {
-          lines.push(indent + '  ' + JSON.stringify(definition.fields[j].name) + (j + 1 < definition.fields.length ? ' | ' : ';'));
+          lines.push(indent + '  ' + JSON.stringify(definition.fields[j].name) + (j + 1 < definition.fields.length ? ' |' : ';'));
         }
 
         if (!definition.fields.length) {
