@@ -1,14 +1,16 @@
 // ../cli.js --schema test-schema.kiwi --cpp test-schema.h && c++ test.cpp -std=c++11 -I.. && ./a.out
 
-#define IMPLEMENT_KIWI_H
-#define IMPLEMENT_SCHEMA_H
+#include <stdio.h>
+#include <vector>
 
+#define IMPLEMENT_SCHEMA_H
 #include "test-schema.h"
 #include "test1-schema.h"
 #include "test2-schema.h"
 #include "test-schema-large.h"
-#include <stdio.h>
-#include <vector>
+
+#define IMPLEMENT_KIWI_H
+#include "kiwi.h"
 
 static bool readFile(const char *path, kiwi::ByteBuffer &bb) {
   if (FILE *f = fopen(path, "rb")) {

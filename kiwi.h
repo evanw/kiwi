@@ -170,6 +170,7 @@ namespace kiwi {
   };
 }
 
+#endif
 #ifdef IMPLEMENT_KIWI_H
 
   kiwi::ByteBuffer::ByteBuffer() : _data(new uint8_t[INITIAL_CAPACITY]), _capacity(INITIAL_CAPACITY), _ownsData(true) {
@@ -549,5 +550,4 @@ namespace kiwi {
     return true;
   }
 
-#endif
 #endif
