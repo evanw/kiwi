@@ -41,6 +41,7 @@ export namespace test {
     a: number;
     b: CompoundStruct;
     c: number;
+    d: { [key: string]: CompoundStruct };
   }
 
   export interface BoolMessage {
@@ -72,10 +73,15 @@ export namespace test {
     y?: number;
   }
 
+  export interface MapMessage {
+    x?: { [key: string]: number };
+  }
+
   export interface NestedMessage {
     a?: number;
     b?: CompoundMessage;
     c?: number;
+    d?: { [key: string]: CompoundMessage };
   }
 
   export interface BoolArrayStruct {
@@ -211,6 +217,8 @@ export namespace test {
     decodeStringMessage(buffer: Uint8Array): StringMessage;
     encodeCompoundMessage(message: CompoundMessage): Uint8Array;
     decodeCompoundMessage(buffer: Uint8Array): CompoundMessage;
+    encodeMapMessage(message: MapMessage): Uint8Array;
+    decodeMapMessage(buffer: Uint8Array): MapMessage;
     encodeNestedMessage(message: NestedMessage): Uint8Array;
     decodeNestedMessage(buffer: Uint8Array): NestedMessage;
     encodeBoolArrayStruct(message: BoolArrayStruct): Uint8Array;

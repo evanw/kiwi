@@ -2459,7 +2459,7 @@ var kiwi = exports || kiwi || {}, exports;
             continue;
           }
 
-          var type = typeForField(field)
+          var type = tsTypeForField(field)
 
 
           lines.push(indent + '  ' + field.name + (definition.kind === 'MESSAGE' ? '?' : '') + ': ' + type + (field.isArray ? '[]' : '') + ';');
