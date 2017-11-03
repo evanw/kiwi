@@ -243,6 +243,7 @@ var kiwi = exports || kiwi || {}, exports;
     'int',
     'string',
     'uint',
+    'map'
   ];
 
   // These are special names on the object returned by compileSchema()
@@ -251,7 +252,7 @@ var kiwi = exports || kiwi || {}, exports;
     'package',
   ];
 
-  var regex = /((?:-|\b)\d+\b|[=;{}]|\[\]|\[deprecated\]|\b[A-Za-z_][A-Za-z0-9_]*\b|\/\/.*|\s+)/g;
+  var regex = /((?:-|\b)\d+\b|[=;{}]|\[\]|\<|\>|,|\[deprecated\]|\b[A-Za-z_][A-Za-z0-9_]*\b|\/\/.*|\s+)/g;
   var identifier = /^[A-Za-z_][A-Za-z0-9_]*$/;
   var whitespace = /^\/\/.*|\s+$/;
   var equals = /^=$/;
@@ -260,6 +261,9 @@ var kiwi = exports || kiwi || {}, exports;
   var integer = /^-?\d+$/;
   var leftBrace = /^\{$/;
   var rightBrace = /^\}$/;
+  var lessThan = /^\<$/;
+  var greaterThan = /^\>$/;
+  var comma = /^,$/;
   var arrayToken = /^\[\]$/;
   var enumKeyword = /^enum$/;
   var structKeyword = /^struct$/;
@@ -362,6 +366,10 @@ var kiwi = exports || kiwi || {}, exports;
       while (!eat(rightBrace)) {
         var type = null;
         var isArray = false;
+        var isMap = false;
+        var mapKeyType = null;
+        var mapValueType = null;
+        var isDeprecated = false;        
         var isDeprecated = false;
 
         // Enums don't have types
@@ -369,6 +377,19 @@ var kiwi = exports || kiwi || {}, exports;
           type = current().text;
           expect(identifier, 'identifier');
           isArray = eat(arrayToken);
+          if (type === 'map') {
+            isMap = true;
+            expect(lessThan, '<');
+            eat(lessThan);
+            mapKeyType = current().text;
+            eat(identifier);
+            expect(comma, ',');
+            eat(comma);
+            mapValueType = current().text;
+            eat(identifier);
+            expect(greaterThan, '<');
+            eat(greaterThan);
+          }
         }
 
         var field = current();
@@ -403,7 +424,10 @@ var kiwi = exports || kiwi || {}, exports;
           column: field.column,
           type: type,
           isArray: isArray,
+          isMap: isMap,
           isDeprecated: isDeprecated,
+          mapKeyType: mapKeyType,
+          mapValueType: mapValueType,
           value: value !== null ? value.text | 0 : fields.length + 1,
         });
       }
@@ -629,6 +653,84 @@ var kiwi = exports || kiwi || {}, exports;
 (function() {
   var ByteBuffer = kiwi.ByteBuffer;
 
+
+  function decodeCodeForField(field, definitions) {
+    var code;
+
+    switch (field.type) {
+      case 'bool': {
+        code = '!!bb.readByte()';
+        break;
+      }
+      case 'byte': {
+        code = 'bb.readByte()';
+        break;
+      }
+      case 'int': {
+        code = 'bb.readVarInt()';
+        break;
+      }
+      case 'uint': {
+        code = 'bb.readVarUint()';
+        break;
+      }
+      case 'float': {
+        code = 'bb.readVarFloat()';
+        break;
+      }
+      case 'string': {
+        code = 'bb.readString()';
+        break;
+      }
+      case 'map': {
+        var keyCode = decodeCodeForField({ type: field.mapKeyType }, definitions);
+        if (!keyCode || kiwi.nativeTypes.indexOf(field.mapKeyType) < 0) {
+          error(
+            'Invalid type ' +
+              quote(field.mapKeyType) +
+              ' for map key for ' +
+              quote(field.name) +
+              '.  Map keys must be native fields.',
+            field.line,
+            field.column
+          );
+        }
+        var mapValueField = { type: field.mapValueType, line: field.line, column: field.column };
+        var valueCode = decodeCodeForField(mapValueField, definitions);
+        if (!valueCode) {
+          error(
+            'Invalid type ' +
+              quote(field.mapValueType) +
+              ' for map value for ' +
+              quote(field.name),
+            field.line,
+            field.column
+          );
+        }
+        code = [keyCode, valueCode];
+        break;
+      }
+      default: {
+        var type = definitions[field.type];
+        if (!type) {
+          console.log('Type:', type);
+          console.log(definitions);
+          error(
+            'Invalid type ' + quote(field.type) + ' for field ' + quote(field.name),
+            field.line,
+            field.column
+          );
+        } else if (type.kind === 'ENUM') {
+          code = 'this[' + quote(type.name) + '][bb.readVarUint()]';
+        } else {
+          code = 'this[' + quote('decode' + type.name) + '](bb)';
+        }
+      }
+    }
+
+    return code;
+  }
+  
   function compileDecode(definition, definitions) {
     var lines = [];
     var indent = '  ';
@@ -651,50 +753,7 @@ var kiwi = exports || kiwi || {}, exports;
 
     for (var i = 0; i < definition.fields.length; i++) {
       var field = definition.fields[i];
-      var code;
-
-      switch (field.type) {
-        case 'bool': {
-          code = '!!bb.readByte()';
-          break;
-        }
-
-        case 'byte': {
-          code = 'bb.readByte()';
-          break;
-        }
-
-        case 'int': {
-          code = 'bb.readVarInt()';
-          break;
-        }
-
-        case 'uint': {
-          code = 'bb.readVarUint()';
-          break;
-        }
-
-        case 'float': {
-          code = 'bb.readVarFloat()';
-          break;
-        }
-
-        case 'string': {
-          code = 'bb.readString()';
-          break;
-        }
-
-        default: {
-          var type = definitions[field.type];
-          if (!type) {
-            error('Invalid type ' + quote(field.type) + ' for field ' + quote(field.name), field.line, field.column);
-          } else if (type.kind === 'ENUM') {
-            code = 'this[' + quote(type.name) + '][bb.readVarUint()]';
-          } else {
-            code = 'this[' + quote('decode' + type.name) + '](bb)';
-          }
-        }
-      }
+      var code = decodeCodeForField(field, definitions);
 
       if (definition.kind === 'MESSAGE') {
         lines.push('    case ' + field.value + ':');
@@ -709,9 +768,16 @@ var kiwi = exports || kiwi || {}, exports;
           lines.push(indent + 'var length = bb.readVarUint();');
           lines.push(indent + 'while (length-- > 0) values.push(' + code + ');');
         }
-      }
-
-      else {
+      } else if (field.isMap) {
+        if (field.isDeprecated) {
+          lines.push(indent + 'var length = bb.readVarUint();');
+          lines.push(indent + 'while (length-- > 0) { ' + code[0] + ';' + code[1] + '; }');
+        } else {
+          lines.push(indent + 'var map = result[' + quote(field.name) + '] = {};');
+          lines.push(indent + 'var length = bb.readVarUint();');
+          lines.push(indent + 'while (length-- > 0) map[' + code[0] + '] = ' + code[1] + ';');
+        }
+      } else {
         if (field.isDeprecated) {
           lines.push(indent + code + ';');
         } else {
@@ -741,6 +807,90 @@ var kiwi = exports || kiwi || {}, exports;
     return lines.join('\n');
   }
 
+  function encodeCodeForField(field, definitions) {
+    switch (field.type) {
+      case 'bool': {
+        code = 'bb.writeByte(value);';
+        break;
+      }
+
+      case 'byte': {
+        code = 'bb.writeByte(value);';
+        break;
+      }
+
+      case 'int': {
+        code = 'bb.writeVarInt(value);';
+        break;
+      }
+
+      case 'uint': {
+        code = 'bb.writeVarUint(value);';
+        break;
+      }
+
+      case 'float': {
+        code = 'bb.writeVarFloat(value);';
+        break;
+      }
+
+      case 'string': {
+        code = 'bb.writeString(value);';
+        break;
+      }
+
+      case 'map': {
+        var keyCode = encodeCodeForField({ type: field.mapKeyType }, definitions);
+        if (!keyCode || kiwi.nativeTypes.indexOf(field.mapKeyType) < 0) {
+          error(
+            'Invalid type ' +
+              quote(field.mapKeyType) +
+              ' for map key for ' +
+              quote(field.name) +
+              '.  Map keys must be native fields.',
+            field.line,
+            field.column
+          );
+        }
+        var mapValueField = { type: field.mapValueType, line: field.line, column: field.column };
+        var valueCode = encodeCodeForField(mapValueField, definitions);
+        if (!valueCode) {
+          error(
+            'Invalid type ' +
+              quote(field.mapValueType) +
+              ' for map value for ' +
+              quote(field.name),
+            field.line,
+            field.column
+          );
+        }
+        code = [keyCode, valueCode];
+        break;
+      }
+
+      default: {
+        var type = definitions[field.type];
+        if (!type) {
+          throw new Error(
+            'Invalid type ' + quote(field.type) + ' for field ' + quote(field.name)
+          );
+        } else if (type.kind === 'ENUM') {
+          code =
+            'var encoded = this[' +
+            quote(type.name) +
+            '][value]; ' +
+            'if (encoded === void 0) throw new Error("Invalid value " + JSON.stringify(value) + ' +
+            quote(' for enum ' + quote(type.name)) +
+            '); ' +
+            'bb.writeVarUint(encoded);';
+        } else {
+          code = 'this[' + quote('encode' + type.name) + '](value, bb);';
+        }
+      }
+    }
+    return code;
+  }
+
   function compileEncode(definition, definitions) {
     var lines = [];
 
@@ -750,57 +900,12 @@ var kiwi = exports || kiwi || {}, exports;
 
     for (var j = 0; j < definition.fields.length; j++) {
       var field = definition.fields[j];
-      var code;
 
       if (field.isDeprecated) {
         continue;
       }
 
-      switch (field.type) {
-        case 'bool': {
-          code = 'bb.writeByte(value);';
-          break;
-        }
-
-        case 'byte': {
-          code = 'bb.writeByte(value);';
-          break;
-        }
-
-        case 'int': {
-          code = 'bb.writeVarInt(value);';
-          break;
-        }
-
-        case 'uint': {
-          code = 'bb.writeVarUint(value);';
-          break;
-        }
-
-        case 'float': {
-          code = 'bb.writeVarFloat(value);';
-          break;
-        }
-
-        case 'string': {
-          code = 'bb.writeString(value);';
-          break;
-        }
-
-        default: {
-          var type = definitions[field.type];
-          if (!type) {
-            throw new Error('Invalid type ' + quote(field.type) + ' for field ' + quote(field.name));
-          } else if (type.kind === 'ENUM') {
-            code =
-              'var encoded = this[' + quote(type.name) + '][value]; ' +
-              'if (encoded === void 0) throw new Error("Invalid value " + JSON.stringify(value) + ' + quote(' for enum ' + quote(type.name)) + '); ' +
-              'bb.writeVarUint(encoded);';
-          } else {
-            code = 'this[' + quote('encode' + type.name) + '](value, bb);';
-          }
-        }
-      }
+      var code = encodeCodeForField(field, definitions);
 
       lines.push('');
       lines.push('  var value = message[' + quote(field.name) + '];');
@@ -817,9 +922,16 @@ var kiwi = exports || kiwi || {}, exports;
         lines.push('      value = values[i];');
         lines.push('      ' + code);
         lines.push('    }');
-      }
-
-      else {
+      } else if (field.isMap) {
+        lines.push('    var obj = value, keys = Object.keys(obj), n = keys.length;');
+        lines.push('    bb.writeVarUint(n);');
+        lines.push('    for (var i = 0; i < keys.length; i++) {');
+        lines.push('      value = keys[i];');
+        lines.push('      ' + code[0]);
+        lines.push('      value = obj[keys[i]];');
+        lines.push('      ' + code[1]);
+        lines.push('    }');
+      } else {
         lines.push('    ' + code);
       }
 
@@ -2282,6 +2394,30 @@ var kiwi = exports || kiwi || {}, exports;
 (function() {
   var ByteBuffer = kiwi.ByteBuffer;
 
+  function tsTypeForField(field) {
+    var type
+    switch (field.type) {
+      case 'bool':
+        type = 'boolean';
+        break;
+      case 'byte':
+      case 'int':
+      case 'uint':
+      case 'float':
+        type = 'number';
+        break;
+      case 'map':
+        var keyType = tsTypeForField({type: field.mapKeyType})
+        var valueType = tsTypeForField({type: field.mapValueType})
+        type = '{ [key: ' + keyType + ']: ' + valueType + ' }'
+        break;
+      default:
+        type = field.type;
+      break;
+    }
+    return type
+  }
+
   function compileSchemaTypeScript(schema) {
     schema = convertSchema(schema);
 
@@ -2319,17 +2455,12 @@ var kiwi = exports || kiwi || {}, exports;
 
         for (var j = 0; j < definition.fields.length; j++) {
           var field = definition.fields[j];
-          var type;
-
           if (field.isDeprecated) {
             continue;
           }
 
-          switch (field.type) {
-            case 'bool': type = 'boolean'; break;
-            case 'byte': case 'int': case 'uint': case 'float': type = 'number'; break;
-            default: type = field.type; break;
-          }
+          var type = typeForField(field)
+
 
           lines.push(indent + '  ' + field.name + (definition.kind === 'MESSAGE' ? '?' : '') + ': ' + type + (field.isArray ? '[]' : '') + ';');
         }
