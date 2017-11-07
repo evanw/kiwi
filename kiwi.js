@@ -2297,17 +2297,14 @@ var kiwi = exports || kiwi || {}, exports;
       var definition = schema.definitions[i];
 
       if (definition.kind === 'ENUM') {
-        lines.push(indent + 'export type ' + definition.name + ' =');
+        lines.push(indent + 'export enum ' + definition.name + ' {');
 
         for (var j = 0; j < definition.fields.length; j++) {
-          lines.push(indent + '  ' + JSON.stringify(definition.fields[j].name) + (j + 1 < definition.fields.length ? ' |' : ';'));
+          lines.push(indent + '  ' + definition.fields[j].name + ' = ' + JSON.stringify(definition.fields[j].name) + ',');
         }
 
-        if (!definition.fields.length) {
-          lines.push(indent + '  any;');
-        }
-
-        lines.push('');
+        lines.push(indent + '}');
+        lines.push('')
       }
     }
 
