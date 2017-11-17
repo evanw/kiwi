@@ -2172,7 +2172,7 @@ var kiwi = exports || kiwi || {}, exports;
 
             switch (field.type) {
               case 'bool': {
-                code = 'bb.readByte as bool';
+                code = field.isDeprecated ? 'bb.readByte' : 'bb.readByte as bool';
                 break;
               }
 
