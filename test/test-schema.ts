@@ -1,7 +1,8 @@
 export namespace test {
-  export type Enum =
-    "A" |
-    "B";
+  export enum Enum {
+    A = "A",
+    B = "B",
+  }
 
   export interface EnumStruct {
     x: Enum;
