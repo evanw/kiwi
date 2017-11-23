@@ -231,6 +231,9 @@ test["decodeNestedStruct"] = function(bb) {
   result["a"] = bb.readVarUint();
   result["b"] = this["decodeCompoundStruct"](bb);
   result["c"] = bb.readVarUint();
+  var map = result["d"] = {};
+  var length = bb.readVarUint();
+  while (length-- > 0) map[bb.readString()] = this["decodeCompoundStruct"](bb);
   return result;
 };
 
@@ -257,6 +260,20 @@ test["encodeNestedStruct"] = function(message, bb) {
     bb.writeVarUint(value);
   } else {
     throw new Error("Missing required field \"c\"");
+  }
+
+  var value = message["d"];
+  if (value != null) {
+    var obj = value, keys = Object.keys(obj), n = keys.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < keys.length; i++) {
+      value = keys[i];
+      bb.writeString(value);
+      value = obj[keys[i]];
+      this["encodeCompoundStruct"](value, bb);
+    }
+  } else {
+    throw new Error("Missing required field \"d\"");
   }
 
   if (isTopLevel) return bb.toUint8Array();
@@ -517,6 +534,50 @@ test["encodeCompoundMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
+test["decodeMapMessage"] = function(bb) {
+  var result = {};
+  if (!(bb instanceof this.ByteBuffer)) {
+    bb = new this.ByteBuffer(bb);
+  }
+
+  while (true) {
+    switch (bb.readVarUint()) {
+    case 0:
+      return result;
+
+    case 1:
+      var map = result["x"] = {};
+      var length = bb.readVarUint();
+      while (length-- > 0) map[bb.readString()] = bb.readVarInt();
+      break;
+
+    default:
+      throw new Error("Attempted to parse invalid message");
+    }
+  }
+};
+
+test["encodeMapMessage"] = function(message, bb) {
+  var isTopLevel = !bb;
+  if (isTopLevel) bb = new this.ByteBuffer();
+
+  var value = message["x"];
+  if (value != null) {
+    bb.writeVarUint(1);
+    var obj = value, keys = Object.keys(obj), n = keys.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < keys.length; i++) {
+      value = keys[i];
+      bb.writeString(value);
+      value = obj[keys[i]];
+      bb.writeVarInt(value);
+    }
+  }
+  bb.writeVarUint(0);
+
+  if (isTopLevel) return bb.toUint8Array();
+};
+
 test["decodeNestedMessage"] = function(bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
@@ -538,6 +599,12 @@ test["decodeNestedMessage"] = function(bb) {
 
     case 3:
       result["c"] = bb.readVarUint();
+      break;
+
+    case 4:
+      var map = result["d"] = {};
+      var length = bb.readVarUint();
+      while (length-- > 0) map[bb.readString()] = this["decodeCompoundMessage"](bb);
       break;
 
     default:
@@ -566,6 +633,19 @@ test["encodeNestedMessage"] = function(message, bb) {
   if (value != null) {
     bb.writeVarUint(3);
     bb.writeVarUint(value);
+  }
+
+  var value = message["d"];
+  if (value != null) {
+    bb.writeVarUint(4);
+    var obj = value, keys = Object.keys(obj), n = keys.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < keys.length; i++) {
+      value = keys[i];
+      bb.writeString(value);
+      value = obj[keys[i]];
+      this["encodeCompoundMessage"](value, bb);
+    }
   }
   bb.writeVarUint(0);
 

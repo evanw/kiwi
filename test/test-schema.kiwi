@@ -14,7 +14,7 @@ struct UintStruct { uint x; }
 struct FloatStruct { float x; }
 struct StringStruct { string x; }
 struct CompoundStruct { uint x; uint y; }
-struct NestedStruct { uint a; CompoundStruct b; uint c; }
+struct NestedStruct { uint a; CompoundStruct b; uint c; map<string, CompoundStruct> d; }
 
 message BoolMessage { bool x = 1; }
 message ByteMessage { byte x = 1; }
@@ -23,7 +23,8 @@ message UintMessage { uint x = 1; }
 message FloatMessage { float x = 1; }
 message StringMessage { string x = 1; }
 message CompoundMessage { uint x = 1; uint y = 2; }
-message NestedMessage { uint a = 1; CompoundMessage b = 2; uint c = 3; }
+message MapMessage { map<string, int> x = 1; }
+message NestedMessage { uint a = 1; CompoundMessage b = 2; uint c = 3; map<string, CompoundMessage> d = 4;}
 
 struct BoolArrayStruct { bool[] x; }
 struct ByteArrayStruct { byte[] x; }
