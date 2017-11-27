@@ -1,7 +1,8 @@
 {
   "name": "kiwi-schema",
-  "version": "0.3.3",
-  "description": "",
+  "version": "0.3.4",
+  "description": "A schema-based binary format for efficiently encoding trees of data",
+  "license": "MIT",
   "main": "kiwi.js",
   "bin": {
     "kiwic": "cli.js"
