@@ -12,6 +12,10 @@
 #define IMPLEMENT_KIWI_H
 #include "kiwi.h"
 
+// Include a second time to test that it's safe to include the kiwi header
+// multiple times in the same compilatinon unit
+#include "kiwi.h"
+
 static bool readFile(const char *path, kiwi::ByteBuffer &bb) {
   if (FILE *f = fopen(path, "rb")) {
     int c;
