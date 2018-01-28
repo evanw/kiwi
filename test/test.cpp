@@ -1,5 +1,6 @@
-// ../cli.js --schema test-schema.kiwi --cpp test-schema.h && c++ test.cpp -std=c++11 -I.. && ./a.out
+// ../js/cli.js --schema test-schema.kiwi --cpp test-schema.h && c++ test.cpp -std=c++11 -I.. && ./a.out
 
+#include <limits>
 #include <stdio.h>
 #include <vector>
 
@@ -179,9 +180,9 @@ static void testStructFloat() {
   check(-1, {127, 1, 0, 0});
   check(3.1415927410125732, {128, 182, 31, 146});
   check(-3.1415927410125732, {128, 183, 31, 146});
-  check(1.0 / 0, {255, 0, 0, 0});
-  check(-1.0 / 0, {255, 1, 0, 0});
-  check(0.0 / 0, {255, 0, 0, 128});
+  check(std::numeric_limits<float>::infinity(), {255, 0, 0, 0});
+  check(-std::numeric_limits<float>::infinity(), {255, 1, 0, 0});
+  check(std::numeric_limits<float>::quiet_NaN(), {255, 0, 0, 128});
 }
 
 static void testStructString() {

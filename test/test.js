@@ -1,5 +1,5 @@
 var assert = require('assert');
-var kiwi = require(__dirname + '/../kiwi');
+var kiwi = require(__dirname + '/../js/kiwi');
 var fs = require('fs');
 
 var schemaText = fs.readFileSync(__dirname + '/test-schema.kiwi', 'utf8');

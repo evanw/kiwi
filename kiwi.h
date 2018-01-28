@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <initializer_list>
 #include <memory.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
