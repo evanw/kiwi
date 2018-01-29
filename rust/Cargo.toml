@@ -1,0 +1,8 @@
+[package]
+name = "kiwi-schema"
+version = "0.0.1"
+authors = ["Evan Wallace"]
+description = "This is a Rust library with some helper routines for parsing files in the Kiwi serialization format."
+repository = "https://github.com/evanw/kiwi"
+readme = "../README.md"
+license = "MIT  "
