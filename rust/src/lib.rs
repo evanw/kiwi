@@ -642,6 +642,32 @@ impl Schema {
     Ok(Schema::new(defs))
   }
 
+  /// The opposite of [decode](#method.decode). Turns this schema back into a
+  /// binary file.
+  pub fn encode(&self) -> Vec<u8> {
+    let mut bb = ByteBufferMut::new();
+    bb.write_var_uint(self.defs.len() as u32);
+
+    for def in &self.defs {
+      bb.write_string(def.name.as_str());
+      bb.write_byte(match def.kind {
+        DefKind::Enum => DEF_ENUM,
+        DefKind::Struct => DEF_STRUCT,
+        DefKind::Message => DEF_MESSAGE,
+      });
+      bb.write_var_uint(def.fields.len() as u32);
+
+      for field in &def.fields {
+        bb.write_string(field.name.as_str());
+        bb.write_var_int(field.type_id);
+        bb.write_bool(field.is_array);
+        bb.write_var_uint(field.value);
+      }
+    }
+
+    bb.data()
+  }
+
   /// Returns the [Def](struct.Def.html) with the provided name if one exists.
   pub fn def(&self, name: &str) -> Option<&Def> {
     self.def_name_to_index.get(name).map(|i| &self.defs[*i])
@@ -714,7 +740,7 @@ impl Schema {
 }
 
 #[test]
-fn schema_decode() {
+fn schema_decode_and_encode() {
   // This is the encoding of the Kiwi schema "message ABC { int[] xyz = 1; }"
   let schema_bytes = [1, 65, 66, 67, 0, 2, 1, 120, 121, 122, 0, 5, 1, 1];
   let schema = Schema::decode(&schema_bytes).unwrap();
@@ -723,6 +749,7 @@ fn schema_decode() {
       Field {name: "xyz".to_owned(), type_id: TYPE_INT, is_array: true, value: 1},
     ]),
   ]));
+  assert_eq!(schema.encode(), schema_bytes);
 }
 
 /// This type holds dynamic Kiwi data.
