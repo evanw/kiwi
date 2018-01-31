@@ -7,8 +7,8 @@
 //!
 //! let schema = Schema::new(vec![
 //!   Def::new("Point", DefKind::Struct, vec![
-//!     Field{name: "x".to_owned(), type_id: TYPE_FLOAT, is_array: false, value: 0},
-//!     Field{name: "y".to_owned(), type_id: TYPE_FLOAT, is_array: false, value: 0},
+//!     Field {name: "x".to_owned(), type_id: TYPE_FLOAT, is_array: false, value: 0},
+//!     Field {name: "y".to_owned(), type_id: TYPE_FLOAT, is_array: false, value: 0},
 //!   ]),
 //! ]);
 //!
@@ -555,7 +555,7 @@ impl Def {
       field_value_to_index.insert(field.value, i);
       field_name_to_index.insert(field.name.clone(), i);
     }
-    Def{name: name.to_owned(), index: 0, kind, fields, field_value_to_index, field_name_to_index}
+    Def {name: name.to_owned(), index: 0, kind, fields, field_value_to_index, field_name_to_index}
   }
 
   /// Returns the [Field](struct.Field.html) with the provided name if one exists.
@@ -602,7 +602,7 @@ impl Schema {
       def.index = i as i32;
       def_name_to_index.insert(def.name.clone(), i);
     }
-    Schema{defs, def_name_to_index}
+    Schema {defs, def_name_to_index}
   }
 
   /// Parses a Kiwi schema encoded in the binary format and returns the parsed
@@ -633,7 +633,7 @@ impl Schema {
         let type_id = bb.read_var_int()?;
         let is_array = bb.read_bool()?;
         let value = bb.read_var_uint()?;
-        fields.push(Field{name, type_id, is_array, value});
+        fields.push(Field {name, type_id, is_array, value});
       }
 
       defs.push(Def::new(name, kind, fields));
@@ -653,18 +653,6 @@ impl Schema {
   /// start to end) so this method is helpful when you need to to skip past
   /// unimportant fields.
   pub fn skip(&self, bb: &mut ByteBuffer, type_id: i32) -> Result<(), ()> {
-    fn skip_field(schema: &Schema, bb: &mut ByteBuffer, field: &Field) -> Result<(), ()> {
-      if field.is_array {
-        let len = bb.read_var_uint()? as usize;
-        for _ in 0..len {
-          schema.skip(bb, field.type_id)?;
-        }
-      } else {
-        schema.skip(bb, field.type_id)?;
-      }
-      Ok(())
-    }
-
     match type_id {
       TYPE_BOOL => { bb.read_bool()?; },
       TYPE_BYTE => { bb.read_byte()?; },
@@ -685,7 +673,7 @@ impl Schema {
 
           DefKind::Struct => {
             for field in &def.fields {
-              skip_field(self, bb, field)?;
+              self.skip_field(bb, field)?;
             }
           },
 
@@ -696,7 +684,7 @@ impl Schema {
                 break;
               }
               if let Some(index) = def.field_value_to_index.get(&value) {
-                skip_field(self, bb, &def.fields[*index])?;
+                self.skip_field(bb, &def.fields[*index])?;
               } else {
                 return Err(());
               }
@@ -708,6 +696,21 @@ impl Schema {
 
     Ok(())
   }
+
+  /// Advances the current index of the provided [ByteBuffer](struct.ByteBuffer.html)
+  /// by the size of the provided field. This is used by [skip](#method.skip)
+  /// but may also be useful by itself.
+  pub fn skip_field(&self, bb: &mut ByteBuffer, field: &Field) -> Result<(), ()> {
+    if field.is_array {
+      let len = bb.read_var_uint()? as usize;
+      for _ in 0..len {
+        self.skip(bb, field.type_id)?;
+      }
+    } else {
+      self.skip(bb, field.type_id)?;
+    }
+    Ok(())
+  }
 }
 
 #[test]
@@ -717,7 +720,7 @@ fn schema_decode() {
   let schema = Schema::decode(&schema_bytes).unwrap();
   assert_eq!(schema, Schema::new(vec![
     Def::new("ABC", DefKind::Message, vec![
-      Field{name: "xyz".to_owned(), type_id: TYPE_INT, is_array: true, value: 1},
+      Field {name: "xyz".to_owned(), type_id: TYPE_INT, is_array: true, value: 1},
     ]),
   ]));
 }
@@ -833,19 +836,6 @@ impl<'a> Value<'a> {
   /// mainly useful as a helper routine for [decode](#method.decode), which you
   /// probably want to use instead.
   pub fn decode_bb(schema: &'a Schema, type_id: i32, bb: &mut ByteBuffer) -> Result<Value<'a>, ()> {
-    fn decode_field<'a>(schema: &'a Schema, field: &Field, bb: &mut ByteBuffer) -> Result<Value<'a>, ()> {
-      if field.is_array {
-        let len = bb.read_var_uint()? as usize;
-        let mut array = Vec::with_capacity(len);
-        for _ in 0..len {
-          array.push(Value::decode_bb(schema, field.type_id, bb)?);
-        }
-        Ok(Value::Array(array))
-      } else {
-        Value::decode_bb(schema, field.type_id, bb)
-      }
-    }
-
     match type_id {
       TYPE_BOOL => { Ok(Value::Bool(bb.read_bool()?)) },
       TYPE_BYTE => { Ok(Value::Byte(bb.read_byte()?)) },
@@ -869,7 +859,7 @@ impl<'a> Value<'a> {
           DefKind::Struct => {
             let mut fields = HashMap::new();
             for field in &def.fields {
-              fields.insert(field.name.as_str(), decode_field(schema, field, bb)?);
+              fields.insert(field.name.as_str(), Value::decode_field_bb(schema, field, bb)?);
             }
             Ok(Value::Object(def.name.as_str(), fields))
           },
@@ -883,7 +873,7 @@ impl<'a> Value<'a> {
               }
               if let Some(index) = def.field_value_to_index.get(&value) {
                 let field = &def.fields[*index];
-                fields.insert(field.name.as_str(), decode_field(schema, field, bb)?);
+                fields.insert(field.name.as_str(), Value::decode_field_bb(schema, field, bb)?);
               } else {
                 return Err(());
               }
@@ -891,6 +881,22 @@ impl<'a> Value<'a> {
           },
         }
       },
+    }
+  }
+
+  /// Decodes the field specified by `field` and `schema` from `bb` starting
+  /// at the current index. This is used by [decode_bb](#method.decode_bb) but
+  /// may also be useful by itself.
+  pub fn decode_field_bb(schema: &'a Schema, field: &Field, bb: &mut ByteBuffer) -> Result<Value<'a>, ()> {
+    if field.is_array {
+      let len = bb.read_var_uint()? as usize;
+      let mut array = Vec::with_capacity(len);
+      for _ in 0..len {
+        array.push(Value::decode_bb(schema, field.type_id, bb)?);
+      }
+      Ok(Value::Array(array))
+    } else {
+      Value::decode_bb(schema, field.type_id, bb)
     }
   }
 
@@ -1042,35 +1048,35 @@ fn value_basic() {
 fn value_encode_and_decode() {
   let schema = Schema::new(vec![
     Def::new("Enum", DefKind::Enum, vec![
-      Field{name: "FOO".to_owned(), type_id: 0, is_array: false, value: 100},
-      Field{name: "BAR".to_owned(), type_id: 0, is_array: false, value: 200},
+      Field {name: "FOO".to_owned(), type_id: 0, is_array: false, value: 100},
+      Field {name: "BAR".to_owned(), type_id: 0, is_array: false, value: 200},
     ]),
 
     Def::new("Struct", DefKind::Struct, vec![
-      Field{name: "v_enum".to_owned(), type_id: 0, is_array: true, value: 0},
-      Field{name: "v_message".to_owned(), type_id: 2, is_array: false, value: 0},
+      Field {name: "v_enum".to_owned(), type_id: 0, is_array: true, value: 0},
+      Field {name: "v_message".to_owned(), type_id: 2, is_array: false, value: 0},
     ]),
 
     Def::new("Message", DefKind::Message, vec![
-      Field{name: "v_bool".to_owned(), type_id: TYPE_BOOL, is_array: false, value: 1},
-      Field{name: "v_byte".to_owned(), type_id: TYPE_BYTE, is_array: false, value: 2},
-      Field{name: "v_int".to_owned(), type_id: TYPE_INT, is_array: false, value: 3},
-      Field{name: "v_uint".to_owned(), type_id: TYPE_UINT, is_array: false, value: 4},
-      Field{name: "v_float".to_owned(), type_id: TYPE_FLOAT, is_array: false, value: 5},
-      Field{name: "v_string".to_owned(), type_id: TYPE_STRING, is_array: false, value: 6},
-      Field{name: "v_enum".to_owned(), type_id: 0, is_array: false, value: 7},
-      Field{name: "v_struct".to_owned(), type_id: 1, is_array: false, value: 8},
-      Field{name: "v_message".to_owned(), type_id: 2, is_array: false, value: 9},
+      Field {name: "v_bool".to_owned(), type_id: TYPE_BOOL, is_array: false, value: 1},
+      Field {name: "v_byte".to_owned(), type_id: TYPE_BYTE, is_array: false, value: 2},
+      Field {name: "v_int".to_owned(), type_id: TYPE_INT, is_array: false, value: 3},
+      Field {name: "v_uint".to_owned(), type_id: TYPE_UINT, is_array: false, value: 4},
+      Field {name: "v_float".to_owned(), type_id: TYPE_FLOAT, is_array: false, value: 5},
+      Field {name: "v_string".to_owned(), type_id: TYPE_STRING, is_array: false, value: 6},
+      Field {name: "v_enum".to_owned(), type_id: 0, is_array: false, value: 7},
+      Field {name: "v_struct".to_owned(), type_id: 1, is_array: false, value: 8},
+      Field {name: "v_message".to_owned(), type_id: 2, is_array: false, value: 9},
 
-      Field{name: "a_bool".to_owned(), type_id: TYPE_BOOL, is_array: true, value: 10},
-      Field{name: "a_byte".to_owned(), type_id: TYPE_BYTE, is_array: true, value: 11},
-      Field{name: "a_int".to_owned(), type_id: TYPE_INT, is_array: true, value: 12},
-      Field{name: "a_uint".to_owned(), type_id: TYPE_UINT, is_array: true, value: 13},
-      Field{name: "a_float".to_owned(), type_id: TYPE_FLOAT, is_array: true, value: 14},
-      Field{name: "a_string".to_owned(), type_id: TYPE_STRING, is_array: true, value: 15},
-      Field{name: "a_enum".to_owned(), type_id: 0, is_array: true, value: 16},
-      Field{name: "a_struct".to_owned(), type_id: 1, is_array: true, value: 17},
-      Field{name: "a_message".to_owned(), type_id: 2, is_array: true, value: 18},
+      Field {name: "a_bool".to_owned(), type_id: TYPE_BOOL, is_array: true, value: 10},
+      Field {name: "a_byte".to_owned(), type_id: TYPE_BYTE, is_array: true, value: 11},
+      Field {name: "a_int".to_owned(), type_id: TYPE_INT, is_array: true, value: 12},
+      Field {name: "a_uint".to_owned(), type_id: TYPE_UINT, is_array: true, value: 13},
+      Field {name: "a_float".to_owned(), type_id: TYPE_FLOAT, is_array: true, value: 14},
+      Field {name: "a_string".to_owned(), type_id: TYPE_STRING, is_array: true, value: 15},
+      Field {name: "a_enum".to_owned(), type_id: 0, is_array: true, value: 16},
+      Field {name: "a_struct".to_owned(), type_id: 1, is_array: true, value: 17},
+      Field {name: "a_message".to_owned(), type_id: 2, is_array: true, value: 18},
     ]),
   ]);
 
