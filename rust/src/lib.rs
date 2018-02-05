@@ -1,6 +1,6 @@
 //! This is a Rust library with some helper routines for parsing files in the
-//! Kiwi serialization format. See https://github.com/evanw/kiwi for
-//! documentation about the format.
+//! Kiwi serialization format. See [https://github.com/evanw/kiwi](https://github.com/evanw/kiwi)
+//! for documentation about the format.
 //!
 //! ```
 //! use kiwi_schema::*;
@@ -836,12 +836,28 @@ impl<'a> Value<'a> {
     }
   }
 
+  /// A convenience method to append to an [Array](#variant.Array). Does
+  /// nothing for other value kinds.
+  pub fn push(&mut self, value: Value<'a>) {
+    if let Value::Array(ref mut values) = *self {
+      values.push(value);
+    }
+  }
+
   /// A convenience method to extract a field out of an [Object](#variant.Object).
   /// Returns `None` for other value kinds or if the field isn't present.
   pub fn get(&self, name: &str) -> Option<&Value> {
     match *self {
       Value::Object(_, ref fields) => fields.get(name),
       _ => None,
+    }
+  }
+
+  /// A convenience method to update a field on an [Object](#variant.Object).
+  /// Does nothing for other value kinds.
+  pub fn set(&mut self, name: &'a str, value: Value<'a>) {
+    if let Value::Object(_, ref mut fields) = *self {
+      fields.insert(name, value);
     }
   }
 
@@ -1069,6 +1085,38 @@ fn value_basic() {
   assert_eq!(value[7].get("key1"), Some(&Value::String("value1".to_owned())));
 
   assert_eq!(format!("{:?}", value), "[true, 255, -1, 1, 0.5, \"abc\", Foo::FOO, Obj {key1: \"value1\", key2: \"value2\"}]");
+}
+
+#[test]
+fn value_push() {
+  let mut value = Value::Array(vec![]);
+  assert_eq!(value.len(), 0);
+
+  value.push(Value::Int(123));
+  assert_eq!(value.len(), 1);
+  assert_eq!(value[0], Value::Int(123));
+
+  value.push(Value::Int(456));
+  assert_eq!(value.len(), 2);
+  assert_eq!(value[0], Value::Int(123));
+  assert_eq!(value[1], Value::Int(456));
+}
+
+#[test]
+fn value_set() {
+  let mut value = Value::Object("Foo", HashMap::new());
+  assert_eq!(value.get("x"), None);
+
+  value.set("x", Value::Int(123));
+  assert_eq!(value.get("x"), Some(&Value::Int(123)));
+
+  value.set("y", Value::Int(456));
+  assert_eq!(value.get("x"), Some(&Value::Int(123)));
+  assert_eq!(value.get("y"), Some(&Value::Int(456)));
+
+  value.set("x", Value::Int(789));
+  assert_eq!(value.get("x"), Some(&Value::Int(789)));
+  assert_eq!(value.get("y"), Some(&Value::Int(456)));
 }
 
 #[test]
