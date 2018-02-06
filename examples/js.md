@@ -2,7 +2,7 @@
 
 The schema in this example is a file called `test.kiwi` that looks like this:
 
-```
+```proto
 message Test {
   int x = 1;
 }

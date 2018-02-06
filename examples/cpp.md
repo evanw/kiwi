@@ -2,7 +2,7 @@
 
 The schema in this example is a file called `testv1.kiwi` that looks like this:
 
-```
+```proto
 package testv1;
 
 message Test {
@@ -51,7 +51,7 @@ To convert the textual schema format to the binary schema format, use the comman
 
 For example, given the following version 2 of the schema in file `testv2.kiwi`:
 
-```
+```proto
 package testv2;
 
 message Test {

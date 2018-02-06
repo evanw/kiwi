@@ -2,7 +2,7 @@
 
 The schema in this example is a file called `test.kiwi` that looks like this:
 
-```
+```proto
 message Test {
   int x = 1;
 }
@@ -12,7 +12,7 @@ Install the `kiwic` command using `npm install -g kiwi-schema`, then convert the
 Add a dependency on the [kiwi-schema](https://crates.io/crates/kiwi-schema) crate to your Cargo.toml file.
 Then the following code should build and run:
 
-```rs
+```rust
 extern crate kiwi_schema;
 use kiwi_schema::*;
 use std::collections::HashMap;

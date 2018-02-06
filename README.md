@@ -35,7 +35,7 @@ Non-goals:
 
 ## Example Schema
 
-```
+```proto
 enum Type {
   FLAT = 0;
   ROUND = 1;
