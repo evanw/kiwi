@@ -1,6 +1,7 @@
 namespace test {
   class BinarySchema {
     var _schema = Kiwi.BinarySchema.new
+    var _indexEnumMessage = 0
     var _indexBoolMessage = 0
     var _indexByteMessage = 0
     var _indexIntMessage = 0
@@ -9,6 +10,7 @@ namespace test {
     var _indexStringMessage = 0
     var _indexCompoundMessage = 0
     var _indexNestedMessage = 0
+    var _indexEnumArrayMessage = 0
     var _indexBoolArrayMessage = 0
     var _indexByteArrayMessage = 0
     var _indexIntArrayMessage = 0
@@ -22,6 +24,7 @@ namespace test {
 
     def parse(bytes Uint8Array) {
       _schema.parse(Kiwi.ByteBuffer.new(bytes))
+      _indexEnumMessage = _schema.findDefinition("EnumMessage")
       _indexBoolMessage = _schema.findDefinition("BoolMessage")
       _indexByteMessage = _schema.findDefinition("ByteMessage")
       _indexIntMessage = _schema.findDefinition("IntMessage")
@@ -30,6 +33,7 @@ namespace test {
       _indexStringMessage = _schema.findDefinition("StringMessage")
       _indexCompoundMessage = _schema.findDefinition("CompoundMessage")
       _indexNestedMessage = _schema.findDefinition("NestedMessage")
+      _indexEnumArrayMessage = _schema.findDefinition("EnumArrayMessage")
       _indexBoolArrayMessage = _schema.findDefinition("BoolArrayMessage")
       _indexByteArrayMessage = _schema.findDefinition("ByteArrayMessage")
       _indexIntArrayMessage = _schema.findDefinition("IntArrayMessage")
@@ -40,6 +44,10 @@ namespace test {
       _indexRecursiveMessage = _schema.findDefinition("RecursiveMessage")
       _indexNonDeprecatedMessage = _schema.findDefinition("NonDeprecatedMessage")
       _indexDeprecatedMessage = _schema.findDefinition("DeprecatedMessage")
+    }
+
+    def skipEnumMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexEnumMessage, id)
     }
 
     def skipBoolMessageField(bb Kiwi.ByteBuffer, id int) {
@@ -72,6 +80,10 @@ namespace test {
 
     def skipNestedMessageField(bb Kiwi.ByteBuffer, id int) {
       _schema.skipField(bb, _indexNestedMessage, id)
+    }
+
+    def skipEnumArrayMessageField(bb Kiwi.ByteBuffer, id int) {
+      _schema.skipField(bb, _indexEnumArrayMessage, id)
     }
 
     def skipBoolArrayMessageField(bb Kiwi.ByteBuffer, id int) {
@@ -637,6 +649,72 @@ namespace test {
       self.a = bb.readVarUint
       self.b = CompoundStruct.decode(bb, schema)
       self.c = bb.readVarUint
+      return self
+    }
+  }
+
+  class EnumMessage {
+    var _flags0 = 0
+    var _x Enum = .A
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x Enum {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value Enum) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_x {
+        bb.writeVarUint(1)
+        bb.writeVarUint(Enum.encode(_x))
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace EnumMessage {
+    def decode(bytes Uint8Array) EnumMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
+    }
+
+    def decode(bytes Uint8Array, schema BinarySchema) EnumMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) EnumMessage {
+      var self = new
+      while true {
+        var type = bb.readVarUint
+        switch type {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            self.x = Enum.decode(bb.readVarUint)
+          }
+
+          default {
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipEnumMessageField(bb, type) }
+          }
+        }
+      }
       return self
     }
   }
@@ -1241,6 +1319,60 @@ namespace test {
     }
   }
 
+  class EnumArrayStruct {
+    var _flags0 = 0
+    var _x List<Enum> = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x List<Enum> {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value List<Enum>) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      assert(has_x)
+      bb.writeVarUint(_x.count)
+      for value in _x {
+        bb.writeVarUint(Enum.encode(value))
+      }
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace EnumArrayStruct {
+    def decode(bytes Uint8Array) EnumArrayStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
+    }
+
+    def decode(bytes Uint8Array, schema BinarySchema) EnumArrayStruct {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) EnumArrayStruct {
+      var self = new
+      var count = 0
+      count = bb.readVarUint
+      self.x = []
+      for array = self._x; count != 0; count-- {
+        array.append(Enum.decode(bb.readVarUint))
+      }
+      return self
+    }
+  }
+
   class BoolArrayStruct {
     var _flags0 = 0
     var _x List<bool> = null
@@ -1640,6 +1772,80 @@ namespace test {
       self.y = []
       for array = self._y; count != 0; count-- {
         array.append(bb.readVarUint)
+      }
+      return self
+    }
+  }
+
+  class EnumArrayMessage {
+    var _flags0 = 0
+    var _x List<Enum> = null
+
+    def has_x bool {
+      return (_flags0 & 1) != 0
+    }
+
+    def x List<Enum> {
+      assert(has_x)
+      return _x
+    }
+
+    def x=(value List<Enum>) {
+      _x = value
+      _flags0 |= 1
+    }
+
+    def encode(bb Kiwi.ByteBuffer) {
+      if has_x {
+        bb.writeVarUint(1)
+        bb.writeVarUint(_x.count)
+        for value in _x {
+          bb.writeVarUint(Enum.encode(value))
+        }
+      }
+
+      bb.writeVarUint(0)
+    }
+
+    def encode Uint8Array {
+      var bb = Kiwi.ByteBuffer.new
+      encode(bb)
+      return bb.toUint8Array
+    }
+  }
+
+  namespace EnumArrayMessage {
+    def decode(bytes Uint8Array) EnumArrayMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), null)
+    }
+
+    def decode(bytes Uint8Array, schema BinarySchema) EnumArrayMessage {
+      return decode(Kiwi.ByteBuffer.new(bytes), schema)
+    }
+
+    def decode(bb Kiwi.ByteBuffer, schema BinarySchema) EnumArrayMessage {
+      var self = new
+      var count = 0
+      while true {
+        var type = bb.readVarUint
+        switch type {
+          case 0 {
+            break
+          }
+
+          case 1 {
+            count = bb.readVarUint
+            self.x = []
+            for array = self._x; count != 0; count-- {
+              array.append(Enum.decode(bb.readVarUint))
+            }
+          }
+
+          default {
+            if schema == null { Kiwi.DecodeError.throwInvalidMessage }
+            else { schema.skipEnumArrayMessageField(bb, type) }
+          }
+        }
       }
       return self
     }

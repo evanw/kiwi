@@ -25,6 +25,9 @@ public:
   virtual void visitStringStruct(const char *x) = 0;
   virtual void visitCompoundStruct(uint32_t x, uint32_t y) = 0;
   virtual void visitNestedStruct(uint32_t a, uint32_t b_x, uint32_t b_y, uint32_t c) = 0;
+  virtual void beginEnumMessage() = 0;
+  virtual void visitEnumMessage_x(Enum x) = 0;
+  virtual void endEnumMessage() = 0;
   virtual void beginBoolMessage() = 0;
   virtual void visitBoolMessage_x(bool x) = 0;
   virtual void endBoolMessage() = 0;
@@ -52,6 +55,10 @@ public:
   virtual void visitNestedMessage_b() = 0;
   virtual void visitNestedMessage_c(uint32_t c) = 0;
   virtual void endNestedMessage() = 0;
+  virtual void beginEnumArrayStruct() = 0;
+  virtual void visitEnumArrayStruct_x_count(uint32_t size) = 0;
+  virtual void visitEnumArrayStruct_x_element(Enum x) = 0;
+  virtual void endEnumArrayStruct() = 0;
   virtual void beginBoolArrayStruct() = 0;
   virtual void visitBoolArrayStruct_x_count(uint32_t size) = 0;
   virtual void visitBoolArrayStruct_x_element(bool x) = 0;
@@ -82,6 +89,10 @@ public:
   virtual void visitCompoundArrayStruct_y_count(uint32_t size) = 0;
   virtual void visitCompoundArrayStruct_y_element(uint32_t y) = 0;
   virtual void endCompoundArrayStruct() = 0;
+  virtual void beginEnumArrayMessage() = 0;
+  virtual void visitEnumArrayMessage_x_count(uint32_t size) = 0;
+  virtual void visitEnumArrayMessage_x_element(Enum x) = 0;
+  virtual void endEnumArrayMessage() = 0;
   virtual void beginBoolArrayMessage() = 0;
   virtual void visitBoolArrayMessage_x_count(uint32_t size) = 0;
   virtual void visitBoolArrayMessage_x_element(bool x) = 0;
@@ -179,6 +190,9 @@ public:
   virtual void visitStringStruct(const char *x) override;
   virtual void visitCompoundStruct(uint32_t x, uint32_t y) override;
   virtual void visitNestedStruct(uint32_t a, uint32_t b_x, uint32_t b_y, uint32_t c) override;
+  virtual void beginEnumMessage() override;
+  virtual void visitEnumMessage_x(Enum x) override;
+  virtual void endEnumMessage() override;
   virtual void beginBoolMessage() override;
   virtual void visitBoolMessage_x(bool x) override;
   virtual void endBoolMessage() override;
@@ -206,6 +220,10 @@ public:
   virtual void visitNestedMessage_b() override;
   virtual void visitNestedMessage_c(uint32_t c) override;
   virtual void endNestedMessage() override;
+  virtual void beginEnumArrayStruct() override;
+  virtual void visitEnumArrayStruct_x_count(uint32_t size) override;
+  virtual void visitEnumArrayStruct_x_element(Enum x) override;
+  virtual void endEnumArrayStruct() override;
   virtual void beginBoolArrayStruct() override;
   virtual void visitBoolArrayStruct_x_count(uint32_t size) override;
   virtual void visitBoolArrayStruct_x_element(bool x) override;
@@ -236,6 +254,10 @@ public:
   virtual void visitCompoundArrayStruct_y_count(uint32_t size) override;
   virtual void visitCompoundArrayStruct_y_element(uint32_t y) override;
   virtual void endCompoundArrayStruct() override;
+  virtual void beginEnumArrayMessage() override;
+  virtual void visitEnumArrayMessage_x_count(uint32_t size) override;
+  virtual void visitEnumArrayMessage_x_element(Enum x) override;
+  virtual void endEnumArrayMessage() override;
   virtual void beginBoolArrayMessage() override;
   virtual void visitBoolArrayMessage_x_count(uint32_t size) override;
   virtual void visitBoolArrayMessage_x_element(bool x) override;
@@ -324,6 +346,7 @@ bool parseFloatStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseStringStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseCompoundStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseNestedStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
+bool parseEnumMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseBoolMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseByteMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseIntMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
@@ -332,6 +355,7 @@ bool parseFloatMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseStringMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseCompoundMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseNestedMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
+bool parseEnumArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseBoolArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseByteArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseIntArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
@@ -339,6 +363,7 @@ bool parseUintArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseFloatArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseStringArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseCompoundArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
+bool parseEnumArrayMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseBoolArrayMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseByteArrayMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseIntArrayMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
@@ -428,6 +453,27 @@ bool parseNestedStruct(kiwi::ByteBuffer &bb, Visitor &visitor) {
   if (!bb.readVarUint(a) || !bb.readVarUint(b_x) || !bb.readVarUint(b_y) || !bb.readVarUint(c)) return false;
   visitor.visitNestedStruct(a, b_x, b_y, c);
   return true;
+}
+
+bool parseEnumMessage(kiwi::ByteBuffer &bb, Visitor &visitor) {
+  visitor.beginEnumMessage();
+  while (true) {
+    uint32_t _type;
+    if (!bb.readVarUint(_type)) return false;
+    switch (_type) {
+      case 0: {
+        visitor.endEnumMessage();
+        return true;
+      }
+      case 1: {
+        Enum x;
+        if (!bb.readVarUint(reinterpret_cast<uint32_t &>(x))) return false;
+        visitor.visitEnumMessage_x(x);
+        break;
+      }
+      default: return false;
+    }
+  }
 }
 
 bool parseBoolMessage(kiwi::ByteBuffer &bb, Visitor &visitor) {
@@ -615,6 +661,20 @@ bool parseNestedMessage(kiwi::ByteBuffer &bb, Visitor &visitor) {
   }
 }
 
+bool parseEnumArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor) {
+  visitor.beginEnumArrayStruct();
+  uint32_t _x_count;
+  if (!bb.readVarUint(_x_count)) return false;
+  visitor.visitEnumArrayStruct_x_count(_x_count);
+  while (_x_count-- > 0) {
+    Enum x;
+    if (!bb.readVarUint(reinterpret_cast<uint32_t &>(x))) return false;
+    visitor.visitEnumArrayStruct_x_element(x);
+  }
+  visitor.endEnumArrayStruct();
+  return true;
+}
+
 bool parseBoolArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor) {
   visitor.beginBoolArrayStruct();
   uint32_t _x_count;
@@ -719,6 +779,32 @@ bool parseCompoundArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor) {
   }
   visitor.endCompoundArrayStruct();
   return true;
+}
+
+bool parseEnumArrayMessage(kiwi::ByteBuffer &bb, Visitor &visitor) {
+  visitor.beginEnumArrayMessage();
+  while (true) {
+    uint32_t _type;
+    if (!bb.readVarUint(_type)) return false;
+    switch (_type) {
+      case 0: {
+        visitor.endEnumArrayMessage();
+        return true;
+      }
+      case 1: {
+        uint32_t _x_count;
+        if (!bb.readVarUint(_x_count)) return false;
+        visitor.visitEnumArrayMessage_x_count(_x_count);
+        while (_x_count-- > 0) {
+          Enum x;
+          if (!bb.readVarUint(reinterpret_cast<uint32_t &>(x))) return false;
+          visitor.visitEnumArrayMessage_x_element(x);
+        }
+        break;
+      }
+      default: return false;
+    }
+  }
 }
 
 bool parseBoolArrayMessage(kiwi::ByteBuffer &bb, Visitor &visitor) {
@@ -1208,6 +1294,18 @@ void Writer::visitNestedStruct(uint32_t a, uint32_t b_x, uint32_t b_y, uint32_t 
   _bb.writeVarUint(c);
 }
 
+void Writer::beginEnumMessage() {
+}
+
+void Writer::visitEnumMessage_x(Enum x) {
+  _bb.writeVarUint(1);
+  _bb.writeVarUint(static_cast<uint32_t>(x));
+}
+
+void Writer::endEnumMessage() {
+  _bb.writeVarUint(0);
+}
+
 void Writer::beginBoolMessage() {
 }
 
@@ -1318,6 +1416,20 @@ void Writer::endNestedMessage() {
   _bb.writeVarUint(0);
 }
 
+void Writer::beginEnumArrayStruct() {
+}
+
+void Writer::visitEnumArrayStruct_x_count(uint32_t size) {
+  _bb.writeVarUint(size);
+}
+
+void Writer::visitEnumArrayStruct_x_element(Enum x) {
+  _bb.writeVarUint(static_cast<uint32_t>(x));
+}
+
+void Writer::endEnumArrayStruct() {
+}
+
 void Writer::beginBoolArrayStruct() {
 }
 
@@ -1422,6 +1534,22 @@ void Writer::visitCompoundArrayStruct_y_element(uint32_t y) {
 }
 
 void Writer::endCompoundArrayStruct() {
+}
+
+void Writer::beginEnumArrayMessage() {
+}
+
+void Writer::visitEnumArrayMessage_x_count(uint32_t size) {
+  _bb.writeVarUint(1);
+  _bb.writeVarUint(size);
+}
+
+void Writer::visitEnumArrayMessage_x_element(Enum x) {
+  _bb.writeVarUint(static_cast<uint32_t>(x));
+}
+
+void Writer::endEnumArrayMessage() {
+  _bb.writeVarUint(0);
 }
 
 void Writer::beginBoolArrayMessage() {

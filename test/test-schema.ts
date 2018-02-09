@@ -43,6 +43,10 @@ export namespace test {
     c: number;
   }
 
+  export interface EnumMessage {
+    x?: Enum;
+  }
+
   export interface BoolMessage {
     x?: boolean;
   }
@@ -78,6 +82,10 @@ export namespace test {
     c?: number;
   }
 
+  export interface EnumArrayStruct {
+    x: Enum[];
+  }
+
   export interface BoolArrayStruct {
     x: boolean[];
   }
@@ -105,6 +113,10 @@ export namespace test {
   export interface CompoundArrayStruct {
     x: number[];
     y: number[];
+  }
+
+  export interface EnumArrayMessage {
+    x?: Enum[];
   }
 
   export interface BoolArrayMessage {
@@ -197,6 +209,8 @@ export namespace test {
     decodeCompoundStruct(buffer: Uint8Array): CompoundStruct;
     encodeNestedStruct(message: NestedStruct): Uint8Array;
     decodeNestedStruct(buffer: Uint8Array): NestedStruct;
+    encodeEnumMessage(message: EnumMessage): Uint8Array;
+    decodeEnumMessage(buffer: Uint8Array): EnumMessage;
     encodeBoolMessage(message: BoolMessage): Uint8Array;
     decodeBoolMessage(buffer: Uint8Array): BoolMessage;
     encodeByteMessage(message: ByteMessage): Uint8Array;
@@ -213,6 +227,8 @@ export namespace test {
     decodeCompoundMessage(buffer: Uint8Array): CompoundMessage;
     encodeNestedMessage(message: NestedMessage): Uint8Array;
     decodeNestedMessage(buffer: Uint8Array): NestedMessage;
+    encodeEnumArrayStruct(message: EnumArrayStruct): Uint8Array;
+    decodeEnumArrayStruct(buffer: Uint8Array): EnumArrayStruct;
     encodeBoolArrayStruct(message: BoolArrayStruct): Uint8Array;
     decodeBoolArrayStruct(buffer: Uint8Array): BoolArrayStruct;
     encodeByteArrayStruct(message: ByteArrayStruct): Uint8Array;
@@ -227,6 +243,8 @@ export namespace test {
     decodeStringArrayStruct(buffer: Uint8Array): StringArrayStruct;
     encodeCompoundArrayStruct(message: CompoundArrayStruct): Uint8Array;
     decodeCompoundArrayStruct(buffer: Uint8Array): CompoundArrayStruct;
+    encodeEnumArrayMessage(message: EnumArrayMessage): Uint8Array;
+    decodeEnumArrayMessage(buffer: Uint8Array): EnumArrayMessage;
     encodeBoolArrayMessage(message: BoolArrayMessage): Uint8Array;
     decodeBoolArrayMessage(buffer: Uint8Array): BoolArrayMessage;
     encodeByteArrayMessage(message: ByteArrayMessage): Uint8Array;

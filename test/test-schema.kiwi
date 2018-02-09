@@ -6,7 +6,6 @@ enum Enum {
 }
 
 struct EnumStruct { Enum x; Enum[] y; }
-
 struct BoolStruct { bool x; }
 struct ByteStruct { byte x; }
 struct IntStruct { int x; }
@@ -16,6 +15,7 @@ struct StringStruct { string x; }
 struct CompoundStruct { uint x; uint y; }
 struct NestedStruct { uint a; CompoundStruct b; uint c; }
 
+message EnumMessage { Enum x = 1; }
 message BoolMessage { bool x = 1; }
 message ByteMessage { byte x = 1; }
 message IntMessage { int x = 1; }
@@ -25,6 +25,7 @@ message StringMessage { string x = 1; }
 message CompoundMessage { uint x = 1; uint y = 2; }
 message NestedMessage { uint a = 1; CompoundMessage b = 2; uint c = 3; }
 
+struct EnumArrayStruct { Enum[] x; }
 struct BoolArrayStruct { bool[] x; }
 struct ByteArrayStruct { byte[] x; }
 struct IntArrayStruct { int[] x; }
@@ -33,6 +34,7 @@ struct FloatArrayStruct { float[] x; }
 struct StringArrayStruct { string[] x; }
 struct CompoundArrayStruct { uint[] x; uint[] y; }
 
+message EnumArrayMessage { Enum[] x = 1; }
 message BoolArrayMessage { bool[] x = 1; }
 message ByteArrayMessage { byte[] x = 1; }
 message IntArrayMessage { int[] x = 1; }

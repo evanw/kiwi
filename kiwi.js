@@ -689,7 +689,13 @@ var kiwi = exports || kiwi || {}, exports;
           if (!type) {
             error('Invalid type ' + quote(field.type) + ' for field ' + quote(field.name), field.line, field.column);
           } else if (type.kind === 'ENUM') {
-            code = 'this[' + quote(type.name) + '][bb.readVarUint()]';
+            code = [
+              '(function (t) {',
+              '  var byte = bb.readVarUint();',
+              '  if (undefined == t[' + quote(type.name) + '][byte]) { throw new Error("Attempted to parse invalid enum"); }',
+              '  return t[' + quote(type.name) + '][byte];',
+              '})(this)',
+            ].join('\n');
           } else {
             code = 'this[' + quote('decode' + type.name) + '](bb)';
           }
@@ -703,11 +709,11 @@ var kiwi = exports || kiwi || {}, exports;
       if (field.isArray) {
         if (field.isDeprecated) {
           lines.push(indent + 'var length = bb.readVarUint();');
-          lines.push(indent + 'while (length-- > 0) ' + code + ';');
+          lines.push(indent + 'while (length-- > 0) { ' + code + ' };');
         } else {
           lines.push(indent + 'var values = result[' + quote(field.name) + '] = [];');
           lines.push(indent + 'var length = bb.readVarUint();');
-          lines.push(indent + 'while (length-- > 0) values.push(' + code + ');');
+          lines.push(indent + 'while (length-- > 0) { values.push(' + code + '); }');
         }
       }
 
