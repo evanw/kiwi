@@ -23,7 +23,7 @@ var usage = [
   '',
   'Examples:',
   '',
-  '  kiwic --schema test.kiwi --js test.h',
+  '  kiwic --schema test.kiwi --js test.js',
   '  kiwic --schema test.kiwi --cpp test.h',
   '  kiwic --schema test.kiwi --skew test.sk',
   '  kiwic --schema test.kiwi --binary test.bkiwi',
@@ -31,6 +31,26 @@ var usage = [
   '  kiwic --schema test.kiwi --root-type Test --to-json buffer.bin',
   '',
 ].join('\n');
+
+function writeFileString(path, text) {
+  try {
+    if (fs.readFileSync(path, 'utf8') === text) {
+      return; // Avoid unnecessarily modifying files
+    }
+  } catch (e) {
+  }
+  fs.writeFileSync(path, text);
+}
+
+function writeFileBuffer(path, buffer) {
+  try {
+    if (fs.readFileSync(path).equals(buffer)) {
+      return; // Avoid unnecessarily modifying files
+    }
+  } catch (e) {
+  }
+  fs.writeFileSync(path, buffer);
+}
 
 var main = exports.main = function(args) {
   var flags = {
@@ -96,30 +116,30 @@ var main = exports.main = function(args) {
 
   // Generate JavaScript code
   if (flags['--js'] !== null) {
-    fs.writeFileSync(flags['--js'], kiwi.compileSchemaJS(content));
+    writeFileString(flags['--js'], kiwi.compileSchemaJS(content));
   }
 
   // Generate JavaScript code
   if (flags['--ts'] !== null) {
-    fs.writeFileSync(flags['--ts'], kiwi.compileSchemaTypeScript(content));
+    writeFileString(flags['--ts'], kiwi.compileSchemaTypeScript(content));
   }
 
   // Generate C++ code
   if (flags['--cpp'] !== null) {
-    fs.writeFileSync(flags['--cpp'], kiwi.compileSchemaCPP(content));
+    writeFileString(flags['--cpp'], kiwi.compileSchemaCPP(content));
   }
   if (flags['--callback-cpp'] !== null) {
-    fs.writeFileSync(flags['--callback-cpp'], kiwi.compileSchemaCallbackCPP(content));
+    writeFileString(flags['--callback-cpp'], kiwi.compileSchemaCallbackCPP(content));
   }
 
   // Generate Skew code
   if (flags['--skew'] !== null) {
-    fs.writeFileSync(flags['--skew'], kiwi.compileSchemaSkew(content));
+    writeFileString(flags['--skew'], kiwi.compileSchemaSkew(content));
   }
 
   // Generate a binary schema file
   if (flags['--binary'] !== null) {
-    fs.writeFileSync(flags['--binary'], Buffer(kiwi.encodeBinarySchema(content)));
+    writeFileBuffer(flags['--binary'], Buffer(kiwi.encodeBinarySchema(content)));
   }
 
   // Convert a binary file to JSON
@@ -127,7 +147,7 @@ var main = exports.main = function(args) {
     if (rootType === null) {
       throw new Error('Missing flag --root-type when using --to-json');
     }
-    fs.writeFileSync(flags['--to-json'] + '.json', JSON.stringify(schema['decode' + rootType](new Uint8Array(fs.readFileSync(flags['--to-json']))), null, 2) + '\n');
+    writeFileString(flags['--to-json'] + '.json', JSON.stringify(schema['decode' + rootType](new Uint8Array(fs.readFileSync(flags['--to-json']))), null, 2) + '\n');
   }
 
   // Convert a JSON file to binary
@@ -135,7 +155,7 @@ var main = exports.main = function(args) {
     if (rootType === null) {
       throw new Error('Missing flag --root-type when using --from-json');
     }
-    fs.writeFileSync(flags['--from-json'] + '.bin', Buffer(schema['encode' + rootType](JSON.parse(fs.readFileSync(flags['--from-json'], 'utf8')))));
+    writeFileBuffer(flags['--from-json'] + '.bin', Buffer(schema['encode' + rootType](JSON.parse(fs.readFileSync(flags['--from-json'], 'utf8')))));
   }
 
   return 0;
