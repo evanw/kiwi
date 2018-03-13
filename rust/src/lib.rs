@@ -297,6 +297,11 @@ impl ByteBufferMut {
     self.data.push(value);
   }
 
+  /// Write a raw byte slice to the end of the buffer.
+  pub fn write_bytes(&mut self, value: &[u8]) {
+    self.data.extend_from_slice(value);
+  }
+
   /// Write a variable-length signed 32-bit integer to the end of the buffer.
   pub fn write_var_int(&mut self, value: i32) {
     self.write_var_uint(((value << 1) ^ (value >> 31)) as u32);
@@ -367,6 +372,15 @@ fn write_byte() {
   assert_eq!(write_once(|bb| bb.write_byte(1)), [1]);
   assert_eq!(write_once(|bb| bb.write_byte(254)), [254]);
   assert_eq!(write_once(|bb| bb.write_byte(255)), [255]);
+}
+
+#[test]
+fn write_bytes() {
+  let mut bb = ByteBufferMut::new();
+  bb.write_bytes(&[1, 2, 3]);
+  bb.write_bytes(&[]);
+  bb.write_bytes(&[4, 5]);
+  assert_eq!(bb.data(), [1, 2, 3, 4, 5]);
 }
 
 #[test]
