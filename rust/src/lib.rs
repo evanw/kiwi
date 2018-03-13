@@ -78,6 +78,17 @@ impl<'a> ByteBuffer<'a> {
     }
   }
 
+  /// Try to read a byte starting at the current index.
+  pub fn read_bytes(&mut self, len: usize) -> Result<&'a [u8], ()> {
+    if self.index + len > self.data.len() {
+      Err(())
+    } else {
+      let value = &self.data[self.index..self.index + len];
+      self.index = self.index + len;
+      Ok(value)
+    }
+  }
+
   /// Try to read a variable-length signed 32-bit integer starting at the
   /// current index.
   pub fn read_var_int(&mut self) -> Result<i32, ()> {
@@ -169,6 +180,21 @@ fn read_byte() {
   assert_eq!(try(&[1]), Ok(1));
   assert_eq!(try(&[254]), Ok(254));
   assert_eq!(try(&[255]), Ok(255));
+}
+
+#[test]
+fn read_bytes() {
+  let try = |bytes, len| { ByteBuffer::new(bytes).read_bytes(len) };
+  assert_eq!(try(&[], 0), Ok(vec![].as_slice()));
+  assert_eq!(try(&[], 1), Err(()));
+  assert_eq!(try(&[0], 0), Ok(vec![].as_slice()));
+  assert_eq!(try(&[0], 1), Ok(vec![0].as_slice()));
+  assert_eq!(try(&[0], 2), Err(()));
+
+  let mut bb = ByteBuffer::new(&[1, 2, 3, 4, 5]);
+  assert_eq!(bb.read_bytes(3), Ok(vec![1, 2, 3].as_slice()));
+  assert_eq!(bb.read_bytes(2), Ok(vec![4, 5].as_slice()));
+  assert_eq!(bb.read_bytes(1), Err(()));
 }
 
 #[test]
