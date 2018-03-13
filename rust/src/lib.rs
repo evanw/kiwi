@@ -875,6 +875,14 @@ impl<'a> Value<'a> {
     }
   }
 
+  /// A convenience method to remove a field on an [Object](#variant.Object).
+  /// Does nothing for other value kinds.
+  pub fn remove(&mut self, name: &'a str) {
+    if let Value::Object(_, ref mut fields) = *self {
+      fields.remove(name);
+    }
+  }
+
   /// Decodes the type specified by `type_id` and `schema` from `bytes`.
   pub fn decode(schema: &'a Schema, type_id: i32, bytes: &[u8]) -> Result<Value<'a>, ()> {
     Value::decode_bb(schema, type_id, &mut ByteBuffer::new(bytes))
@@ -1131,6 +1139,27 @@ fn value_set() {
   value.set("x", Value::Int(789));
   assert_eq!(value.get("x"), Some(&Value::Int(789)));
   assert_eq!(value.get("y"), Some(&Value::Int(456)));
+}
+
+#[test]
+fn value_remove() {
+  let mut value = Value::Object("Foo", HashMap::new());
+  assert_eq!(value.get("x"), None);
+
+  value.set("x", Value::Int(123));
+  assert_eq!(value.get("x"), Some(&Value::Int(123)));
+
+  value.set("y", Value::Int(456));
+  assert_eq!(value.get("x"), Some(&Value::Int(123)));
+  assert_eq!(value.get("y"), Some(&Value::Int(456)));
+
+  value.remove("x");
+  assert_eq!(value.get("x"), None);
+  assert_eq!(value.get("y"), Some(&Value::Int(456)));
+
+  value.remove("y");
+  assert_eq!(value.get("x"), None);
+  assert_eq!(value.get("y"), None);
 }
 
 #[test]
