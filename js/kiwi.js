@@ -335,11 +335,11 @@ var kiwi = exports || kiwi || {}, exports;
     }
 
     var definitions = [];
-    var package = null;
+    var packageText = null;
     var index = 0;
 
     if (eat(packageKeyword)) {
-      package = current().text;
+      packageText = current().text;
       expect(identifier, 'identifier');
       expect(semicolon, '";"');
     }
@@ -418,7 +418,7 @@ var kiwi = exports || kiwi || {}, exports;
     }
 
     return {
-      package: package,
+      package: packageText,
       definitions: definitions,
     };
   }
