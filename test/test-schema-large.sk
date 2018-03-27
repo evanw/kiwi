@@ -585,7 +585,7 @@ namespace test_large {
     }
 
     def has_f31 bool {
-      return (_flags0 & 1) != 0
+      return (_flags0 & 2147483648) != 0
     }
 
     def f31 int {
@@ -595,11 +595,11 @@ namespace test_large {
 
     def f31=(value int) {
       _f31 = value
-      _flags0 |= 1
+      _flags0 |= 2147483648
     }
 
     def has_f32 bool {
-      return (_flags1 & 2) != 0
+      return (_flags1 & 1) != 0
     }
 
     def f32 int {
@@ -609,11 +609,11 @@ namespace test_large {
 
     def f32=(value int) {
       _f32 = value
-      _flags1 |= 2
+      _flags1 |= 1
     }
 
     def has_f33 bool {
-      return (_flags1 & 4) != 0
+      return (_flags1 & 2) != 0
     }
 
     def f33 int {
@@ -623,11 +623,11 @@ namespace test_large {
 
     def f33=(value int) {
       _f33 = value
-      _flags1 |= 4
+      _flags1 |= 2
     }
 
     def has_f34 bool {
-      return (_flags1 & 8) != 0
+      return (_flags1 & 4) != 0
     }
 
     def f34 int {
@@ -637,11 +637,11 @@ namespace test_large {
 
     def f34=(value int) {
       _f34 = value
-      _flags1 |= 8
+      _flags1 |= 4
     }
 
     def has_f35 bool {
-      return (_flags1 & 16) != 0
+      return (_flags1 & 8) != 0
     }
 
     def f35 int {
@@ -651,11 +651,11 @@ namespace test_large {
 
     def f35=(value int) {
       _f35 = value
-      _flags1 |= 16
+      _flags1 |= 8
     }
 
     def has_f36 bool {
-      return (_flags1 & 32) != 0
+      return (_flags1 & 16) != 0
     }
 
     def f36 int {
@@ -665,11 +665,11 @@ namespace test_large {
 
     def f36=(value int) {
       _f36 = value
-      _flags1 |= 32
+      _flags1 |= 16
     }
 
     def has_f37 bool {
-      return (_flags1 & 64) != 0
+      return (_flags1 & 32) != 0
     }
 
     def f37 int {
@@ -679,11 +679,11 @@ namespace test_large {
 
     def f37=(value int) {
       _f37 = value
-      _flags1 |= 64
+      _flags1 |= 32
     }
 
     def has_f38 bool {
-      return (_flags1 & 128) != 0
+      return (_flags1 & 64) != 0
     }
 
     def f38 int {
@@ -693,11 +693,11 @@ namespace test_large {
 
     def f38=(value int) {
       _f38 = value
-      _flags1 |= 128
+      _flags1 |= 64
     }
 
     def has_f39 bool {
-      return (_flags1 & 256) != 0
+      return (_flags1 & 128) != 0
     }
 
     def f39 int {
@@ -707,11 +707,11 @@ namespace test_large {
 
     def f39=(value int) {
       _f39 = value
-      _flags1 |= 256
+      _flags1 |= 128
     }
 
     def has_f40 bool {
-      return (_flags1 & 512) != 0
+      return (_flags1 & 256) != 0
     }
 
     def f40 int {
@@ -721,11 +721,11 @@ namespace test_large {
 
     def f40=(value int) {
       _f40 = value
-      _flags1 |= 512
+      _flags1 |= 256
     }
 
     def has_f41 bool {
-      return (_flags1 & 1024) != 0
+      return (_flags1 & 512) != 0
     }
 
     def f41 int {
@@ -735,11 +735,11 @@ namespace test_large {
 
     def f41=(value int) {
       _f41 = value
-      _flags1 |= 1024
+      _flags1 |= 512
     }
 
     def has_f42 bool {
-      return (_flags1 & 2048) != 0
+      return (_flags1 & 1024) != 0
     }
 
     def f42 int {
@@ -749,11 +749,11 @@ namespace test_large {
 
     def f42=(value int) {
       _f42 = value
-      _flags1 |= 2048
+      _flags1 |= 1024
     }
 
     def has_f43 bool {
-      return (_flags1 & 4096) != 0
+      return (_flags1 & 2048) != 0
     }
 
     def f43 int {
@@ -763,11 +763,11 @@ namespace test_large {
 
     def f43=(value int) {
       _f43 = value
-      _flags1 |= 4096
+      _flags1 |= 2048
     }
 
     def has_f44 bool {
-      return (_flags1 & 8192) != 0
+      return (_flags1 & 4096) != 0
     }
 
     def f44 int {
@@ -777,11 +777,11 @@ namespace test_large {
 
     def f44=(value int) {
       _f44 = value
-      _flags1 |= 8192
+      _flags1 |= 4096
     }
 
     def has_f45 bool {
-      return (_flags1 & 16384) != 0
+      return (_flags1 & 8192) != 0
     }
 
     def f45 int {
@@ -791,11 +791,11 @@ namespace test_large {
 
     def f45=(value int) {
       _f45 = value
-      _flags1 |= 16384
+      _flags1 |= 8192
     }
 
     def has_f46 bool {
-      return (_flags1 & 32768) != 0
+      return (_flags1 & 16384) != 0
     }
 
     def f46 int {
@@ -805,11 +805,11 @@ namespace test_large {
 
     def f46=(value int) {
       _f46 = value
-      _flags1 |= 32768
+      _flags1 |= 16384
     }
 
     def has_f47 bool {
-      return (_flags1 & 65536) != 0
+      return (_flags1 & 32768) != 0
     }
 
     def f47 int {
@@ -819,11 +819,11 @@ namespace test_large {
 
     def f47=(value int) {
       _f47 = value
-      _flags1 |= 65536
+      _flags1 |= 32768
     }
 
     def has_f48 bool {
-      return (_flags1 & 131072) != 0
+      return (_flags1 & 65536) != 0
     }
 
     def f48 int {
@@ -833,11 +833,11 @@ namespace test_large {
 
     def f48=(value int) {
       _f48 = value
-      _flags1 |= 131072
+      _flags1 |= 65536
     }
 
     def has_f49 bool {
-      return (_flags1 & 262144) != 0
+      return (_flags1 & 131072) != 0
     }
 
     def f49 int {
@@ -847,11 +847,11 @@ namespace test_large {
 
     def f49=(value int) {
       _f49 = value
-      _flags1 |= 262144
+      _flags1 |= 131072
     }
 
     def has_f50 bool {
-      return (_flags1 & 524288) != 0
+      return (_flags1 & 262144) != 0
     }
 
     def f50 int {
@@ -861,11 +861,11 @@ namespace test_large {
 
     def f50=(value int) {
       _f50 = value
-      _flags1 |= 524288
+      _flags1 |= 262144
     }
 
     def has_f51 bool {
-      return (_flags1 & 1048576) != 0
+      return (_flags1 & 524288) != 0
     }
 
     def f51 int {
@@ -875,11 +875,11 @@ namespace test_large {
 
     def f51=(value int) {
       _f51 = value
-      _flags1 |= 1048576
+      _flags1 |= 524288
     }
 
     def has_f52 bool {
-      return (_flags1 & 2097152) != 0
+      return (_flags1 & 1048576) != 0
     }
 
     def f52 int {
@@ -889,11 +889,11 @@ namespace test_large {
 
     def f52=(value int) {
       _f52 = value
-      _flags1 |= 2097152
+      _flags1 |= 1048576
     }
 
     def has_f53 bool {
-      return (_flags1 & 4194304) != 0
+      return (_flags1 & 2097152) != 0
     }
 
     def f53 int {
@@ -903,11 +903,11 @@ namespace test_large {
 
     def f53=(value int) {
       _f53 = value
-      _flags1 |= 4194304
+      _flags1 |= 2097152
     }
 
     def has_f54 bool {
-      return (_flags1 & 8388608) != 0
+      return (_flags1 & 4194304) != 0
     }
 
     def f54 int {
@@ -917,11 +917,11 @@ namespace test_large {
 
     def f54=(value int) {
       _f54 = value
-      _flags1 |= 8388608
+      _flags1 |= 4194304
     }
 
     def has_f55 bool {
-      return (_flags1 & 16777216) != 0
+      return (_flags1 & 8388608) != 0
     }
 
     def f55 int {
@@ -931,11 +931,11 @@ namespace test_large {
 
     def f55=(value int) {
       _f55 = value
-      _flags1 |= 16777216
+      _flags1 |= 8388608
     }
 
     def has_f56 bool {
-      return (_flags1 & 33554432) != 0
+      return (_flags1 & 16777216) != 0
     }
 
     def f56 int {
@@ -945,11 +945,11 @@ namespace test_large {
 
     def f56=(value int) {
       _f56 = value
-      _flags1 |= 33554432
+      _flags1 |= 16777216
     }
 
     def has_f57 bool {
-      return (_flags1 & 67108864) != 0
+      return (_flags1 & 33554432) != 0
     }
 
     def f57 int {
@@ -959,11 +959,11 @@ namespace test_large {
 
     def f57=(value int) {
       _f57 = value
-      _flags1 |= 67108864
+      _flags1 |= 33554432
     }
 
     def has_f58 bool {
-      return (_flags1 & 134217728) != 0
+      return (_flags1 & 67108864) != 0
     }
 
     def f58 int {
@@ -973,11 +973,11 @@ namespace test_large {
 
     def f58=(value int) {
       _f58 = value
-      _flags1 |= 134217728
+      _flags1 |= 67108864
     }
 
     def has_f59 bool {
-      return (_flags1 & 268435456) != 0
+      return (_flags1 & 134217728) != 0
     }
 
     def f59 int {
@@ -987,11 +987,11 @@ namespace test_large {
 
     def f59=(value int) {
       _f59 = value
-      _flags1 |= 268435456
+      _flags1 |= 134217728
     }
 
     def has_f60 bool {
-      return (_flags1 & 536870912) != 0
+      return (_flags1 & 268435456) != 0
     }
 
     def f60 int {
@@ -1001,11 +1001,11 @@ namespace test_large {
 
     def f60=(value int) {
       _f60 = value
-      _flags1 |= 536870912
+      _flags1 |= 268435456
     }
 
     def has_f61 bool {
-      return (_flags1 & 1073741824) != 0
+      return (_flags1 & 536870912) != 0
     }
 
     def f61 int {
@@ -1015,11 +1015,11 @@ namespace test_large {
 
     def f61=(value int) {
       _f61 = value
-      _flags1 |= 1073741824
+      _flags1 |= 536870912
     }
 
     def has_f62 bool {
-      return (_flags1 & 1) != 0
+      return (_flags1 & 1073741824) != 0
     }
 
     def f62 int {
@@ -1029,11 +1029,11 @@ namespace test_large {
 
     def f62=(value int) {
       _f62 = value
-      _flags1 |= 1
+      _flags1 |= 1073741824
     }
 
     def has_f63 bool {
-      return (_flags1 & 2) != 0
+      return (_flags1 & 2147483648) != 0
     }
 
     def f63 int {
@@ -1043,11 +1043,11 @@ namespace test_large {
 
     def f63=(value int) {
       _f63 = value
-      _flags1 |= 2
+      _flags1 |= 2147483648
     }
 
     def has_f64 bool {
-      return (_flags2 & 4) != 0
+      return (_flags2 & 1) != 0
     }
 
     def f64 int {
@@ -1057,11 +1057,11 @@ namespace test_large {
 
     def f64=(value int) {
       _f64 = value
-      _flags2 |= 4
+      _flags2 |= 1
     }
 
     def has_f65 bool {
-      return (_flags2 & 8) != 0
+      return (_flags2 & 2) != 0
     }
 
     def f65 int {
@@ -1071,11 +1071,11 @@ namespace test_large {
 
     def f65=(value int) {
       _f65 = value
-      _flags2 |= 8
+      _flags2 |= 2
     }
 
     def has_f66 bool {
-      return (_flags2 & 16) != 0
+      return (_flags2 & 4) != 0
     }
 
     def f66 int {
@@ -1085,11 +1085,11 @@ namespace test_large {
 
     def f66=(value int) {
       _f66 = value
-      _flags2 |= 16
+      _flags2 |= 4
     }
 
     def has_f67 bool {
-      return (_flags2 & 32) != 0
+      return (_flags2 & 8) != 0
     }
 
     def f67 int {
@@ -1099,11 +1099,11 @@ namespace test_large {
 
     def f67=(value int) {
       _f67 = value
-      _flags2 |= 32
+      _flags2 |= 8
     }
 
     def has_f68 bool {
-      return (_flags2 & 64) != 0
+      return (_flags2 & 16) != 0
     }
 
     def f68 int {
@@ -1113,11 +1113,11 @@ namespace test_large {
 
     def f68=(value int) {
       _f68 = value
-      _flags2 |= 64
+      _flags2 |= 16
     }
 
     def has_f69 bool {
-      return (_flags2 & 128) != 0
+      return (_flags2 & 32) != 0
     }
 
     def f69 int {
@@ -1127,11 +1127,11 @@ namespace test_large {
 
     def f69=(value int) {
       _f69 = value
-      _flags2 |= 128
+      _flags2 |= 32
     }
 
     def has_f70 bool {
-      return (_flags2 & 256) != 0
+      return (_flags2 & 64) != 0
     }
 
     def f70 int {
@@ -1141,11 +1141,11 @@ namespace test_large {
 
     def f70=(value int) {
       _f70 = value
-      _flags2 |= 256
+      _flags2 |= 64
     }
 
     def has_f71 bool {
-      return (_flags2 & 512) != 0
+      return (_flags2 & 128) != 0
     }
 
     def f71 int {
@@ -1155,11 +1155,11 @@ namespace test_large {
 
     def f71=(value int) {
       _f71 = value
-      _flags2 |= 512
+      _flags2 |= 128
     }
 
     def has_f72 bool {
-      return (_flags2 & 1024) != 0
+      return (_flags2 & 256) != 0
     }
 
     def f72 int {
@@ -1169,11 +1169,11 @@ namespace test_large {
 
     def f72=(value int) {
       _f72 = value
-      _flags2 |= 1024
+      _flags2 |= 256
     }
 
     def has_f73 bool {
-      return (_flags2 & 2048) != 0
+      return (_flags2 & 512) != 0
     }
 
     def f73 int {
@@ -1183,11 +1183,11 @@ namespace test_large {
 
     def f73=(value int) {
       _f73 = value
-      _flags2 |= 2048
+      _flags2 |= 512
     }
 
     def has_f74 bool {
-      return (_flags2 & 4096) != 0
+      return (_flags2 & 1024) != 0
     }
 
     def f74 int {
@@ -1197,11 +1197,11 @@ namespace test_large {
 
     def f74=(value int) {
       _f74 = value
-      _flags2 |= 4096
+      _flags2 |= 1024
     }
 
     def has_f75 bool {
-      return (_flags2 & 8192) != 0
+      return (_flags2 & 2048) != 0
     }
 
     def f75 int {
@@ -1211,11 +1211,11 @@ namespace test_large {
 
     def f75=(value int) {
       _f75 = value
-      _flags2 |= 8192
+      _flags2 |= 2048
     }
 
     def has_f76 bool {
-      return (_flags2 & 16384) != 0
+      return (_flags2 & 4096) != 0
     }
 
     def f76 int {
@@ -1225,11 +1225,11 @@ namespace test_large {
 
     def f76=(value int) {
       _f76 = value
-      _flags2 |= 16384
+      _flags2 |= 4096
     }
 
     def has_f77 bool {
-      return (_flags2 & 32768) != 0
+      return (_flags2 & 8192) != 0
     }
 
     def f77 int {
@@ -1239,11 +1239,11 @@ namespace test_large {
 
     def f77=(value int) {
       _f77 = value
-      _flags2 |= 32768
+      _flags2 |= 8192
     }
 
     def has_f78 bool {
-      return (_flags2 & 65536) != 0
+      return (_flags2 & 16384) != 0
     }
 
     def f78 int {
@@ -1253,11 +1253,11 @@ namespace test_large {
 
     def f78=(value int) {
       _f78 = value
-      _flags2 |= 65536
+      _flags2 |= 16384
     }
 
     def has_f79 bool {
-      return (_flags2 & 131072) != 0
+      return (_flags2 & 32768) != 0
     }
 
     def f79 int {
@@ -1267,11 +1267,11 @@ namespace test_large {
 
     def f79=(value int) {
       _f79 = value
-      _flags2 |= 131072
+      _flags2 |= 32768
     }
 
     def has_f80 bool {
-      return (_flags2 & 262144) != 0
+      return (_flags2 & 65536) != 0
     }
 
     def f80 int {
@@ -1281,11 +1281,11 @@ namespace test_large {
 
     def f80=(value int) {
       _f80 = value
-      _flags2 |= 262144
+      _flags2 |= 65536
     }
 
     def has_f81 bool {
-      return (_flags2 & 524288) != 0
+      return (_flags2 & 131072) != 0
     }
 
     def f81 int {
@@ -1295,11 +1295,11 @@ namespace test_large {
 
     def f81=(value int) {
       _f81 = value
-      _flags2 |= 524288
+      _flags2 |= 131072
     }
 
     def has_f82 bool {
-      return (_flags2 & 1048576) != 0
+      return (_flags2 & 262144) != 0
     }
 
     def f82 int {
@@ -1309,11 +1309,11 @@ namespace test_large {
 
     def f82=(value int) {
       _f82 = value
-      _flags2 |= 1048576
+      _flags2 |= 262144
     }
 
     def has_f83 bool {
-      return (_flags2 & 2097152) != 0
+      return (_flags2 & 524288) != 0
     }
 
     def f83 int {
@@ -1323,11 +1323,11 @@ namespace test_large {
 
     def f83=(value int) {
       _f83 = value
-      _flags2 |= 2097152
+      _flags2 |= 524288
     }
 
     def has_f84 bool {
-      return (_flags2 & 4194304) != 0
+      return (_flags2 & 1048576) != 0
     }
 
     def f84 int {
@@ -1337,11 +1337,11 @@ namespace test_large {
 
     def f84=(value int) {
       _f84 = value
-      _flags2 |= 4194304
+      _flags2 |= 1048576
     }
 
     def has_f85 bool {
-      return (_flags2 & 8388608) != 0
+      return (_flags2 & 2097152) != 0
     }
 
     def f85 int {
@@ -1351,11 +1351,11 @@ namespace test_large {
 
     def f85=(value int) {
       _f85 = value
-      _flags2 |= 8388608
+      _flags2 |= 2097152
     }
 
     def has_f86 bool {
-      return (_flags2 & 16777216) != 0
+      return (_flags2 & 4194304) != 0
     }
 
     def f86 int {
@@ -1365,11 +1365,11 @@ namespace test_large {
 
     def f86=(value int) {
       _f86 = value
-      _flags2 |= 16777216
+      _flags2 |= 4194304
     }
 
     def has_f87 bool {
-      return (_flags2 & 33554432) != 0
+      return (_flags2 & 8388608) != 0
     }
 
     def f87 int {
@@ -1379,11 +1379,11 @@ namespace test_large {
 
     def f87=(value int) {
       _f87 = value
-      _flags2 |= 33554432
+      _flags2 |= 8388608
     }
 
     def has_f88 bool {
-      return (_flags2 & 67108864) != 0
+      return (_flags2 & 16777216) != 0
     }
 
     def f88 int {
@@ -1393,11 +1393,11 @@ namespace test_large {
 
     def f88=(value int) {
       _f88 = value
-      _flags2 |= 67108864
+      _flags2 |= 16777216
     }
 
     def has_f89 bool {
-      return (_flags2 & 134217728) != 0
+      return (_flags2 & 33554432) != 0
     }
 
     def f89 int {
@@ -1407,11 +1407,11 @@ namespace test_large {
 
     def f89=(value int) {
       _f89 = value
-      _flags2 |= 134217728
+      _flags2 |= 33554432
     }
 
     def has_f90 bool {
-      return (_flags2 & 268435456) != 0
+      return (_flags2 & 67108864) != 0
     }
 
     def f90 int {
@@ -1421,11 +1421,11 @@ namespace test_large {
 
     def f90=(value int) {
       _f90 = value
-      _flags2 |= 268435456
+      _flags2 |= 67108864
     }
 
     def has_f91 bool {
-      return (_flags2 & 536870912) != 0
+      return (_flags2 & 134217728) != 0
     }
 
     def f91 int {
@@ -1435,11 +1435,11 @@ namespace test_large {
 
     def f91=(value int) {
       _f91 = value
-      _flags2 |= 536870912
+      _flags2 |= 134217728
     }
 
     def has_f92 bool {
-      return (_flags2 & 1073741824) != 0
+      return (_flags2 & 268435456) != 0
     }
 
     def f92 int {
@@ -1449,11 +1449,11 @@ namespace test_large {
 
     def f92=(value int) {
       _f92 = value
-      _flags2 |= 1073741824
+      _flags2 |= 268435456
     }
 
     def has_f93 bool {
-      return (_flags2 & 1) != 0
+      return (_flags2 & 536870912) != 0
     }
 
     def f93 int {
@@ -1463,11 +1463,11 @@ namespace test_large {
 
     def f93=(value int) {
       _f93 = value
-      _flags2 |= 1
+      _flags2 |= 536870912
     }
 
     def has_f94 bool {
-      return (_flags2 & 2) != 0
+      return (_flags2 & 1073741824) != 0
     }
 
     def f94 int {
@@ -1477,11 +1477,11 @@ namespace test_large {
 
     def f94=(value int) {
       _f94 = value
-      _flags2 |= 2
+      _flags2 |= 1073741824
     }
 
     def has_f95 bool {
-      return (_flags2 & 4) != 0
+      return (_flags2 & 2147483648) != 0
     }
 
     def f95 int {
@@ -1491,11 +1491,11 @@ namespace test_large {
 
     def f95=(value int) {
       _f95 = value
-      _flags2 |= 4
+      _flags2 |= 2147483648
     }
 
     def has_f96 bool {
-      return (_flags3 & 8) != 0
+      return (_flags3 & 1) != 0
     }
 
     def f96 int {
@@ -1505,11 +1505,11 @@ namespace test_large {
 
     def f96=(value int) {
       _f96 = value
-      _flags3 |= 8
+      _flags3 |= 1
     }
 
     def has_f97 bool {
-      return (_flags3 & 16) != 0
+      return (_flags3 & 2) != 0
     }
 
     def f97 int {
@@ -1519,11 +1519,11 @@ namespace test_large {
 
     def f97=(value int) {
       _f97 = value
-      _flags3 |= 16
+      _flags3 |= 2
     }
 
     def has_f98 bool {
-      return (_flags3 & 32) != 0
+      return (_flags3 & 4) != 0
     }
 
     def f98 int {
@@ -1533,11 +1533,11 @@ namespace test_large {
 
     def f98=(value int) {
       _f98 = value
-      _flags3 |= 32
+      _flags3 |= 4
     }
 
     def has_f99 bool {
-      return (_flags3 & 64) != 0
+      return (_flags3 & 8) != 0
     }
 
     def f99 int {
@@ -1547,11 +1547,11 @@ namespace test_large {
 
     def f99=(value int) {
       _f99 = value
-      _flags3 |= 64
+      _flags3 |= 8
     }
 
     def has_f100 bool {
-      return (_flags3 & 128) != 0
+      return (_flags3 & 16) != 0
     }
 
     def f100 int {
@@ -1561,11 +1561,11 @@ namespace test_large {
 
     def f100=(value int) {
       _f100 = value
-      _flags3 |= 128
+      _flags3 |= 16
     }
 
     def has_f101 bool {
-      return (_flags3 & 256) != 0
+      return (_flags3 & 32) != 0
     }
 
     def f101 int {
@@ -1575,11 +1575,11 @@ namespace test_large {
 
     def f101=(value int) {
       _f101 = value
-      _flags3 |= 256
+      _flags3 |= 32
     }
 
     def has_f102 bool {
-      return (_flags3 & 512) != 0
+      return (_flags3 & 64) != 0
     }
 
     def f102 int {
@@ -1589,11 +1589,11 @@ namespace test_large {
 
     def f102=(value int) {
       _f102 = value
-      _flags3 |= 512
+      _flags3 |= 64
     }
 
     def has_f103 bool {
-      return (_flags3 & 1024) != 0
+      return (_flags3 & 128) != 0
     }
 
     def f103 int {
@@ -1603,11 +1603,11 @@ namespace test_large {
 
     def f103=(value int) {
       _f103 = value
-      _flags3 |= 1024
+      _flags3 |= 128
     }
 
     def has_f104 bool {
-      return (_flags3 & 2048) != 0
+      return (_flags3 & 256) != 0
     }
 
     def f104 int {
@@ -1617,11 +1617,11 @@ namespace test_large {
 
     def f104=(value int) {
       _f104 = value
-      _flags3 |= 2048
+      _flags3 |= 256
     }
 
     def has_f105 bool {
-      return (_flags3 & 4096) != 0
+      return (_flags3 & 512) != 0
     }
 
     def f105 int {
@@ -1631,11 +1631,11 @@ namespace test_large {
 
     def f105=(value int) {
       _f105 = value
-      _flags3 |= 4096
+      _flags3 |= 512
     }
 
     def has_f106 bool {
-      return (_flags3 & 8192) != 0
+      return (_flags3 & 1024) != 0
     }
 
     def f106 int {
@@ -1645,11 +1645,11 @@ namespace test_large {
 
     def f106=(value int) {
       _f106 = value
-      _flags3 |= 8192
+      _flags3 |= 1024
     }
 
     def has_f107 bool {
-      return (_flags3 & 16384) != 0
+      return (_flags3 & 2048) != 0
     }
 
     def f107 int {
@@ -1659,11 +1659,11 @@ namespace test_large {
 
     def f107=(value int) {
       _f107 = value
-      _flags3 |= 16384
+      _flags3 |= 2048
     }
 
     def has_f108 bool {
-      return (_flags3 & 32768) != 0
+      return (_flags3 & 4096) != 0
     }
 
     def f108 int {
@@ -1673,11 +1673,11 @@ namespace test_large {
 
     def f108=(value int) {
       _f108 = value
-      _flags3 |= 32768
+      _flags3 |= 4096
     }
 
     def has_f109 bool {
-      return (_flags3 & 65536) != 0
+      return (_flags3 & 8192) != 0
     }
 
     def f109 int {
@@ -1687,11 +1687,11 @@ namespace test_large {
 
     def f109=(value int) {
       _f109 = value
-      _flags3 |= 65536
+      _flags3 |= 8192
     }
 
     def has_f110 bool {
-      return (_flags3 & 131072) != 0
+      return (_flags3 & 16384) != 0
     }
 
     def f110 int {
@@ -1701,11 +1701,11 @@ namespace test_large {
 
     def f110=(value int) {
       _f110 = value
-      _flags3 |= 131072
+      _flags3 |= 16384
     }
 
     def has_f111 bool {
-      return (_flags3 & 262144) != 0
+      return (_flags3 & 32768) != 0
     }
 
     def f111 int {
@@ -1715,11 +1715,11 @@ namespace test_large {
 
     def f111=(value int) {
       _f111 = value
-      _flags3 |= 262144
+      _flags3 |= 32768
     }
 
     def has_f112 bool {
-      return (_flags3 & 524288) != 0
+      return (_flags3 & 65536) != 0
     }
 
     def f112 int {
@@ -1729,11 +1729,11 @@ namespace test_large {
 
     def f112=(value int) {
       _f112 = value
-      _flags3 |= 524288
+      _flags3 |= 65536
     }
 
     def has_f113 bool {
-      return (_flags3 & 1048576) != 0
+      return (_flags3 & 131072) != 0
     }
 
     def f113 int {
@@ -1743,11 +1743,11 @@ namespace test_large {
 
     def f113=(value int) {
       _f113 = value
-      _flags3 |= 1048576
+      _flags3 |= 131072
     }
 
     def has_f114 bool {
-      return (_flags3 & 2097152) != 0
+      return (_flags3 & 262144) != 0
     }
 
     def f114 int {
@@ -1757,11 +1757,11 @@ namespace test_large {
 
     def f114=(value int) {
       _f114 = value
-      _flags3 |= 2097152
+      _flags3 |= 262144
     }
 
     def has_f115 bool {
-      return (_flags3 & 4194304) != 0
+      return (_flags3 & 524288) != 0
     }
 
     def f115 int {
@@ -1771,11 +1771,11 @@ namespace test_large {
 
     def f115=(value int) {
       _f115 = value
-      _flags3 |= 4194304
+      _flags3 |= 524288
     }
 
     def has_f116 bool {
-      return (_flags3 & 8388608) != 0
+      return (_flags3 & 1048576) != 0
     }
 
     def f116 int {
@@ -1785,11 +1785,11 @@ namespace test_large {
 
     def f116=(value int) {
       _f116 = value
-      _flags3 |= 8388608
+      _flags3 |= 1048576
     }
 
     def has_f117 bool {
-      return (_flags3 & 16777216) != 0
+      return (_flags3 & 2097152) != 0
     }
 
     def f117 int {
@@ -1799,11 +1799,11 @@ namespace test_large {
 
     def f117=(value int) {
       _f117 = value
-      _flags3 |= 16777216
+      _flags3 |= 2097152
     }
 
     def has_f118 bool {
-      return (_flags3 & 33554432) != 0
+      return (_flags3 & 4194304) != 0
     }
 
     def f118 int {
@@ -1813,11 +1813,11 @@ namespace test_large {
 
     def f118=(value int) {
       _f118 = value
-      _flags3 |= 33554432
+      _flags3 |= 4194304
     }
 
     def has_f119 bool {
-      return (_flags3 & 67108864) != 0
+      return (_flags3 & 8388608) != 0
     }
 
     def f119 int {
@@ -1827,11 +1827,11 @@ namespace test_large {
 
     def f119=(value int) {
       _f119 = value
-      _flags3 |= 67108864
+      _flags3 |= 8388608
     }
 
     def has_f120 bool {
-      return (_flags3 & 134217728) != 0
+      return (_flags3 & 16777216) != 0
     }
 
     def f120 int {
@@ -1841,11 +1841,11 @@ namespace test_large {
 
     def f120=(value int) {
       _f120 = value
-      _flags3 |= 134217728
+      _flags3 |= 16777216
     }
 
     def has_f121 bool {
-      return (_flags3 & 268435456) != 0
+      return (_flags3 & 33554432) != 0
     }
 
     def f121 int {
@@ -1855,11 +1855,11 @@ namespace test_large {
 
     def f121=(value int) {
       _f121 = value
-      _flags3 |= 268435456
+      _flags3 |= 33554432
     }
 
     def has_f122 bool {
-      return (_flags3 & 536870912) != 0
+      return (_flags3 & 67108864) != 0
     }
 
     def f122 int {
@@ -1869,11 +1869,11 @@ namespace test_large {
 
     def f122=(value int) {
       _f122 = value
-      _flags3 |= 536870912
+      _flags3 |= 67108864
     }
 
     def has_f123 bool {
-      return (_flags3 & 1073741824) != 0
+      return (_flags3 & 134217728) != 0
     }
 
     def f123 int {
@@ -1883,11 +1883,11 @@ namespace test_large {
 
     def f123=(value int) {
       _f123 = value
-      _flags3 |= 1073741824
+      _flags3 |= 134217728
     }
 
     def has_f124 bool {
-      return (_flags3 & 1) != 0
+      return (_flags3 & 268435456) != 0
     }
 
     def f124 int {
@@ -1897,11 +1897,11 @@ namespace test_large {
 
     def f124=(value int) {
       _f124 = value
-      _flags3 |= 1
+      _flags3 |= 268435456
     }
 
     def has_f125 bool {
-      return (_flags3 & 2) != 0
+      return (_flags3 & 536870912) != 0
     }
 
     def f125 int {
@@ -1911,11 +1911,11 @@ namespace test_large {
 
     def f125=(value int) {
       _f125 = value
-      _flags3 |= 2
+      _flags3 |= 536870912
     }
 
     def has_f126 bool {
-      return (_flags3 & 4) != 0
+      return (_flags3 & 1073741824) != 0
     }
 
     def f126 int {
@@ -1925,11 +1925,11 @@ namespace test_large {
 
     def f126=(value int) {
       _f126 = value
-      _flags3 |= 4
+      _flags3 |= 1073741824
     }
 
     def has_f127 bool {
-      return (_flags3 & 8) != 0
+      return (_flags3 & 2147483648) != 0
     }
 
     def f127 int {
@@ -1939,11 +1939,11 @@ namespace test_large {
 
     def f127=(value int) {
       _f127 = value
-      _flags3 |= 8
+      _flags3 |= 2147483648
     }
 
     def has_f128 bool {
-      return (_flags4 & 16) != 0
+      return (_flags4 & 1) != 0
     }
 
     def f128 int {
@@ -1953,11 +1953,11 @@ namespace test_large {
 
     def f128=(value int) {
       _f128 = value
-      _flags4 |= 16
+      _flags4 |= 1
     }
 
     def has_f129 bool {
-      return (_flags4 & 32) != 0
+      return (_flags4 & 2) != 0
     }
 
     def f129 int {
@@ -1967,7 +1967,7 @@ namespace test_large {
 
     def f129=(value int) {
       _f129 = value
-      _flags4 |= 32
+      _flags4 |= 2
     }
 
     def encode(bb Kiwi.ByteBuffer) {
@@ -3086,7 +3086,7 @@ namespace test_large {
     }
 
     def has_f31 bool {
-      return (_flags0 & 1) != 0
+      return (_flags0 & 2147483648) != 0
     }
 
     def f31 int {
@@ -3096,11 +3096,11 @@ namespace test_large {
 
     def f31=(value int) {
       _f31 = value
-      _flags0 |= 1
+      _flags0 |= 2147483648
     }
 
     def has_f32 bool {
-      return (_flags1 & 2) != 0
+      return (_flags1 & 1) != 0
     }
 
     def f32 int {
@@ -3110,11 +3110,11 @@ namespace test_large {
 
     def f32=(value int) {
       _f32 = value
-      _flags1 |= 2
+      _flags1 |= 1
     }
 
     def has_f33 bool {
-      return (_flags1 & 4) != 0
+      return (_flags1 & 2) != 0
     }
 
     def f33 int {
@@ -3124,11 +3124,11 @@ namespace test_large {
 
     def f33=(value int) {
       _f33 = value
-      _flags1 |= 4
+      _flags1 |= 2
     }
 
     def has_f34 bool {
-      return (_flags1 & 8) != 0
+      return (_flags1 & 4) != 0
     }
 
     def f34 int {
@@ -3138,11 +3138,11 @@ namespace test_large {
 
     def f34=(value int) {
       _f34 = value
-      _flags1 |= 8
+      _flags1 |= 4
     }
 
     def has_f35 bool {
-      return (_flags1 & 16) != 0
+      return (_flags1 & 8) != 0
     }
 
     def f35 int {
@@ -3152,11 +3152,11 @@ namespace test_large {
 
     def f35=(value int) {
       _f35 = value
-      _flags1 |= 16
+      _flags1 |= 8
     }
 
     def has_f36 bool {
-      return (_flags1 & 32) != 0
+      return (_flags1 & 16) != 0
     }
 
     def f36 int {
@@ -3166,11 +3166,11 @@ namespace test_large {
 
     def f36=(value int) {
       _f36 = value
-      _flags1 |= 32
+      _flags1 |= 16
     }
 
     def has_f37 bool {
-      return (_flags1 & 64) != 0
+      return (_flags1 & 32) != 0
     }
 
     def f37 int {
@@ -3180,11 +3180,11 @@ namespace test_large {
 
     def f37=(value int) {
       _f37 = value
-      _flags1 |= 64
+      _flags1 |= 32
     }
 
     def has_f38 bool {
-      return (_flags1 & 128) != 0
+      return (_flags1 & 64) != 0
     }
 
     def f38 int {
@@ -3194,11 +3194,11 @@ namespace test_large {
 
     def f38=(value int) {
       _f38 = value
-      _flags1 |= 128
+      _flags1 |= 64
     }
 
     def has_f39 bool {
-      return (_flags1 & 256) != 0
+      return (_flags1 & 128) != 0
     }
 
     def f39 int {
@@ -3208,11 +3208,11 @@ namespace test_large {
 
     def f39=(value int) {
       _f39 = value
-      _flags1 |= 256
+      _flags1 |= 128
     }
 
     def has_f40 bool {
-      return (_flags1 & 512) != 0
+      return (_flags1 & 256) != 0
     }
 
     def f40 int {
@@ -3222,11 +3222,11 @@ namespace test_large {
 
     def f40=(value int) {
       _f40 = value
-      _flags1 |= 512
+      _flags1 |= 256
     }
 
     def has_f41 bool {
-      return (_flags1 & 1024) != 0
+      return (_flags1 & 512) != 0
     }
 
     def f41 int {
@@ -3236,11 +3236,11 @@ namespace test_large {
 
     def f41=(value int) {
       _f41 = value
-      _flags1 |= 1024
+      _flags1 |= 512
     }
 
     def has_f42 bool {
-      return (_flags1 & 2048) != 0
+      return (_flags1 & 1024) != 0
     }
 
     def f42 int {
@@ -3250,11 +3250,11 @@ namespace test_large {
 
     def f42=(value int) {
       _f42 = value
-      _flags1 |= 2048
+      _flags1 |= 1024
     }
 
     def has_f43 bool {
-      return (_flags1 & 4096) != 0
+      return (_flags1 & 2048) != 0
     }
 
     def f43 int {
@@ -3264,11 +3264,11 @@ namespace test_large {
 
     def f43=(value int) {
       _f43 = value
-      _flags1 |= 4096
+      _flags1 |= 2048
     }
 
     def has_f44 bool {
-      return (_flags1 & 8192) != 0
+      return (_flags1 & 4096) != 0
     }
 
     def f44 int {
@@ -3278,11 +3278,11 @@ namespace test_large {
 
     def f44=(value int) {
       _f44 = value
-      _flags1 |= 8192
+      _flags1 |= 4096
     }
 
     def has_f45 bool {
-      return (_flags1 & 16384) != 0
+      return (_flags1 & 8192) != 0
     }
 
     def f45 int {
@@ -3292,11 +3292,11 @@ namespace test_large {
 
     def f45=(value int) {
       _f45 = value
-      _flags1 |= 16384
+      _flags1 |= 8192
     }
 
     def has_f46 bool {
-      return (_flags1 & 32768) != 0
+      return (_flags1 & 16384) != 0
     }
 
     def f46 int {
@@ -3306,11 +3306,11 @@ namespace test_large {
 
     def f46=(value int) {
       _f46 = value
-      _flags1 |= 32768
+      _flags1 |= 16384
     }
 
     def has_f47 bool {
-      return (_flags1 & 65536) != 0
+      return (_flags1 & 32768) != 0
     }
 
     def f47 int {
@@ -3320,11 +3320,11 @@ namespace test_large {
 
     def f47=(value int) {
       _f47 = value
-      _flags1 |= 65536
+      _flags1 |= 32768
     }
 
     def has_f48 bool {
-      return (_flags1 & 131072) != 0
+      return (_flags1 & 65536) != 0
     }
 
     def f48 int {
@@ -3334,11 +3334,11 @@ namespace test_large {
 
     def f48=(value int) {
       _f48 = value
-      _flags1 |= 131072
+      _flags1 |= 65536
     }
 
     def has_f49 bool {
-      return (_flags1 & 262144) != 0
+      return (_flags1 & 131072) != 0
     }
 
     def f49 int {
@@ -3348,11 +3348,11 @@ namespace test_large {
 
     def f49=(value int) {
       _f49 = value
-      _flags1 |= 262144
+      _flags1 |= 131072
     }
 
     def has_f50 bool {
-      return (_flags1 & 524288) != 0
+      return (_flags1 & 262144) != 0
     }
 
     def f50 int {
@@ -3362,11 +3362,11 @@ namespace test_large {
 
     def f50=(value int) {
       _f50 = value
-      _flags1 |= 524288
+      _flags1 |= 262144
     }
 
     def has_f51 bool {
-      return (_flags1 & 1048576) != 0
+      return (_flags1 & 524288) != 0
     }
 
     def f51 int {
@@ -3376,11 +3376,11 @@ namespace test_large {
 
     def f51=(value int) {
       _f51 = value
-      _flags1 |= 1048576
+      _flags1 |= 524288
     }
 
     def has_f52 bool {
-      return (_flags1 & 2097152) != 0
+      return (_flags1 & 1048576) != 0
     }
 
     def f52 int {
@@ -3390,11 +3390,11 @@ namespace test_large {
 
     def f52=(value int) {
       _f52 = value
-      _flags1 |= 2097152
+      _flags1 |= 1048576
     }
 
     def has_f53 bool {
-      return (_flags1 & 4194304) != 0
+      return (_flags1 & 2097152) != 0
     }
 
     def f53 int {
@@ -3404,11 +3404,11 @@ namespace test_large {
 
     def f53=(value int) {
       _f53 = value
-      _flags1 |= 4194304
+      _flags1 |= 2097152
     }
 
     def has_f54 bool {
-      return (_flags1 & 8388608) != 0
+      return (_flags1 & 4194304) != 0
     }
 
     def f54 int {
@@ -3418,11 +3418,11 @@ namespace test_large {
 
     def f54=(value int) {
       _f54 = value
-      _flags1 |= 8388608
+      _flags1 |= 4194304
     }
 
     def has_f55 bool {
-      return (_flags1 & 16777216) != 0
+      return (_flags1 & 8388608) != 0
     }
 
     def f55 int {
@@ -3432,11 +3432,11 @@ namespace test_large {
 
     def f55=(value int) {
       _f55 = value
-      _flags1 |= 16777216
+      _flags1 |= 8388608
     }
 
     def has_f56 bool {
-      return (_flags1 & 33554432) != 0
+      return (_flags1 & 16777216) != 0
     }
 
     def f56 int {
@@ -3446,11 +3446,11 @@ namespace test_large {
 
     def f56=(value int) {
       _f56 = value
-      _flags1 |= 33554432
+      _flags1 |= 16777216
     }
 
     def has_f57 bool {
-      return (_flags1 & 67108864) != 0
+      return (_flags1 & 33554432) != 0
     }
 
     def f57 int {
@@ -3460,11 +3460,11 @@ namespace test_large {
 
     def f57=(value int) {
       _f57 = value
-      _flags1 |= 67108864
+      _flags1 |= 33554432
     }
 
     def has_f58 bool {
-      return (_flags1 & 134217728) != 0
+      return (_flags1 & 67108864) != 0
     }
 
     def f58 int {
@@ -3474,11 +3474,11 @@ namespace test_large {
 
     def f58=(value int) {
       _f58 = value
-      _flags1 |= 134217728
+      _flags1 |= 67108864
     }
 
     def has_f59 bool {
-      return (_flags1 & 268435456) != 0
+      return (_flags1 & 134217728) != 0
     }
 
     def f59 int {
@@ -3488,11 +3488,11 @@ namespace test_large {
 
     def f59=(value int) {
       _f59 = value
-      _flags1 |= 268435456
+      _flags1 |= 134217728
     }
 
     def has_f60 bool {
-      return (_flags1 & 536870912) != 0
+      return (_flags1 & 268435456) != 0
     }
 
     def f60 int {
@@ -3502,11 +3502,11 @@ namespace test_large {
 
     def f60=(value int) {
       _f60 = value
-      _flags1 |= 536870912
+      _flags1 |= 268435456
     }
 
     def has_f61 bool {
-      return (_flags1 & 1073741824) != 0
+      return (_flags1 & 536870912) != 0
     }
 
     def f61 int {
@@ -3516,11 +3516,11 @@ namespace test_large {
 
     def f61=(value int) {
       _f61 = value
-      _flags1 |= 1073741824
+      _flags1 |= 536870912
     }
 
     def has_f62 bool {
-      return (_flags1 & 1) != 0
+      return (_flags1 & 1073741824) != 0
     }
 
     def f62 int {
@@ -3530,11 +3530,11 @@ namespace test_large {
 
     def f62=(value int) {
       _f62 = value
-      _flags1 |= 1
+      _flags1 |= 1073741824
     }
 
     def has_f63 bool {
-      return (_flags1 & 2) != 0
+      return (_flags1 & 2147483648) != 0
     }
 
     def f63 int {
@@ -3544,11 +3544,11 @@ namespace test_large {
 
     def f63=(value int) {
       _f63 = value
-      _flags1 |= 2
+      _flags1 |= 2147483648
     }
 
     def has_f64 bool {
-      return (_flags2 & 4) != 0
+      return (_flags2 & 1) != 0
     }
 
     def f64 int {
@@ -3558,11 +3558,11 @@ namespace test_large {
 
     def f64=(value int) {
       _f64 = value
-      _flags2 |= 4
+      _flags2 |= 1
     }
 
     def has_f65 bool {
-      return (_flags2 & 8) != 0
+      return (_flags2 & 2) != 0
     }
 
     def f65 int {
@@ -3572,11 +3572,11 @@ namespace test_large {
 
     def f65=(value int) {
       _f65 = value
-      _flags2 |= 8
+      _flags2 |= 2
     }
 
     def has_f66 bool {
-      return (_flags2 & 16) != 0
+      return (_flags2 & 4) != 0
     }
 
     def f66 int {
@@ -3586,11 +3586,11 @@ namespace test_large {
 
     def f66=(value int) {
       _f66 = value
-      _flags2 |= 16
+      _flags2 |= 4
     }
 
     def has_f67 bool {
-      return (_flags2 & 32) != 0
+      return (_flags2 & 8) != 0
     }
 
     def f67 int {
@@ -3600,11 +3600,11 @@ namespace test_large {
 
     def f67=(value int) {
       _f67 = value
-      _flags2 |= 32
+      _flags2 |= 8
     }
 
     def has_f68 bool {
-      return (_flags2 & 64) != 0
+      return (_flags2 & 16) != 0
     }
 
     def f68 int {
@@ -3614,11 +3614,11 @@ namespace test_large {
 
     def f68=(value int) {
       _f68 = value
-      _flags2 |= 64
+      _flags2 |= 16
     }
 
     def has_f69 bool {
-      return (_flags2 & 128) != 0
+      return (_flags2 & 32) != 0
     }
 
     def f69 int {
@@ -3628,11 +3628,11 @@ namespace test_large {
 
     def f69=(value int) {
       _f69 = value
-      _flags2 |= 128
+      _flags2 |= 32
     }
 
     def has_f70 bool {
-      return (_flags2 & 256) != 0
+      return (_flags2 & 64) != 0
     }
 
     def f70 int {
@@ -3642,11 +3642,11 @@ namespace test_large {
 
     def f70=(value int) {
       _f70 = value
-      _flags2 |= 256
+      _flags2 |= 64
     }
 
     def has_f71 bool {
-      return (_flags2 & 512) != 0
+      return (_flags2 & 128) != 0
     }
 
     def f71 int {
@@ -3656,11 +3656,11 @@ namespace test_large {
 
     def f71=(value int) {
       _f71 = value
-      _flags2 |= 512
+      _flags2 |= 128
     }
 
     def has_f72 bool {
-      return (_flags2 & 1024) != 0
+      return (_flags2 & 256) != 0
     }
 
     def f72 int {
@@ -3670,11 +3670,11 @@ namespace test_large {
 
     def f72=(value int) {
       _f72 = value
-      _flags2 |= 1024
+      _flags2 |= 256
     }
 
     def has_f73 bool {
-      return (_flags2 & 2048) != 0
+      return (_flags2 & 512) != 0
     }
 
     def f73 int {
@@ -3684,11 +3684,11 @@ namespace test_large {
 
     def f73=(value int) {
       _f73 = value
-      _flags2 |= 2048
+      _flags2 |= 512
     }
 
     def has_f74 bool {
-      return (_flags2 & 4096) != 0
+      return (_flags2 & 1024) != 0
     }
 
     def f74 int {
@@ -3698,11 +3698,11 @@ namespace test_large {
 
     def f74=(value int) {
       _f74 = value
-      _flags2 |= 4096
+      _flags2 |= 1024
     }
 
     def has_f75 bool {
-      return (_flags2 & 8192) != 0
+      return (_flags2 & 2048) != 0
     }
 
     def f75 int {
@@ -3712,11 +3712,11 @@ namespace test_large {
 
     def f75=(value int) {
       _f75 = value
-      _flags2 |= 8192
+      _flags2 |= 2048
     }
 
     def has_f76 bool {
-      return (_flags2 & 16384) != 0
+      return (_flags2 & 4096) != 0
     }
 
     def f76 int {
@@ -3726,11 +3726,11 @@ namespace test_large {
 
     def f76=(value int) {
       _f76 = value
-      _flags2 |= 16384
+      _flags2 |= 4096
     }
 
     def has_f77 bool {
-      return (_flags2 & 32768) != 0
+      return (_flags2 & 8192) != 0
     }
 
     def f77 int {
@@ -3740,11 +3740,11 @@ namespace test_large {
 
     def f77=(value int) {
       _f77 = value
-      _flags2 |= 32768
+      _flags2 |= 8192
     }
 
     def has_f78 bool {
-      return (_flags2 & 65536) != 0
+      return (_flags2 & 16384) != 0
     }
 
     def f78 int {
@@ -3754,11 +3754,11 @@ namespace test_large {
 
     def f78=(value int) {
       _f78 = value
-      _flags2 |= 65536
+      _flags2 |= 16384
     }
 
     def has_f79 bool {
-      return (_flags2 & 131072) != 0
+      return (_flags2 & 32768) != 0
     }
 
     def f79 int {
@@ -3768,11 +3768,11 @@ namespace test_large {
 
     def f79=(value int) {
       _f79 = value
-      _flags2 |= 131072
+      _flags2 |= 32768
     }
 
     def has_f80 bool {
-      return (_flags2 & 262144) != 0
+      return (_flags2 & 65536) != 0
     }
 
     def f80 int {
@@ -3782,11 +3782,11 @@ namespace test_large {
 
     def f80=(value int) {
       _f80 = value
-      _flags2 |= 262144
+      _flags2 |= 65536
     }
 
     def has_f81 bool {
-      return (_flags2 & 524288) != 0
+      return (_flags2 & 131072) != 0
     }
 
     def f81 int {
@@ -3796,11 +3796,11 @@ namespace test_large {
 
     def f81=(value int) {
       _f81 = value
-      _flags2 |= 524288
+      _flags2 |= 131072
     }
 
     def has_f82 bool {
-      return (_flags2 & 1048576) != 0
+      return (_flags2 & 262144) != 0
     }
 
     def f82 int {
@@ -3810,11 +3810,11 @@ namespace test_large {
 
     def f82=(value int) {
       _f82 = value
-      _flags2 |= 1048576
+      _flags2 |= 262144
     }
 
     def has_f83 bool {
-      return (_flags2 & 2097152) != 0
+      return (_flags2 & 524288) != 0
     }
 
     def f83 int {
@@ -3824,11 +3824,11 @@ namespace test_large {
 
     def f83=(value int) {
       _f83 = value
-      _flags2 |= 2097152
+      _flags2 |= 524288
     }
 
     def has_f84 bool {
-      return (_flags2 & 4194304) != 0
+      return (_flags2 & 1048576) != 0
     }
 
     def f84 int {
@@ -3838,11 +3838,11 @@ namespace test_large {
 
     def f84=(value int) {
       _f84 = value
-      _flags2 |= 4194304
+      _flags2 |= 1048576
     }
 
     def has_f85 bool {
-      return (_flags2 & 8388608) != 0
+      return (_flags2 & 2097152) != 0
     }
 
     def f85 int {
@@ -3852,11 +3852,11 @@ namespace test_large {
 
     def f85=(value int) {
       _f85 = value
-      _flags2 |= 8388608
+      _flags2 |= 2097152
     }
 
     def has_f86 bool {
-      return (_flags2 & 16777216) != 0
+      return (_flags2 & 4194304) != 0
     }
 
     def f86 int {
@@ -3866,11 +3866,11 @@ namespace test_large {
 
     def f86=(value int) {
       _f86 = value
-      _flags2 |= 16777216
+      _flags2 |= 4194304
     }
 
     def has_f87 bool {
-      return (_flags2 & 33554432) != 0
+      return (_flags2 & 8388608) != 0
     }
 
     def f87 int {
@@ -3880,11 +3880,11 @@ namespace test_large {
 
     def f87=(value int) {
       _f87 = value
-      _flags2 |= 33554432
+      _flags2 |= 8388608
     }
 
     def has_f88 bool {
-      return (_flags2 & 67108864) != 0
+      return (_flags2 & 16777216) != 0
     }
 
     def f88 int {
@@ -3894,11 +3894,11 @@ namespace test_large {
 
     def f88=(value int) {
       _f88 = value
-      _flags2 |= 67108864
+      _flags2 |= 16777216
     }
 
     def has_f89 bool {
-      return (_flags2 & 134217728) != 0
+      return (_flags2 & 33554432) != 0
     }
 
     def f89 int {
@@ -3908,11 +3908,11 @@ namespace test_large {
 
     def f89=(value int) {
       _f89 = value
-      _flags2 |= 134217728
+      _flags2 |= 33554432
     }
 
     def has_f90 bool {
-      return (_flags2 & 268435456) != 0
+      return (_flags2 & 67108864) != 0
     }
 
     def f90 int {
@@ -3922,11 +3922,11 @@ namespace test_large {
 
     def f90=(value int) {
       _f90 = value
-      _flags2 |= 268435456
+      _flags2 |= 67108864
     }
 
     def has_f91 bool {
-      return (_flags2 & 536870912) != 0
+      return (_flags2 & 134217728) != 0
     }
 
     def f91 int {
@@ -3936,11 +3936,11 @@ namespace test_large {
 
     def f91=(value int) {
       _f91 = value
-      _flags2 |= 536870912
+      _flags2 |= 134217728
     }
 
     def has_f92 bool {
-      return (_flags2 & 1073741824) != 0
+      return (_flags2 & 268435456) != 0
     }
 
     def f92 int {
@@ -3950,11 +3950,11 @@ namespace test_large {
 
     def f92=(value int) {
       _f92 = value
-      _flags2 |= 1073741824
+      _flags2 |= 268435456
     }
 
     def has_f93 bool {
-      return (_flags2 & 1) != 0
+      return (_flags2 & 536870912) != 0
     }
 
     def f93 int {
@@ -3964,11 +3964,11 @@ namespace test_large {
 
     def f93=(value int) {
       _f93 = value
-      _flags2 |= 1
+      _flags2 |= 536870912
     }
 
     def has_f94 bool {
-      return (_flags2 & 2) != 0
+      return (_flags2 & 1073741824) != 0
     }
 
     def f94 int {
@@ -3978,11 +3978,11 @@ namespace test_large {
 
     def f94=(value int) {
       _f94 = value
-      _flags2 |= 2
+      _flags2 |= 1073741824
     }
 
     def has_f95 bool {
-      return (_flags2 & 4) != 0
+      return (_flags2 & 2147483648) != 0
     }
 
     def f95 int {
@@ -3992,11 +3992,11 @@ namespace test_large {
 
     def f95=(value int) {
       _f95 = value
-      _flags2 |= 4
+      _flags2 |= 2147483648
     }
 
     def has_f96 bool {
-      return (_flags3 & 8) != 0
+      return (_flags3 & 1) != 0
     }
 
     def f96 int {
@@ -4006,11 +4006,11 @@ namespace test_large {
 
     def f96=(value int) {
       _f96 = value
-      _flags3 |= 8
+      _flags3 |= 1
     }
 
     def has_f97 bool {
-      return (_flags3 & 16) != 0
+      return (_flags3 & 2) != 0
     }
 
     def f97 int {
@@ -4020,11 +4020,11 @@ namespace test_large {
 
     def f97=(value int) {
       _f97 = value
-      _flags3 |= 16
+      _flags3 |= 2
     }
 
     def has_f98 bool {
-      return (_flags3 & 32) != 0
+      return (_flags3 & 4) != 0
     }
 
     def f98 int {
@@ -4034,11 +4034,11 @@ namespace test_large {
 
     def f98=(value int) {
       _f98 = value
-      _flags3 |= 32
+      _flags3 |= 4
     }
 
     def has_f99 bool {
-      return (_flags3 & 64) != 0
+      return (_flags3 & 8) != 0
     }
 
     def f99 int {
@@ -4048,11 +4048,11 @@ namespace test_large {
 
     def f99=(value int) {
       _f99 = value
-      _flags3 |= 64
+      _flags3 |= 8
     }
 
     def has_f100 bool {
-      return (_flags3 & 128) != 0
+      return (_flags3 & 16) != 0
     }
 
     def f100 int {
@@ -4062,11 +4062,11 @@ namespace test_large {
 
     def f100=(value int) {
       _f100 = value
-      _flags3 |= 128
+      _flags3 |= 16
     }
 
     def has_f101 bool {
-      return (_flags3 & 256) != 0
+      return (_flags3 & 32) != 0
     }
 
     def f101 int {
@@ -4076,11 +4076,11 @@ namespace test_large {
 
     def f101=(value int) {
       _f101 = value
-      _flags3 |= 256
+      _flags3 |= 32
     }
 
     def has_f102 bool {
-      return (_flags3 & 512) != 0
+      return (_flags3 & 64) != 0
     }
 
     def f102 int {
@@ -4090,11 +4090,11 @@ namespace test_large {
 
     def f102=(value int) {
       _f102 = value
-      _flags3 |= 512
+      _flags3 |= 64
     }
 
     def has_f103 bool {
-      return (_flags3 & 1024) != 0
+      return (_flags3 & 128) != 0
     }
 
     def f103 int {
@@ -4104,11 +4104,11 @@ namespace test_large {
 
     def f103=(value int) {
       _f103 = value
-      _flags3 |= 1024
+      _flags3 |= 128
     }
 
     def has_f104 bool {
-      return (_flags3 & 2048) != 0
+      return (_flags3 & 256) != 0
     }
 
     def f104 int {
@@ -4118,11 +4118,11 @@ namespace test_large {
 
     def f104=(value int) {
       _f104 = value
-      _flags3 |= 2048
+      _flags3 |= 256
     }
 
     def has_f105 bool {
-      return (_flags3 & 4096) != 0
+      return (_flags3 & 512) != 0
     }
 
     def f105 int {
@@ -4132,11 +4132,11 @@ namespace test_large {
 
     def f105=(value int) {
       _f105 = value
-      _flags3 |= 4096
+      _flags3 |= 512
     }
 
     def has_f106 bool {
-      return (_flags3 & 8192) != 0
+      return (_flags3 & 1024) != 0
     }
 
     def f106 int {
@@ -4146,11 +4146,11 @@ namespace test_large {
 
     def f106=(value int) {
       _f106 = value
-      _flags3 |= 8192
+      _flags3 |= 1024
     }
 
     def has_f107 bool {
-      return (_flags3 & 16384) != 0
+      return (_flags3 & 2048) != 0
     }
 
     def f107 int {
@@ -4160,11 +4160,11 @@ namespace test_large {
 
     def f107=(value int) {
       _f107 = value
-      _flags3 |= 16384
+      _flags3 |= 2048
     }
 
     def has_f108 bool {
-      return (_flags3 & 32768) != 0
+      return (_flags3 & 4096) != 0
     }
 
     def f108 int {
@@ -4174,11 +4174,11 @@ namespace test_large {
 
     def f108=(value int) {
       _f108 = value
-      _flags3 |= 32768
+      _flags3 |= 4096
     }
 
     def has_f109 bool {
-      return (_flags3 & 65536) != 0
+      return (_flags3 & 8192) != 0
     }
 
     def f109 int {
@@ -4188,11 +4188,11 @@ namespace test_large {
 
     def f109=(value int) {
       _f109 = value
-      _flags3 |= 65536
+      _flags3 |= 8192
     }
 
     def has_f110 bool {
-      return (_flags3 & 131072) != 0
+      return (_flags3 & 16384) != 0
     }
 
     def f110 int {
@@ -4202,11 +4202,11 @@ namespace test_large {
 
     def f110=(value int) {
       _f110 = value
-      _flags3 |= 131072
+      _flags3 |= 16384
     }
 
     def has_f111 bool {
-      return (_flags3 & 262144) != 0
+      return (_flags3 & 32768) != 0
     }
 
     def f111 int {
@@ -4216,11 +4216,11 @@ namespace test_large {
 
     def f111=(value int) {
       _f111 = value
-      _flags3 |= 262144
+      _flags3 |= 32768
     }
 
     def has_f112 bool {
-      return (_flags3 & 524288) != 0
+      return (_flags3 & 65536) != 0
     }
 
     def f112 int {
@@ -4230,11 +4230,11 @@ namespace test_large {
 
     def f112=(value int) {
       _f112 = value
-      _flags3 |= 524288
+      _flags3 |= 65536
     }
 
     def has_f113 bool {
-      return (_flags3 & 1048576) != 0
+      return (_flags3 & 131072) != 0
     }
 
     def f113 int {
@@ -4244,11 +4244,11 @@ namespace test_large {
 
     def f113=(value int) {
       _f113 = value
-      _flags3 |= 1048576
+      _flags3 |= 131072
     }
 
     def has_f114 bool {
-      return (_flags3 & 2097152) != 0
+      return (_flags3 & 262144) != 0
     }
 
     def f114 int {
@@ -4258,11 +4258,11 @@ namespace test_large {
 
     def f114=(value int) {
       _f114 = value
-      _flags3 |= 2097152
+      _flags3 |= 262144
     }
 
     def has_f115 bool {
-      return (_flags3 & 4194304) != 0
+      return (_flags3 & 524288) != 0
     }
 
     def f115 int {
@@ -4272,11 +4272,11 @@ namespace test_large {
 
     def f115=(value int) {
       _f115 = value
-      _flags3 |= 4194304
+      _flags3 |= 524288
     }
 
     def has_f116 bool {
-      return (_flags3 & 8388608) != 0
+      return (_flags3 & 1048576) != 0
     }
 
     def f116 int {
@@ -4286,11 +4286,11 @@ namespace test_large {
 
     def f116=(value int) {
       _f116 = value
-      _flags3 |= 8388608
+      _flags3 |= 1048576
     }
 
     def has_f117 bool {
-      return (_flags3 & 16777216) != 0
+      return (_flags3 & 2097152) != 0
     }
 
     def f117 int {
@@ -4300,11 +4300,11 @@ namespace test_large {
 
     def f117=(value int) {
       _f117 = value
-      _flags3 |= 16777216
+      _flags3 |= 2097152
     }
 
     def has_f118 bool {
-      return (_flags3 & 33554432) != 0
+      return (_flags3 & 4194304) != 0
     }
 
     def f118 int {
@@ -4314,11 +4314,11 @@ namespace test_large {
 
     def f118=(value int) {
       _f118 = value
-      _flags3 |= 33554432
+      _flags3 |= 4194304
     }
 
     def has_f119 bool {
-      return (_flags3 & 67108864) != 0
+      return (_flags3 & 8388608) != 0
     }
 
     def f119 int {
@@ -4328,11 +4328,11 @@ namespace test_large {
 
     def f119=(value int) {
       _f119 = value
-      _flags3 |= 67108864
+      _flags3 |= 8388608
     }
 
     def has_f120 bool {
-      return (_flags3 & 134217728) != 0
+      return (_flags3 & 16777216) != 0
     }
 
     def f120 int {
@@ -4342,11 +4342,11 @@ namespace test_large {
 
     def f120=(value int) {
       _f120 = value
-      _flags3 |= 134217728
+      _flags3 |= 16777216
     }
 
     def has_f121 bool {
-      return (_flags3 & 268435456) != 0
+      return (_flags3 & 33554432) != 0
     }
 
     def f121 int {
@@ -4356,11 +4356,11 @@ namespace test_large {
 
     def f121=(value int) {
       _f121 = value
-      _flags3 |= 268435456
+      _flags3 |= 33554432
     }
 
     def has_f122 bool {
-      return (_flags3 & 536870912) != 0
+      return (_flags3 & 67108864) != 0
     }
 
     def f122 int {
@@ -4370,11 +4370,11 @@ namespace test_large {
 
     def f122=(value int) {
       _f122 = value
-      _flags3 |= 536870912
+      _flags3 |= 67108864
     }
 
     def has_f123 bool {
-      return (_flags3 & 1073741824) != 0
+      return (_flags3 & 134217728) != 0
     }
 
     def f123 int {
@@ -4384,11 +4384,11 @@ namespace test_large {
 
     def f123=(value int) {
       _f123 = value
-      _flags3 |= 1073741824
+      _flags3 |= 134217728
     }
 
     def has_f124 bool {
-      return (_flags3 & 1) != 0
+      return (_flags3 & 268435456) != 0
     }
 
     def f124 int {
@@ -4398,11 +4398,11 @@ namespace test_large {
 
     def f124=(value int) {
       _f124 = value
-      _flags3 |= 1
+      _flags3 |= 268435456
     }
 
     def has_f125 bool {
-      return (_flags3 & 2) != 0
+      return (_flags3 & 536870912) != 0
     }
 
     def f125 int {
@@ -4412,11 +4412,11 @@ namespace test_large {
 
     def f125=(value int) {
       _f125 = value
-      _flags3 |= 2
+      _flags3 |= 536870912
     }
 
     def has_f126 bool {
-      return (_flags3 & 4) != 0
+      return (_flags3 & 1073741824) != 0
     }
 
     def f126 int {
@@ -4426,11 +4426,11 @@ namespace test_large {
 
     def f126=(value int) {
       _f126 = value
-      _flags3 |= 4
+      _flags3 |= 1073741824
     }
 
     def has_f127 bool {
-      return (_flags3 & 8) != 0
+      return (_flags3 & 2147483648) != 0
     }
 
     def f127 int {
@@ -4440,11 +4440,11 @@ namespace test_large {
 
     def f127=(value int) {
       _f127 = value
-      _flags3 |= 8
+      _flags3 |= 2147483648
     }
 
     def has_f128 bool {
-      return (_flags4 & 16) != 0
+      return (_flags4 & 1) != 0
     }
 
     def f128 int {
@@ -4454,11 +4454,11 @@ namespace test_large {
 
     def f128=(value int) {
       _f128 = value
-      _flags4 |= 16
+      _flags4 |= 1
     }
 
     def has_f129 bool {
-      return (_flags4 & 32) != 0
+      return (_flags4 & 2) != 0
     }
 
     def f129 int {
@@ -4468,7 +4468,7 @@ namespace test_large {
 
     def f129=(value int) {
       _f129 = value
-      _flags4 |= 32
+      _flags4 |= 2
     }
 
     def encode(bb Kiwi.ByteBuffer) {

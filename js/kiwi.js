@@ -2008,7 +2008,7 @@ var kiwi = exports || kiwi || {}, exports;
 
             var type = skewTypeForField(field);
             var flags = '_flags' + (j >> 5);
-            var mask = '' + (1 << (j % 31));
+            var mask = '' + (1 << (j % 32) >>> 0);
 
             lines.push(indent + '  def has_' + field.name + ' bool {');
             lines.push(indent + '    return (' + flags + ' & ' + mask + ') != 0');
