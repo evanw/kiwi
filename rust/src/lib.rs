@@ -6,7 +6,7 @@
 //! use kiwi_schema::*;
 //!
 //! let schema = Schema::new(vec![
-//!   Def::new("Point", DefKind::Struct, vec![
+//!   Def::new("Point".to_owned(), DefKind::Struct, vec![
 //!     Field {name: "x".to_owned(), type_id: TYPE_FLOAT, is_array: false, value: 0},
 //!     Field {name: "y".to_owned(), type_id: TYPE_FLOAT, is_array: false, value: 0},
 //!   ]),
@@ -17,6 +17,7 @@
 //! assert_eq!(value.encode(&schema), [126, 0, 0, 0, 126, 1, 0, 0]);
 //! ```
 
+use std::borrow::Cow;
 use std::collections::HashMap;
 use std::f32;
 use std::fmt;
@@ -28,8 +29,9 @@ use std::str;
 /// Example usage:
 ///
 /// ```
+/// use std::borrow::Cow;
 /// let mut bb = kiwi_schema::ByteBuffer::new(&[240, 159, 141, 149, 0, 133, 242, 210, 237]);
-/// assert_eq!(bb.read_string(), Ok("🍕"));
+/// assert_eq!(bb.read_string(), Ok(Cow::Borrowed("🍕")));
 /// assert_eq!(bb.read_var_float(), Ok(123.456));
 /// ```
 ///
@@ -147,13 +149,13 @@ impl<'a> ByteBuffer<'a> {
 
   /// Try to read a UTF-8 string starting at the current index. This string is
   /// returned as a slice so it just aliases the underlying memory.
-  pub fn read_string(&mut self) -> Result<&'a str, ()> {
+  pub fn read_string(&mut self) -> Result<Cow<'a, str>, ()> {
     let start = self.index;
 
     while self.index < self.data.len() {
       if self.data[self.index] == 0 {
         self.index += 1;
-        return Ok(str::from_utf8(&self.data[start..self.index - 1]).or(Err(()))?);
+        return Ok(String::from_utf8_lossy(&self.data[start..self.index - 1]));
       }
 
       self.index += 1;
@@ -265,11 +267,12 @@ fn read_var_float() {
 fn read_string() {
   let try = |bytes| { ByteBuffer::new(bytes).read_string() };
   assert_eq!(try(&[]), Err(()));
-  assert_eq!(try(&[0]), Ok(""));
+  assert_eq!(try(&[0]), Ok(Cow::Borrowed("")));
   assert_eq!(try(&[97]), Err(()));
-  assert_eq!(try(&[97, 0]), Ok("a"));
-  assert_eq!(try(&[97, 98, 99, 0]), Ok("abc"));
-  assert_eq!(try(&[240, 159, 141, 149, 0]), Ok("🍕"));
+  assert_eq!(try(&[97, 0]), Ok(Cow::Borrowed("a")));
+  assert_eq!(try(&[97, 98, 99, 0]), Ok(Cow::Borrowed("abc")));
+  assert_eq!(try(&[240, 159, 141, 149, 0]), Ok(Cow::Borrowed("🍕")));
+  assert_eq!(try(&[97, 237, 160, 188, 99, 0]), Ok(Cow::Owned("a���c".to_owned())));
 }
 
 #[test]
@@ -277,7 +280,7 @@ fn read_sequence() {
   let mut bb = ByteBuffer::new(&[0, 133, 242, 210, 237, 240, 159, 141, 149, 0, 149, 154, 239, 58]);
   assert_eq!(bb.read_var_float(), Ok(0.0));
   assert_eq!(bb.read_var_float(), Ok(123.456));
-  assert_eq!(bb.read_string(), Ok("🍕"));
+  assert_eq!(bb.read_string(), Ok(Cow::Borrowed("🍕")));
   assert_eq!(bb.read_var_uint(), Ok(123456789));
 }
 
@@ -588,14 +591,14 @@ pub struct Def {
 }
 
 impl Def {
-  pub fn new(name: &str, kind: DefKind, fields: Vec<Field>) -> Def {
+  pub fn new(name: String, kind: DefKind, fields: Vec<Field>) -> Def {
     let mut field_value_to_index = HashMap::new();
     let mut field_name_to_index = HashMap::new();
     for (i, field) in fields.iter().enumerate() {
       field_value_to_index.insert(field.value, i);
       field_name_to_index.insert(field.name.clone(), i);
     }
-    Def {name: name.to_owned(), index: 0, kind, fields, field_value_to_index, field_name_to_index}
+    Def {name, index: 0, kind, fields, field_value_to_index, field_name_to_index}
   }
 
   /// Returns the [Field](struct.Field.html) with the provided name if one exists.
@@ -658,7 +661,7 @@ impl Schema {
     let definition_count = bb.read_var_uint()?;
 
     for _ in 0..definition_count {
-      let name = bb.read_string()?;
+      let name = bb.read_string()?.into_owned();
       let kind = match bb.read_byte()? {
         DEF_ENUM => DefKind::Enum,
         DEF_STRUCT => DefKind::Struct,
@@ -669,7 +672,7 @@ impl Schema {
       let mut fields = Vec::new();
 
       for _ in 0..field_count {
-        let name = bb.read_string()?.to_owned();
+        let name = bb.read_string()?.into_owned();
         let type_id = bb.read_var_int()?;
         let is_array = bb.read_bool()?;
         let value = bb.read_var_uint()?;
@@ -785,7 +788,7 @@ fn schema_decode_and_encode() {
   let schema_bytes = [1, 65, 66, 67, 0, 2, 1, 120, 121, 122, 0, 5, 1, 1];
   let schema = Schema::decode(&schema_bytes).unwrap();
   assert_eq!(schema, Schema::new(vec![
-    Def::new("ABC", DefKind::Message, vec![
+    Def::new("ABC".to_owned(), DefKind::Message, vec![
       Field {name: "xyz".to_owned(), type_id: TYPE_INT, is_array: true, value: 1},
     ]),
   ]));
@@ -933,7 +936,7 @@ impl<'a> Value<'a> {
       TYPE_INT => { Ok(Value::Int(bb.read_var_int()?)) },
       TYPE_UINT => { Ok(Value::UInt(bb.read_var_uint()?)) },
       TYPE_FLOAT => { Ok(Value::Float(bb.read_var_float()?)) },
-      TYPE_STRING => { Ok(Value::String(bb.read_string()?.to_owned())) },
+      TYPE_STRING => { Ok(Value::String(bb.read_string()?.into_owned())) },
 
       _ => {
         let def = &schema.defs[type_id as usize];
@@ -1191,17 +1194,17 @@ fn value_remove() {
 #[test]
 fn value_encode_and_decode() {
   let schema = Schema::new(vec![
-    Def::new("Enum", DefKind::Enum, vec![
+    Def::new("Enum".to_owned(), DefKind::Enum, vec![
       Field {name: "FOO".to_owned(), type_id: 0, is_array: false, value: 100},
       Field {name: "BAR".to_owned(), type_id: 0, is_array: false, value: 200},
     ]),
 
-    Def::new("Struct", DefKind::Struct, vec![
+    Def::new("Struct".to_owned(), DefKind::Struct, vec![
       Field {name: "v_enum".to_owned(), type_id: 0, is_array: true, value: 0},
       Field {name: "v_message".to_owned(), type_id: 2, is_array: false, value: 0},
     ]),
 
-    Def::new("Message", DefKind::Message, vec![
+    Def::new("Message".to_owned(), DefKind::Message, vec![
       Field {name: "v_bool".to_owned(), type_id: TYPE_BOOL, is_array: false, value: 1},
       Field {name: "v_byte".to_owned(), type_id: TYPE_BYTE, is_array: false, value: 2},
       Field {name: "v_int".to_owned(), type_id: TYPE_INT, is_array: false, value: 3},
