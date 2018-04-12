@@ -16,6 +16,7 @@ var usage = [
   '  --cpp [PATH]          Generate C++ code (tree style).',
   '  --callback-cpp [PATH] Generate C++ code (callback style).',
   '  --skew [PATH]         Generate Skew code.',
+  '  --text [PATH]         Encode the schema as text.',
   '  --binary [PATH]       Encode the schema as a binary blob.',
   '  --root-type [NAME]    Set the root type for JSON.',
   '  --to-json [PATH]      Convert a binary file to JSON.',
@@ -27,6 +28,7 @@ var usage = [
   '  kiwic --schema test.kiwi --cpp test.h',
   '  kiwic --schema test.kiwi --skew test.sk',
   '  kiwic --schema test.kiwi --binary test.bkiwi',
+  '  kiwic --schema test.bkiwi --text test.kiwi',
   '  kiwic --schema test.kiwi --root-type Test --from-json buffer.json',
   '  kiwic --schema test.kiwi --root-type Test --to-json buffer.bin',
   '',
@@ -61,6 +63,7 @@ var main = exports.main = function(args) {
     '--callback-cpp': null,
     '--skew': null,
     '--binary': null,
+    '--text': null,
     '--root-type': null,
     '--to-json': null,
     '--from-json': null,
@@ -94,7 +97,9 @@ var main = exports.main = function(args) {
   }
 
   // Try loading the schema
-  var content = fs.readFileSync(flags['--schema'], 'utf8');
+  var content = fs.readFileSync(flags['--schema']);
+  var isText = Array.prototype.indexOf.call(content, 0) === -1; // Binary schemas will have null-terminated strings
+  content = isText ? content.toString() : new Uint8Array(content);
 
   // Try parsing the schema, pretty-print errors on failure
   try {
@@ -140,6 +145,11 @@ var main = exports.main = function(args) {
   // Generate a binary schema file
   if (flags['--binary'] !== null) {
     writeFileBuffer(flags['--binary'], Buffer(kiwi.encodeBinarySchema(content)));
+  }
+
+  // Generate a textual schema file
+  if (flags['--text'] !== null) {
+    writeFileBuffer(flags['--text'], Buffer(kiwi.prettyPrintSchema(content)));
   }
 
   // Convert a binary file to JSON

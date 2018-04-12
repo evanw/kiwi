@@ -303,3 +303,25 @@ it('message with deprecated fields', function() {
   assert.deepEqual(schema.decodeDeprecatedMessage(schema.encodeNonDeprecatedMessage(nonDeprecated)), deprecated);
   assert.deepEqual(schema.decodeNonDeprecatedMessage(schema.encodeDeprecatedMessage(nonDeprecated)), deprecated);
 });
+
+it('schema round trip', function() {
+  var parsed = kiwi.parseSchema(schemaText);
+  var schemaText2 = kiwi.prettyPrintSchema(parsed);
+  var parsed2 = kiwi.parseSchema(schemaText2);
+
+  function deleteLocations(ast) {
+    ast.definitions.forEach(function(definition) {
+      delete definition.line;
+      delete definition.column;
+      definition.fields.forEach(function(field) {
+        delete field.line;
+        delete field.column;
+      });
+    });
+  }
+
+  deleteLocations(parsed);
+  deleteLocations(parsed2);
+
+  assert.deepEqual(parsed, parsed2);
+});

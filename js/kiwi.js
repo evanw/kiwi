@@ -512,6 +512,53 @@ var kiwi = exports || kiwi || {}, exports;
   kiwi.parseSchema = parseSchema;
 }());
 
+// Pretty printer
+(function() {
+  function prettyPrintSchema(schema) {
+    schema = convertSchema(schema);
+
+    var bb = new kiwi.ByteBuffer();
+    var definitions = schema.definitions;
+    var text = '';
+
+    if (schema.package !== null) {
+      text += 'package ' + schema.package + ';\n';
+    }
+
+    for (var i = 0; i < definitions.length; i++) {
+      var definition = definitions[i];
+      if (i > 0 || schema.package !== null) text += '\n';
+      text += definition.kind.toLowerCase() + ' ' + definition.name + ' {\n';
+
+      for (var j = 0; j < definition.fields.length; j++) {
+        var field = definition.fields[j];
+        text += '  ';
+        if (definition.kind !== 'ENUM') {
+          text += field.type;
+          if (field.isArray) {
+            text += '[]';
+          }
+          text += ' ';
+        }
+        text += field.name;
+        if (definition.kind !== 'STRUCT') {
+          text += ' = ' + field.value;
+        }
+        if (field.isDeprecated) {
+          text += ' [deprecated]';
+        }
+        text += ';\n';
+      }
+
+      text += '}\n';
+    }
+
+    return text;
+  }
+
+  kiwi.prettyPrintSchema = prettyPrintSchema;
+}());
+
 // Binary schema support
 (function() {
   var ByteBuffer = kiwi.ByteBuffer;
@@ -543,7 +590,7 @@ var kiwi = exports || kiwi || {}, exports;
           name: fieldName,
           line: 0,
           column: 0,
-          type: type,
+          type: kinds[kind] === 'ENUM' ? null : type,
           isArray: isArray,
           isDeprecated: false,
           value: value,
@@ -576,7 +623,7 @@ var kiwi = exports || kiwi || {}, exports;
           if (field.type >= definitions.length) {
             throw new Error('Invalid type ' + field.type);
           }
-          field.type = definitions[field.type].name;
+          field.type = field.type === null ? null : definitions[field.type].name;
         }
       }
     }

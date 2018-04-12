@@ -28,3 +28,7 @@ node ../js/cli.js --schema ./test-schema-large.kiwi --skew ./test-schema-large.s
 ../js/node_modules/.bin/skewc --output-file=temp.js ../kiwi.sk ../typedarray.sk ./test-schema.sk ./test1-schema.sk ./test2-schema.sk ./test-schema-large.sk ./test.sk
 node ../js/node_modules/mocha/bin/mocha temp.js
 rm temp.js
+
+node ../js/cli.js --schema ./test-schema.kiwi --binary ./test-schema.bkiwi
+node ../js/cli.js --schema ./test-schema.bkiwi --text ./test-schema-round-trip.kiwi
+rm ./test-schema.bkiwi

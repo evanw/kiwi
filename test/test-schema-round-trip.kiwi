@@ -1,0 +1,182 @@
+enum Enum {
+  A = 100;
+  B = 200;
+}
+
+struct EnumStruct {
+  Enum x;
+  Enum[] y;
+}
+
+struct BoolStruct {
+  bool x;
+}
+
+struct ByteStruct {
+  byte x;
+}
+
+struct IntStruct {
+  int x;
+}
+
+struct UintStruct {
+  uint x;
+}
+
+struct FloatStruct {
+  float x;
+}
+
+struct StringStruct {
+  string x;
+}
+
+struct CompoundStruct {
+  uint x;
+  uint y;
+}
+
+struct NestedStruct {
+  uint a;
+  CompoundStruct b;
+  uint c;
+}
+
+message BoolMessage {
+  bool x = 1;
+}
+
+message ByteMessage {
+  byte x = 1;
+}
+
+message IntMessage {
+  int x = 1;
+}
+
+message UintMessage {
+  uint x = 1;
+}
+
+message FloatMessage {
+  float x = 1;
+}
+
+message StringMessage {
+  string x = 1;
+}
+
+message CompoundMessage {
+  uint x = 1;
+  uint y = 2;
+}
+
+message NestedMessage {
+  uint a = 1;
+  CompoundMessage b = 2;
+  uint c = 3;
+}
+
+struct BoolArrayStruct {
+  bool[] x;
+}
+
+struct ByteArrayStruct {
+  byte[] x;
+}
+
+struct IntArrayStruct {
+  int[] x;
+}
+
+struct UintArrayStruct {
+  uint[] x;
+}
+
+struct FloatArrayStruct {
+  float[] x;
+}
+
+struct StringArrayStruct {
+  string[] x;
+}
+
+struct CompoundArrayStruct {
+  uint[] x;
+  uint[] y;
+}
+
+message BoolArrayMessage {
+  bool[] x = 1;
+}
+
+message ByteArrayMessage {
+  byte[] x = 1;
+}
+
+message IntArrayMessage {
+  int[] x = 1;
+}
+
+message UintArrayMessage {
+  uint[] x = 1;
+}
+
+message FloatArrayMessage {
+  float[] x = 1;
+}
+
+message StringArrayMessage {
+  string[] x = 1;
+}
+
+message CompoundArrayMessage {
+  uint[] x = 1;
+  uint[] y = 2;
+}
+
+message RecursiveMessage {
+  RecursiveMessage x = 1;
+}
+
+message NonDeprecatedMessage {
+  uint a = 1;
+  uint b = 2;
+  uint[] c = 3;
+  uint[] d = 4;
+  ByteStruct e = 5;
+  ByteStruct f = 6;
+  uint g = 7;
+}
+
+message DeprecatedMessage {
+  uint a = 1;
+  uint b = 2;
+  uint[] c = 3;
+  uint[] d = 4;
+  ByteStruct e = 5;
+  ByteStruct f = 6;
+  uint g = 7;
+}
+
+struct SortedStruct {
+  bool a1;
+  byte b1;
+  int c1;
+  uint d1;
+  float e1;
+  string f1;
+  bool a2;
+  byte b2;
+  int c2;
+  uint d2;
+  float e2;
+  string f2;
+  bool[] a3;
+  byte[] b3;
+  int[] c3;
+  uint[] d3;
+  float[] e3;
+  string[] f3;
+}
