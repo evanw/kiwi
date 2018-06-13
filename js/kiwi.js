@@ -2395,7 +2395,11 @@ var kiwi = exports || kiwi || {}, exports;
     for (var i = 0; i < schema.definitions.length; i++) {
       var definition = schema.definitions[i];
 
-      if (definition.kind === 'STRUCT' || definition.kind === 'MESSAGE') {
+      if (definition.kind === 'ENUM') {
+        lines.push(indent + '  ' + definition.name + ': any;');
+      }
+
+      else if (definition.kind === 'STRUCT' || definition.kind === 'MESSAGE') {
         lines.push(indent + '  encode' + definition.name + '(message: ' + definition.name + '): Uint8Array;');
         lines.push(indent + '  decode' + definition.name + '(buffer: Uint8Array): ' + definition.name + ';');
       }

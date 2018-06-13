@@ -179,6 +179,7 @@ export namespace test {
   }
 
   export interface Schema {
+    Enum: any;
     encodeEnumStruct(message: EnumStruct): Uint8Array;
     decodeEnumStruct(buffer: Uint8Array): EnumStruct;
     encodeBoolStruct(message: BoolStruct): Uint8Array;
