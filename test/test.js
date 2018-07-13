@@ -150,6 +150,16 @@ it('message byte', function() {
   check({x: 234}, [1, 234, 0]);
 });
 
+it('struct byte array', function() {
+  function check(i, o) {
+    assert.deepEqual(Buffer(schema.encodeByteArrayStruct(i)), Buffer(o));
+    assert.deepEqual(schema.decodeByteArrayStruct(new Uint8Array(o)), i);
+  }
+
+  check({x: new Uint8Array()}, [0]);
+  check({x: new Uint8Array([4, 5, 6])}, [3, 4, 5, 6]);
+});
+
 it('message uint', function() {
   function check(i, o) {
     assert.deepEqual(Buffer(schema.encodeUintMessage(i)), Buffer(o));

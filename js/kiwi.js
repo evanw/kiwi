@@ -58,7 +58,7 @@ var kiwi = exports || kiwi || {}, exports;
     }
     this._index = end;
     // Copy into a new array instead of just creating another view.
-    var result = new Uint8Array();
+    var result = new Uint8Array(length);
     result.set(this._data.subarray(start, end));
     return result;
   };
