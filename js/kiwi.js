@@ -166,6 +166,12 @@ var kiwi = exports || kiwi || {}, exports;
     this._data[index] = value;
   };
 
+  ByteBuffer.prototype.writeByteArray = function(value) {
+    var index = this.length;
+    this._growBy(value.length);
+    this._data.set(value, index);
+  }
+
   ByteBuffer.prototype.writeVarFloat = function(value) {
     var index = this.length;
 
@@ -720,7 +726,7 @@ var kiwi = exports || kiwi || {}, exports;
         }
 
         case 'byte': {
-          code = 'bb.readByte()';
+          code = 'bb.readByte()';  // only used if not array
           break;
         }
 
@@ -831,7 +837,7 @@ var kiwi = exports || kiwi || {}, exports;
         }
 
         case 'byte': {
-          code = 'bb.writeByte(value);';
+          code = 'bb.writeByte(value);';  // only used if not array
           break;
         }
 
@@ -879,12 +885,17 @@ var kiwi = exports || kiwi || {}, exports;
       }
 
       if (field.isArray) {
-        lines.push('    var values = value, n = values.length;');
-        lines.push('    bb.writeVarUint(n);');
-        lines.push('    for (var i = 0; i < n; i++) {');
-        lines.push('      value = values[i];');
-        lines.push('      ' + code);
-        lines.push('    }');
+        if (field.type === 'byte') {
+          lines.push('    bb.writeVarUint(value.length);');
+          lines.push('    bb.writeByteArray(value);');
+        } else {
+          lines.push('    var values = value, n = values.length;');
+          lines.push('    bb.writeVarUint(n);');
+          lines.push('    for (var i = 0; i < n; i++) {');
+          lines.push('      value = values[i];');
+          lines.push('      ' + code);
+          lines.push('    }');
+        }
       }
 
       else {

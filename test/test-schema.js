@@ -620,12 +620,8 @@ test["encodeByteArrayStruct"] = function(message, bb) {
 
   var value = message["x"];
   if (value != null) {
-    var values = value, n = values.length;
-    bb.writeVarUint(n);
-    for (var i = 0; i < n; i++) {
-      value = values[i];
-      bb.writeByte(value);
-    }
+    bb.writeVarUint(value.length);
+    bb.writeByteArray(value);
   } else {
     throw new Error("Missing required field \"x\"");
   }
@@ -874,12 +870,8 @@ test["encodeByteArrayMessage"] = function(message, bb) {
   var value = message["x"];
   if (value != null) {
     bb.writeVarUint(1);
-    var values = value, n = values.length;
-    bb.writeVarUint(n);
-    for (var i = 0; i < n; i++) {
-      value = values[i];
-      bb.writeByte(value);
-    }
+    bb.writeVarUint(value.length);
+    bb.writeByteArray(value);
   }
   bb.writeVarUint(0);
 
@@ -1482,12 +1474,8 @@ test["encodeSortedStruct"] = function(message, bb) {
 
   var value = message["b3"];
   if (value != null) {
-    var values = value, n = values.length;
-    bb.writeVarUint(n);
-    for (var i = 0; i < n; i++) {
-      value = values[i];
-      bb.writeByte(value);
-    }
+    bb.writeVarUint(value.length);
+    bb.writeByteArray(value);
   } else {
     throw new Error("Missing required field \"b3\"");
   }
