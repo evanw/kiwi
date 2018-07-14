@@ -769,7 +769,7 @@ var kiwi = exports || kiwi || {}, exports;
       if (field.isArray) {
         if (field.isDeprecated) {
           lines.push(indent + 'var length = bb.readVarUint();');
-          if (field.type == 'byte') {
+          if (field.type === 'byte') {
             lines.push(indent + 'bb.readByteArray(length);');
           } else {
             lines.push(indent + 'while (length-- > 0) ' + code + ';');
