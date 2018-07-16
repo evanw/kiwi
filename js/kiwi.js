@@ -50,6 +50,19 @@ var kiwi = exports || kiwi || {}, exports;
     return this._data[this._index++];
   };
 
+  ByteBuffer.prototype.readByteArray = function(length) {
+    var start = this._index;
+    var end = start + length;
+    if (end > this._data.length) {
+      throw new Error('Read array out of bounds');
+    }
+    this._index = end;
+    // Copy into a new array instead of just creating another view.
+    var result = new Uint8Array(length);
+    result.set(this._data.subarray(start, end));
+    return result;
+  };
+
   ByteBuffer.prototype.readVarFloat = function() {
     var index = this._index;
     var data = this._data;
@@ -152,6 +165,12 @@ var kiwi = exports || kiwi || {}, exports;
     this._growBy(1);
     this._data[index] = value;
   };
+
+  ByteBuffer.prototype.writeByteArray = function(value) {
+    var index = this.length;
+    this._growBy(value.length);
+    this._data.set(value, index);
+  }
 
   ByteBuffer.prototype.writeVarFloat = function(value) {
     var index = this.length;
@@ -707,7 +726,7 @@ var kiwi = exports || kiwi || {}, exports;
         }
 
         case 'byte': {
-          code = 'bb.readByte()';
+          code = 'bb.readByte()';  // only used if not array
           break;
         }
 
@@ -750,11 +769,19 @@ var kiwi = exports || kiwi || {}, exports;
       if (field.isArray) {
         if (field.isDeprecated) {
           lines.push(indent + 'var length = bb.readVarUint();');
-          lines.push(indent + 'while (length-- > 0) ' + code + ';');
+          if (field.type === 'byte') {
+            lines.push(indent + 'bb.readByteArray(length);');
+          } else {
+            lines.push(indent + 'while (length-- > 0) ' + code + ';');
+          }
         } else {
-          lines.push(indent + 'var values = result[' + quote(field.name) + '] = [];');
           lines.push(indent + 'var length = bb.readVarUint();');
-          lines.push(indent + 'while (length-- > 0) values.push(' + code + ');');
+          if (field.type === 'byte') {
+            lines.push(indent + 'result[' + quote(field.name) + '] = bb.readByteArray(length);');
+          } else {
+            lines.push(indent + 'var values = result[' + quote(field.name) + '] = [];');
+            lines.push(indent + 'while (length-- > 0) values.push(' + code + ');');
+          }
         }
       }
 
@@ -810,7 +837,7 @@ var kiwi = exports || kiwi || {}, exports;
         }
 
         case 'byte': {
-          code = 'bb.writeByte(value);';
+          code = 'bb.writeByte(value);';  // only used if not array
           break;
         }
 
@@ -858,12 +885,17 @@ var kiwi = exports || kiwi || {}, exports;
       }
 
       if (field.isArray) {
-        lines.push('    var values = value, n = values.length;');
-        lines.push('    bb.writeVarUint(n);');
-        lines.push('    for (var i = 0; i < n; i++) {');
-        lines.push('      value = values[i];');
-        lines.push('      ' + code);
-        lines.push('    }');
+        if (field.type === 'byte') {
+          lines.push('    bb.writeVarUint(value.length);');
+          lines.push('    bb.writeByteArray(value);');
+        } else {
+          lines.push('    var values = value, n = values.length;');
+          lines.push('    bb.writeVarUint(n);');
+          lines.push('    for (var i = 0; i < n; i++) {');
+          lines.push('      value = values[i];');
+          lines.push('      ' + code);
+          lines.push('    }');
+        }
       }
 
       else {
