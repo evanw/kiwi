@@ -50,7 +50,8 @@ var kiwi = exports || kiwi || {}, exports;
     return this._data[this._index++];
   };
 
-  ByteBuffer.prototype.readByteArray = function(length) {
+  ByteBuffer.prototype.readByteArray = function() {
+    var length = this.readVarUint();
     var start = this._index;
     var end = start + length;
     if (end > this._data.length) {
@@ -167,6 +168,7 @@ var kiwi = exports || kiwi || {}, exports;
   };
 
   ByteBuffer.prototype.writeByteArray = function(value) {
+    this.writeVarUint(value.length);
     var index = this.length;
     this._growBy(value.length);
     this._data.set(value, index);
@@ -768,17 +770,17 @@ var kiwi = exports || kiwi || {}, exports;
 
       if (field.isArray) {
         if (field.isDeprecated) {
-          lines.push(indent + 'var length = bb.readVarUint();');
           if (field.type === 'byte') {
-            lines.push(indent + 'bb.readByteArray(length);');
+            lines.push(indent + 'bb.readByteArray();');
           } else {
+            lines.push(indent + 'var length = bb.readVarUint();');
             lines.push(indent + 'while (length-- > 0) ' + code + ';');
           }
         } else {
-          lines.push(indent + 'var length = bb.readVarUint();');
           if (field.type === 'byte') {
-            lines.push(indent + 'result[' + quote(field.name) + '] = bb.readByteArray(length);');
+            lines.push(indent + 'result[' + quote(field.name) + '] = bb.readByteArray();');
           } else {
+            lines.push(indent + 'var length = bb.readVarUint();');
             lines.push(indent + 'var values = result[' + quote(field.name) + '] = [];');
             lines.push(indent + 'while (length-- > 0) values.push(' + code + ');');
           }
@@ -886,7 +888,6 @@ var kiwi = exports || kiwi || {}, exports;
 
       if (field.isArray) {
         if (field.type === 'byte') {
-          lines.push('    bb.writeVarUint(value.length);');
           lines.push('    bb.writeByteArray(value);');
         } else {
           lines.push('    var values = value, n = values.length;');

@@ -609,8 +609,7 @@ test["decodeByteArrayStruct"] = function(bb) {
     bb = new this.ByteBuffer(bb);
   }
 
-  var length = bb.readVarUint();
-  result["x"] = bb.readByteArray(length);
+  result["x"] = bb.readByteArray();
   return result;
 };
 
@@ -620,7 +619,6 @@ test["encodeByteArrayStruct"] = function(message, bb) {
 
   var value = message["x"];
   if (value != null) {
-    bb.writeVarUint(value.length);
     bb.writeByteArray(value);
   } else {
     throw new Error("Missing required field \"x\"");
@@ -853,8 +851,7 @@ test["decodeByteArrayMessage"] = function(bb) {
       return result;
 
     case 1:
-      var length = bb.readVarUint();
-      result["x"] = bb.readByteArray(length);
+      result["x"] = bb.readByteArray();
       break;
 
     default:
@@ -870,7 +867,6 @@ test["encodeByteArrayMessage"] = function(message, bb) {
   var value = message["x"];
   if (value != null) {
     bb.writeVarUint(1);
-    bb.writeVarUint(value.length);
     bb.writeByteArray(value);
   }
   bb.writeVarUint(0);
@@ -1355,8 +1351,7 @@ test["decodeSortedStruct"] = function(bb) {
   var length = bb.readVarUint();
   var values = result["a3"] = [];
   while (length-- > 0) values.push(!!bb.readByte());
-  var length = bb.readVarUint();
-  result["b3"] = bb.readByteArray(length);
+  result["b3"] = bb.readByteArray();
   var length = bb.readVarUint();
   var values = result["c3"] = [];
   while (length-- > 0) values.push(bb.readVarInt());
@@ -1474,7 +1469,6 @@ test["encodeSortedStruct"] = function(message, bb) {
 
   var value = message["b3"];
   if (value != null) {
-    bb.writeVarUint(value.length);
     bb.writeByteArray(value);
   } else {
     throw new Error("Missing required field \"b3\"");
