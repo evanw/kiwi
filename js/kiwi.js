@@ -1066,6 +1066,7 @@ var kiwi = exports || kiwi || {}, exports;
     cpp.push('class BinarySchema {');
     cpp.push('public:');
     cpp.push('  bool parse(kiwi::ByteBuffer &bb);');
+    cpp.push('  const kiwi::BinarySchema &underlyingSchema() const { return _schema; }');
 
     for (var i = 0; i < schema.definitions.length; i++) {
       var definition = schema.definitions[i];

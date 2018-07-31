@@ -8,6 +8,7 @@ namespace test1 {
 class BinarySchema {
 public:
   bool parse(kiwi::ByteBuffer &bb);
+  const kiwi::BinarySchema &underlyingSchema() const { return _schema; }
   bool skipMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
 
 private:
