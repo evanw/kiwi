@@ -1,0 +1,20 @@
+[package]
+name = "quick-kiwi"
+description = "A pure Rust protobuf (de)serializer. Quick."
+version = "0.6.0"
+authors = ["Johann Tuffe <tafia973@gmail.com>"]
+keywords = ["protobuf", "parser"]
+license = "MIT"
+readme = "README.md" 
+documentation = "https://docs.rs/quick-protobuf"
+repository = "https://github.com/tafia/quick-protobuf"
+
+[dependencies]
+byteorder = "1.2.1"
+failure = "0.1.1"
+failure_derive = "0.1.1"
+capnp = "0.8.17"
+capnpc = "0.8.9"
+
+[dev-dependencies]
+lazy_static = "0.2.10"

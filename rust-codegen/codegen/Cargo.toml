@@ -1,0 +1,17 @@
+[package]
+name = "kiwi-rs"
+version = "0.3.1"
+description = "A converter from proto files into quick-protobuf compatible rust module"
+authors = ["Johann Tuffe <tafia973@gmail.com>"]
+keywords = ["protobuf", "parser", "quick-protobuf"]
+license = "MIT"
+readme = "README.md" 
+repository = "https://github.com/tafia/quick-protobuf"
+
+[dependencies]
+nom = "3.2.1"
+clap = "2.27.1"
+failure = "0.1.1"
+failure_derive = "0.1.1"
+heck = "0.3.0"
+
