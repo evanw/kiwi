@@ -1042,9 +1042,6 @@ impl Message {
             writeln!(w, "impl {} {{", self.name)?;
         }
         self.write_shallow_merge_operation(w, desc)?;
-        if desc.include_capnp {
-            self.write_write_message_capnp(w)?;
-        }
         writeln!(w, "}}")?;
         Ok(())
     }
@@ -1329,7 +1326,6 @@ pub struct Config {
     pub in_file: PathBuf,
     pub whitelist_file: Option<PathBuf>,
     pub out_file: PathBuf,
-    pub include_capnp: bool,
     pub single_module: bool,
     pub import_search_path: Vec<PathBuf>,
     pub no_output: bool,
@@ -1338,7 +1334,6 @@ pub struct Config {
 #[derive(Debug, Default, Clone)]
 pub struct FileDescriptor {
     pub import_paths: Vec<PathBuf>,
-    pub include_capnp: bool,
     pub package: String,
     pub messages: Vec<Message>,
     pub enums: Vec<Enumerator>,
@@ -1349,8 +1344,7 @@ impl FileDescriptor {
     pub fn write_proto(config: &Config) -> Result<()> {
         let mut desc = FileDescriptor::read_proto(
             &config.in_file,
-            &config.import_search_path,
-            config.include_capnp)?;
+            &config.import_search_path)?;
 
         if desc.messages.is_empty() && desc.enums.is_empty() {
             // There could had been unsupported structures, so bail early
@@ -1428,8 +1422,7 @@ impl FileDescriptor {
     /// Opens a proto file, reads it and returns raw parsed data
     pub fn read_proto(
         in_file: &Path,
-        import_search_path: &[PathBuf],
-        include_capnp: bool
+        import_search_path: &[PathBuf]
     ) -> Result<FileDescriptor> {
         let mut buf = Vec::new();
         {
@@ -1438,7 +1431,6 @@ impl FileDescriptor {
             reader.read_to_end(&mut buf)?;
         }
         let mut desc = file_descriptor(&buf).to_result().map_err(Error::Nom)?;
-        desc.include_capnp = include_capnp;
         for mut m in &mut desc.messages {
             if m.path.as_os_str().is_empty() {
                 m.path = in_file.clone().to_path_buf();
@@ -1546,15 +1538,6 @@ impl FileDescriptor {
             w,
             "use quick_kiwi::{{LazyMessageRead, MessageRead, MessageWrite, BytesReader, Writer, Result}};"
         )?;
-
-        if self.include_capnp {
-            writeln!(w, "use sync_capnp;")?;
-            writeln!(w, "use sync_capnp::*;")?;
-            writeln!(w, "use capnp;")?;
-            writeln!(w, "use capnp::traits::FromU16;")?;
-            writeln!(w, "use capnp::struct_list;")?;
-            writeln!(w, "use capnp::traits::OwnedStruct;")?;
-        }
         Ok(())
     }
 

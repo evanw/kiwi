@@ -66,15 +66,6 @@ fn run() -> Result<(), ::failure::Error> {
                 ),
         )
         .arg(
-            Arg::with_name("INCLUDE_CAPNP")
-                .required(false)
-                .long("include-capnp")
-                .short("c")
-                .help(
-                    "Include canpnp output"
-                ),
-        )
-        .arg(
             Arg::with_name("INPUT_WHITELIST")
                 .required(false)
                 .multiple(false)
@@ -131,7 +122,6 @@ fn run() -> Result<(), ::failure::Error> {
             in_file: in_file,
             whitelist_file: None,
             out_file: out_file,
-            include_capnp: matches.is_present("INCLUDE_CAPNP"),
             single_module: matches.is_present("SINGLE_MOD"),
             import_search_path: include_path.clone(),
             no_output: matches.is_present("NO_OUTPUT"),
