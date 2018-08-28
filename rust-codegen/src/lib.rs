@@ -9,7 +9,6 @@ extern crate byteorder;
 extern crate failure;
 #[macro_use]
 extern crate failure_derive;
-extern crate capnp;
 
 pub mod errors;
 pub mod message;
