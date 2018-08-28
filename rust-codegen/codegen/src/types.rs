@@ -38,7 +38,7 @@ pub enum Derives {
 
 impl Derives {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             // TODO: add serde json serialization option here
             Derives::Copy => "Copy".to_string(),
             Derives::Hash => "Hash, PartialOrd, Ord, Eq".to_string(),
@@ -1530,7 +1530,7 @@ impl FileDescriptor {
         if self.messages.iter().all(|m| m.is_unit()) {
             writeln!(
                 w,
-                "use quick_kiwi::{{BytesReader, Result, LazyMessageRead, MessageRead, MessageWrite, MessageCapnpWrite, MStructWrite, MStructCapnpWrite}};"
+                "use quick_kiwi::{{BytesReader, Result, LazyMessageRead, MessageRead, MessageWrite, MessageCapnpWrite}};"
             )?;
             return Ok(());
         }
@@ -1544,7 +1544,7 @@ impl FileDescriptor {
         }
         writeln!(
             w,
-            "use quick_kiwi::{{LazyMessageRead, MessageRead, MessageWrite, MStructWrite, BytesReader, Writer, Result}};"
+            "use quick_kiwi::{{LazyMessageRead, MessageRead, MessageWrite, BytesReader, Writer, Result}};"
         )?;
 
         if self.include_capnp {

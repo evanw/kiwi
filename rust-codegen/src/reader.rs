@@ -3,7 +3,7 @@
 //! There are actually two main *readers*
 //! - a `BytesReader` which parses data from a `&[u8]`
 //! - a `Reader` which is a wrapper on `BytesReader` which has its own buffer. It provides
-//! convenient functions to the user suche as `from_file`
+//! convenient functions to the user such as `from_file`
 //!
 //! It is advised, for convenience to directly work with a `Reader`.
 
@@ -11,17 +11,10 @@ use std::io::{self, Read};
 use std::path::Path;
 use std::fs::File;
 use std::f32;
+use std::borrow::Cow;
 
 use errors::{Error, Result};
 use message::{LazyMessageRead, MessageRead };
-
-const WIRE_TYPE_VARINT: u8 = 0;
-const WIRE_TYPE_FIXED64: u8 = 1;
-const WIRE_TYPE_LENGTH_DELIMITED: u8 = 2;
-const WIRE_TYPE_START_GROUP: u8 = 3;
-const WIRE_TYPE_END_GROUP: u8 = 4;
-const WIRE_TYPE_FIXED32: u8 = 5;
-
 
 /// A struct to read protocol binary files
 ///
@@ -153,7 +146,7 @@ impl BytesReader {
         let mut shift: u8 = 0;
         // let mut result: u32 = 0;
         loop {
-            let byte = self.read_u8(bytes).unwrap();
+            let byte = self.read_u8(bytes)?;
             // result |= ((byte & 127) as u32) << shift;
             shift += 7;
 
@@ -259,7 +252,7 @@ impl BytesReader {
     /// Skips len byte range and returns the byte slice it occupies
     #[inline(always)]
     fn skip_len<'a>(&mut self, bytes: &'a [u8]) -> Result<&'a [u8]> {
-        let len = self.read_uint32(bytes).unwrap() as usize;
+        let len = self.read_uint32(bytes)? as usize;
         let init_start = self.start;
         self.start = self.start + len;
         Ok(&bytes[init_start..self.start])
@@ -268,10 +261,17 @@ impl BytesReader {
     /// Reads bytes (Vec<u8>)
     #[inline]
     pub fn read_bytes<'a>(&mut self, bytes: &'a [u8]) -> Result<&'a [u8]> {
-        let len = self.read_uint32(bytes).unwrap() as usize;
+        let len = self.read_uint32(bytes)? as usize;
         let init_start = self.start;
-        self.start = self.start + len;
-        Ok(&bytes[init_start..self.start])
+        if len == 0 {
+            return Ok(&[]);
+        }
+        if self.start + len <= bytes.len() {
+            self.start = self.start + len;
+            Ok(&bytes[init_start..self.start])
+        } else {
+            Err(Error::Message("Read bytes len prefix is out of bounds".to_string()))
+        }
     }
 
     /// Skips bytes and returns the byte slice it occupies
@@ -282,12 +282,12 @@ impl BytesReader {
 
     /// Reads string (String)
     #[inline]
-    pub fn read_string<'a>(&mut self, bytes: &'a [u8]) -> Result<&'a str> {
+    pub fn read_string<'a>(&mut self, bytes: &'a [u8]) -> Result<Cow<'a, str>> {
         let start = self.start;
         while self.start < self.end {
             if bytes[self.start] == 0 {
                 self.start += 1;
-                return ::std::str::from_utf8(&bytes[start..self.start - 1]).map_err(|e| e.into())
+                return Ok(String::from_utf8_lossy(&bytes[start..self.start - 1]))
             }
 
             self.start += 1;
@@ -541,10 +541,139 @@ impl Reader {
     }
 }
 
-#[test]
-fn test_varint() {
-    let data = [0x96, 0x01];
-    let mut r = BytesReader::from_bytes(&data[..]);
-    assert_eq!(150, r.read_uint32(&data[..]).unwrap());
-    assert!(r.is_eof());
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::borrow::Cow;
+
+
+    #[test]
+    fn test_varint() {
+        let data = [0x96, 0x01];
+        let mut r = BytesReader::from_bytes(&data[..]);
+        assert_eq!(150, r.read_uint32(&data[..]).unwrap());
+        assert!(r.is_eof());
+    }
+
+    #[test]
+    fn read_bool() {
+        let try = |bytes| { BytesReader::from_bytes(bytes).read_bool(bytes) };
+        assert_eq!(try(&[]).is_ok(), false);
+        assert_eq!(try(&[0]).ok(), Some(false));
+        assert_eq!(try(&[1]).ok(), Some(true));
+        assert_eq!(try(&[2]).is_ok(), false);
+    }
+
+    // #[test]
+    // fn read_byte() {
+    //     let try = |bytes| { BytesReader::from_bytes(bytes).read_byte() };
+    //     assert_eq!(try(&[]), Err(()));
+    //     assert_eq!(try(&[0]), Ok(0));
+    //     assert_eq!(try(&[1]), Ok(1));
+    //     assert_eq!(try(&[254]), Ok(254));
+    //     assert_eq!(try(&[255]), Ok(255));
+    // }
+
+    #[test]
+    fn read_bytes() {
+        let try = |bytes| {BytesReader::from_bytes(bytes).read_bytes(bytes) };
+        assert_eq!(try(&[0]).ok(), Some(vec![].as_slice()));
+        assert_eq!(try(&[1]).is_ok(), false);
+        assert_eq!(try(&[0, 0]).ok(), Some(vec![].as_slice()));
+        assert_eq!(try(&[1, 0]).ok(), Some(vec![0].as_slice()));
+        assert_eq!(try(&[2, 0]).is_ok(), false);
+
+        let bytes = &[3, 1, 2, 3, 2, 4, 5];
+        let mut bb = BytesReader::from_bytes(bytes);
+        assert_eq!(bb.read_bytes(bytes).ok(), Some(vec![1, 2, 3].as_slice()));
+        assert_eq!(bb.read_bytes(bytes).ok(), Some(vec![4, 5].as_slice()));
+        assert_eq!(bb.read_bytes(bytes).is_ok(), false);
+    }
+
+    #[test]
+    fn read_int32() {
+        let try = |bytes| { BytesReader::from_bytes(bytes).read_int32(bytes).ok() };
+        assert_eq!(try(&[]), None);
+        assert_eq!(try(&[0]), Some(0));
+        assert_eq!(try(&[1]), Some(-1));
+        assert_eq!(try(&[2]), Some(1));
+        assert_eq!(try(&[3]), Some(-2));
+        assert_eq!(try(&[4]), Some(2));
+        assert_eq!(try(&[127]), Some(-64));
+        assert_eq!(try(&[128]), None);
+        assert_eq!(try(&[128, 0]), Some(0));
+        assert_eq!(try(&[128, 1]), Some(64));
+        assert_eq!(try(&[128, 2]), Some(128));
+        assert_eq!(try(&[129, 0]), Some(-1));
+        assert_eq!(try(&[129, 1]), Some(-65));
+        assert_eq!(try(&[129, 2]), Some(-129));
+        assert_eq!(try(&[253, 255, 7]), Some(-65535));
+        assert_eq!(try(&[254, 255, 7]), Some(65535));
+        assert_eq!(try(&[253, 255, 255, 255, 15]), Some(-2147483647));
+        assert_eq!(try(&[254, 255, 255, 255, 15]), Some(2147483647));
+        assert_eq!(try(&[255, 255, 255, 255, 15]), Some(-2147483648));
+    }
+
+    #[test]
+    fn read_uint32() {
+        let try = |bytes| { BytesReader::from_bytes(bytes).read_uint32(bytes).ok() };
+        assert_eq!(try(&[]), None);
+        assert_eq!(try(&[0]), Some(0));
+        assert_eq!(try(&[1]), Some(1));
+        assert_eq!(try(&[2]), Some(2));
+        assert_eq!(try(&[3]), Some(3));
+        assert_eq!(try(&[4]), Some(4));
+        assert_eq!(try(&[127]), Some(127));
+        assert_eq!(try(&[128]), None);
+        assert_eq!(try(&[128, 0]), Some(0));
+        assert_eq!(try(&[128, 1]), Some(128));
+        assert_eq!(try(&[128, 2]), Some(256));
+        assert_eq!(try(&[129, 0]), Some(1));
+        assert_eq!(try(&[129, 1]), Some(129));
+        assert_eq!(try(&[129, 2]), Some(257));
+        assert_eq!(try(&[253, 255, 7]), Some(131069));
+        assert_eq!(try(&[254, 255, 7]), Some(131070));
+        assert_eq!(try(&[253, 255, 255, 255, 15]), Some(4294967293));
+        assert_eq!(try(&[254, 255, 255, 255, 15]), Some(4294967294));
+        assert_eq!(try(&[255, 255, 255, 255, 15]), Some(4294967295));
+    }
+
+    #[test]
+    fn read_float() {
+        let try = |bytes| { BytesReader::from_bytes(bytes).read_float(bytes).ok() };
+        assert_eq!(try(&[]), None);
+        assert_eq!(try(&[0]), Some(0.0));
+        assert_eq!(try(&[133, 242, 210, 237]), Some(123.456));
+        assert_eq!(try(&[133, 243, 210, 237]), Some(-123.456));
+        assert_eq!(try(&[254, 255, 255, 255]), Some(f32::MIN));
+        assert_eq!(try(&[254, 254, 255, 255]), Some(f32::MAX));
+        assert_eq!(try(&[1, 1, 0, 0]), Some(-f32::MIN_POSITIVE));
+        assert_eq!(try(&[1, 0, 0, 0]), Some(f32::MIN_POSITIVE));
+        assert_eq!(try(&[255, 1, 0, 0]), Some(f32::NEG_INFINITY));
+        assert_eq!(try(&[255, 0, 0, 0]), Some(f32::INFINITY));
+        assert_eq!(try(&[255, 0, 0, 128]).map(|f| f.is_nan()), Some(true));
+    }
+
+    #[test]
+    fn read_string() {
+        let try = |bytes| { BytesReader::from_bytes(bytes).read_string(bytes).ok() };
+        assert_eq!(try(&[]), None);
+        assert_eq!(try(&[0]), Some(Cow::Borrowed("")));
+        assert_eq!(try(&[97]), None);
+        assert_eq!(try(&[97, 0]), Some(Cow::Borrowed("a")));
+        assert_eq!(try(&[97, 98, 99, 0]), Some(Cow::Borrowed("abc")));
+        assert_eq!(try(&[240, 159, 141, 149, 0]), Some(Cow::Borrowed("🍕")));
+        assert_eq!(try(&[97, 237, 160, 188, 99, 0]), Some(Cow::Owned("a���c".to_owned())));
+    }
+
+    #[test]
+    fn read_sequence() {
+        let bytes = &[0, 133, 242, 210, 237, 240, 159, 141, 149, 0, 149, 154, 239, 58];
+        let mut bb = BytesReader::from_bytes(bytes);
+        assert_eq!(bb.read_float(bytes).ok(), Some(0.0));
+        assert_eq!(bb.read_float(bytes).ok(), Some(123.456));
+        assert_eq!(bb.read_string(bytes).ok(), Some(Cow::Borrowed("🍕")));
+        assert_eq!(bb.read_uint32(bytes).ok(), Some(123456789));
+    }
 }
+

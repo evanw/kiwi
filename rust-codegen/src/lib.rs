@@ -17,6 +17,6 @@ pub mod reader;
 pub mod writer;
 
 pub use errors::{Result, Error};
-pub use message::{LazyMessageRead, MessageRead, MessageWrite, MStructWrite};
+pub use message::{LazyMessageRead, MessageRead, MessageWrite};
 pub use reader::{BytesReader, Reader};
 pub use writer::Writer;

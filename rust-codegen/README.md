@@ -11,7 +11,7 @@ Changes from quick-proto:
 * Drops support for ref types
 * Drops support for one of types
 * Adds support for kiwi packed struct types
-* Adds support for a lazyily parsed byte slice only representation
+* Adds support for a lazily parsed byte slice only representation
 * Adds support for skip_reading methods, skipping whatever operations that otherwise might deserialize instead of just slicing bytes
 * Adds support for individually de-serializing individual fields from the lazy representation
 * Adds support for conversion from the byte slice representation to an owned Vec representation

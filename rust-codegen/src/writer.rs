@@ -4,7 +4,7 @@ use std;
 use std::io::Write;
 
 use errors::Result;
-use message::{ MessageWrite, MStructWrite };
+use message::{ MessageWrite};
 
 use byteorder::WriteBytesExt;
 use byteorder::LittleEndian as LE;
@@ -174,12 +174,6 @@ impl<W: Write> Writer<W> {
     pub fn write_message<M: MessageWrite>(&mut self, m: &M) -> Result<()> {
         m.write_message(self)?;
         self.inner.write_u8(0).map_err(|e| e.into())
-    }
-
-    /// Writes a struct which implements `MessageWrite`
-    #[inline]
-    pub fn write_struct<M: MStructWrite>(&mut self, m: &M) -> Result<()> {
-        m.write_struct(self)
     }
 
     /// Writes another item prefixed with tag
