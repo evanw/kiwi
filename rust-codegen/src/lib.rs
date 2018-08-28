@@ -14,6 +14,7 @@ pub mod errors;
 pub mod message;
 pub mod reader;
 pub mod writer;
+pub mod schema;
 
 pub use errors::{Result, Error};
 pub use message::{LazyMessageRead, MessageRead, MessageWrite};

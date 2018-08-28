@@ -81,6 +81,13 @@ impl<W: Write> Writer<W> {
 
     /// Writes a tag, which represents both the field number and the wire type
     #[inline(always)]
+    pub fn write_byte(&mut self, byte: u8) -> Result<()> {
+        self.inner.write_u8(byte)?;
+        Ok(())
+    }
+
+    /// Writes a tag, which represents both the field number and the wire type
+    #[inline(always)]
     pub fn write_tag(&mut self, tag: u32) -> Result<()> {
         self.write_uint32(tag as u32)
     }
