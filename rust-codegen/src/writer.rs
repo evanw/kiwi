@@ -81,7 +81,7 @@ impl<W: Write> Writer<W> {
 
     /// Writes a tag, which represents both the field number and the wire type
     #[inline(always)]
-    pub fn write_byte(&mut self, byte: u8) -> Result<()> {
+    pub fn write_u8(&mut self, byte: u8) -> Result<()> {
         self.inner.write_u8(byte)?;
         Ok(())
     }
@@ -137,7 +137,6 @@ impl<W: Write> Writer<W> {
             (bits >> 16) as u8,
             (bits >> 24) as u8,
         ]).map_err(|e| e.into())
-
     }
 
     /// Writes a `bool` 1 = true, 0 = false

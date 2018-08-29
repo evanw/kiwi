@@ -67,9 +67,6 @@ pub struct BytesReader {
     pub end: usize,
 }
 
-// TODO: Caching lookup on BytesReader
-// TODO: Only on messages, structs, and vec
-
 impl BytesReader {
     /// Creates a new reader from chunks of data
     pub fn from_bytes(bytes: &[u8]) -> BytesReader {

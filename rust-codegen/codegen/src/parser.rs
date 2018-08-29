@@ -70,14 +70,6 @@ named!(
 );
 
 named!(
-    frequency<Frequency>,
-    alt!(tag!("optional") => { |_| Frequency::Optional } |
-         tag!("repeated") => { |_| Frequency::Repeated } |
-         tag!("required") => { |_| Frequency::Required } )
-);
-
-
-named!(
     frequency_array_format<Option<&[u8]>>,
     opt!(complete!(tag!("[]")))
 );
@@ -88,7 +80,8 @@ named!(
          tag!("uint") => { |_| FieldType::Uint32 } |
          tag!("bool") => { |_| FieldType::Bool } |
          tag!("string") => { |_| FieldType::String_ } |
-         tag!("byte[]") => { |_| FieldType::Bytes } |
+         tag!("byte[]") => { |_| FieldType::Bytes } | // Special case type
+         tag!("byte") => { |_| FieldType::Byte } |
          tag!("float") => { |_| FieldType::Float } |
          word => { |w| FieldType::ReferenceType(w) })
 );

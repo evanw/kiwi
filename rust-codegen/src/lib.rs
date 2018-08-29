@@ -7,6 +7,7 @@
 
 extern crate byteorder;
 extern crate failure;
+
 #[macro_use]
 extern crate failure_derive;
 

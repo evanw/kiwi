@@ -8,14 +8,7 @@ use parser::file_descriptor;
 use keywords::sanitize_keyword;
 
 use std::str;
-
 use heck::SnakeCase;
-// use heck::CamelCase;
-
-
-// TODO: could we code gen reference handling based on the Blob convention
-// all blobs could be content hased by the library + stored as such
-// they could be validated and re-encoded also by the library
 
 pub fn snake_case(s: &String) -> String {
     let s = str::replace(&s, "ID", "Id");
@@ -63,6 +56,7 @@ pub enum FieldType {
     Bool,
     String_,
     Bytes,
+    Byte,
     Enum(String),
     Message(String),
     ReferenceType(String),
@@ -82,6 +76,7 @@ impl FieldType {
             FieldType::Int32 => [Derives::Copy, Derives::Hash].iter().cloned().collect(),
             FieldType::Uint32 => [Derives::Copy, Derives::Hash].iter().cloned().collect(),
             FieldType::Bool => [Derives::Copy, Derives::Hash].iter().cloned().collect(),
+            FieldType::Byte => [Derives::Copy, Derives::Hash].iter().cloned().collect(),
             FieldType::Enum(_) => [Derives::Copy, Derives::Hash].iter().cloned().collect(),
             FieldType::Float => HashSet::new(),
             FieldType::String_ => [Derives::Hash].iter().cloned().collect(),
@@ -102,6 +97,7 @@ impl FieldType {
             FieldType::Enum(_) => "enum",
             FieldType::Float => "float",
             FieldType::String_ => "string",
+            FieldType::Byte => "u8",
             FieldType::Bytes => "bytes",
             FieldType::Message(_) => "message",
             FieldType::ReferenceType(_) => "ref"
@@ -163,25 +159,14 @@ impl FieldType {
         }
     }
 
-    fn rust_type(&self, desc: &FileDescriptor, include_lifetime: bool) -> Result<String> {
+    fn rust_type(&self, desc: &FileDescriptor) -> Result<String> {
         Ok(match *self {
             FieldType::Int32 => "i32".to_string(),
             FieldType::Uint32 => "u32".to_string(),
             FieldType::Float => "f32".to_string(),
-            FieldType::String_ => {
-                if include_lifetime {
-                    "Cow<'a, str>".to_string()
-                } else {
-                    "Cow<'a, str>".to_string()
-                }
-            },
-            FieldType::Bytes => {
-                if include_lifetime {
-                    "Cow<'a, [u8]>".to_string()
-                } else {
-                    "Cow<'a, [u8]>".to_string()
-                }
-            },
+            FieldType::Byte => "u8".to_string(),
+            FieldType::String_ => "Cow<'a, str>".to_string() ,
+            FieldType::Bytes => "Cow<'a, [u8]>".to_string() ,
             FieldType::Bool => "bool".to_string(),
             FieldType::Enum(ref e) => match self.find_enum(&desc.enums) {
                 Some(e) => format!("{}{}", e.get_modules(desc), e.name),
@@ -291,6 +276,7 @@ impl FieldType {
             FieldType::Int32
                 | FieldType::Uint32
                 | FieldType::Bool
+                | FieldType::Byte
                 | FieldType::Float => format!("write_{}(*{})", self.proto_type(), s),
 
             FieldType::String_ => format!("write_string(&**{})", s),
@@ -298,34 +284,6 @@ impl FieldType {
 
             FieldType::Message(_) if boxed => format!("write_message(&**{})", s),
             FieldType::Message(_) => format!("write_message({})", s),
-            FieldType::ReferenceType(_) => unreachable!("Should never occur."),
-        }
-    }
-
-
-    fn get_write_capnp(&self, s: &str, access: &str, boxed: bool) -> String {
-        let name = snake_case(&s.to_string());
-        match *self {
-            FieldType::Enum(ref e) if boxed => {
-                format!("set_{}(sync_capnp::{}::from_u16(u16::from({} as u8)).unwrap())", name, e, access)
-            },
-            FieldType::Enum(ref e) => {
-                format!("set_{}(sync_capnp::{}::from_u16(u16::from(*{} as u8)).unwrap())", name, e, access)
-            },
-            FieldType::Int32
-                | FieldType::Uint32
-                | FieldType::Bool
-                | FieldType::Float if boxed => format!("set_{}({})", name, access),
-
-            FieldType::Int32
-                | FieldType::Uint32
-                | FieldType::Bool
-                | FieldType::Float => format!("set_{}(*{})", name, access),
-            FieldType::String_ => format!("set_{}(&{})", name, access),
-            FieldType::Bytes => format!("set_{}(&{})", name, access),
-            FieldType::Message(_) => {
-                format!("self.write_message_capnp(&mut w.reborrow().get_{}().unwrap())", name)
-            },
             FieldType::ReferenceType(_) => unreachable!("Should never occur."),
         }
     }
@@ -381,7 +339,7 @@ impl Field {
 
     fn write_definition<W: Write>(&self, w: &mut W, desc: &FileDescriptor) -> Result<()> {
         write!(w, "    pub {}: ", self.name)?;
-        let rust_type = self.typ.rust_type(desc, true)?;
+        let rust_type = self.typ.rust_type(desc)?;
         match self.frequency {
             _ if self.boxed => writeln!(w, "Option<Box<{}>>,", rust_type)?,
             Frequency::Optional if self.default.is_some() => writeln!(w, "{},", rust_type)?,
@@ -482,7 +440,7 @@ impl Field {
     fn write_lazy_read_field_convert<W: Write>(&self, w: &mut W, desc: &FileDescriptor, exclude_lifetime: bool) -> Result<()> {
         let (_, val_cow) = self.typ.read_fn(desc)?;
         let name = &self.name;
-        let rust_type = self.typ.rust_type(desc, false)?;
+        let rust_type = self.typ.rust_type(desc)?;
         let fn_lifetime = if self.typ.has_lifetime(desc) && !exclude_lifetime { "<'a>" } else { "" };
         let self_lifetime = if self.typ.has_lifetime(desc) && !exclude_lifetime { "'a " } else { "" };
         writeln!(w, "")?;
@@ -541,7 +499,7 @@ impl Field {
     fn write_lazy_read_field_lazy<W: Write>(&self, w: &mut W, desc: &FileDescriptor, exclude_lifetime: bool) -> Result<()> {
         let (_, _, lazy_val_full) = self.typ.lazy_read_fn(desc)?;
         let name = &self.name;
-        let rust_type = self.typ.rust_type(desc, false)?;
+        let rust_type = self.typ.rust_type(desc)?;
         let fn_lifetime = if self.typ.has_lifetime(desc) && !exclude_lifetime { "<'a>" } else { "" };
         let self_lifetime = if self.typ.has_lifetime(desc) && !exclude_lifetime { "'a " } else { "" };
         writeln!(w, "")?;
@@ -668,51 +626,19 @@ impl Field {
         Ok(())
     }
 
-    fn write_write_capnp<W: Write>(&self, w: &mut W) -> Result<()> {
-        let write_capnp = self.typ.get_write_capnp(&self.name, &format!("self.{}", self.name), self.boxed);
-        writeln!(w, "        {{")?;
+    fn write_debug_struct_field<W: Write>(&self, w: &mut W) -> Result<()> {
         match self.frequency {
-            Frequency::Required => {
-                writeln!(w, "            w.{};", write_capnp)?;
-            }
-            Frequency::Optional => {
-                match self.typ {
-                    FieldType::Message(ref e) => {
-                        writeln!(w, "            if let Some(ref s) = self.{} {{ s.write_message_capnp(&mut w.reborrow().get_{}().unwrap()); }}",
-                                 self.name, snake_case(&self.name));
-                    }
-                    _ => {
-                        writeln!(
-                            w,
-                            "            if let Some(ref s) = self.{} {{ w.{}; }}",
-                            self.name,
-                            self.typ.get_write_capnp(&self.name, "s", self.boxed)
-                        )?;
-                    }
+            Frequency::Required => writeln!(w, "        out.field(\"{n}\", &self.{n});", n=self.name)? ,
+            Frequency::Optional => writeln!(w, "        if self.{n}.is_some() {{ out.field(\"{n}\", &self.{n}); }}", n=self.name)? ,
 
-                }
-            },
-            Frequency::Repeated => {
-                match self.typ {
-                    FieldType::Message(_) =>  {
-                        writeln!(w, "           let mut list = w.reborrow().init_{}(self.{}.len() as u32);", snake_case(&self.name), self.name)?;
-                        writeln!(w, "           for (idx, s) in self.{}.iter().enumerate() {{", self.name)?;
-                        writeln!(w, "               let mut item = list.reborrow().get(idx as u32);")?;
-                        writeln!(w, "               s.write_message_capnp(&mut item)?;")?;
-                        writeln!(w, "           }}")?;
-                    },
-                    _ => {
-                        writeln!(w, "           let mut list = w.reborrow().init_{}(self.{}.len() as u32);", snake_case(&self.name), self.name)?;
-                        writeln!(w, "           for (idx, s) in self.{}.iter().enumerate() {{", self.name)?;
-                        writeln!(w, "               let mut item = list.set(idx as u32, *s);")?;
-                        writeln!(w, "           }}")?;
-                    }
-                }
-            }
+            Frequency::Repeated => writeln!(w, "        if !self.{n}.is_empty()  {{ out.field(\"{n}\", &self.{n}); }}", n=self.name)?
         }
-        writeln!(w, "        }}")?;
         Ok(())
     }
+
+
+
+
 }
 
 
@@ -783,6 +709,8 @@ impl Message {
         writeln!(w, "")?;
         self.write_impl_message_general(w, desc)?;
         writeln!(w, "")?;
+        self.write_impl_message_debug(w, desc)?;
+        writeln!(w, "")?;
         self.write_definition_lazy(w, desc)?;
         writeln!(w, "")?;
         self.write_impl_message_lazy_read(w, desc)?;
@@ -822,7 +750,7 @@ impl Message {
     }
 
     fn write_definition<W: Write>(&self, w: &mut W, desc: &FileDescriptor) -> Result<()> {
-        write!(w, "#[derive(Debug, Default, PartialEq, Clone");
+        write!(w, "#[derive(Default, PartialEq, Clone");
         for derive in self.get_derives(desc) {
             write!(w, ", {}", derive.to_string());
         }
@@ -1046,6 +974,28 @@ impl Message {
         Ok(())
     }
 
+    fn write_impl_message_debug<W: Write>(&self, w: &mut W, desc: &FileDescriptor) -> Result<()> {
+        if self.is_unit() {
+            writeln!(w, "impl fmt::Debug for {} {{ }}", self.name)?;
+            return Ok(());
+        }
+
+        if self.has_lifetime(desc) {
+            writeln!(w, "impl<'a> fmt::Debug for {}<'a> {{", self.name)?;
+        } else {
+            writeln!(w, "impl<'a> fmt::Debug for {} {{", self.name)?;
+        }
+        writeln!(w, "    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {{")?;
+        writeln!(w, "        let mut out = fmt.debug_struct(\"{}\");", self.name)?;
+        for f in self.fields.iter().filter(|f| !f.deprecated) {
+            f.write_debug_struct_field(w)?;
+        }
+        writeln!(w, "        out.finish()")?;
+        writeln!(w, "    }}")?;
+        writeln!(w, "}}")?;
+        Ok(())
+    }
+
     fn write_write_message<W: Write>(&self, w: &mut W) -> Result<()> {
         writeln!(w, "    fn write_message<W: Write>(&self, w: &mut Writer<W>) -> Result<()> {{")?;
         for f in self.fields.iter().filter(|f| !f.deprecated) {
@@ -1158,20 +1108,6 @@ impl Message {
         for f in self.fields.iter().filter(|f| !f.deprecated) {
             f.write_shallow_merge_operation(w)?;
         }
-        writeln!(w, "    }}")?;
-        Ok(())
-    }
-
-    fn write_write_message_capnp<W: Write>(&self, w: &mut W) -> Result<()> {
-        writeln!(
-            w,
-            "    pub fn write_message_capnp(&self, w: &mut {}::Builder) -> Result<()> {{",
-            snake_case(&self.name)
-        )?;
-        for f in self.fields.iter().filter(|f| !f.deprecated) {
-            f.write_write_capnp(w)?;
-        }
-        writeln!(w, "        Ok(())")?;
         writeln!(w, "    }}")?;
         Ok(())
     }
@@ -1522,7 +1458,7 @@ impl FileDescriptor {
         if self.messages.iter().all(|m| m.is_unit()) {
             writeln!(
                 w,
-                "use quick_kiwi::{{BytesReader, Result, LazyMessageRead, MessageRead, MessageWrite, MessageCapnpWrite}};"
+                "use quick_kiwi::{{BytesReader, Result, LazyMessageRead, MessageRead, MessageWrite}};"
             )?;
             return Ok(());
         }
