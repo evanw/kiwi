@@ -1,5 +1,5 @@
 [package]
-name = "kiwi-rs"
+name = "kw-rs"
 version = "0.3.1"
 description = "A converter from kiwi files into quick-kiwi compatible rust module"
 authors = ["Colton Pierson <colton@coltonpierson.com>"]
