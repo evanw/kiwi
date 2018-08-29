@@ -1260,7 +1260,6 @@ impl Enumerator {
 
 pub struct Config {
     pub in_file: PathBuf,
-    pub whitelist_file: Option<PathBuf>,
     pub out_file: PathBuf,
     pub single_module: bool,
     pub import_search_path: Vec<PathBuf>,
