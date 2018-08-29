@@ -11,7 +11,7 @@ repository = "https://github.com/evanw/kiwi"
 [dependencies]
 nom = "3.2.1"
 clap = "2.27.1"
-failure = "0.1.1"
-failure_derive = "0.1.1"
+failure = "0.1.2"
+failure_derive = "0.1.2"
 heck = "0.3.0"
 
