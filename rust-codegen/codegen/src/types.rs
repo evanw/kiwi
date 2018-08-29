@@ -1134,25 +1134,6 @@ impl Message {
         Ok(())
     }
 
-    /// Searches for a matching message in all message
-    ///
-    /// If none is found, then it is an enum
-    fn set_reference_types(&mut self, desc: &FileDescriptor) {
-        for f in self.fields.iter_mut() {
-            if let FieldType::ReferenceType(m) = f.typ.clone() {
-                if f.typ.find_message(&desc.messages).is_some() {
-                    f.typ = FieldType::Message(m);
-                    continue;
-                }
-                if f.typ.find_enum(&desc.enums).is_some() {
-                    f.typ = FieldType::Enum(m);
-                    continue;
-                }
-                panic!("Missing type {:?}", f.typ);
-            }
-        }
-    }
-
     fn sanitize_names(&mut self) {
         sanitize_keyword(&mut self.name);
         sanitize_keyword(&mut self.package);
@@ -1260,7 +1241,6 @@ impl Enumerator {
 
 pub struct Config {
     pub in_file: PathBuf,
-    pub whitelist_file: Option<PathBuf>,
     pub out_file: PathBuf,
     pub single_module: bool,
     pub import_search_path: Vec<PathBuf>,
@@ -1286,9 +1266,6 @@ impl FileDescriptor {
             // There could had been unsupported structures, so bail early
             return Err(Error::EmptyRead);
         }
-
-        desc.set_reference_types();
-        // desc.set_enums();
 
         let mut leaf_messages = Vec::new();
         break_cycles(&mut desc.messages, &mut leaf_messages);
@@ -1402,15 +1379,6 @@ impl FileDescriptor {
         for e in &mut self.enums {
             e.sanitize_names();
         }
-    }
-
-    fn set_reference_types(&mut self) {
-        let copy = self.clone();
-
-        for m in &mut self.messages {
-            m.set_reference_types(&copy);
-        }
-
     }
 
     fn write<W: Write>(&self, w: &mut W, filename: &str) -> Result<()> {

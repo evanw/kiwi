@@ -120,7 +120,6 @@ fn run() -> Result<(), ::failure::Error> {
 
         let config = Config {
             in_file: in_file,
-            whitelist_file: None,
             out_file: out_file,
             single_module: matches.is_present("SINGLE_MOD"),
             import_search_path: include_path.clone(),
