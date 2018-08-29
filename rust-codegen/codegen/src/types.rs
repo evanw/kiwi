@@ -1460,6 +1460,7 @@ impl FileDescriptor {
             )?;
             return Ok(());
         }
+        writeln!(w, "use std::fmt;")?;
         writeln!(w, "use std::io::Write;")?;
         if self.messages.iter().any(|m| {
             m.fields
