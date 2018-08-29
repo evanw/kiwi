@@ -245,7 +245,7 @@ impl Schema {
 
             for def in &self.defs {
                 bb.write_string(def.name.as_str());
-                bb.write_byte(match def.kind {
+                bb.write_u8(match def.kind {
                     DefKind::Enum => DEF_ENUM,
                     DefKind::Struct => DEF_STRUCT,
                     DefKind::Message => DEF_MESSAGE,
