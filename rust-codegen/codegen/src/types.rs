@@ -850,12 +850,12 @@ impl Message {
 
     fn write_definition_accessor_trait<W: Write>(&self, w: &mut W, desc: &FileDescriptor) -> Result<()> {
         if self.is_unit() {
-            writeln!(w, "trait Access{} {{ }}", self.name)?;
+            writeln!(w, "pub trait Access{} {{ }}", self.name)?;
             return Ok(());
         }
 
         // Write resolved definition
-        writeln!(w, "trait Access{} {{", self.name)?;
+        writeln!(w, "pub trait Access{} {{", self.name)?;
         self.write_definition_accessor_trait_fields(w, desc, false);
         writeln!(w, "}}")?;
         writeln!(w, "")?;
@@ -1064,6 +1064,7 @@ impl Message {
     }
 
     fn write_impl_message_general<W: Write>(&self, w: &mut W, desc: &FileDescriptor) -> Result<()> {
+        writeln!(w, "#[allow(dead_code)]")?;
         if self.is_unit() {
             writeln!(w, "impl {} {{ }}", self.name)?;
             return Ok(());
@@ -1107,7 +1108,7 @@ impl Message {
             f.write_write(w)?;
         }
         if !self.is_struct {
-            writeln!(w, "         w.write_u8(0);");
+            writeln!(w, "         w.write_u8(0)?;");
         }
         writeln!(w, "        Ok(())")?;
         writeln!(w, "    }}")?;
@@ -1149,7 +1150,7 @@ impl Message {
             return Ok(());
         }
 
-        writeln!(w, "impl<'a> Access{n} for Lazy{n}<'a> {{", n=self.name)?;
+        writeln!(w, "impl<'b> Access{n} for Lazy{n}<'b> {{", n=self.name)?;
         self.write_convert_message_read_lazy_fields(w, desc, false)?;
         writeln!(w, "}}")?;
         Ok(())
@@ -1178,7 +1179,7 @@ impl Message {
             return Ok(());
         }
 
-        writeln!(w, "impl Access{n} for OwnedLazy{n} {{", n=self.name)?;
+        writeln!(w, "impl<'b> Access{n} for OwnedLazy{n} {{", n=self.name)?;
         self.write_convert_message_read_lazy_fields(w, desc, false)?;
         writeln!(w, "}}")?;
         Ok(())
@@ -1572,6 +1573,7 @@ impl FileDescriptor {
         writeln!(w, "#![allow(unused_imports)]")?;
         writeln!(w, "#![allow(unknown_lints)]")?;
         writeln!(w, "#![allow(clippy)]")?;
+        writeln!(w, "#![allow(dead_code)]")?;
 
         writeln!(w, "#![cfg_attr(rustfmt, rustfmt_skip)]")?;
         writeln!(w, "")?;
