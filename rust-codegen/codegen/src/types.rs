@@ -1016,6 +1016,9 @@ impl Message {
         for f in self.fields.iter().filter(|f| !f.deprecated) {
             f.write_write(w)?;
         }
+        if !self.is_struct {
+            writeln!(w, "         w.write_u8(0);");
+        }
         writeln!(w, "        Ok(())")?;
         writeln!(w, "    }}")?;
         Ok(())

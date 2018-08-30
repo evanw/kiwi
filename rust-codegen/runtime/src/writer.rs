@@ -179,7 +179,7 @@ impl<W: Write> Writer<W> {
     #[inline]
     pub fn write_message<M: MessageWrite>(&mut self, m: &M) -> Result<()> {
         m.write_message(self)?;
-        self.inner.write_u8(0).map_err(|e| e.into())
+        // self.inner.write_u8(0).map_err(|e| e.into())
     }
 
     /// Writes another item prefixed with tag
