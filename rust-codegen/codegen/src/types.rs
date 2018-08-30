@@ -779,6 +779,8 @@ impl Message {
         writeln!(w, "")?;
         self.write_impl_message_debug(w, desc)?;
         writeln!(w, "")?;
+        self.write_definition_accessor_trait(w, desc)?;
+        writeln!(w, "")?;
         self.write_definition_lazy(w, desc)?;
         writeln!(w, "")?;
         self.write_impl_message_lazy_read(w, desc)?;
