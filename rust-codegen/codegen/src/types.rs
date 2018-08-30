@@ -446,6 +446,33 @@ impl Field {
     }
 
 
+    /// We assume that all already sliced fields can be safely lazily sliced
+    /// because the methods used to derive the slices ran equivalent logic
+    fn write_definition_accessor_trait_lazy_primitive_field<W: Write>(&self, w: &mut W, desc: &FileDescriptor, exclude_lifetime: bool) -> Result<()> {
+        let (_, val_cow) = self.typ.read_fn(desc)?;
+        let name = &self.name;
+        let rust_type = self.typ.rust_type(desc)?;
+        let fn_lifetime = if self.typ.has_lifetime(desc) && !exclude_lifetime { "<'a>" } else { "" };
+        let self_lifetime = if self.typ.has_lifetime(desc) && !exclude_lifetime { "'a " } else { "" };
+        writeln!(w, "")?;
+        if self.struct_field {
+            match self.frequency {
+                Frequency::Repeated => writeln!(w, "    pub fn get_{}{}(&{}self) -> Result<Vec<{}>>;", name, fn_lifetime, self_lifetime, rust_type)? ,
+                Frequency::Required => writeln!(w, "    pub fn get_{}{}(&{}self) -> Result<{}>;", name, fn_lifetime, self_lifetime, rust_type)?,
+                Frequency::Optional => {}
+            }
+        } else {
+            match self.frequency {
+                Frequency::Repeated => writeln!(w, "    pub fn get_{}{}(&{}self) -> Result<Vec<{}>>;", name, fn_lifetime, self_lifetime, rust_type)?,
+                Frequency::Optional => writeln!(w, "    pub fn get_{}{}(&{}self) -> Result<Option<{}>>;", name, fn_lifetime, self_lifetime, rust_type)?,
+                Frequency::Required => {}
+            }
+        }
+        writeln!(w, "    }}")?;
+        Ok(())
+
+    }
+
     /// Builds methods for reading individual fields on Lazy structs
     ///
     /// We do not assert that all sub fields of nested children will also be valid
@@ -507,6 +534,32 @@ impl Field {
         writeln!(w, "    }}")?;
         Ok(())
     }
+
+
+    /// We assume that all already sliced fields can be safely lazily sliced
+    /// because the methods used to derive the slices ran equivalent logic
+    fn write_definition_accessor_trait_lazy_field<W: Write>(&self, w: &mut W, desc: &FileDescriptor, exclude_lifetime: bool) -> Result<()> {
+        let name = &self.name;
+        let rust_type = self.typ.rust_type(desc)?;
+        let fn_lifetime = if self.typ.has_lifetime(desc) && !exclude_lifetime { "<'a>" } else { "" };
+        let self_lifetime = if self.typ.has_lifetime(desc) && !exclude_lifetime { "'a " } else { "" };
+        writeln!(w, "")?;
+        if self.struct_field {
+            match self.frequency {
+                Frequency::Repeated => writeln!(w, "    pub fn get_lazy_{}{}(&{}self) -> Vec<Lazy{}>;", name, fn_lifetime, self_lifetime, rust_type)?,
+                Frequency::Required => writeln!(w, "    pub fn get_lazy_{}{}(&{}self) -> Lazy{};", name, fn_lifetime, self_lifetime, rust_type)?,
+                Frequency::Optional => {}
+            }
+        } else {
+            match self.frequency {
+                Frequency::Repeated => writeln!(w, "    pub fn get_lazy_{}{}(&{}self) -> Vec<Lazy{}>;", name, fn_lifetime, self_lifetime, rust_type)?,
+                Frequency::Optional => writeln!(w, "    pub fn get_lazy_{}{}(&{}self) -> Option<Lazy{}>;", name, fn_lifetime, self_lifetime, rust_type)?,
+                Frequency::Required => {}
+            }
+        }
+        Ok(())
+    }
+
 
     // TODO: from_lazy_reader_slice -> lazy_reader_get_slice
     /// We assume that all already sliced fields can be safely lazily sliced
@@ -575,16 +628,6 @@ impl Field {
             Frequency::Repeated => writeln!(w, "self.{}.iter().map(|d| d.to_vec()).collect(),", self.name)?,
             Frequency::Required => writeln!(w, "self.{}.to_vec(),", self.name)?,
             Frequency::Optional => writeln!(w, "self.{}.map(|d| d.to_vec()),", self.name)?,
-        }
-        Ok(())
-    }
-
-    fn write_convert_field_owned_to_lazy<W: Write>(&self, w: &mut W, _desc: &FileDescriptor) -> Result<()> {
-        write!(w, "            {}: ", self.name)?;
-        match self.frequency {
-            Frequency::Repeated => writeln!(w, "self.{}.iter().map(|d| &d[..]).collect(),", self.name)?,
-            Frequency::Required => writeln!(w, "&self.{}[..],", self.name)?,
-            Frequency::Optional => writeln!(w, "self.{}.map(|d| &d[..]),", self.name)?,
         }
         Ok(())
     }
@@ -742,9 +785,13 @@ impl Message {
         writeln!(w, "")?;
         self.write_impl_message_lazy_general(w, desc)?;
         writeln!(w, "")?;
+        self.write_impl_message_lazy_accessors(w, desc)?;
+        writeln!(w, "")?;
         self.write_definition_lazy_owned(w, desc)?;
         writeln!(w, "")?;
         self.write_impl_message_owned_lazy_general(w, desc)?;
+        writeln!(w, "")?;
+        self.write_impl_message_owned_lazy_accessors(w, desc)?;
 
         if !(self.messages.is_empty() && self.enums.is_empty()) {
             writeln!(w, "")?;
@@ -801,6 +848,40 @@ impl Message {
         Ok(())
     }
 
+    fn write_definition_accessor_trait<W: Write>(&self, w: &mut W, desc: &FileDescriptor) -> Result<()> {
+        writeln!(w, "#[derive(Debug, Default, PartialEq, Clone)]")?;
+        if self.is_unit() {
+            writeln!(w, "trait Access{} {{ }}", self.name)?;
+            return Ok(());
+        }
+
+        // Write resolved definition
+        writeln!(w, "trait Access{} {{", self.name)?;
+        self.write_definition_accessor_trait_fields(w, desc, false);
+        writeln!(w, "}}")?;
+        writeln!(w, "")?;
+
+        Ok(())
+    }
+
+    fn write_definition_accessor_trait_fields<W: Write>(
+        &self,
+        w: &mut W,
+        desc: &FileDescriptor,
+        exclude_lifetime: bool
+    ) -> Result<()> {
+        for f in self.fields.iter().filter(|f| !f.deprecated) {
+            f.write_definition_accessor_trait_lazy_primitive_field(w, desc, exclude_lifetime)?;
+
+            match f.typ.clone() {
+                FieldType::Message(_) => {
+                    f.write_definition_accessor_trait_lazy_field(w, desc, exclude_lifetime)?;
+                },
+                _ => {}
+            }
+        }
+        Ok(())
+    }
 
     fn write_definition_lazy<W: Write>(&self, w: &mut W, desc: &FileDescriptor) -> Result<()> {
         writeln!(w, "#[derive(Debug, Default, PartialEq, Clone)]")?;
@@ -1058,11 +1139,23 @@ impl Message {
 
         writeln!(w, "impl<'a> Lazy{}<'a> {{", self.name)?;
         self.write_convert_message_lazy_to_owned(w, desc)?;
-        writeln!(w, "")?;
+        writeln!(w, "}}")?;
+        Ok(())
+    }
+
+    fn write_impl_message_lazy_accessors<W: Write>(&self, w: &mut W, desc: &FileDescriptor) -> Result<()> {
+        writeln!(w, "#[allow(dead_code)]")?;
+        if self.is_unit() {
+            writeln!(w, "impl Access{n} for Lazy{n} {{ }}", n=self.name)?;
+            return Ok(());
+        }
+
+        writeln!(w, "impl<'a> Access{n} for Lazy{n}<'a> {{", n=self.name)?;
         self.write_convert_message_read_lazy_fields(w, desc, true)?;
         writeln!(w, "}}")?;
         Ok(())
     }
+
 
     fn write_impl_message_owned_lazy_general<W: Write>(&self, w: &mut W, desc: &FileDescriptor) -> Result<()> {
         writeln!(w, "#[allow(dead_code)]")?;
@@ -1076,8 +1169,19 @@ impl Message {
         writeln!(w, "")?;
         self.write_convert_owned_to_resolved(w, desc)?;
         writeln!(w, "")?;
-        self.write_convert_message_owned_to_lazy(w, desc)?;
-        writeln!(w, "")?;
+        self.write_convert_message_read_lazy_fields(w, desc, false)?;
+        writeln!(w, "}}")?;
+        Ok(())
+    }
+
+    fn write_impl_message_owned_lazy_accessors<W: Write>(&self, w: &mut W, desc: &FileDescriptor) -> Result<()> {
+        writeln!(w, "#[allow(dead_code)]")?;
+        if self.is_unit() {
+            writeln!(w, "impl Access{n} for OwnedLazy{n} {{ }}", n=self.name)?;
+            return Ok(());
+        }
+
+        writeln!(w, "impl Access{n} for OwnedLazy{n} {{", n=self.name)?;
         self.write_convert_message_read_lazy_fields(w, desc, false)?;
         writeln!(w, "}}")?;
         Ok(())
@@ -1106,17 +1210,6 @@ impl Message {
         writeln!(w, "        OwnedLazy{} {{", self.name)?;
         for f in self.fields.iter().filter(|f| !f.deprecated) {
             f.write_convert_field_lazy_to_owned(w, desc)?;
-        }
-        writeln!(w, "        }}")?;
-        writeln!(w, "    }}")?;
-        Ok(())
-    }
-
-    fn write_convert_message_owned_to_lazy<W: Write>(&self, w: &mut W, desc: &FileDescriptor) -> Result<()> {
-        writeln!(w, "    pub fn to_lazy_struct(&self) -> Lazy{} {{", self.name)?;
-        writeln!(w, "        Lazy{} {{", self.name)?;
-        for f in self.fields.iter().filter(|f| !f.deprecated) {
-            f.write_convert_field_owned_to_lazy(w, desc)?;
         }
         writeln!(w, "        }}")?;
         writeln!(w, "    }}")?;
