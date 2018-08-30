@@ -849,7 +849,6 @@ impl Message {
     }
 
     fn write_definition_accessor_trait<W: Write>(&self, w: &mut W, desc: &FileDescriptor) -> Result<()> {
-        writeln!(w, "#[derive(Debug, Default, PartialEq, Clone)]")?;
         if self.is_unit() {
             writeln!(w, "trait Access{} {{ }}", self.name)?;
             return Ok(());
