@@ -582,9 +582,9 @@ impl Field {
     fn write_convert_field_owned_to_lazy<W: Write>(&self, w: &mut W, _desc: &FileDescriptor) -> Result<()> {
         write!(w, "            {}: ", self.name)?;
         match self.frequency {
-            Frequency::Repeated => writeln!(w, "self.{}.iter().map(|d| &d).collect(),", self.name)?,
-            Frequency::Required => writeln!(w, "&self.{},", self.name)?,
-            Frequency::Optional => writeln!(w, "self.{}.map(|d| &d),", self.name)?,
+            Frequency::Repeated => writeln!(w, "self.{}.iter().map(|d| &d[..]).collect(),", self.name)?,
+            Frequency::Required => writeln!(w, "&self.{}[..],", self.name)?,
+            Frequency::Optional => writeln!(w, "self.{}.map(|d| &d[..]),", self.name)?,
         }
         Ok(())
     }
