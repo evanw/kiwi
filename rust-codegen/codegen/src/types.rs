@@ -513,49 +513,51 @@ impl Field {
         let fn_lifetime = if self.typ.has_lifetime(desc) && !exclude_lifetime { "<'a>" } else { "" };
         let self_lifetime = if self.typ.has_lifetime(desc) && !exclude_lifetime { "'a " } else { "" };
         writeln!(w, "")?;
+        // We assume that all already sliced fields can be safely lazily sliced
+        // because the methods used to derive the slices ran equivalent logic
         if self.struct_field {
             match self.frequency {
-                Frequency::Repeated => writeln!(w, "    pub fn get_lazy_{}{}(&{}self) -> Result<Vec<Lazy{}>>{{", name, fn_lifetime, self_lifetime, rust_type)?,
-                Frequency::Required => writeln!(w, "    pub fn get_lazy_{}{}(&{}self) -> Result<Lazy{}>{{", name, fn_lifetime, self_lifetime, rust_type)?,
+                Frequency::Repeated => writeln!(w, "    pub fn get_lazy_{}{}(&{}self) -> Vec<Lazy{}>{{", name, fn_lifetime, self_lifetime, rust_type)?,
+                Frequency::Required => writeln!(w, "    pub fn get_lazy_{}{}(&{}self) -> Lazy{}{{", name, fn_lifetime, self_lifetime, rust_type)?,
                 Frequency::Optional => {}
             }
             match self.frequency {
                 Frequency::Required => {
                     writeln!(w, "        let bytes = &self.{};", name)?;
                     writeln!(w, "        let mut r = BytesReader::from_bytes(bytes);")?;
-                    writeln!(w, "        return Ok({}?);", lazy_val_full)?;
+                    writeln!(w, "        {}.unwrap()", lazy_val_full)?;
                 }
                 Frequency::Repeated => {
                     writeln!(w, "        let mut result = Vec::with_capacity(self.{}.len());", name)?;
                     writeln!(w, "        for bytes in &self.{} {{", name)?;
                     writeln!(w, "            let mut r = BytesReader::from_bytes(bytes);")?;
-                    writeln!(w, "            result.push({}?)", lazy_val_full)?;
+                    writeln!(w, "            result.push({}.unwrap())", lazy_val_full)?;
                     writeln!(w, "        }}")?;
-                    writeln!(w, "        Ok(Some(result))")?;
+                    writeln!(w, "        result")?;
                 },
                 Frequency::Optional => {}
             }
         } else {
             match self.frequency {
-                Frequency::Repeated => writeln!(w, "    pub fn get_lazy_{}{}(&{}self) -> Result<Vec<Lazy{}>>{{", name, fn_lifetime, self_lifetime, rust_type)?,
-                Frequency::Optional => writeln!(w, "    pub fn get_lazy_{}{}(&{}self) -> Result<Option<Lazy{}>>{{", name, fn_lifetime, self_lifetime, rust_type)?,
+                Frequency::Repeated => writeln!(w, "    pub fn get_lazy_{}{}(&{}self) -> Vec<Lazy{}>{{", name, fn_lifetime, self_lifetime, rust_type)?,
+                Frequency::Optional => writeln!(w, "    pub fn get_lazy_{}{}(&{}self) -> Option<Lazy{}>{{", name, fn_lifetime, self_lifetime, rust_type)?,
                 Frequency::Required => {}
             }
             match self.frequency {
                 Frequency::Optional => {
                     writeln!(w, "        if let Some(ref bytes) = self.{} {{", name)?;
                     writeln!(w, "            let mut r = BytesReader::from_bytes(bytes);")?;
-                    writeln!(w, "            return Ok(Some({}?));", lazy_val_full)?;
+                    writeln!(w, "            return Some({}.unwrap());", lazy_val_full)?;
                     writeln!(w, "        }}")?;
-                    writeln!(w, "        Ok(None)")?;
+                    writeln!(w, "        None")?;
                 },
                 Frequency::Repeated => {
                     writeln!(w, "        let mut result = Vec::with_capacity(self.{}.len());", name)?;
                     writeln!(w, "        for bytes in &self.{} {{", name)?;
                     writeln!(w, "            let mut r = BytesReader::from_bytes(bytes);")?;
-                    writeln!(w, "            result.push({}?)", lazy_val_full)?;
+                    writeln!(w, "            result.push({}.unwrap())", lazy_val_full)?;
                     writeln!(w, "        }}")?;
-                    writeln!(w, "        Ok(result)")?;
+                    writeln!(w, "        result")?;
                 },
                 Frequency::Required => {}
             }
