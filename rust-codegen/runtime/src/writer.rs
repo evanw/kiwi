@@ -178,7 +178,8 @@ impl<W: Write> Writer<W> {
     /// Writes a message which implements `MessageWrite`
     #[inline]
     pub fn write_message<M: MessageWrite>(&mut self, m: &M) -> Result<()> {
-        m.write_message(self)?;
+        m.write_message(self)
+
         // self.inner.write_u8(0).map_err(|e| e.into())
     }
 
