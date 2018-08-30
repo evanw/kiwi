@@ -447,6 +447,9 @@ impl Field {
 
 
     /// Builds methods for reading individual fields on Lazy structs
+    ///
+    /// We do not assert that all sub fields of nested children will also be valid
+    /// so field conversion to fully resolved objects must still return Result
     fn write_lazy_read_field_convert<W: Write>(&self, w: &mut W, desc: &FileDescriptor, exclude_lifetime: bool) -> Result<()> {
         let (_, val_cow) = self.typ.read_fn(desc)?;
         let name = &self.name;
@@ -506,6 +509,8 @@ impl Field {
     }
 
     // TODO: from_lazy_reader_slice -> lazy_reader_get_slice
+    /// We assume that all already sliced fields can be safely lazily sliced
+    /// because the methods used to derive the slices ran equivalent logic
     fn write_lazy_read_field_lazy<W: Write>(&self, w: &mut W, desc: &FileDescriptor, exclude_lifetime: bool) -> Result<()> {
         let (_, _, lazy_val_full) = self.typ.lazy_read_fn(desc)?;
         let name = &self.name;
@@ -513,8 +518,6 @@ impl Field {
         let fn_lifetime = if self.typ.has_lifetime(desc) && !exclude_lifetime { "<'a>" } else { "" };
         let self_lifetime = if self.typ.has_lifetime(desc) && !exclude_lifetime { "'a " } else { "" };
         writeln!(w, "")?;
-        // We assume that all already sliced fields can be safely lazily sliced
-        // because the methods used to derive the slices ran equivalent logic
         if self.struct_field {
             match self.frequency {
                 Frequency::Repeated => writeln!(w, "    pub fn get_lazy_{}{}(&{}self) -> Vec<Lazy{}>{{", name, fn_lifetime, self_lifetime, rust_type)?,
