@@ -449,7 +449,6 @@ impl Field {
     /// We assume that all already sliced fields can be safely lazily sliced
     /// because the methods used to derive the slices ran equivalent logic
     fn write_definition_accessor_trait_lazy_primitive_field<W: Write>(&self, w: &mut W, desc: &FileDescriptor, exclude_lifetime: bool) -> Result<()> {
-        let (_, val_cow) = self.typ.read_fn(desc)?;
         let name = &self.name;
         let rust_type = self.typ.rust_type(desc)?;
         let fn_lifetime = if self.typ.has_lifetime(desc) && !exclude_lifetime { "<'a>" } else { "" };
@@ -468,7 +467,6 @@ impl Field {
                 Frequency::Required => {}
             }
         }
-        writeln!(w, "    }}")?;
         Ok(())
 
     }
