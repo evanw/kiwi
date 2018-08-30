@@ -23,7 +23,7 @@ pub enum Frequency {
     Required,
 }
 
-#[derive(Clone, PartialEq, Eq, Hash, Debug)]
+#[derive(PartialOrd, Ord, Clone, PartialEq, Eq, Hash, Debug)]
 pub enum Derives {
     Copy,
     Hash
