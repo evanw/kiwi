@@ -484,8 +484,8 @@ impl Field {
         writeln!(w, "")?;
         if self.struct_field {
             match self.frequency {
-                Frequency::Repeated => writeln!(w, "    pub fn get_{}{}(&{}self) -> Result<Vec<{}>>{{", name, fn_lifetime, self_lifetime, rust_type)? ,
-                Frequency::Required => writeln!(w, "    pub fn get_{}{}(&{}self) -> Result<{}>{{", name, fn_lifetime, self_lifetime, rust_type)?,
+                Frequency::Repeated => writeln!(w, "    fn get_{}{}(&{}self) -> Result<Vec<{}>>{{", name, fn_lifetime, self_lifetime, rust_type)? ,
+                Frequency::Required => writeln!(w, "    fn get_{}{}(&{}self) -> Result<{}>{{", name, fn_lifetime, self_lifetime, rust_type)?,
                 Frequency::Optional => {}
             }
             match self.frequency {
@@ -506,8 +506,8 @@ impl Field {
             }
         } else {
             match self.frequency {
-                Frequency::Repeated => writeln!(w, "    pub fn get_{}{}(&{}self) -> Result<Vec<{}>>{{", name, fn_lifetime, self_lifetime, rust_type)?,
-                Frequency::Optional => writeln!(w, "    pub fn get_{}{}(&{}self) -> Result<Option<{}>>{{", name, fn_lifetime, self_lifetime, rust_type)?,
+                Frequency::Repeated => writeln!(w, "    fn get_{}{}(&{}self) -> Result<Vec<{}>>{{", name, fn_lifetime, self_lifetime, rust_type)?,
+                Frequency::Optional => writeln!(w, "    fn get_{}{}(&{}self) -> Result<Option<{}>>{{", name, fn_lifetime, self_lifetime, rust_type)?,
                 Frequency::Required => {}
             }
             match self.frequency {
@@ -571,8 +571,8 @@ impl Field {
         writeln!(w, "")?;
         if self.struct_field {
             match self.frequency {
-                Frequency::Repeated => writeln!(w, "    pub fn get_lazy_{}{}(&{}self) -> Vec<Lazy{}>{{", name, fn_lifetime, self_lifetime, rust_type)?,
-                Frequency::Required => writeln!(w, "    pub fn get_lazy_{}{}(&{}self) -> Lazy{}{{", name, fn_lifetime, self_lifetime, rust_type)?,
+                Frequency::Repeated => writeln!(w, "    fn get_lazy_{}{}(&{}self) -> Vec<Lazy{}>{{", name, fn_lifetime, self_lifetime, rust_type)?,
+                Frequency::Required => writeln!(w, "    fn get_lazy_{}{}(&{}self) -> Lazy{}{{", name, fn_lifetime, self_lifetime, rust_type)?,
                 Frequency::Optional => {}
             }
             match self.frequency {
@@ -593,8 +593,8 @@ impl Field {
             }
         } else {
             match self.frequency {
-                Frequency::Repeated => writeln!(w, "    pub fn get_lazy_{}{}(&{}self) -> Vec<Lazy{}>{{", name, fn_lifetime, self_lifetime, rust_type)?,
-                Frequency::Optional => writeln!(w, "    pub fn get_lazy_{}{}(&{}self) -> Option<Lazy{}>{{", name, fn_lifetime, self_lifetime, rust_type)?,
+                Frequency::Repeated => writeln!(w, "    fn get_lazy_{}{}(&{}self) -> Vec<Lazy{}>{{", name, fn_lifetime, self_lifetime, rust_type)?,
+                Frequency::Optional => writeln!(w, "    fn get_lazy_{}{}(&{}self) -> Option<Lazy{}>{{", name, fn_lifetime, self_lifetime, rust_type)?,
                 Frequency::Required => {}
             }
             match self.frequency {
@@ -1167,8 +1167,6 @@ impl Message {
         self.write_owned_lazy_shallow_merge_operation(w, desc)?;
         writeln!(w, "")?;
         self.write_convert_owned_to_resolved(w, desc)?;
-        writeln!(w, "")?;
-        self.write_convert_message_read_lazy_fields(w, desc, false)?;
         writeln!(w, "}}")?;
         Ok(())
     }
