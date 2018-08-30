@@ -579,6 +579,16 @@ impl Field {
         Ok(())
     }
 
+    fn write_convert_field_owned_to_lazy<W: Write>(&self, w: &mut W, _desc: &FileDescriptor) -> Result<()> {
+        write!(w, "            {}: ", self.name)?;
+        match self.frequency {
+            Frequency::Repeated => writeln!(w, "self.{}.iter().map(|d| &d).collect(),", self.name)?,
+            Frequency::Required => writeln!(w, "&self.{},", self.name)?,
+            Frequency::Optional => writeln!(w, "self.{}.map(|d| &d),", self.name)?,
+        }
+        Ok(())
+    }
+
     fn write_convert_owned_to_resolved<W: Write>(&self, w: &mut W, _desc: &FileDescriptor) -> Result<()> {
         writeln!(w, "            {n}: self.get_{n}().unwrap(),", n=self.name)?;
         Ok(())
@@ -1066,6 +1076,8 @@ impl Message {
         writeln!(w, "")?;
         self.write_convert_owned_to_resolved(w, desc)?;
         writeln!(w, "")?;
+        self.write_convert_message_owned_to_lazy(w, desc)?;
+        writeln!(w, "")?;
         self.write_convert_message_read_lazy_fields(w, desc, false)?;
         writeln!(w, "}}")?;
         Ok(())
@@ -1094,6 +1106,17 @@ impl Message {
         writeln!(w, "        OwnedLazy{} {{", self.name)?;
         for f in self.fields.iter().filter(|f| !f.deprecated) {
             f.write_convert_field_lazy_to_owned(w, desc)?;
+        }
+        writeln!(w, "        }}")?;
+        writeln!(w, "    }}")?;
+        Ok(())
+    }
+
+    fn write_convert_message_owned_to_lazy<W: Write>(&self, w: &mut W, desc: &FileDescriptor) -> Result<()> {
+        writeln!(w, "    pub fn to_lazy_struct(&self) -> Lazy{} {{", self.name)?;
+        writeln!(w, "        Lazy{} {{", self.name)?;
+        for f in self.fields.iter().filter(|f| !f.deprecated) {
+            f.write_convert_field_owned_to_lazy(w, desc)?;
         }
         writeln!(w, "        }}")?;
         writeln!(w, "    }}")?;
