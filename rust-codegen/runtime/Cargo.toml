@@ -15,4 +15,5 @@ failure = "0.1.1"
 failure_derive = "0.1.1"
 
 [dev-dependencies]
+proptest = "0.8.6"
 lazy_static = "0.2.10"
