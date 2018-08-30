@@ -208,7 +208,12 @@ impl FieldType {
                 }
                 None => return Err(Error::MessageNotFound(msg.to_string())),
             },
-            FieldType::String_ | FieldType::Bytes => {
+            FieldType::String_ => {
+                let m = format!("r.read_{}(bytes)", self.proto_type());
+                let cow = format!("{}", m);
+                (m, cow)
+            },
+            FieldType::Bytes => {
                 let m = format!("r.read_{}(bytes)", self.proto_type());
                 let cow = format!("{}.map(Cow::Borrowed)", m);
                 (m, cow)
