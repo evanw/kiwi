@@ -1,7 +1,7 @@
 use std::io::{BufReader, BufWriter, Read, Write};
 use std::path::{Path, PathBuf};
 use std::fs::File;
-use std::collections::HashSet;
+use std::collections::BTreeSet;
 
 use errors::{Error, Result};
 use parser::file_descriptor;
@@ -71,19 +71,19 @@ impl FieldType {
         }
     }
 
-    fn get_derives(&self, desc: &FileDescriptor) -> HashSet<Derives> {
+    fn get_derives(&self, desc: &FileDescriptor) -> BTreeSet<Derives> {
         match *self {
             FieldType::Int32 => [Derives::Copy, Derives::Hash].iter().cloned().collect(),
             FieldType::Uint32 => [Derives::Copy, Derives::Hash].iter().cloned().collect(),
             FieldType::Bool => [Derives::Copy, Derives::Hash].iter().cloned().collect(),
             FieldType::Byte => [Derives::Copy, Derives::Hash].iter().cloned().collect(),
             FieldType::Enum(_) => [Derives::Copy, Derives::Hash].iter().cloned().collect(),
-            FieldType::Float => HashSet::new(),
+            FieldType::Float => BTreeSet::new(),
             FieldType::String_ => [Derives::Hash].iter().cloned().collect(),
             FieldType::Bytes => [Derives::Hash].iter().cloned().collect(),
             FieldType::Message(_) => match self.find_message(&desc.messages) {
                 Some(m) => m.get_derives(desc),
-                None => HashSet::new(),
+                None => BTreeSet::new(),
             },
             FieldType::ReferenceType(_) => [Derives::Copy, Derives::Hash].iter().cloned().collect()
         }
@@ -313,10 +313,10 @@ pub struct Field {
 
 impl Field {
 
-    fn get_derives(&self, desc: &FileDescriptor) -> HashSet<Derives> {
+    fn get_derives(&self, desc: &FileDescriptor) -> BTreeSet<Derives> {
         match self.frequency {
             Frequency::Repeated => {
-                let nocopy: HashSet<Derives> = [Derives::Hash]
+                let nocopy: BTreeSet<Derives> = [Derives::Hash]
                     .iter().cloned().collect();
                 nocopy.intersection(&self.typ.get_derives(desc))
                     .map(|x| x.clone())
@@ -682,11 +682,11 @@ impl Message {
             .all(|f| f.is_leaf(leaf_messages) || f.deprecated)
     }
 
-    fn get_derives(&self, desc: &FileDescriptor) -> HashSet<Derives> {
+    fn get_derives(&self, desc: &FileDescriptor) -> BTreeSet<Derives> {
         if self.has_lifetime(desc) {
-            HashSet::new()
+            BTreeSet::new()
         } else {
-            let all: HashSet<Derives> = [Derives::Copy, Derives::Hash]
+            let all: BTreeSet<Derives> = [Derives::Copy, Derives::Hash]
                 .iter().cloned().collect();
 
             self.fields
