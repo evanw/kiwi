@@ -1178,8 +1178,8 @@ impl Message {
             return Ok(());
         }
 
-        writeln!(w, "impl Access{n} for OwnedLazy{n} {{", n=self.name)?;
-        self.write_convert_message_read_lazy_fields(w, desc, false)?;
+        writeln!(w, "impl<'a> Access{n} for OwnedLazy{n} {{", n=self.name)?;
+        self.write_convert_message_read_lazy_fields(w, desc, true)?;
         writeln!(w, "}}")?;
         Ok(())
     }
