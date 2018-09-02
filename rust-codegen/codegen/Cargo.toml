@@ -1,0 +1,17 @@
+[package]
+name = "kw-rs"
+version = "0.3.1"
+description = "A converter from kiwi files into quick-kiwi compatible rust module"
+authors = ["Colton Pierson <colton@coltonpierson.com>"]
+keywords = ["kiwi", "parser", "quick-kiwi"]
+license = "MIT"
+readme = "README.md" 
+repository = "https://github.com/evanw/kiwi"
+
+[dependencies]
+nom = "3.2.1"
+clap = "2.27.1"
+failure = "0.1.2"
+failure_derive = "0.1.2"
+heck = "0.3.0"
+
