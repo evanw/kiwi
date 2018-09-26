@@ -889,7 +889,7 @@ impl<'a> Value<'a> {
 
   /// A convenience method to extract a field out of an [Object](#variant.Object).
   /// Returns `None` for other value kinds or if the field isn't present.
-  pub fn get(&self, name: &str) -> Option<&Value> {
+  pub fn get(&self, name: &str) -> Option<&Value<'a>> {
     match *self {
       Value::Object(_, ref fields) => fields.get(name),
       _ => None,
@@ -1296,4 +1296,42 @@ fn value_encode_and_decode() {
   assert_eq!(Value::decode(&schema, 2, &[7, 100, 0]), Ok(Value::Object("Message", insert(HashMap::new(), "v_enum", Value::Enum("Enum", "FOO")))));
   assert_eq!(Value::decode(&schema, 2, &[8, 0, 0, 0]), Ok(Value::Object("Message", insert(HashMap::new(), "v_struct", empty_struct.clone()))));
   assert_eq!(Value::decode(&schema, 2, &[9, 0, 0]), Ok(Value::Object("Message", insert(HashMap::new(), "v_message", Value::Object("Message", HashMap::new())))));
+}
+
+// This test case is for a bug where rustc was silently inferring an incorrect
+// lifetime. This is the specific error:
+//
+//   error[E0597]: `value` does not live long enough
+//       --> src/lib.rs:1307:40
+//        |
+//   1307 |     if let Some(Value::Array(items)) = value.get("items") {
+//        |                                        ^^^^^ borrowed value does not live long enough
+//   ...
+//   1312 |   }
+//        |   - borrowed value only lives until here
+//        |
+//        = note: borrowed value must be valid for the static lifetime...
+//
+// The fix was to change this:
+//
+//   pub fn get(&self, name: &str) -> Option<&Value> {
+//
+// Into this:
+//
+//   pub fn get(&self, name: &str) -> Option<&Value<'a>> {
+//
+#[test]
+fn value_get_bad_lifetime_inference_in_rustc() {
+  fn use_item<'a>(_: &'a Value<'static>) {
+  }
+
+  fn use_items(value: Value<'static>) {
+    if let Some(Value::Array(items)) = value.get("items") {
+      for item in items {
+        use_item(item);
+      }
+    }
+  }
+
+  use_items(Value::Array(vec![]));
 }
