@@ -83,7 +83,7 @@ export namespace test {
   }
 
   export interface ByteArrayStruct {
-    x: number[];
+    x: Uint8Array;
   }
 
   export interface IntArrayStruct {
@@ -112,7 +112,7 @@ export namespace test {
   }
 
   export interface ByteArrayMessage {
-    x?: number[];
+    x?: Uint8Array;
   }
 
   export interface IntArrayMessage {
@@ -171,7 +171,7 @@ export namespace test {
     e2: number;
     f2: string;
     a3: boolean[];
-    b3: number[];
+    b3: Uint8Array;
     c3: number[];
     d3: number[];
     e3: number[];

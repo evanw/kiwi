@@ -111,7 +111,7 @@ def main {
     check(-3.1415927410125732, [128, 183, 31, 146])
     check(Math.INFINITY, [255, 0, 0, 0])
     check(-Math.INFINITY, [255, 1, 0, 0])
-    check(Math.NAN, [255, 1, 0, 128])
+    check(Math.NAN, [255, 0, 0, 128])
   })
 
   it("struct string", => {

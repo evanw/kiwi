@@ -2412,7 +2412,10 @@ var kiwi = exports || kiwi || {}, exports;
             default: type = field.type; break;
           }
 
-          lines.push(indent + '  ' + field.name + (definition.kind === 'MESSAGE' ? '?' : '') + ': ' + type + (field.isArray ? '[]' : '') + ';');
+          if (field.type === 'byte' && field.isArray) type = 'Uint8Array';
+          else if (field.isArray) type += '[]';
+
+          lines.push(indent + '  ' + field.name + (definition.kind === 'MESSAGE' ? '?' : '') + ': ' + type + ';');
         }
 
         lines.push(indent + '}');
