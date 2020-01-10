@@ -1,6 +1,6 @@
 {
   "name": "kiwi-schema",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A schema-based binary format for efficiently encoding trees of data",
   "license": "MIT",
   "main": "kiwi.js",
@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "tsc -d",
-    "prepublishOnly": "tsc -d"
+    "prepublishOnly": "tsc -d && ls *.ts | grep -v d.ts > .npmignore && echo tsconfig.json >> .npmignore"
   },
   "repository": {
     "type": "git",
