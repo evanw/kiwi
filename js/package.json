@@ -1,6 +1,6 @@
 {
   "name": "kiwi-schema",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "A schema-based binary format for efficiently encoding trees of data",
   "license": "MIT",
   "main": "kiwi.js",
@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@types/node": "13.1.6",
-    "mocha": "2.4.5",
+    "mocha": "7.0.0",
     "skew": "0.7.43",
     "typescript": "3.7.4"
   }
