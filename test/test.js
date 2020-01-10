@@ -3,7 +3,7 @@ var kiwi = require(__dirname + '/../js/kiwi');
 var fs = require('fs');
 
 var schemaText = fs.readFileSync(__dirname + '/test-schema.kiwi', 'utf8');
-var schema = kiwi.compileSchema(schemaText);
+var schema = kiwi.compileSchema(kiwi.parseSchema(schemaText));
 
 it('struct bool', function() {
   function check(i, o) {
@@ -260,7 +260,7 @@ it('recursive message', function() {
 });
 
 it('binary schema', function() {
-  var compiledSchema = kiwi.compileSchema(kiwi.encodeBinarySchema(schemaText));
+  var compiledSchema = kiwi.compileSchema(kiwi.decodeBinarySchema(kiwi.encodeBinarySchema(kiwi.parseSchema(schemaText))));
 
   function check(message) {
     assert.deepEqual(
@@ -274,7 +274,7 @@ it('binary schema', function() {
 });
 
 var largeSchemaText = fs.readFileSync(__dirname + '/test-schema-large.kiwi', 'utf8');
-var largeSchema = kiwi.compileSchema(largeSchemaText);
+var largeSchema = kiwi.compileSchema(kiwi.parseSchema(largeSchemaText));
 
 it('struct with many fields', function() {
   var object = {};

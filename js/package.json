@@ -1,6 +1,6 @@
 {
   "name": "kiwi-schema",
-  "version": "0.3.15",
+  "version": "0.4.0",
   "description": "A schema-based binary format for efficiently encoding trees of data",
   "license": "MIT",
   "main": "kiwi.js",
@@ -8,12 +8,18 @@
   "bin": {
     "kiwic": "cli.js"
   },
+  "scripts": {
+    "build": "tsc -d",
+    "prepublishOnly": "tsc -d"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/evanw/kiwi.git"
   },
   "devDependencies": {
+    "@types/node": "13.1.6",
     "mocha": "2.4.5",
-    "skew": "0.7.43"
+    "skew": "0.7.43",
+    "typescript": "3.7.4"
   }
 }

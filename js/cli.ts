@@ -1,9 +1,18 @@
 #!/usr/bin/env node
 
-var kiwi = require('./kiwi');
-var fs = require('fs');
+import * as fs from 'fs';
+import { compileSchema, compileSchemaJS } from './js';
+import { compileSchemaTypeScript } from './ts';
+import { Schema } from './schema';
+import { compileSchemaCPP } from './cpp';
+import { compileSchemaCallbackCPP } from './cpp-callback';
+import { compileSchemaSkew } from './skew';
+import { encodeBinarySchema, decodeBinarySchema } from './binary';
+import { prettyPrintSchema } from './printer';
+import { parseSchema } from './parser';
+import { ByteBuffer } from './bb';
 
-var usage = [
+let usage = [
   '',
   'Usage: kiwic [OPTIONS]',
   '',
@@ -34,7 +43,7 @@ var usage = [
   '',
 ].join('\n');
 
-function writeFileString(path, text) {
+function writeFileString(path: string, text: string): void {
   try {
     if (fs.readFileSync(path, 'utf8') === text) {
       return; // Avoid unnecessarily modifying files
@@ -44,7 +53,7 @@ function writeFileString(path, text) {
   fs.writeFileSync(path, text);
 }
 
-function writeFileBuffer(path, buffer) {
+function writeFileBuffer(path: string, buffer: Buffer): void {
   try {
     if (fs.readFileSync(path).equals(buffer)) {
       return; // Avoid unnecessarily modifying files
@@ -54,8 +63,8 @@ function writeFileBuffer(path, buffer) {
   fs.writeFileSync(path, buffer);
 }
 
-var main = exports.main = function(args) {
-  var flags = {
+export function main(args: string[]): number {
+  let flags: {[flag: string]: string | null} = {
     '--schema': null,
     '--js': null,
     '--ts': null,
@@ -70,8 +79,8 @@ var main = exports.main = function(args) {
   };
 
   // Parse flags
-  for (var i = 0; i < args.length; i++) {
-    var arg = args[i];
+  for (let i = 0; i < args.length; i++) {
+    let arg = args[i];
 
     if (arg === '-h' || arg === '--help' || arg[0] !== '-') {
       console.log(usage);
@@ -97,59 +106,61 @@ var main = exports.main = function(args) {
   }
 
   // Try loading the schema
-  var content = fs.readFileSync(flags['--schema']);
-  var isText = Array.prototype.indexOf.call(content, 0) === -1; // Binary schemas will have null-terminated strings
-  content = isText ? content.toString() : new Uint8Array(content);
+  let buffer = fs.readFileSync(flags['--schema']);
+  let isText = Array.prototype.indexOf.call(buffer, 0) === -1; // Binary schemas will have null-terminated strings
+  let content = isText ? buffer.toString() : new Uint8Array(buffer);
 
   // Try parsing the schema, pretty-print errors on failure
   try {
-    var schema = kiwi.compileSchema(content);
+    var parsed: Schema = typeof content === 'string' ? parseSchema(content) : decodeBinarySchema(new ByteBuffer(content));
+    var compiled = compileSchema(parsed);
   } catch (e) {
     if (e && e.message && 'line' in e || 'column' in e) {
-      e.message =
-        flags['--schema'] + ':' + e.line + ':' + e.column + ': error: ' + e.message + '\n' +
-        content.split('\n')[e.line - 1] + '\n' + new Array(e.column).join(' ') + '^';
+      e.message = flags['--schema'] + ':' + e.line + ':' + e.column + ': error: ' + e.message;
+      if (typeof content === 'string') {
+        e.message += '\n' + content.split('\n')[e.line - 1] + '\n' + new Array(e.column).join(' ') + '^';
+      }
     }
     throw e;
   }
 
   // Validate the root type
-  var rootType = flags['--root-type'];
-  if (rootType !== null && !(('encode' + rootType) in schema && ('decode' + rootType) in schema)) {
+  let rootType = flags['--root-type'];
+  if (rootType !== null && !(('encode' + rootType) in compiled && ('decode' + rootType) in compiled)) {
     throw new Error('Invalid root type: ' + JSON.stringify(rootType));
   }
 
   // Generate JavaScript code
   if (flags['--js'] !== null) {
-    writeFileString(flags['--js'], kiwi.compileSchemaJS(content));
+    writeFileString(flags['--js'], compileSchemaJS(parsed));
   }
 
   // Generate JavaScript code
   if (flags['--ts'] !== null) {
-    writeFileString(flags['--ts'], kiwi.compileSchemaTypeScript(content));
+    writeFileString(flags['--ts'], compileSchemaTypeScript(parsed));
   }
 
   // Generate C++ code
   if (flags['--cpp'] !== null) {
-    writeFileString(flags['--cpp'], kiwi.compileSchemaCPP(content));
+    writeFileString(flags['--cpp'], compileSchemaCPP(parsed));
   }
   if (flags['--callback-cpp'] !== null) {
-    writeFileString(flags['--callback-cpp'], kiwi.compileSchemaCallbackCPP(content));
+    writeFileString(flags['--callback-cpp'], compileSchemaCallbackCPP(parsed));
   }
 
   // Generate Skew code
   if (flags['--skew'] !== null) {
-    writeFileString(flags['--skew'], kiwi.compileSchemaSkew(content));
+    writeFileString(flags['--skew'], compileSchemaSkew(parsed));
   }
 
   // Generate a binary schema file
   if (flags['--binary'] !== null) {
-    writeFileBuffer(flags['--binary'], Buffer(kiwi.encodeBinarySchema(content)));
+    writeFileBuffer(flags['--binary'], Buffer.from(encodeBinarySchema(parsed)));
   }
 
   // Generate a textual schema file
   if (flags['--text'] !== null) {
-    writeFileBuffer(flags['--text'], Buffer(kiwi.prettyPrintSchema(content)));
+    writeFileBuffer(flags['--text'], Buffer.from(prettyPrintSchema(parsed)));
   }
 
   // Convert a binary file to JSON
@@ -157,7 +168,8 @@ var main = exports.main = function(args) {
     if (rootType === null) {
       throw new Error('Missing flag --root-type when using --to-json');
     }
-    writeFileString(flags['--to-json'] + '.json', JSON.stringify(schema['decode' + rootType](new Uint8Array(fs.readFileSync(flags['--to-json']))), null, 2) + '\n');
+    writeFileString(flags['--to-json'] + '.json', JSON.stringify((compiled as any)['decode' + rootType](
+      new Uint8Array(fs.readFileSync(flags['--to-json']))), null, 2) + '\n');
   }
 
   // Convert a JSON file to binary
@@ -165,17 +177,18 @@ var main = exports.main = function(args) {
     if (rootType === null) {
       throw new Error('Missing flag --root-type when using --from-json');
     }
-    writeFileBuffer(flags['--from-json'] + '.bin', Buffer(schema['encode' + rootType](JSON.parse(fs.readFileSync(flags['--from-json'], 'utf8')))));
+    writeFileBuffer(flags['--from-json'] + '.bin', Buffer.from((compiled as any)['encode' + rootType](
+      JSON.parse(fs.readFileSync(flags['--from-json'], 'utf8')))));
   }
 
   return 0;
 };
 
 if (require.main === module) {
-  try {
+  // try {
     process.exit(main(process.argv.slice(2)));
-  } catch (e) {
-    process.stderr.write((e && e.message || e) + '\n');
-    process.exit(1);
-  }
+  // } catch (e) {
+  //   process.stderr.write((e && e.message || e) + '\n');
+  //   process.exit(1);
+  // }
 }
