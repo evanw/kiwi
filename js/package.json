@@ -10,7 +10,9 @@
   },
   "scripts": {
     "build": "tsc -d",
-    "prepublishOnly": "tsc -d && ls *.ts | grep -v d.ts > .npmignore && echo tsconfig.json >> .npmignore"
+    "browser": "tsc -p tsconfig.browser.json && rollup browser.js --format=iife --name=kiwi | terser -cm > browser.min.js",
+    "typedefs": "tsc -d && ls *.ts | grep -v d.ts > .npmignore && echo tsconfig.json >> .npmignore",
+    "prepublishOnly": "npm run browser && npm run typedefs"
   },
   "repository": {
     "type": "git",
@@ -19,7 +21,9 @@
   "devDependencies": {
     "@types/node": "13.1.6",
     "mocha": "7.0.0",
+    "rollup": "1.31.0",
     "skew": "0.7.43",
+    "terser": "4.6.3",
     "typescript": "3.7.4"
   }
 }
