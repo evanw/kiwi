@@ -11,6 +11,7 @@ import { encodeBinarySchema, decodeBinarySchema } from './binary';
 import { prettyPrintSchema } from './printer';
 import { parseSchema } from './parser';
 import { ByteBuffer } from './bb';
+import { compileSchemaSkewTypes } from './skew-types';
 
 let usage = [
   '',
@@ -25,6 +26,7 @@ let usage = [
   '  --cpp [PATH]          Generate C++ code (tree style).',
   '  --callback-cpp [PATH] Generate C++ code (callback style).',
   '  --skew [PATH]         Generate Skew code.',
+  '  --skew-types [PATH]   Generate Skew type definitions.',
   '  --text [PATH]         Encode the schema as text.',
   '  --binary [PATH]       Encode the schema as a binary blob.',
   '  --root-type [NAME]    Set the root type for JSON.',
@@ -71,6 +73,7 @@ export function main(args: string[]): number {
     '--cpp': null,
     '--callback-cpp': null,
     '--skew': null,
+    '--skew-types': null,
     '--binary': null,
     '--text': null,
     '--root-type': null,
@@ -151,6 +154,9 @@ export function main(args: string[]): number {
   // Generate Skew code
   if (flags['--skew'] !== null) {
     writeFileString(flags['--skew'], compileSchemaSkew(parsed));
+  }
+  if (flags['--skew-types'] !== null) {
+    writeFileString(flags['--skew-types'], compileSchemaSkewTypes(parsed));
   }
 
   // Generate a binary schema file

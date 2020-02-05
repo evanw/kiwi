@@ -1,0 +1,610 @@
+namespace test {
+  type Enum : string {
+    @alwaysinline
+    def toString string { return self as string }
+  }
+  namespace Enum {
+    const A = "A" as Enum
+    const B = "B" as Enum
+  }
+
+  @import
+  class EnumStruct {
+    var x Enum
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+    var y List<Enum>
+    @alwaysinline
+    def has_y bool { return self.y != dynamic.void(0) }
+  }
+
+  namespace EnumStruct {
+    @alwaysinline
+    def new EnumStruct { return {} as dynamic }
+  }
+
+  @import
+  class BoolStruct {
+    var x bool
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace BoolStruct {
+    @alwaysinline
+    def new BoolStruct { return {} as dynamic }
+  }
+
+  @import
+  class ByteStruct {
+    var x int
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace ByteStruct {
+    @alwaysinline
+    def new ByteStruct { return {} as dynamic }
+  }
+
+  @import
+  class IntStruct {
+    var x int
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace IntStruct {
+    @alwaysinline
+    def new IntStruct { return {} as dynamic }
+  }
+
+  @import
+  class UintStruct {
+    var x int
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace UintStruct {
+    @alwaysinline
+    def new UintStruct { return {} as dynamic }
+  }
+
+  @import
+  class FloatStruct {
+    var x double
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace FloatStruct {
+    @alwaysinline
+    def new FloatStruct { return {} as dynamic }
+  }
+
+  @import
+  class StringStruct {
+    var x string
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace StringStruct {
+    @alwaysinline
+    def new StringStruct { return {} as dynamic }
+  }
+
+  @import
+  class CompoundStruct {
+    var x int
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+    var y int
+    @alwaysinline
+    def has_y bool { return self.y != dynamic.void(0) }
+  }
+
+  namespace CompoundStruct {
+    @alwaysinline
+    def new CompoundStruct { return {} as dynamic }
+  }
+
+  @import
+  class NestedStruct {
+    var a int
+    @alwaysinline
+    def has_a bool { return self.a != dynamic.void(0) }
+    var b CompoundStruct
+    @alwaysinline
+    def has_b bool { return self.b != dynamic.void(0) }
+    var c int
+    @alwaysinline
+    def has_c bool { return self.c != dynamic.void(0) }
+  }
+
+  namespace NestedStruct {
+    @alwaysinline
+    def new NestedStruct { return {} as dynamic }
+  }
+
+  @import
+  class BoolMessage {
+    var x bool
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace BoolMessage {
+    @alwaysinline
+    def new BoolMessage { return {} as dynamic }
+  }
+
+  @import
+  class ByteMessage {
+    var x int
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace ByteMessage {
+    @alwaysinline
+    def new ByteMessage { return {} as dynamic }
+  }
+
+  @import
+  class IntMessage {
+    var x int
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace IntMessage {
+    @alwaysinline
+    def new IntMessage { return {} as dynamic }
+  }
+
+  @import
+  class UintMessage {
+    var x int
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace UintMessage {
+    @alwaysinline
+    def new UintMessage { return {} as dynamic }
+  }
+
+  @import
+  class FloatMessage {
+    var x double
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace FloatMessage {
+    @alwaysinline
+    def new FloatMessage { return {} as dynamic }
+  }
+
+  @import
+  class StringMessage {
+    var x string
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace StringMessage {
+    @alwaysinline
+    def new StringMessage { return {} as dynamic }
+  }
+
+  @import
+  class CompoundMessage {
+    var x int
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+    var y int
+    @alwaysinline
+    def has_y bool { return self.y != dynamic.void(0) }
+  }
+
+  namespace CompoundMessage {
+    @alwaysinline
+    def new CompoundMessage { return {} as dynamic }
+  }
+
+  @import
+  class NestedMessage {
+    var a int
+    @alwaysinline
+    def has_a bool { return self.a != dynamic.void(0) }
+    var b CompoundMessage
+    @alwaysinline
+    def has_b bool { return self.b != dynamic.void(0) }
+    var c int
+    @alwaysinline
+    def has_c bool { return self.c != dynamic.void(0) }
+  }
+
+  namespace NestedMessage {
+    @alwaysinline
+    def new NestedMessage { return {} as dynamic }
+  }
+
+  @import
+  class BoolArrayStruct {
+    var x List<bool>
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace BoolArrayStruct {
+    @alwaysinline
+    def new BoolArrayStruct { return {} as dynamic }
+  }
+
+  @import
+  class ByteArrayStruct {
+    var x Uint8Array
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace ByteArrayStruct {
+    @alwaysinline
+    def new ByteArrayStruct { return {} as dynamic }
+  }
+
+  @import
+  class IntArrayStruct {
+    var x List<int>
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace IntArrayStruct {
+    @alwaysinline
+    def new IntArrayStruct { return {} as dynamic }
+  }
+
+  @import
+  class UintArrayStruct {
+    var x List<int>
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace UintArrayStruct {
+    @alwaysinline
+    def new UintArrayStruct { return {} as dynamic }
+  }
+
+  @import
+  class FloatArrayStruct {
+    var x List<double>
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace FloatArrayStruct {
+    @alwaysinline
+    def new FloatArrayStruct { return {} as dynamic }
+  }
+
+  @import
+  class StringArrayStruct {
+    var x List<string>
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace StringArrayStruct {
+    @alwaysinline
+    def new StringArrayStruct { return {} as dynamic }
+  }
+
+  @import
+  class CompoundArrayStruct {
+    var x List<int>
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+    var y List<int>
+    @alwaysinline
+    def has_y bool { return self.y != dynamic.void(0) }
+  }
+
+  namespace CompoundArrayStruct {
+    @alwaysinline
+    def new CompoundArrayStruct { return {} as dynamic }
+  }
+
+  @import
+  class BoolArrayMessage {
+    var x List<bool>
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace BoolArrayMessage {
+    @alwaysinline
+    def new BoolArrayMessage { return {} as dynamic }
+  }
+
+  @import
+  class ByteArrayMessage {
+    var x Uint8Array
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace ByteArrayMessage {
+    @alwaysinline
+    def new ByteArrayMessage { return {} as dynamic }
+  }
+
+  @import
+  class IntArrayMessage {
+    var x List<int>
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace IntArrayMessage {
+    @alwaysinline
+    def new IntArrayMessage { return {} as dynamic }
+  }
+
+  @import
+  class UintArrayMessage {
+    var x List<int>
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace UintArrayMessage {
+    @alwaysinline
+    def new UintArrayMessage { return {} as dynamic }
+  }
+
+  @import
+  class FloatArrayMessage {
+    var x List<double>
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace FloatArrayMessage {
+    @alwaysinline
+    def new FloatArrayMessage { return {} as dynamic }
+  }
+
+  @import
+  class StringArrayMessage {
+    var x List<string>
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace StringArrayMessage {
+    @alwaysinline
+    def new StringArrayMessage { return {} as dynamic }
+  }
+
+  @import
+  class CompoundArrayMessage {
+    var x List<int>
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+    var y List<int>
+    @alwaysinline
+    def has_y bool { return self.y != dynamic.void(0) }
+  }
+
+  namespace CompoundArrayMessage {
+    @alwaysinline
+    def new CompoundArrayMessage { return {} as dynamic }
+  }
+
+  @import
+  class RecursiveMessage {
+    var x RecursiveMessage
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace RecursiveMessage {
+    @alwaysinline
+    def new RecursiveMessage { return {} as dynamic }
+  }
+
+  @import
+  class NonDeprecatedMessage {
+    var a int
+    @alwaysinline
+    def has_a bool { return self.a != dynamic.void(0) }
+    var b int
+    @alwaysinline
+    def has_b bool { return self.b != dynamic.void(0) }
+    var c List<int>
+    @alwaysinline
+    def has_c bool { return self.c != dynamic.void(0) }
+    var d List<int>
+    @alwaysinline
+    def has_d bool { return self.d != dynamic.void(0) }
+    var e ByteStruct
+    @alwaysinline
+    def has_e bool { return self.e != dynamic.void(0) }
+    var f ByteStruct
+    @alwaysinline
+    def has_f bool { return self.f != dynamic.void(0) }
+    var g int
+    @alwaysinline
+    def has_g bool { return self.g != dynamic.void(0) }
+  }
+
+  namespace NonDeprecatedMessage {
+    @alwaysinline
+    def new NonDeprecatedMessage { return {} as dynamic }
+  }
+
+  @import
+  class DeprecatedMessage {
+    var a int
+    @alwaysinline
+    def has_a bool { return self.a != dynamic.void(0) }
+    var c List<int>
+    @alwaysinline
+    def has_c bool { return self.c != dynamic.void(0) }
+    var e ByteStruct
+    @alwaysinline
+    def has_e bool { return self.e != dynamic.void(0) }
+    var g int
+    @alwaysinline
+    def has_g bool { return self.g != dynamic.void(0) }
+  }
+
+  namespace DeprecatedMessage {
+    @alwaysinline
+    def new DeprecatedMessage { return {} as dynamic }
+  }
+
+  @import
+  class SortedStruct {
+    var a1 bool
+    @alwaysinline
+    def has_a1 bool { return self.a1 != dynamic.void(0) }
+    var b1 int
+    @alwaysinline
+    def has_b1 bool { return self.b1 != dynamic.void(0) }
+    var c1 int
+    @alwaysinline
+    def has_c1 bool { return self.c1 != dynamic.void(0) }
+    var d1 int
+    @alwaysinline
+    def has_d1 bool { return self.d1 != dynamic.void(0) }
+    var e1 double
+    @alwaysinline
+    def has_e1 bool { return self.e1 != dynamic.void(0) }
+    var f1 string
+    @alwaysinline
+    def has_f1 bool { return self.f1 != dynamic.void(0) }
+    var a2 bool
+    @alwaysinline
+    def has_a2 bool { return self.a2 != dynamic.void(0) }
+    var b2 int
+    @alwaysinline
+    def has_b2 bool { return self.b2 != dynamic.void(0) }
+    var c2 int
+    @alwaysinline
+    def has_c2 bool { return self.c2 != dynamic.void(0) }
+    var d2 int
+    @alwaysinline
+    def has_d2 bool { return self.d2 != dynamic.void(0) }
+    var e2 double
+    @alwaysinline
+    def has_e2 bool { return self.e2 != dynamic.void(0) }
+    var f2 string
+    @alwaysinline
+    def has_f2 bool { return self.f2 != dynamic.void(0) }
+    var a3 List<bool>
+    @alwaysinline
+    def has_a3 bool { return self.a3 != dynamic.void(0) }
+    var b3 Uint8Array
+    @alwaysinline
+    def has_b3 bool { return self.b3 != dynamic.void(0) }
+    var c3 List<int>
+    @alwaysinline
+    def has_c3 bool { return self.c3 != dynamic.void(0) }
+    var d3 List<int>
+    @alwaysinline
+    def has_d3 bool { return self.d3 != dynamic.void(0) }
+    var e3 List<double>
+    @alwaysinline
+    def has_e3 bool { return self.e3 != dynamic.void(0) }
+    var f3 List<string>
+    @alwaysinline
+    def has_f3 bool { return self.f3 != dynamic.void(0) }
+  }
+
+  namespace SortedStruct {
+    @alwaysinline
+    def new SortedStruct { return {} as dynamic }
+  }
+
+  @import
+  class Schema {
+    const Enum dynamic
+    def encodeEnumStruct(message EnumStruct) Uint8Array
+    def decodeEnumStruct(buffer Uint8Array) EnumStruct
+    def encodeBoolStruct(message BoolStruct) Uint8Array
+    def decodeBoolStruct(buffer Uint8Array) BoolStruct
+    def encodeByteStruct(message ByteStruct) Uint8Array
+    def decodeByteStruct(buffer Uint8Array) ByteStruct
+    def encodeIntStruct(message IntStruct) Uint8Array
+    def decodeIntStruct(buffer Uint8Array) IntStruct
+    def encodeUintStruct(message UintStruct) Uint8Array
+    def decodeUintStruct(buffer Uint8Array) UintStruct
+    def encodeFloatStruct(message FloatStruct) Uint8Array
+    def decodeFloatStruct(buffer Uint8Array) FloatStruct
+    def encodeStringStruct(message StringStruct) Uint8Array
+    def decodeStringStruct(buffer Uint8Array) StringStruct
+    def encodeCompoundStruct(message CompoundStruct) Uint8Array
+    def decodeCompoundStruct(buffer Uint8Array) CompoundStruct
+    def encodeNestedStruct(message NestedStruct) Uint8Array
+    def decodeNestedStruct(buffer Uint8Array) NestedStruct
+    def encodeBoolMessage(message BoolMessage) Uint8Array
+    def decodeBoolMessage(buffer Uint8Array) BoolMessage
+    def encodeByteMessage(message ByteMessage) Uint8Array
+    def decodeByteMessage(buffer Uint8Array) ByteMessage
+    def encodeIntMessage(message IntMessage) Uint8Array
+    def decodeIntMessage(buffer Uint8Array) IntMessage
+    def encodeUintMessage(message UintMessage) Uint8Array
+    def decodeUintMessage(buffer Uint8Array) UintMessage
+    def encodeFloatMessage(message FloatMessage) Uint8Array
+    def decodeFloatMessage(buffer Uint8Array) FloatMessage
+    def encodeStringMessage(message StringMessage) Uint8Array
+    def decodeStringMessage(buffer Uint8Array) StringMessage
+    def encodeCompoundMessage(message CompoundMessage) Uint8Array
+    def decodeCompoundMessage(buffer Uint8Array) CompoundMessage
+    def encodeNestedMessage(message NestedMessage) Uint8Array
+    def decodeNestedMessage(buffer Uint8Array) NestedMessage
+    def encodeBoolArrayStruct(message BoolArrayStruct) Uint8Array
+    def decodeBoolArrayStruct(buffer Uint8Array) BoolArrayStruct
+    def encodeByteArrayStruct(message ByteArrayStruct) Uint8Array
+    def decodeByteArrayStruct(buffer Uint8Array) ByteArrayStruct
+    def encodeIntArrayStruct(message IntArrayStruct) Uint8Array
+    def decodeIntArrayStruct(buffer Uint8Array) IntArrayStruct
+    def encodeUintArrayStruct(message UintArrayStruct) Uint8Array
+    def decodeUintArrayStruct(buffer Uint8Array) UintArrayStruct
+    def encodeFloatArrayStruct(message FloatArrayStruct) Uint8Array
+    def decodeFloatArrayStruct(buffer Uint8Array) FloatArrayStruct
+    def encodeStringArrayStruct(message StringArrayStruct) Uint8Array
+    def decodeStringArrayStruct(buffer Uint8Array) StringArrayStruct
+    def encodeCompoundArrayStruct(message CompoundArrayStruct) Uint8Array
+    def decodeCompoundArrayStruct(buffer Uint8Array) CompoundArrayStruct
+    def encodeBoolArrayMessage(message BoolArrayMessage) Uint8Array
+    def decodeBoolArrayMessage(buffer Uint8Array) BoolArrayMessage
+    def encodeByteArrayMessage(message ByteArrayMessage) Uint8Array
+    def decodeByteArrayMessage(buffer Uint8Array) ByteArrayMessage
+    def encodeIntArrayMessage(message IntArrayMessage) Uint8Array
+    def decodeIntArrayMessage(buffer Uint8Array) IntArrayMessage
+    def encodeUintArrayMessage(message UintArrayMessage) Uint8Array
+    def decodeUintArrayMessage(buffer Uint8Array) UintArrayMessage
+    def encodeFloatArrayMessage(message FloatArrayMessage) Uint8Array
+    def decodeFloatArrayMessage(buffer Uint8Array) FloatArrayMessage
+    def encodeStringArrayMessage(message StringArrayMessage) Uint8Array
+    def decodeStringArrayMessage(buffer Uint8Array) StringArrayMessage
+    def encodeCompoundArrayMessage(message CompoundArrayMessage) Uint8Array
+    def decodeCompoundArrayMessage(buffer Uint8Array) CompoundArrayMessage
+    def encodeRecursiveMessage(message RecursiveMessage) Uint8Array
+    def decodeRecursiveMessage(buffer Uint8Array) RecursiveMessage
+    def encodeNonDeprecatedMessage(message NonDeprecatedMessage) Uint8Array
+    def decodeNonDeprecatedMessage(buffer Uint8Array) NonDeprecatedMessage
+    def encodeDeprecatedMessage(message DeprecatedMessage) Uint8Array
+    def decodeDeprecatedMessage(buffer Uint8Array) DeprecatedMessage
+    def encodeSortedStruct(message SortedStruct) Uint8Array
+    def decodeSortedStruct(buffer Uint8Array) SortedStruct
+  }
+}

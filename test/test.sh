@@ -29,6 +29,8 @@ node ../js/cli.js --schema ./test-schema-large.kiwi --skew ./test-schema-large.s
 node ../js/node_modules/mocha/bin/mocha temp.js
 rm temp.js
 
+node ../js/cli.js --schema ./test-schema.kiwi --skew-types ./test-schema-types.sk
+
 node ../js/cli.js --schema ./test-schema.kiwi --binary ./test-schema.bkiwi
 node ../js/cli.js --schema ./test-schema.bkiwi --text ./test-schema-round-trip.kiwi
 rm ./test-schema.bkiwi
