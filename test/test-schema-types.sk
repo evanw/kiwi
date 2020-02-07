@@ -4,8 +4,10 @@ namespace test {
     def toString string { return self as string }
   }
   namespace Enum {
-    const A = "A" as Enum
-    const B = "B" as Enum
+    @alwaysinline
+    def A Enum { return "A" as Enum }
+    @alwaysinline
+    def B Enum { return "B" as Enum }
   }
 
   @import

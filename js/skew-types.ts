@@ -23,8 +23,9 @@ export function compileSchemaSkewTypes(schema: Schema): string {
         lines.push(indent + 'namespace ' + definition.name + ' {');
 
         for (var j = 0; j < definition.fields.length; j++) {
-          lines.push(indent + '  const ' + definition.fields[j].name + ' = ' +
-            JSON.stringify(definition.fields[j].name) + ' as ' + definition.name);
+          lines.push(indent + '  @alwaysinline')
+          lines.push(indent + '  def ' + definition.fields[j].name + ' ' + definition.name +
+            ' { return ' + JSON.stringify(definition.fields[j].name) + ' as ' + definition.name + ' }');
         }
 
         lines.push(indent + '}');
