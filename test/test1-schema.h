@@ -7,9 +7,9 @@ namespace test1 {
 
 class BinarySchema {
 public:
-  bool parse(kiwi::ByteBuffer &bb);
+  template <typename InputByteBuffer> bool parse(InputByteBuffer &bb);
   const kiwi::BinarySchema &underlyingSchema() const { return _schema; }
-  bool skipMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
+  template <typename InputByteBuffer> bool skipMessageField(InputByteBuffer &bb, uint32_t id) const;
 
 private:
   kiwi::BinarySchema _schema;
@@ -31,8 +31,8 @@ public:
   const float *b() const;
   void set_b(const float &value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -52,8 +52,8 @@ public:
   const Struct *y() const;
   void set_y(Struct *value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -64,13 +64,13 @@ private:
 #endif
 #ifdef IMPLEMENT_SCHEMA_H
 
-bool BinarySchema::parse(kiwi::ByteBuffer &bb) {
+template <typename InputByteBuffer> bool BinarySchema::parse(InputByteBuffer &bb) {
   if (!_schema.parse(bb)) return false;
   _schema.findDefinition("Message", _indexMessage);
   return true;
 }
 
-bool BinarySchema::skipMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+template <typename InputByteBuffer> bool BinarySchema::skipMessageField(InputByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexMessage, id);
 }
 
@@ -98,7 +98,7 @@ void Struct::set_b(const float &value) {
   _flags[0] |= 2; _data_b = value;
 }
 
-bool Struct::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool Struct::encode(OutputByteBuffer &_bb) {
   if (a() == nullptr) return false;
   _bb.writeVarFloat(_data_a);
   if (b() == nullptr) return false;
@@ -106,7 +106,7 @@ bool Struct::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool Struct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool Struct::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   if (!_bb.readVarFloat(_data_a)) return false;
   set_a(_data_a);
   if (!_bb.readVarFloat(_data_b)) return false;
@@ -138,7 +138,7 @@ void Message::set_y(Struct *value) {
   _data_y = value;
 }
 
-bool Message::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool Message::encode(OutputByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
     _bb.writeVarInt(_data_x);
@@ -151,7 +151,7 @@ bool Message::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool Message::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool Message::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   while (true) {
     uint32_t _type;
     if (!_bb.readVarUint(_type)) return false;

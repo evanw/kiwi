@@ -7,26 +7,26 @@ namespace test {
 
 class BinarySchema {
 public:
-  bool parse(kiwi::ByteBuffer &bb);
+  template <typename InputByteBuffer> bool parse(InputByteBuffer &bb);
   const kiwi::BinarySchema &underlyingSchema() const { return _schema; }
-  bool skipBoolMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
-  bool skipByteMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
-  bool skipIntMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
-  bool skipUintMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
-  bool skipFloatMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
-  bool skipStringMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
-  bool skipCompoundMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
-  bool skipNestedMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
-  bool skipBoolArrayMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
-  bool skipByteArrayMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
-  bool skipIntArrayMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
-  bool skipUintArrayMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
-  bool skipFloatArrayMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
-  bool skipStringArrayMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
-  bool skipCompoundArrayMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
-  bool skipRecursiveMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
-  bool skipNonDeprecatedMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
-  bool skipDeprecatedMessageField(kiwi::ByteBuffer &bb, uint32_t id) const;
+  template <typename InputByteBuffer> bool skipBoolMessageField(InputByteBuffer &bb, uint32_t id) const;
+  template <typename InputByteBuffer> bool skipByteMessageField(InputByteBuffer &bb, uint32_t id) const;
+  template <typename InputByteBuffer> bool skipIntMessageField(InputByteBuffer &bb, uint32_t id) const;
+  template <typename InputByteBuffer> bool skipUintMessageField(InputByteBuffer &bb, uint32_t id) const;
+  template <typename InputByteBuffer> bool skipFloatMessageField(InputByteBuffer &bb, uint32_t id) const;
+  template <typename InputByteBuffer> bool skipStringMessageField(InputByteBuffer &bb, uint32_t id) const;
+  template <typename InputByteBuffer> bool skipCompoundMessageField(InputByteBuffer &bb, uint32_t id) const;
+  template <typename InputByteBuffer> bool skipNestedMessageField(InputByteBuffer &bb, uint32_t id) const;
+  template <typename InputByteBuffer> bool skipBoolArrayMessageField(InputByteBuffer &bb, uint32_t id) const;
+  template <typename InputByteBuffer> bool skipByteArrayMessageField(InputByteBuffer &bb, uint32_t id) const;
+  template <typename InputByteBuffer> bool skipIntArrayMessageField(InputByteBuffer &bb, uint32_t id) const;
+  template <typename InputByteBuffer> bool skipUintArrayMessageField(InputByteBuffer &bb, uint32_t id) const;
+  template <typename InputByteBuffer> bool skipFloatArrayMessageField(InputByteBuffer &bb, uint32_t id) const;
+  template <typename InputByteBuffer> bool skipStringArrayMessageField(InputByteBuffer &bb, uint32_t id) const;
+  template <typename InputByteBuffer> bool skipCompoundArrayMessageField(InputByteBuffer &bb, uint32_t id) const;
+  template <typename InputByteBuffer> bool skipRecursiveMessageField(InputByteBuffer &bb, uint32_t id) const;
+  template <typename InputByteBuffer> bool skipNonDeprecatedMessageField(InputByteBuffer &bb, uint32_t id) const;
+  template <typename InputByteBuffer> bool skipDeprecatedMessageField(InputByteBuffer &bb, uint32_t id) const;
 
 private:
   kiwi::BinarySchema _schema;
@@ -103,8 +103,8 @@ public:
   const kiwi::Array<Enum> *y() const;
   kiwi::Array<Enum> &set_y(kiwi::MemoryPool &pool, uint32_t count);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -120,8 +120,8 @@ public:
   const bool *x() const;
   void set_x(const bool &value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -136,8 +136,8 @@ public:
   const uint8_t *x() const;
   void set_x(const uint8_t &value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -152,8 +152,8 @@ public:
   const int32_t *x() const;
   void set_x(const int32_t &value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -168,8 +168,8 @@ public:
   const uint32_t *x() const;
   void set_x(const uint32_t &value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -184,8 +184,8 @@ public:
   const float *x() const;
   void set_x(const float &value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -200,8 +200,8 @@ public:
   const kiwi::String *x() const;
   void set_x(const kiwi::String &value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -220,8 +220,8 @@ public:
   const uint32_t *y() const;
   void set_y(const uint32_t &value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -245,8 +245,8 @@ public:
   const uint32_t *c() const;
   void set_c(const uint32_t &value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -263,8 +263,8 @@ public:
   const bool *x() const;
   void set_x(const bool &value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -279,8 +279,8 @@ public:
   const uint8_t *x() const;
   void set_x(const uint8_t &value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -295,8 +295,8 @@ public:
   const int32_t *x() const;
   void set_x(const int32_t &value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -311,8 +311,8 @@ public:
   const uint32_t *x() const;
   void set_x(const uint32_t &value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -327,8 +327,8 @@ public:
   const float *x() const;
   void set_x(const float &value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -343,8 +343,8 @@ public:
   const kiwi::String *x() const;
   void set_x(const kiwi::String &value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -363,8 +363,8 @@ public:
   const uint32_t *y() const;
   void set_y(const uint32_t &value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -388,8 +388,8 @@ public:
   const uint32_t *c() const;
   void set_c(const uint32_t &value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -406,8 +406,8 @@ public:
   const kiwi::Array<bool> *x() const;
   kiwi::Array<bool> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -422,8 +422,8 @@ public:
   const kiwi::Array<uint8_t> *x() const;
   kiwi::Array<uint8_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -438,8 +438,8 @@ public:
   const kiwi::Array<int32_t> *x() const;
   kiwi::Array<int32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -454,8 +454,8 @@ public:
   const kiwi::Array<uint32_t> *x() const;
   kiwi::Array<uint32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -470,8 +470,8 @@ public:
   const kiwi::Array<float> *x() const;
   kiwi::Array<float> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -486,8 +486,8 @@ public:
   const kiwi::Array<kiwi::String> *x() const;
   kiwi::Array<kiwi::String> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -506,8 +506,8 @@ public:
   const kiwi::Array<uint32_t> *y() const;
   kiwi::Array<uint32_t> &set_y(kiwi::MemoryPool &pool, uint32_t count);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -523,8 +523,8 @@ public:
   const kiwi::Array<bool> *x() const;
   kiwi::Array<bool> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -539,8 +539,8 @@ public:
   const kiwi::Array<uint8_t> *x() const;
   kiwi::Array<uint8_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -555,8 +555,8 @@ public:
   const kiwi::Array<int32_t> *x() const;
   kiwi::Array<int32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -571,8 +571,8 @@ public:
   const kiwi::Array<uint32_t> *x() const;
   kiwi::Array<uint32_t> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -587,8 +587,8 @@ public:
   const kiwi::Array<float> *x() const;
   kiwi::Array<float> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -603,8 +603,8 @@ public:
   const kiwi::Array<kiwi::String> *x() const;
   kiwi::Array<kiwi::String> &set_x(kiwi::MemoryPool &pool, uint32_t count);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -623,8 +623,8 @@ public:
   const kiwi::Array<uint32_t> *y() const;
   kiwi::Array<uint32_t> &set_y(kiwi::MemoryPool &pool, uint32_t count);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -640,8 +640,8 @@ public:
   const RecursiveMessage *x() const;
   void set_x(RecursiveMessage *value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -680,8 +680,8 @@ public:
   const uint32_t *g() const;
   void set_g(const uint32_t &value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -714,8 +714,8 @@ public:
   const uint32_t *g() const;
   void set_g(const uint32_t &value);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -801,8 +801,8 @@ public:
   const kiwi::Array<kiwi::String> *f3() const;
   kiwi::Array<kiwi::String> &set_f3(kiwi::MemoryPool &pool, uint32_t count);
 
-  bool encode(kiwi::ByteBuffer &bb);
-  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
+  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);
+  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);
 
 private:
   uint32_t _flags[1] = {};
@@ -829,7 +829,7 @@ private:
 #endif
 #ifdef IMPLEMENT_SCHEMA_H
 
-bool BinarySchema::parse(kiwi::ByteBuffer &bb) {
+template <typename InputByteBuffer> bool BinarySchema::parse(InputByteBuffer &bb) {
   if (!_schema.parse(bb)) return false;
   _schema.findDefinition("BoolMessage", _indexBoolMessage);
   _schema.findDefinition("ByteMessage", _indexByteMessage);
@@ -852,75 +852,75 @@ bool BinarySchema::parse(kiwi::ByteBuffer &bb) {
   return true;
 }
 
-bool BinarySchema::skipBoolMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+template <typename InputByteBuffer> bool BinarySchema::skipBoolMessageField(InputByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexBoolMessage, id);
 }
 
-bool BinarySchema::skipByteMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+template <typename InputByteBuffer> bool BinarySchema::skipByteMessageField(InputByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexByteMessage, id);
 }
 
-bool BinarySchema::skipIntMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+template <typename InputByteBuffer> bool BinarySchema::skipIntMessageField(InputByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexIntMessage, id);
 }
 
-bool BinarySchema::skipUintMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+template <typename InputByteBuffer> bool BinarySchema::skipUintMessageField(InputByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexUintMessage, id);
 }
 
-bool BinarySchema::skipFloatMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+template <typename InputByteBuffer> bool BinarySchema::skipFloatMessageField(InputByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexFloatMessage, id);
 }
 
-bool BinarySchema::skipStringMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+template <typename InputByteBuffer> bool BinarySchema::skipStringMessageField(InputByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexStringMessage, id);
 }
 
-bool BinarySchema::skipCompoundMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+template <typename InputByteBuffer> bool BinarySchema::skipCompoundMessageField(InputByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexCompoundMessage, id);
 }
 
-bool BinarySchema::skipNestedMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+template <typename InputByteBuffer> bool BinarySchema::skipNestedMessageField(InputByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexNestedMessage, id);
 }
 
-bool BinarySchema::skipBoolArrayMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+template <typename InputByteBuffer> bool BinarySchema::skipBoolArrayMessageField(InputByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexBoolArrayMessage, id);
 }
 
-bool BinarySchema::skipByteArrayMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+template <typename InputByteBuffer> bool BinarySchema::skipByteArrayMessageField(InputByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexByteArrayMessage, id);
 }
 
-bool BinarySchema::skipIntArrayMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+template <typename InputByteBuffer> bool BinarySchema::skipIntArrayMessageField(InputByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexIntArrayMessage, id);
 }
 
-bool BinarySchema::skipUintArrayMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+template <typename InputByteBuffer> bool BinarySchema::skipUintArrayMessageField(InputByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexUintArrayMessage, id);
 }
 
-bool BinarySchema::skipFloatArrayMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+template <typename InputByteBuffer> bool BinarySchema::skipFloatArrayMessageField(InputByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexFloatArrayMessage, id);
 }
 
-bool BinarySchema::skipStringArrayMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+template <typename InputByteBuffer> bool BinarySchema::skipStringArrayMessageField(InputByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexStringArrayMessage, id);
 }
 
-bool BinarySchema::skipCompoundArrayMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+template <typename InputByteBuffer> bool BinarySchema::skipCompoundArrayMessageField(InputByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexCompoundArrayMessage, id);
 }
 
-bool BinarySchema::skipRecursiveMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+template <typename InputByteBuffer> bool BinarySchema::skipRecursiveMessageField(InputByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexRecursiveMessage, id);
 }
 
-bool BinarySchema::skipNonDeprecatedMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+template <typename InputByteBuffer> bool BinarySchema::skipNonDeprecatedMessageField(InputByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexNonDeprecatedMessage, id);
 }
 
-bool BinarySchema::skipDeprecatedMessageField(kiwi::ByteBuffer &bb, uint32_t id) const {
+template <typename InputByteBuffer> bool BinarySchema::skipDeprecatedMessageField(InputByteBuffer &bb, uint32_t id) const {
   return _schema.skipField(bb, _indexDeprecatedMessage, id);
 }
 
@@ -948,7 +948,7 @@ kiwi::Array<Enum> &EnumStruct::set_y(kiwi::MemoryPool &pool, uint32_t count) {
   _flags[0] |= 2; return _data_y = pool.array<Enum>(count);
 }
 
-bool EnumStruct::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool EnumStruct::encode(OutputByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeVarUint(static_cast<uint32_t>(_data_x));
   if (y() == nullptr) return false;
@@ -957,7 +957,7 @@ bool EnumStruct::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool EnumStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool EnumStruct::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   uint32_t _count;
   if (!_bb.readVarUint(reinterpret_cast<uint32_t &>(_data_x))) return false;
   set_x(_data_x);
@@ -978,13 +978,13 @@ void BoolStruct::set_x(const bool &value) {
   _flags[0] |= 1; _data_x = value;
 }
 
-bool BoolStruct::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool BoolStruct::encode(OutputByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeByte(_data_x);
   return true;
 }
 
-bool BoolStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool BoolStruct::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   if (!_bb.readByte(_data_x)) return false;
   set_x(_data_x);
   return true;
@@ -1002,13 +1002,13 @@ void ByteStruct::set_x(const uint8_t &value) {
   _flags[0] |= 1; _data_x = value;
 }
 
-bool ByteStruct::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool ByteStruct::encode(OutputByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeByte(_data_x);
   return true;
 }
 
-bool ByteStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool ByteStruct::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   if (!_bb.readByte(_data_x)) return false;
   set_x(_data_x);
   return true;
@@ -1026,13 +1026,13 @@ void IntStruct::set_x(const int32_t &value) {
   _flags[0] |= 1; _data_x = value;
 }
 
-bool IntStruct::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool IntStruct::encode(OutputByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeVarInt(_data_x);
   return true;
 }
 
-bool IntStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool IntStruct::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   if (!_bb.readVarInt(_data_x)) return false;
   set_x(_data_x);
   return true;
@@ -1050,13 +1050,13 @@ void UintStruct::set_x(const uint32_t &value) {
   _flags[0] |= 1; _data_x = value;
 }
 
-bool UintStruct::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool UintStruct::encode(OutputByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeVarUint(_data_x);
   return true;
 }
 
-bool UintStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool UintStruct::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   if (!_bb.readVarUint(_data_x)) return false;
   set_x(_data_x);
   return true;
@@ -1074,13 +1074,13 @@ void FloatStruct::set_x(const float &value) {
   _flags[0] |= 1; _data_x = value;
 }
 
-bool FloatStruct::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool FloatStruct::encode(OutputByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeVarFloat(_data_x);
   return true;
 }
 
-bool FloatStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool FloatStruct::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   if (!_bb.readVarFloat(_data_x)) return false;
   set_x(_data_x);
   return true;
@@ -1098,13 +1098,13 @@ void StringStruct::set_x(const kiwi::String &value) {
   _flags[0] |= 1; _data_x = value;
 }
 
-bool StringStruct::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool StringStruct::encode(OutputByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeString(_data_x.c_str());
   return true;
 }
 
-bool StringStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool StringStruct::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   if (!_bb.readString(_data_x, _pool)) return false;
   set_x(_data_x);
   return true;
@@ -1134,7 +1134,7 @@ void CompoundStruct::set_y(const uint32_t &value) {
   _flags[0] |= 2; _data_y = value;
 }
 
-bool CompoundStruct::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool CompoundStruct::encode(OutputByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeVarUint(_data_x);
   if (y() == nullptr) return false;
@@ -1142,7 +1142,7 @@ bool CompoundStruct::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool CompoundStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool CompoundStruct::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   if (!_bb.readVarUint(_data_x)) return false;
   set_x(_data_x);
   if (!_bb.readVarUint(_data_y)) return false;
@@ -1186,7 +1186,7 @@ void NestedStruct::set_c(const uint32_t &value) {
   _flags[0] |= 4; _data_c = value;
 }
 
-bool NestedStruct::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool NestedStruct::encode(OutputByteBuffer &_bb) {
   if (a() == nullptr) return false;
   _bb.writeVarUint(_data_a);
   if (b() == nullptr) return false;
@@ -1196,7 +1196,7 @@ bool NestedStruct::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool NestedStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool NestedStruct::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   if (!_bb.readVarUint(_data_a)) return false;
   set_a(_data_a);
   _data_b = _pool.allocate<CompoundStruct>();
@@ -1218,7 +1218,7 @@ void BoolMessage::set_x(const bool &value) {
   _flags[0] |= 1; _data_x = value;
 }
 
-bool BoolMessage::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool BoolMessage::encode(OutputByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
     _bb.writeByte(_data_x);
@@ -1227,7 +1227,7 @@ bool BoolMessage::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool BoolMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool BoolMessage::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   while (true) {
     uint32_t _type;
     if (!_bb.readVarUint(_type)) return false;
@@ -1259,7 +1259,7 @@ void ByteMessage::set_x(const uint8_t &value) {
   _flags[0] |= 1; _data_x = value;
 }
 
-bool ByteMessage::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool ByteMessage::encode(OutputByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
     _bb.writeByte(_data_x);
@@ -1268,7 +1268,7 @@ bool ByteMessage::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool ByteMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool ByteMessage::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   while (true) {
     uint32_t _type;
     if (!_bb.readVarUint(_type)) return false;
@@ -1300,7 +1300,7 @@ void IntMessage::set_x(const int32_t &value) {
   _flags[0] |= 1; _data_x = value;
 }
 
-bool IntMessage::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool IntMessage::encode(OutputByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
     _bb.writeVarInt(_data_x);
@@ -1309,7 +1309,7 @@ bool IntMessage::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool IntMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool IntMessage::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   while (true) {
     uint32_t _type;
     if (!_bb.readVarUint(_type)) return false;
@@ -1341,7 +1341,7 @@ void UintMessage::set_x(const uint32_t &value) {
   _flags[0] |= 1; _data_x = value;
 }
 
-bool UintMessage::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool UintMessage::encode(OutputByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
     _bb.writeVarUint(_data_x);
@@ -1350,7 +1350,7 @@ bool UintMessage::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool UintMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool UintMessage::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   while (true) {
     uint32_t _type;
     if (!_bb.readVarUint(_type)) return false;
@@ -1382,7 +1382,7 @@ void FloatMessage::set_x(const float &value) {
   _flags[0] |= 1; _data_x = value;
 }
 
-bool FloatMessage::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool FloatMessage::encode(OutputByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
     _bb.writeVarFloat(_data_x);
@@ -1391,7 +1391,7 @@ bool FloatMessage::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool FloatMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool FloatMessage::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   while (true) {
     uint32_t _type;
     if (!_bb.readVarUint(_type)) return false;
@@ -1423,7 +1423,7 @@ void StringMessage::set_x(const kiwi::String &value) {
   _flags[0] |= 1; _data_x = value;
 }
 
-bool StringMessage::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool StringMessage::encode(OutputByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
     _bb.writeString(_data_x.c_str());
@@ -1432,7 +1432,7 @@ bool StringMessage::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool StringMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool StringMessage::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   while (true) {
     uint32_t _type;
     if (!_bb.readVarUint(_type)) return false;
@@ -1476,7 +1476,7 @@ void CompoundMessage::set_y(const uint32_t &value) {
   _flags[0] |= 2; _data_y = value;
 }
 
-bool CompoundMessage::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool CompoundMessage::encode(OutputByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
     _bb.writeVarUint(_data_x);
@@ -1489,7 +1489,7 @@ bool CompoundMessage::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool CompoundMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool CompoundMessage::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   while (true) {
     uint32_t _type;
     if (!_bb.readVarUint(_type)) return false;
@@ -1550,7 +1550,7 @@ void NestedMessage::set_c(const uint32_t &value) {
   _flags[0] |= 4; _data_c = value;
 }
 
-bool NestedMessage::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool NestedMessage::encode(OutputByteBuffer &_bb) {
   if (a() != nullptr) {
     _bb.writeVarUint(1);
     _bb.writeVarUint(_data_a);
@@ -1567,7 +1567,7 @@ bool NestedMessage::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool NestedMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool NestedMessage::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   while (true) {
     uint32_t _type;
     if (!_bb.readVarUint(_type)) return false;
@@ -1609,14 +1609,14 @@ kiwi::Array<bool> &BoolArrayStruct::set_x(kiwi::MemoryPool &pool, uint32_t count
   _flags[0] |= 1; return _data_x = pool.array<bool>(count);
 }
 
-bool BoolArrayStruct::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool BoolArrayStruct::encode(OutputByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeVarUint(_data_x.size());
   for (bool &_it : _data_x) _bb.writeByte(_it);
   return true;
 }
 
-bool BoolArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool BoolArrayStruct::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   uint32_t _count;
   if (!_bb.readVarUint(_count)) return false;
   for (bool &_it : set_x(_pool, _count)) if (!_bb.readByte(_it)) return false;
@@ -1635,14 +1635,14 @@ kiwi::Array<uint8_t> &ByteArrayStruct::set_x(kiwi::MemoryPool &pool, uint32_t co
   _flags[0] |= 1; return _data_x = pool.array<uint8_t>(count);
 }
 
-bool ByteArrayStruct::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool ByteArrayStruct::encode(OutputByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeVarUint(_data_x.size());
   for (uint8_t &_it : _data_x) _bb.writeByte(_it);
   return true;
 }
 
-bool ByteArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool ByteArrayStruct::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   uint32_t _count;
   if (!_bb.readVarUint(_count)) return false;
   for (uint8_t &_it : set_x(_pool, _count)) if (!_bb.readByte(_it)) return false;
@@ -1661,14 +1661,14 @@ kiwi::Array<int32_t> &IntArrayStruct::set_x(kiwi::MemoryPool &pool, uint32_t cou
   _flags[0] |= 1; return _data_x = pool.array<int32_t>(count);
 }
 
-bool IntArrayStruct::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool IntArrayStruct::encode(OutputByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeVarUint(_data_x.size());
   for (int32_t &_it : _data_x) _bb.writeVarInt(_it);
   return true;
 }
 
-bool IntArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool IntArrayStruct::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   uint32_t _count;
   if (!_bb.readVarUint(_count)) return false;
   for (int32_t &_it : set_x(_pool, _count)) if (!_bb.readVarInt(_it)) return false;
@@ -1687,14 +1687,14 @@ kiwi::Array<uint32_t> &UintArrayStruct::set_x(kiwi::MemoryPool &pool, uint32_t c
   _flags[0] |= 1; return _data_x = pool.array<uint32_t>(count);
 }
 
-bool UintArrayStruct::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool UintArrayStruct::encode(OutputByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeVarUint(_data_x.size());
   for (uint32_t &_it : _data_x) _bb.writeVarUint(_it);
   return true;
 }
 
-bool UintArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool UintArrayStruct::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   uint32_t _count;
   if (!_bb.readVarUint(_count)) return false;
   for (uint32_t &_it : set_x(_pool, _count)) if (!_bb.readVarUint(_it)) return false;
@@ -1713,14 +1713,14 @@ kiwi::Array<float> &FloatArrayStruct::set_x(kiwi::MemoryPool &pool, uint32_t cou
   _flags[0] |= 1; return _data_x = pool.array<float>(count);
 }
 
-bool FloatArrayStruct::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool FloatArrayStruct::encode(OutputByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeVarUint(_data_x.size());
   for (float &_it : _data_x) _bb.writeVarFloat(_it);
   return true;
 }
 
-bool FloatArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool FloatArrayStruct::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   uint32_t _count;
   if (!_bb.readVarUint(_count)) return false;
   for (float &_it : set_x(_pool, _count)) if (!_bb.readVarFloat(_it)) return false;
@@ -1739,14 +1739,14 @@ kiwi::Array<kiwi::String> &StringArrayStruct::set_x(kiwi::MemoryPool &pool, uint
   _flags[0] |= 1; return _data_x = pool.array<kiwi::String>(count);
 }
 
-bool StringArrayStruct::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool StringArrayStruct::encode(OutputByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeVarUint(_data_x.size());
   for (kiwi::String &_it : _data_x) _bb.writeString(_it.c_str());
   return true;
 }
 
-bool StringArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool StringArrayStruct::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   uint32_t _count;
   if (!_bb.readVarUint(_count)) return false;
   for (kiwi::String &_it : set_x(_pool, _count)) if (!_bb.readString(_it, _pool)) return false;
@@ -1777,7 +1777,7 @@ kiwi::Array<uint32_t> &CompoundArrayStruct::set_y(kiwi::MemoryPool &pool, uint32
   _flags[0] |= 2; return _data_y = pool.array<uint32_t>(count);
 }
 
-bool CompoundArrayStruct::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool CompoundArrayStruct::encode(OutputByteBuffer &_bb) {
   if (x() == nullptr) return false;
   _bb.writeVarUint(_data_x.size());
   for (uint32_t &_it : _data_x) _bb.writeVarUint(_it);
@@ -1787,7 +1787,7 @@ bool CompoundArrayStruct::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool CompoundArrayStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool CompoundArrayStruct::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   uint32_t _count;
   if (!_bb.readVarUint(_count)) return false;
   for (uint32_t &_it : set_x(_pool, _count)) if (!_bb.readVarUint(_it)) return false;
@@ -1808,7 +1808,7 @@ kiwi::Array<bool> &BoolArrayMessage::set_x(kiwi::MemoryPool &pool, uint32_t coun
   _flags[0] |= 1; return _data_x = pool.array<bool>(count);
 }
 
-bool BoolArrayMessage::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool BoolArrayMessage::encode(OutputByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
     _bb.writeVarUint(_data_x.size());
@@ -1818,7 +1818,7 @@ bool BoolArrayMessage::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool BoolArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool BoolArrayMessage::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   uint32_t _count;
   while (true) {
     uint32_t _type;
@@ -1851,7 +1851,7 @@ kiwi::Array<uint8_t> &ByteArrayMessage::set_x(kiwi::MemoryPool &pool, uint32_t c
   _flags[0] |= 1; return _data_x = pool.array<uint8_t>(count);
 }
 
-bool ByteArrayMessage::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool ByteArrayMessage::encode(OutputByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
     _bb.writeVarUint(_data_x.size());
@@ -1861,7 +1861,7 @@ bool ByteArrayMessage::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool ByteArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool ByteArrayMessage::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   uint32_t _count;
   while (true) {
     uint32_t _type;
@@ -1894,7 +1894,7 @@ kiwi::Array<int32_t> &IntArrayMessage::set_x(kiwi::MemoryPool &pool, uint32_t co
   _flags[0] |= 1; return _data_x = pool.array<int32_t>(count);
 }
 
-bool IntArrayMessage::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool IntArrayMessage::encode(OutputByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
     _bb.writeVarUint(_data_x.size());
@@ -1904,7 +1904,7 @@ bool IntArrayMessage::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool IntArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool IntArrayMessage::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   uint32_t _count;
   while (true) {
     uint32_t _type;
@@ -1937,7 +1937,7 @@ kiwi::Array<uint32_t> &UintArrayMessage::set_x(kiwi::MemoryPool &pool, uint32_t 
   _flags[0] |= 1; return _data_x = pool.array<uint32_t>(count);
 }
 
-bool UintArrayMessage::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool UintArrayMessage::encode(OutputByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
     _bb.writeVarUint(_data_x.size());
@@ -1947,7 +1947,7 @@ bool UintArrayMessage::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool UintArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool UintArrayMessage::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   uint32_t _count;
   while (true) {
     uint32_t _type;
@@ -1980,7 +1980,7 @@ kiwi::Array<float> &FloatArrayMessage::set_x(kiwi::MemoryPool &pool, uint32_t co
   _flags[0] |= 1; return _data_x = pool.array<float>(count);
 }
 
-bool FloatArrayMessage::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool FloatArrayMessage::encode(OutputByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
     _bb.writeVarUint(_data_x.size());
@@ -1990,7 +1990,7 @@ bool FloatArrayMessage::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool FloatArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool FloatArrayMessage::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   uint32_t _count;
   while (true) {
     uint32_t _type;
@@ -2023,7 +2023,7 @@ kiwi::Array<kiwi::String> &StringArrayMessage::set_x(kiwi::MemoryPool &pool, uin
   _flags[0] |= 1; return _data_x = pool.array<kiwi::String>(count);
 }
 
-bool StringArrayMessage::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool StringArrayMessage::encode(OutputByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
     _bb.writeVarUint(_data_x.size());
@@ -2033,7 +2033,7 @@ bool StringArrayMessage::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool StringArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool StringArrayMessage::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   uint32_t _count;
   while (true) {
     uint32_t _type;
@@ -2078,7 +2078,7 @@ kiwi::Array<uint32_t> &CompoundArrayMessage::set_y(kiwi::MemoryPool &pool, uint3
   _flags[0] |= 2; return _data_y = pool.array<uint32_t>(count);
 }
 
-bool CompoundArrayMessage::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool CompoundArrayMessage::encode(OutputByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
     _bb.writeVarUint(_data_x.size());
@@ -2093,7 +2093,7 @@ bool CompoundArrayMessage::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool CompoundArrayMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool CompoundArrayMessage::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   uint32_t _count;
   while (true) {
     uint32_t _type;
@@ -2131,7 +2131,7 @@ void RecursiveMessage::set_x(RecursiveMessage *value) {
   _data_x = value;
 }
 
-bool RecursiveMessage::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool RecursiveMessage::encode(OutputByteBuffer &_bb) {
   if (x() != nullptr) {
     _bb.writeVarUint(1);
     if (!_data_x->encode(_bb)) return false;
@@ -2140,7 +2140,7 @@ bool RecursiveMessage::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool RecursiveMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool RecursiveMessage::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   while (true) {
     uint32_t _type;
     if (!_bb.readVarUint(_type)) return false;
@@ -2244,7 +2244,7 @@ void NonDeprecatedMessage::set_g(const uint32_t &value) {
   _flags[0] |= 64; _data_g = value;
 }
 
-bool NonDeprecatedMessage::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool NonDeprecatedMessage::encode(OutputByteBuffer &_bb) {
   if (a() != nullptr) {
     _bb.writeVarUint(1);
     _bb.writeVarUint(_data_a);
@@ -2279,7 +2279,7 @@ bool NonDeprecatedMessage::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool NonDeprecatedMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool NonDeprecatedMessage::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   uint32_t _count;
   while (true) {
     uint32_t _type;
@@ -2378,7 +2378,7 @@ void DeprecatedMessage::set_g(const uint32_t &value) {
   _flags[0] |= 64; _data_g = value;
 }
 
-bool DeprecatedMessage::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool DeprecatedMessage::encode(OutputByteBuffer &_bb) {
   if (a() != nullptr) {
     _bb.writeVarUint(1);
     _bb.writeVarUint(_data_a);
@@ -2400,7 +2400,7 @@ bool DeprecatedMessage::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool DeprecatedMessage::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool DeprecatedMessage::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   uint32_t _count;
   while (true) {
     uint32_t _type;
@@ -2667,7 +2667,7 @@ kiwi::Array<kiwi::String> &SortedStruct::set_f3(kiwi::MemoryPool &pool, uint32_t
   _flags[0] |= 131072; return _data_f3 = pool.array<kiwi::String>(count);
 }
 
-bool SortedStruct::encode(kiwi::ByteBuffer &_bb) {
+template <typename OutputByteBuffer> bool SortedStruct::encode(OutputByteBuffer &_bb) {
   if (a1() == nullptr) return false;
   _bb.writeByte(_data_a1);
   if (b1() == nullptr) return false;
@@ -2713,7 +2713,7 @@ bool SortedStruct::encode(kiwi::ByteBuffer &_bb) {
   return true;
 }
 
-bool SortedStruct::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
+template <typename InputByteBuffer> bool SortedStruct::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {
   uint32_t _count;
   if (!_bb.readByte(_data_a1)) return false;
   set_a1(_data_a1);
