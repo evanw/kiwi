@@ -69,13 +69,13 @@ export function compileSchemaCPP(schema: Schema): string {
 
   cpp.push('class BinarySchema {');
   cpp.push('public:');
-  cpp.push('  bool parse(kiwi::ByteBuffer &bb);');
+  cpp.push('  template <typename InputByteBuffer> bool parse(InputByteBuffer &bb);');
   cpp.push('  const kiwi::BinarySchema &underlyingSchema() const { return _schema; }');
 
   for (let i = 0; i < schema.definitions.length; i++) {
     let definition = schema.definitions[i];
     if (definition.kind === 'MESSAGE') {
-      cpp.push('  bool skip' + definition.name + 'Field(kiwi::ByteBuffer &bb, uint32_t id) const;');
+      cpp.push('  template <typename InputByteBuffer> bool skip' + definition.name + 'Field(InputByteBuffer &bb, uint32_t id) const;');
     }
   }
 
@@ -122,7 +122,7 @@ export function compileSchemaCPP(schema: Schema): string {
       cpp.push('#ifdef IMPLEMENT_SCHEMA_H');
       cpp.push('');
 
-      cpp.push('bool BinarySchema::parse(kiwi::ByteBuffer &bb) {');
+      cpp.push('template <typename InputByteBuffer> bool BinarySchema::parse(InputByteBuffer &bb) {');
       cpp.push('  if (!_schema.parse(bb)) return false;');
 
       for (let i = 0; i < schema.definitions.length; i++) {
@@ -139,7 +139,7 @@ export function compileSchemaCPP(schema: Schema): string {
       for (let i = 0; i < schema.definitions.length; i++) {
         let definition = schema.definitions[i];
         if (definition.kind === 'MESSAGE') {
-          cpp.push('bool BinarySchema::skip' + definition.name + 'Field(kiwi::ByteBuffer &bb, uint32_t id) const {');
+          cpp.push('template <typename InputByteBuffer> bool BinarySchema::skip' + definition.name + 'Field(InputByteBuffer &bb, uint32_t id) const {');
           cpp.push('  return _schema.skipField(bb, _index' + definition.name + ', id);');
           cpp.push('}');
           cpp.push('');
@@ -202,8 +202,8 @@ export function compileSchemaCPP(schema: Schema): string {
           cpp.push('');
         }
 
-        cpp.push('  bool encode(kiwi::ByteBuffer &bb);');
-        cpp.push('  bool decode(kiwi::ByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);');
+        cpp.push('  template <typename OutputByteBuffer> bool encode(OutputByteBuffer &bb);');
+        cpp.push('  template <typename InputByteBuffer> bool decode(InputByteBuffer &bb, kiwi::MemoryPool &pool, const BinarySchema *schema = nullptr);');
         cpp.push('');
         cpp.push('private:');
         cpp.push('  uint32_t _flags[' + (fields.length + 31 >> 5) + '] = {};');
@@ -302,7 +302,7 @@ export function compileSchemaCPP(schema: Schema): string {
           }
         }
 
-        cpp.push('bool ' + definition.name + '::encode(kiwi::ByteBuffer &_bb) {');
+        cpp.push('template <typename OutputByteBuffer> bool ' + definition.name + '::encode(OutputByteBuffer &_bb) {');
 
         for (let j = 0; j < fields.length; j++) {
           let field = fields[j];
@@ -397,7 +397,7 @@ export function compileSchemaCPP(schema: Schema): string {
         cpp.push('}');
         cpp.push('');
 
-        cpp.push('bool ' + definition.name + '::decode(kiwi::ByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {');
+        cpp.push('template <typename InputByteBuffer> bool ' + definition.name + '::decode(InputByteBuffer &_bb, kiwi::MemoryPool &_pool, const BinarySchema *_schema) {');
 
         for (let j = 0; j < fields.length; j++) {
           if (fields[j].isArray) {
