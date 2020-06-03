@@ -607,6 +607,16 @@ impl Def {
   }
 }
 
+#[derive(Debug, PartialEq)]
+pub struct SchemaOptions {
+  // The Rust implementation is the only one that validates enums while skipping fields.
+  // Ideally all implementations should end up validating enums, but to maintain
+  // compatibility with other clients this can be used to allow enums to be decoded
+  // even if they aren't valid.
+  pub validate_enums: bool,
+}
+
+
 /// Holds the contents of a Kiwi schema.
 ///
 /// Each schema consists of a list of definitions, each of which has a list of
@@ -721,7 +731,7 @@ impl Schema {
   /// doesn't support seeking around to arbitrary points (it must be read from
   /// start to end) so this method is helpful when you need to to skip past
   /// unimportant fields.
-  pub fn skip(&self, bb: &mut ByteBuffer, type_id: i32) -> Result<(), ()> {
+  pub fn skip_with_options(&self, bb: &mut ByteBuffer, type_id: i32, options: &SchemaOptions) -> Result<(), ()> {
     match type_id {
       TYPE_BOOL => { bb.read_bool()?; },
       TYPE_BYTE => { bb.read_byte()?; },
@@ -735,14 +745,14 @@ impl Schema {
 
         match def.kind {
           DefKind::Enum => {
-            if !def.field_value_to_index.contains_key(&bb.read_var_uint()?) {
+            if !def.field_value_to_index.contains_key(&bb.read_var_uint()?) && options.validate_enums {
               return Err(());
             }
           },
 
           DefKind::Struct => {
             for field in &def.fields {
-              self.skip_field(bb, field)?;
+              self.skip_field_with_options(bb, field, options)?;
             }
           },
 
@@ -753,7 +763,7 @@ impl Schema {
                 break;
               }
               if let Some(index) = def.field_value_to_index.get(&value) {
-                self.skip_field(bb, &def.fields[*index])?;
+                self.skip_field_with_options(bb, &def.fields[*index], options)?;
               } else {
                 return Err(());
               }
@@ -766,19 +776,27 @@ impl Schema {
     Ok(())
   }
 
+  pub fn skip(&self, bb: &mut ByteBuffer, type_id: i32) -> Result<(), ()> {
+    self.skip_with_options(bb, type_id, &SchemaOptions {validate_enums: true})
+  }
+
   /// Advances the current index of the provided [ByteBuffer](struct.ByteBuffer.html)
   /// by the size of the provided field. This is used by [skip](#method.skip)
   /// but may also be useful by itself.
-  pub fn skip_field(&self, bb: &mut ByteBuffer, field: &Field) -> Result<(), ()> {
+  pub fn skip_field_with_options(&self, bb: &mut ByteBuffer, field: &Field, options: &SchemaOptions) -> Result<(), ()> {
     if field.is_array {
       let len = bb.read_var_uint()? as usize;
       for _ in 0..len {
-        self.skip(bb, field.type_id)?;
+        self.skip_with_options(bb, field.type_id, options)?;
       }
     } else {
-      self.skip(bb, field.type_id)?;
+      self.skip_with_options(bb, field.type_id, options)?;
     }
     Ok(())
+  }
+
+  pub fn skip_field(&self, bb: &mut ByteBuffer, field: &Field) -> Result<(), ()> {
+    self.skip_field_with_options(bb, field, &SchemaOptions {validate_enums: true})
   }
 }
 
