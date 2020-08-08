@@ -15,8 +15,8 @@ test["decodeEnumStruct"] = function(bb) {
 
   result["x"] = this["Enum"][bb.readVarUint()];
   var length = bb.readVarUint();
-  var values = result["y"] = [];
-  while (length-- > 0) values.push(this["Enum"][bb.readVarUint()]);
+  var values = result["y"] = Array(length);
+  for (var i = 0; i < length; i++) values[i] = this["Enum"][bb.readVarUint()];
   return result;
 };
 
@@ -579,8 +579,8 @@ test["decodeBoolArrayStruct"] = function(bb) {
   }
 
   var length = bb.readVarUint();
-  var values = result["x"] = [];
-  while (length-- > 0) values.push(!!bb.readByte());
+  var values = result["x"] = Array(length);
+  for (var i = 0; i < length; i++) values[i] = !!bb.readByte();
   return result;
 };
 
@@ -634,8 +634,8 @@ test["decodeIntArrayStruct"] = function(bb) {
   }
 
   var length = bb.readVarUint();
-  var values = result["x"] = [];
-  while (length-- > 0) values.push(bb.readVarInt());
+  var values = result["x"] = Array(length);
+  for (var i = 0; i < length; i++) values[i] = bb.readVarInt();
   return result;
 };
 
@@ -665,8 +665,8 @@ test["decodeUintArrayStruct"] = function(bb) {
   }
 
   var length = bb.readVarUint();
-  var values = result["x"] = [];
-  while (length-- > 0) values.push(bb.readVarUint());
+  var values = result["x"] = Array(length);
+  for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
   return result;
 };
 
@@ -696,8 +696,8 @@ test["decodeFloatArrayStruct"] = function(bb) {
   }
 
   var length = bb.readVarUint();
-  var values = result["x"] = [];
-  while (length-- > 0) values.push(bb.readVarFloat());
+  var values = result["x"] = Array(length);
+  for (var i = 0; i < length; i++) values[i] = bb.readVarFloat();
   return result;
 };
 
@@ -727,8 +727,8 @@ test["decodeStringArrayStruct"] = function(bb) {
   }
 
   var length = bb.readVarUint();
-  var values = result["x"] = [];
-  while (length-- > 0) values.push(bb.readString());
+  var values = result["x"] = Array(length);
+  for (var i = 0; i < length; i++) values[i] = bb.readString();
   return result;
 };
 
@@ -758,11 +758,11 @@ test["decodeCompoundArrayStruct"] = function(bb) {
   }
 
   var length = bb.readVarUint();
-  var values = result["x"] = [];
-  while (length-- > 0) values.push(bb.readVarUint());
+  var values = result["x"] = Array(length);
+  for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
   var length = bb.readVarUint();
-  var values = result["y"] = [];
-  while (length-- > 0) values.push(bb.readVarUint());
+  var values = result["y"] = Array(length);
+  for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
   return result;
 };
 
@@ -810,8 +810,8 @@ test["decodeBoolArrayMessage"] = function(bb) {
 
     case 1:
       var length = bb.readVarUint();
-      var values = result["x"] = [];
-      while (length-- > 0) values.push(!!bb.readByte());
+      var values = result["x"] = Array(length);
+      for (var i = 0; i < length; i++) values[i] = !!bb.readByte();
       break;
 
     default:
@@ -887,8 +887,8 @@ test["decodeIntArrayMessage"] = function(bb) {
 
     case 1:
       var length = bb.readVarUint();
-      var values = result["x"] = [];
-      while (length-- > 0) values.push(bb.readVarInt());
+      var values = result["x"] = Array(length);
+      for (var i = 0; i < length; i++) values[i] = bb.readVarInt();
       break;
 
     default:
@@ -929,8 +929,8 @@ test["decodeUintArrayMessage"] = function(bb) {
 
     case 1:
       var length = bb.readVarUint();
-      var values = result["x"] = [];
-      while (length-- > 0) values.push(bb.readVarUint());
+      var values = result["x"] = Array(length);
+      for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
       break;
 
     default:
@@ -971,8 +971,8 @@ test["decodeFloatArrayMessage"] = function(bb) {
 
     case 1:
       var length = bb.readVarUint();
-      var values = result["x"] = [];
-      while (length-- > 0) values.push(bb.readVarFloat());
+      var values = result["x"] = Array(length);
+      for (var i = 0; i < length; i++) values[i] = bb.readVarFloat();
       break;
 
     default:
@@ -1013,8 +1013,8 @@ test["decodeStringArrayMessage"] = function(bb) {
 
     case 1:
       var length = bb.readVarUint();
-      var values = result["x"] = [];
-      while (length-- > 0) values.push(bb.readString());
+      var values = result["x"] = Array(length);
+      for (var i = 0; i < length; i++) values[i] = bb.readString();
       break;
 
     default:
@@ -1055,14 +1055,14 @@ test["decodeCompoundArrayMessage"] = function(bb) {
 
     case 1:
       var length = bb.readVarUint();
-      var values = result["x"] = [];
-      while (length-- > 0) values.push(bb.readVarUint());
+      var values = result["x"] = Array(length);
+      for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
       break;
 
     case 2:
       var length = bb.readVarUint();
-      var values = result["y"] = [];
-      while (length-- > 0) values.push(bb.readVarUint());
+      var values = result["y"] = Array(length);
+      for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
       break;
 
     default:
@@ -1157,14 +1157,14 @@ test["decodeNonDeprecatedMessage"] = function(bb) {
 
     case 3:
       var length = bb.readVarUint();
-      var values = result["c"] = [];
-      while (length-- > 0) values.push(bb.readVarUint());
+      var values = result["c"] = Array(length);
+      for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
       break;
 
     case 4:
       var length = bb.readVarUint();
-      var values = result["d"] = [];
-      while (length-- > 0) values.push(bb.readVarUint());
+      var values = result["d"] = Array(length);
+      for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
       break;
 
     case 5:
@@ -1266,8 +1266,8 @@ test["decodeDeprecatedMessage"] = function(bb) {
 
     case 3:
       var length = bb.readVarUint();
-      var values = result["c"] = [];
-      while (length-- > 0) values.push(bb.readVarUint());
+      var values = result["c"] = Array(length);
+      for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
       break;
 
     case 4:
@@ -1349,21 +1349,21 @@ test["decodeSortedStruct"] = function(bb) {
   result["e2"] = bb.readVarFloat();
   result["f2"] = bb.readString();
   var length = bb.readVarUint();
-  var values = result["a3"] = [];
-  while (length-- > 0) values.push(!!bb.readByte());
+  var values = result["a3"] = Array(length);
+  for (var i = 0; i < length; i++) values[i] = !!bb.readByte();
   result["b3"] = bb.readByteArray();
   var length = bb.readVarUint();
-  var values = result["c3"] = [];
-  while (length-- > 0) values.push(bb.readVarInt());
+  var values = result["c3"] = Array(length);
+  for (var i = 0; i < length; i++) values[i] = bb.readVarInt();
   var length = bb.readVarUint();
-  var values = result["d3"] = [];
-  while (length-- > 0) values.push(bb.readVarUint());
+  var values = result["d3"] = Array(length);
+  for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
   var length = bb.readVarUint();
-  var values = result["e3"] = [];
-  while (length-- > 0) values.push(bb.readVarFloat());
+  var values = result["e3"] = Array(length);
+  for (var i = 0; i < length; i++) values[i] = bb.readVarFloat();
   var length = bb.readVarUint();
-  var values = result["f3"] = [];
-  while (length-- > 0) values.push(bb.readString());
+  var values = result["f3"] = Array(length);
+  for (var i = 0; i < length; i++) values[i] = bb.readString();
   return result;
 };
 

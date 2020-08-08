@@ -86,8 +86,8 @@ function compileDecode(definition: Definition, definitions: {[name: string]: Def
           lines.push(indent + 'result[' + quote(field.name) + '] = bb.readByteArray();');
         } else {
           lines.push(indent + 'var length = bb.readVarUint();');
-          lines.push(indent + 'var values = result[' + quote(field.name) + '] = [];');
-          lines.push(indent + 'while (length-- > 0) values.push(' + code + ');');
+          lines.push(indent + 'var values = result[' + quote(field.name) + '] = Array(length);');
+          lines.push(indent + 'for (var i = 0; i < length; i++) values[i] = ' + code + ';');
         }
       }
     }
