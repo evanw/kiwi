@@ -15,7 +15,9 @@ Then the following code should work:
 var kiwi = require('kiwi-schema');
 var fs = require('fs');
 
-var schema = kiwi.compileSchema(fs.readFileSync('test.kiwi', 'utf8'));
+var schema = kiwi.compileSchema(
+  kiwi.parseSchema(fs.readFileSync('test.kiwi', 'utf8'))
+);
 var buffer = schema.encodeTest({x: 123});
 var test = schema.decodeTest(buffer);
 
@@ -46,10 +48,12 @@ Which can be used like this:
 
 ```ts
 import {Test, Schema} from './test';
-import {compileSchema} from 'kiwi-schema';
+import {compileSchema, parseSchema} from 'kiwi-schema';
 import {readFileSync} from 'fs';
 
-let schema: Schema = compileSchema(readFileSync('test.kiwi', 'utf8'));
+let schema: Schema = compileSchema(
+  parseSchema(readFileSync('test.kiwi', 'utf8'))
+);
 let buffer: Uint8Array = schema.encodeTest({x: 123});
 let test: Test = schema.decodeTest(buffer);
 
