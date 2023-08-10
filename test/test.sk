@@ -12,6 +12,7 @@
 def main {
   var assert = require("assert")
   var fs = require("fs")
+  var it = require("node:test")
 
   it("struct bool", => {
     var check = (i bool, o List<int>) => {

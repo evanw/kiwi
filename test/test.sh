@@ -2,7 +2,7 @@
 
 set -e
 
-node ../js/node_modules/mocha/bin/mocha ./test.js
+node ./test.js
 
 node ../js/cli.js --schema ./test-schema.kiwi --js ./test-schema.js
 
@@ -25,9 +25,9 @@ node ../js/cli.js --schema ./test-schema.kiwi --skew ./test-schema.sk
 node ../js/cli.js --schema ./test1-schema.kiwi --skew ./test1-schema.sk
 node ../js/cli.js --schema ./test2-schema.kiwi --skew ./test2-schema.sk
 node ../js/cli.js --schema ./test-schema-large.kiwi --skew ./test-schema-large.sk
-../js/node_modules/.bin/skewc --output-file=temp.js ../kiwi.sk ../typedarray.sk ./test-schema.sk ./test1-schema.sk ./test2-schema.sk ./test-schema-large.sk ./test.sk
-node ../js/node_modules/mocha/bin/mocha temp.js
-rm temp.js
+../js/node_modules/.bin/skewc --js-source-map --output-file=temp.js ../kiwi.sk ../typedarray.sk ./test-schema.sk ./test1-schema.sk ./test2-schema.sk ./test-schema-large.sk ./test.sk
+node --enable-source-maps temp.js
+rm temp.js temp.js.map
 
 node ../js/cli.js --schema ./test-schema.kiwi --skew-types ./test-schema-types.sk
 

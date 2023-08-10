@@ -1,13 +1,14 @@
 var assert = require('assert');
 var kiwi = require(__dirname + '/../js/kiwi');
 var fs = require('fs');
+var it = require('node:test');
 
 var schemaText = fs.readFileSync(__dirname + '/test-schema.kiwi', 'utf8');
 var schema = kiwi.compileSchema(kiwi.parseSchema(schemaText));
 
 it('struct bool', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeBoolStruct({ x: i })), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeBoolStruct({ x: i })), Buffer.from(o));
     assert.deepEqual(schema.decodeBoolStruct(new Uint8Array(o)), { x: i });
   }
 
@@ -17,7 +18,7 @@ it('struct bool', function () {
 
 it('struct byte', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeByteStruct({ x: i })), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeByteStruct({ x: i })), Buffer.from(o));
     assert.deepEqual(schema.decodeByteStruct(new Uint8Array(o)), { x: i });
   }
 
@@ -30,7 +31,7 @@ it('struct byte', function () {
 
 it('struct uint', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeUintStruct({ x: i })), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeUintStruct({ x: i })), Buffer.from(o));
     assert.deepEqual(schema.decodeUintStruct(new Uint8Array(o)), { x: i });
   }
 
@@ -54,7 +55,7 @@ it('struct uint', function () {
 
 it('struct int', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeIntStruct({ x: i })), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeIntStruct({ x: i })), Buffer.from(o));
     assert.deepEqual(schema.decodeIntStruct(new Uint8Array(o)), { x: i });
   }
 
@@ -82,7 +83,7 @@ it('struct int', function () {
 
 it('struct float', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeFloatStruct({ x: i })), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeFloatStruct({ x: i })), Buffer.from(o));
     assert.deepEqual(JSON.stringify(schema.decodeFloatStruct(new Uint8Array(o))), JSON.stringify({ x: i }));
   }
 
@@ -98,7 +99,7 @@ it('struct float', function () {
 
 it('struct string', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeStringStruct({ x: i })), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeStringStruct({ x: i })), Buffer.from(o));
     assert.deepEqual(schema.decodeStringStruct(new Uint8Array(o)), { x: i });
   }
 
@@ -109,7 +110,7 @@ it('struct string', function () {
 
 it('struct compound', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeCompoundStruct(i)), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeCompoundStruct(i)), Buffer.from(o));
     assert.deepEqual(schema.decodeCompoundStruct(new Uint8Array(o)), i);
   }
 
@@ -120,7 +121,7 @@ it('struct compound', function () {
 
 it('struct nested', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeNestedStruct(i)), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeNestedStruct(i)), Buffer.from(o));
     assert.deepEqual(schema.decodeNestedStruct(new Uint8Array(o)), i);
   }
 
@@ -131,7 +132,7 @@ it('struct nested', function () {
 
 it('message bool', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeBoolMessage(i)), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeBoolMessage(i)), Buffer.from(o));
     assert.deepEqual(schema.decodeBoolMessage(new Uint8Array(o)), i);
   }
 
@@ -142,7 +143,7 @@ it('message bool', function () {
 
 it('message byte', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeByteMessage(i)), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeByteMessage(i)), Buffer.from(o));
     assert.deepEqual(schema.decodeByteMessage(new Uint8Array(o)), i);
   }
 
@@ -152,7 +153,7 @@ it('message byte', function () {
 
 it('struct byte array', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeByteArrayStruct(i)), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeByteArrayStruct(i)), Buffer.from(o));
     assert.deepEqual(schema.decodeByteArrayStruct(new Uint8Array(o)), i);
   }
 
@@ -162,7 +163,7 @@ it('struct byte array', function () {
 
 it('message uint', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeUintMessage(i)), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeUintMessage(i)), Buffer.from(o));
     assert.deepEqual(schema.decodeUintMessage(new Uint8Array(o)), i);
   }
 
@@ -172,7 +173,7 @@ it('message uint', function () {
 
 it('message int', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeIntMessage(i)), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeIntMessage(i)), Buffer.from(o));
     assert.deepEqual(schema.decodeIntMessage(new Uint8Array(o)), i);
   }
 
@@ -182,7 +183,7 @@ it('message int', function () {
 
 it('message float', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeFloatMessage(i)), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeFloatMessage(i)), Buffer.from(o));
     assert.deepEqual(schema.decodeFloatMessage(new Uint8Array(o)), i);
   }
 
@@ -192,7 +193,7 @@ it('message float', function () {
 
 it('message string', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeStringMessage(i)), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeStringMessage(i)), Buffer.from(o));
     assert.deepEqual(schema.decodeStringMessage(new Uint8Array(o)), i);
   }
 
@@ -203,7 +204,7 @@ it('message string', function () {
 
 it('message compound', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeCompoundMessage(i)), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeCompoundMessage(i)), Buffer.from(o));
     assert.deepEqual(schema.decodeCompoundMessage(new Uint8Array(o)), i);
   }
 
@@ -216,7 +217,7 @@ it('message compound', function () {
 
 it('message nested', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeNestedMessage(i)), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeNestedMessage(i)), Buffer.from(o));
     assert.deepEqual(schema.decodeNestedMessage(new Uint8Array(o)), i);
   }
 
@@ -229,7 +230,7 @@ it('message nested', function () {
 
 it('struct bool array', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeBoolArrayStruct({ x: i })), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeBoolArrayStruct({ x: i })), Buffer.from(o));
     assert.deepEqual(schema.decodeBoolArrayStruct(new Uint8Array(o)), { x: i });
   }
 
@@ -239,7 +240,7 @@ it('struct bool array', function () {
 
 it('message bool array', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeBoolArrayMessage(i)), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeBoolArrayMessage(i)), Buffer.from(o));
     assert.deepEqual(schema.decodeBoolArrayMessage(new Uint8Array(o)), i);
   }
 
@@ -250,7 +251,7 @@ it('message bool array', function () {
 
 it('recursive message', function () {
   function check(i, o) {
-    assert.deepEqual(Buffer(schema.encodeRecursiveMessage(i)), Buffer(o));
+    assert.deepEqual(Buffer.from(schema.encodeRecursiveMessage(i)), Buffer.from(o));
     assert.deepEqual(schema.decodeRecursiveMessage(new Uint8Array(o)), i);
   }
 
@@ -264,8 +265,8 @@ it('binary schema', function () {
 
   function check(message) {
     assert.deepEqual(
-      Buffer(schema.encodeNestedMessage(message)),
-      Buffer(compiledSchema.encodeNestedMessage(message)));
+      Buffer.from(schema.encodeNestedMessage(message)),
+      Buffer.from(compiledSchema.encodeNestedMessage(message)));
   }
 
   check({ a: 1, c: 4 });
