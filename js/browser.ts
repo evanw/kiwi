@@ -3,7 +3,7 @@
 import { decodeBinarySchema } from "./binary";
 import { compileSchema } from "./js";
 
-export {
+module.exports = {
   decodeBinarySchema,
   compileSchema,
 }

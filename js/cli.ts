@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import * as fs from 'fs';
+import fs = require('fs');
 import { compileSchema, compileSchemaJS } from './js';
 import { compileSchemaTypeScript } from './ts';
 import { Schema } from './schema';
@@ -13,37 +13,35 @@ import { parseSchema } from './parser';
 import { ByteBuffer } from './bb';
 import { compileSchemaSkewTypes } from './skew-types';
 
-let usage = [
-  '',
-  'Usage: kiwic [OPTIONS]',
-  '',
-  'Options:',
-  '',
-  '  --help                Print this message.',
-  '  --schema [PATH]       The schema file to use.',
-  '  --js [PATH]           Generate JavaScript code.',
-  '  --ts [PATH]           Generate TypeScript type definitions.',
-  '  --cpp [PATH]          Generate C++ code (tree style).',
-  '  --callback-cpp [PATH] Generate C++ code (callback style).',
-  '  --skew [PATH]         Generate Skew code.',
-  '  --skew-types [PATH]   Generate Skew type definitions.',
-  '  --text [PATH]         Encode the schema as text.',
-  '  --binary [PATH]       Encode the schema as a binary blob.',
-  '  --root-type [NAME]    Set the root type for JSON.',
-  '  --to-json [PATH]      Convert a binary file to JSON.',
-  '  --from-json [PATH]    Convert a JSON file to binary.',
-  '',
-  'Examples:',
-  '',
-  '  kiwic --schema test.kiwi --js test.js',
-  '  kiwic --schema test.kiwi --cpp test.h',
-  '  kiwic --schema test.kiwi --skew test.sk',
-  '  kiwic --schema test.kiwi --binary test.bkiwi',
-  '  kiwic --schema test.bkiwi --text test.kiwi',
-  '  kiwic --schema test.kiwi --root-type Test --from-json buffer.json',
-  '  kiwic --schema test.kiwi --root-type Test --to-json buffer.bin',
-  '',
-].join('\n');
+let usage = `
+Usage: kiwic [OPTIONS]
+
+Options:
+
+  --help                Print this message.
+  --schema [PATH]       The schema file to use.
+  --js [PATH]           Generate JavaScript code.
+  --ts [PATH]           Generate TypeScript type definitions.
+  --cpp [PATH]          Generate C++ code (tree style).
+  --callback-cpp [PATH] Generate C++ code (callback style).
+  --skew [PATH]         Generate Skew code.
+  --skew-types [PATH]   Generate Skew type definitions.
+  --text [PATH]         Encode the schema as text.
+  --binary [PATH]       Encode the schema as a binary blob.
+  --root-type [NAME]    Set the root type for JSON.
+  --to-json [PATH]      Convert a binary file to JSON.
+  --from-json [PATH]    Convert a JSON file to binary.
+
+Examples:
+
+  kiwic --schema test.kiwi --js test.js
+  kiwic --schema test.kiwi --cpp test.h
+  kiwic --schema test.kiwi --skew test.sk
+  kiwic --schema test.kiwi --binary test.bkiwi
+  kiwic --schema test.bkiwi --text test.kiwi
+  kiwic --schema test.kiwi --root-type Test --from-json buffer.json
+  kiwic --schema test.kiwi --root-type Test --to-json buffer.bin
+`;
 
 function writeFileString(path: string, text: string): void {
   try {
@@ -65,7 +63,7 @@ function writeFileBuffer(path: string, buffer: Buffer): void {
   fs.writeFileSync(path, buffer);
 }
 
-export function main(args: string[]): number {
+function main(args: string[]): number {
   let flags: { [flag: string]: string | null } = {
     '--schema': null,
     '--js': null,
@@ -189,7 +187,9 @@ export function main(args: string[]): number {
   }
 
   return 0;
-};
+}
+
+exports.main = main;
 
 if (require.main === module) {
   // try {

@@ -1,29 +1,29 @@
 {
   "name": "kiwi-schema",
-  "version": "0.4.7",
+  "version": "0.5.0",
   "description": "A schema-based binary format for efficiently encoding trees of data",
   "license": "MIT",
-  "main": "kiwi.js",
+  "main": "./kiwi.js",
+  "module": "./kiwi-esm.js",
   "types": "./kiwi.d.ts",
   "bin": {
     "kiwic": "cli.js"
   },
   "scripts": {
-    "build": "tsc -d",
-    "browser": "tsc -p tsconfig.browser.json && rollup browser.js --format=iife --name=kiwi | terser -cm > browser.min.js",
-    "typedefs": "tsc -d && ls *.ts | grep -v d.ts > .npmignore && echo tsconfig.json >> .npmignore",
-    "prepublishOnly": "npm run browser && npm run typedefs"
+    "build:cjs": "esbuild --target=es6 --bundle cli.ts kiwi.ts --platform=node --outdir=.",
+    "build:esm": "esbuild --target=es6 --bundle kiwi.ts --platform=node --format=esm --outfile=kiwi-esm.js",
+    "build:browser": "esbuild --target=es6 --bundle browser.ts --platform=browser --global-name=kiwi --outfile=browser.js --minify",
+    "typedefs": "tsc --declaration --emitDeclarationOnly && ls *.ts | grep -v d.ts > .npmignore && echo tsconfig.json >> .npmignore",
+    "prepublishOnly": "npm run build:cjs && npm run build:esm && npm run build:browser && npm run typedefs"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/evanw/kiwi.git"
   },
   "devDependencies": {
-    "@types/node": "13.1.6",
-    "mocha": "7.0.0",
-    "rollup": "1.31.0",
-    "skew": "0.7.43",
-    "terser": "4.6.3",
-    "typescript": "3.7.4"
+    "@types/node": "20.4.9",
+    "esbuild": "0.19.0",
+    "skew": "0.9.19",
+    "typescript": "5.1.6"
   }
 }
