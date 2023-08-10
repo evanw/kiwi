@@ -74,7 +74,7 @@ export function decodeBinarySchema(buffer: Uint8Array | ByteBuffer): Schema {
 export function encodeBinarySchema(schema: Schema): Uint8Array {
   let bb = new ByteBuffer();
   let definitions = schema.definitions;
-  let definitionIndex: {[name: string]: number} = {};
+  let definitionIndex: { [name: string]: number } = {};
 
   bb.writeVarUint(definitions.length);
 

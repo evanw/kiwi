@@ -196,7 +196,7 @@ function parse(tokens: Token[]): Schema {
 
 function verify(root: Schema): void {
   let definedTypes = nativeTypes.slice();
-  let definitions: {[name: string]: Definition} = {};
+  let definitions: { [name: string]: Definition } = {};
 
   // Define definitions
   for (let i = 0; i < root.definitions.length; i++) {
@@ -246,7 +246,7 @@ function verify(root: Schema): void {
   }
 
   // Check that structs don't contain themselves
-  let state: {[name: string]: number} = {};
+  let state: { [name: string]: number } = {};
   let check = (name: string): boolean => {
     let definition = definitions[name];
     if (definition && definition.kind === 'STRUCT') {

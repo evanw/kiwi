@@ -1,7 +1,7 @@
 let int32 = new Int32Array(1);
 let float32 = new Float32Array(int32.buffer);
 
-export class ByteBuffer{
+export class ByteBuffer {
   private _data: Uint8Array;
   private _index: number;
   length: number;

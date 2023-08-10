@@ -66,7 +66,7 @@ function writeFileBuffer(path: string, buffer: Buffer): void {
 }
 
 export function main(args: string[]): number {
-  let flags: {[flag: string]: string | null} = {
+  let flags: { [flag: string]: string | null } = {
     '--schema': null,
     '--js': null,
     '--ts': null,
@@ -192,7 +192,7 @@ export function main(args: string[]): number {
 
 if (require.main === module) {
   // try {
-    process.exit(main(process.argv.slice(2)));
+  process.exit(main(process.argv.slice(2)));
   // } catch (e) {
   //   process.stderr.write((e && e.message || e) + '\n');
   //   process.exit(1);

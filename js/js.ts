@@ -2,7 +2,7 @@ import { Schema, Definition } from "./schema";
 import { ByteBuffer } from "./bb";
 import { error, quote } from "./util";
 
-function compileDecode(definition: Definition, definitions: {[name: string]: Definition}): string {
+function compileDecode(definition: Definition, definitions: { [name: string]: Definition }): string {
   let lines: string[] = [];
   let indent = '  ';
 
@@ -122,7 +122,7 @@ function compileDecode(definition: Definition, definitions: {[name: string]: Def
   return lines.join('\n');
 }
 
-function compileEncode(definition: Definition, definitions: {[name: string]: Definition}): string {
+function compileEncode(definition: Definition, definitions: { [name: string]: Definition }): string {
   let lines: string[] = [];
 
   lines.push('function(message, bb) {');
@@ -229,7 +229,7 @@ function compileEncode(definition: Definition, definitions: {[name: string]: Def
 }
 
 export function compileSchemaJS(schema: Schema): string {
-  let definitions: {[name: string]: Definition} = {};
+  let definitions: { [name: string]: Definition } = {};
   let name = schema.package;
   let js: string[] = [];
 

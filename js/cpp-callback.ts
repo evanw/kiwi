@@ -5,23 +5,23 @@ interface Argument {
   name: string;
 }
 
-function argumentForField(definitions: {[name: string]: Definition}, type: string | null, name: string): Argument | null {
+function argumentForField(definitions: { [name: string]: Definition }, type: string | null, name: string): Argument | null {
   switch (type) {
-    case 'bool': return {type: 'bool ', name: name};
-    case 'byte': return {type: 'uint8_t ', name: name};
-    case 'int': return {type: 'int32_t ', name: name};
-    case 'uint': return {type: 'uint32_t ', name: name};
-    case 'float': return {type: 'float ', name: name};
-    case 'string': return {type: 'const char *', name: name};
+    case 'bool': return { type: 'bool ', name: name };
+    case 'byte': return { type: 'uint8_t ', name: name };
+    case 'int': return { type: 'int32_t ', name: name };
+    case 'uint': return { type: 'uint32_t ', name: name };
+    case 'float': return { type: 'float ', name: name };
+    case 'string': return { type: 'const char *', name: name };
     default: {
       let definition = definitions[type!];
-      if (definition.kind === 'ENUM') return {type: definition.name + ' ', name: name};
+      if (definition.kind === 'ENUM') return { type: definition.name + ' ', name: name };
       return null;
     }
   }
 }
 
-function extractStructArguments(definitions: {[name: string]: Definition}, prefix: string, fields: Field[], allowArrays: boolean): Argument[] | null {
+function extractStructArguments(definitions: { [name: string]: Definition }, prefix: string, fields: Field[], allowArrays: boolean): Argument[] | null {
   let args: Argument[] = [];
 
   for (let i = 0; i < fields.length; i++) {
@@ -85,7 +85,7 @@ function argToWrite(arg: Argument): string {
   }
 }
 
-function emitReadField(cpp: string[], definitions: {[name: string]: Definition}, definition: Definition, field: Field, indent: string): void {
+function emitReadField(cpp: string[], definitions: { [name: string]: Definition }, definition: Definition, field: Field, indent: string): void {
   let name = field.name;
 
   if (field.isArray) {
@@ -123,7 +123,7 @@ function emitReadField(cpp: string[], definitions: {[name: string]: Definition},
 }
 
 export function compileSchemaCallbackCPP(schema: Schema): string {
-  let definitions: {[name: string]: Definition} = {};
+  let definitions: { [name: string]: Definition } = {};
   let cpp: string[] = [];
 
   for (let i = 0; i < schema.definitions.length; i++) {

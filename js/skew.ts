@@ -7,7 +7,7 @@ function popTrailingNewline(lines: string[]): void {
   }
 }
 
-function skewDefaultValueForField(definitions: {[name: string]: Definition}, field: Field): string {
+function skewDefaultValueForField(definitions: { [name: string]: Definition }, field: Field): string {
   if (field.isArray) {
     return 'null';
   }
@@ -54,7 +54,7 @@ function skewTypeForField(field: Field): string | null {
 }
 
 export function compileSchemaSkew(schema: Schema): string {
-  let definitions: {[name: string]: Definition} = {};
+  let definitions: { [name: string]: Definition } = {};
   let indent = '';
   let lines: string[] = [];
 

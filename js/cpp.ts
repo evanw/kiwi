@@ -1,7 +1,7 @@
 import { Schema, Definition, Field } from "./schema";
 import { error, quote } from "./util";
 
-function cppType(definitions: {[name: string]: Definition}, field: Field, isArray: boolean): string {
+function cppType(definitions: { [name: string]: Definition }, field: Field, isArray: boolean): string {
   let type;
 
   switch (field.type) {
@@ -43,12 +43,12 @@ function cppFlagMask(i: number): number {
   return 1 << (i % 32) >>> 0;
 }
 
-function cppIsFieldPointer(definitions: {[name: string]: Definition}, field: Field): boolean {
+function cppIsFieldPointer(definitions: { [name: string]: Definition }, field: Field): boolean {
   return !field.isArray && field.type! in definitions && definitions[field.type!].kind !== 'ENUM';
 }
 
 export function compileSchemaCPP(schema: Schema): string {
-  let definitions: {[name: string]: Definition} = {};
+  let definitions: { [name: string]: Definition } = {};
   let cpp: string[] = [];
 
   cpp.push('#include "kiwi.h"');
@@ -209,8 +209,8 @@ export function compileSchemaCPP(schema: Schema): string {
         cpp.push('  uint32_t _flags[' + (fields.length + 31 >> 5) + '] = {};');
 
         // Sort fields by size since that makes the resulting struct smaller
-        let sizes: {[type: string]: number} = {'bool': 1, 'byte': 1, 'int': 4, 'uint': 4, 'float': 4};
-        let sortedFields = fields.slice().sort(function(a, b) {
+        let sizes: { [type: string]: number } = { 'bool': 1, 'byte': 1, 'int': 4, 'uint': 4, 'float': 4 };
+        let sortedFields = fields.slice().sort(function (a, b) {
           let sizeA = !a.isArray && sizes[a.type!] || 8;
           let sizeB = !b.isArray && sizes[b.type!] || 8;
           if (sizeA !== sizeB) return sizeB - sizeA;

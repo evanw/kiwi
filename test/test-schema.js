@@ -7,7 +7,7 @@ test["Enum"] = {
   "B": 200
 };
 
-test["decodeEnumStruct"] = function(bb) {
+test["decodeEnumStruct"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -20,7 +20,7 @@ test["decodeEnumStruct"] = function(bb) {
   return result;
 };
 
-test["encodeEnumStruct"] = function(message, bb) {
+test["encodeEnumStruct"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -46,7 +46,7 @@ test["encodeEnumStruct"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeBoolStruct"] = function(bb) {
+test["decodeBoolStruct"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -56,7 +56,7 @@ test["decodeBoolStruct"] = function(bb) {
   return result;
 };
 
-test["encodeBoolStruct"] = function(message, bb) {
+test["encodeBoolStruct"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -70,7 +70,7 @@ test["encodeBoolStruct"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeByteStruct"] = function(bb) {
+test["decodeByteStruct"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -80,7 +80,7 @@ test["decodeByteStruct"] = function(bb) {
   return result;
 };
 
-test["encodeByteStruct"] = function(message, bb) {
+test["encodeByteStruct"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -94,7 +94,7 @@ test["encodeByteStruct"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeIntStruct"] = function(bb) {
+test["decodeIntStruct"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -104,7 +104,7 @@ test["decodeIntStruct"] = function(bb) {
   return result;
 };
 
-test["encodeIntStruct"] = function(message, bb) {
+test["encodeIntStruct"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -118,7 +118,7 @@ test["encodeIntStruct"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeUintStruct"] = function(bb) {
+test["decodeUintStruct"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -128,7 +128,7 @@ test["decodeUintStruct"] = function(bb) {
   return result;
 };
 
-test["encodeUintStruct"] = function(message, bb) {
+test["encodeUintStruct"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -142,7 +142,7 @@ test["encodeUintStruct"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeFloatStruct"] = function(bb) {
+test["decodeFloatStruct"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -152,7 +152,7 @@ test["decodeFloatStruct"] = function(bb) {
   return result;
 };
 
-test["encodeFloatStruct"] = function(message, bb) {
+test["encodeFloatStruct"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -166,7 +166,7 @@ test["encodeFloatStruct"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeStringStruct"] = function(bb) {
+test["decodeStringStruct"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -176,7 +176,7 @@ test["decodeStringStruct"] = function(bb) {
   return result;
 };
 
-test["encodeStringStruct"] = function(message, bb) {
+test["encodeStringStruct"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -190,7 +190,7 @@ test["encodeStringStruct"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeCompoundStruct"] = function(bb) {
+test["decodeCompoundStruct"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -201,7 +201,7 @@ test["decodeCompoundStruct"] = function(bb) {
   return result;
 };
 
-test["encodeCompoundStruct"] = function(message, bb) {
+test["encodeCompoundStruct"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -222,7 +222,7 @@ test["encodeCompoundStruct"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeNestedStruct"] = function(bb) {
+test["decodeNestedStruct"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -234,7 +234,7 @@ test["decodeNestedStruct"] = function(bb) {
   return result;
 };
 
-test["encodeNestedStruct"] = function(message, bb) {
+test["encodeNestedStruct"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -262,7 +262,7 @@ test["encodeNestedStruct"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeBoolMessage"] = function(bb) {
+test["decodeBoolMessage"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -270,20 +270,20 @@ test["decodeBoolMessage"] = function(bb) {
 
   while (true) {
     switch (bb.readVarUint()) {
-    case 0:
-      return result;
+      case 0:
+        return result;
 
-    case 1:
-      result["x"] = !!bb.readByte();
-      break;
+      case 1:
+        result["x"] = !!bb.readByte();
+        break;
 
-    default:
-      throw new Error("Attempted to parse invalid message");
+      default:
+        throw new Error("Attempted to parse invalid message");
     }
   }
 };
 
-test["encodeBoolMessage"] = function(message, bb) {
+test["encodeBoolMessage"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -297,7 +297,7 @@ test["encodeBoolMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeByteMessage"] = function(bb) {
+test["decodeByteMessage"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -305,20 +305,20 @@ test["decodeByteMessage"] = function(bb) {
 
   while (true) {
     switch (bb.readVarUint()) {
-    case 0:
-      return result;
+      case 0:
+        return result;
 
-    case 1:
-      result["x"] = bb.readByte();
-      break;
+      case 1:
+        result["x"] = bb.readByte();
+        break;
 
-    default:
-      throw new Error("Attempted to parse invalid message");
+      default:
+        throw new Error("Attempted to parse invalid message");
     }
   }
 };
 
-test["encodeByteMessage"] = function(message, bb) {
+test["encodeByteMessage"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -332,7 +332,7 @@ test["encodeByteMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeIntMessage"] = function(bb) {
+test["decodeIntMessage"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -340,20 +340,20 @@ test["decodeIntMessage"] = function(bb) {
 
   while (true) {
     switch (bb.readVarUint()) {
-    case 0:
-      return result;
+      case 0:
+        return result;
 
-    case 1:
-      result["x"] = bb.readVarInt();
-      break;
+      case 1:
+        result["x"] = bb.readVarInt();
+        break;
 
-    default:
-      throw new Error("Attempted to parse invalid message");
+      default:
+        throw new Error("Attempted to parse invalid message");
     }
   }
 };
 
-test["encodeIntMessage"] = function(message, bb) {
+test["encodeIntMessage"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -367,7 +367,7 @@ test["encodeIntMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeUintMessage"] = function(bb) {
+test["decodeUintMessage"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -375,20 +375,20 @@ test["decodeUintMessage"] = function(bb) {
 
   while (true) {
     switch (bb.readVarUint()) {
-    case 0:
-      return result;
+      case 0:
+        return result;
 
-    case 1:
-      result["x"] = bb.readVarUint();
-      break;
+      case 1:
+        result["x"] = bb.readVarUint();
+        break;
 
-    default:
-      throw new Error("Attempted to parse invalid message");
+      default:
+        throw new Error("Attempted to parse invalid message");
     }
   }
 };
 
-test["encodeUintMessage"] = function(message, bb) {
+test["encodeUintMessage"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -402,7 +402,7 @@ test["encodeUintMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeFloatMessage"] = function(bb) {
+test["decodeFloatMessage"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -410,20 +410,20 @@ test["decodeFloatMessage"] = function(bb) {
 
   while (true) {
     switch (bb.readVarUint()) {
-    case 0:
-      return result;
+      case 0:
+        return result;
 
-    case 1:
-      result["x"] = bb.readVarFloat();
-      break;
+      case 1:
+        result["x"] = bb.readVarFloat();
+        break;
 
-    default:
-      throw new Error("Attempted to parse invalid message");
+      default:
+        throw new Error("Attempted to parse invalid message");
     }
   }
 };
 
-test["encodeFloatMessage"] = function(message, bb) {
+test["encodeFloatMessage"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -437,7 +437,7 @@ test["encodeFloatMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeStringMessage"] = function(bb) {
+test["decodeStringMessage"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -445,20 +445,20 @@ test["decodeStringMessage"] = function(bb) {
 
   while (true) {
     switch (bb.readVarUint()) {
-    case 0:
-      return result;
+      case 0:
+        return result;
 
-    case 1:
-      result["x"] = bb.readString();
-      break;
+      case 1:
+        result["x"] = bb.readString();
+        break;
 
-    default:
-      throw new Error("Attempted to parse invalid message");
+      default:
+        throw new Error("Attempted to parse invalid message");
     }
   }
 };
 
-test["encodeStringMessage"] = function(message, bb) {
+test["encodeStringMessage"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -472,7 +472,7 @@ test["encodeStringMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeCompoundMessage"] = function(bb) {
+test["decodeCompoundMessage"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -480,24 +480,24 @@ test["decodeCompoundMessage"] = function(bb) {
 
   while (true) {
     switch (bb.readVarUint()) {
-    case 0:
-      return result;
+      case 0:
+        return result;
 
-    case 1:
-      result["x"] = bb.readVarUint();
-      break;
+      case 1:
+        result["x"] = bb.readVarUint();
+        break;
 
-    case 2:
-      result["y"] = bb.readVarUint();
-      break;
+      case 2:
+        result["y"] = bb.readVarUint();
+        break;
 
-    default:
-      throw new Error("Attempted to parse invalid message");
+      default:
+        throw new Error("Attempted to parse invalid message");
     }
   }
 };
 
-test["encodeCompoundMessage"] = function(message, bb) {
+test["encodeCompoundMessage"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -517,7 +517,7 @@ test["encodeCompoundMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeNestedMessage"] = function(bb) {
+test["decodeNestedMessage"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -525,28 +525,28 @@ test["decodeNestedMessage"] = function(bb) {
 
   while (true) {
     switch (bb.readVarUint()) {
-    case 0:
-      return result;
+      case 0:
+        return result;
 
-    case 1:
-      result["a"] = bb.readVarUint();
-      break;
+      case 1:
+        result["a"] = bb.readVarUint();
+        break;
 
-    case 2:
-      result["b"] = this["decodeCompoundMessage"](bb);
-      break;
+      case 2:
+        result["b"] = this["decodeCompoundMessage"](bb);
+        break;
 
-    case 3:
-      result["c"] = bb.readVarUint();
-      break;
+      case 3:
+        result["c"] = bb.readVarUint();
+        break;
 
-    default:
-      throw new Error("Attempted to parse invalid message");
+      default:
+        throw new Error("Attempted to parse invalid message");
     }
   }
 };
 
-test["encodeNestedMessage"] = function(message, bb) {
+test["encodeNestedMessage"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -572,7 +572,7 @@ test["encodeNestedMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeBoolArrayStruct"] = function(bb) {
+test["decodeBoolArrayStruct"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -584,7 +584,7 @@ test["decodeBoolArrayStruct"] = function(bb) {
   return result;
 };
 
-test["encodeBoolArrayStruct"] = function(message, bb) {
+test["encodeBoolArrayStruct"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -603,7 +603,7 @@ test["encodeBoolArrayStruct"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeByteArrayStruct"] = function(bb) {
+test["decodeByteArrayStruct"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -613,7 +613,7 @@ test["decodeByteArrayStruct"] = function(bb) {
   return result;
 };
 
-test["encodeByteArrayStruct"] = function(message, bb) {
+test["encodeByteArrayStruct"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -627,7 +627,7 @@ test["encodeByteArrayStruct"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeIntArrayStruct"] = function(bb) {
+test["decodeIntArrayStruct"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -639,7 +639,7 @@ test["decodeIntArrayStruct"] = function(bb) {
   return result;
 };
 
-test["encodeIntArrayStruct"] = function(message, bb) {
+test["encodeIntArrayStruct"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -658,7 +658,7 @@ test["encodeIntArrayStruct"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeUintArrayStruct"] = function(bb) {
+test["decodeUintArrayStruct"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -670,7 +670,7 @@ test["decodeUintArrayStruct"] = function(bb) {
   return result;
 };
 
-test["encodeUintArrayStruct"] = function(message, bb) {
+test["encodeUintArrayStruct"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -689,7 +689,7 @@ test["encodeUintArrayStruct"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeFloatArrayStruct"] = function(bb) {
+test["decodeFloatArrayStruct"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -701,7 +701,7 @@ test["decodeFloatArrayStruct"] = function(bb) {
   return result;
 };
 
-test["encodeFloatArrayStruct"] = function(message, bb) {
+test["encodeFloatArrayStruct"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -720,7 +720,7 @@ test["encodeFloatArrayStruct"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeStringArrayStruct"] = function(bb) {
+test["decodeStringArrayStruct"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -732,7 +732,7 @@ test["decodeStringArrayStruct"] = function(bb) {
   return result;
 };
 
-test["encodeStringArrayStruct"] = function(message, bb) {
+test["encodeStringArrayStruct"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -751,7 +751,7 @@ test["encodeStringArrayStruct"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeCompoundArrayStruct"] = function(bb) {
+test["decodeCompoundArrayStruct"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -766,7 +766,7 @@ test["decodeCompoundArrayStruct"] = function(bb) {
   return result;
 };
 
-test["encodeCompoundArrayStruct"] = function(message, bb) {
+test["encodeCompoundArrayStruct"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -797,7 +797,7 @@ test["encodeCompoundArrayStruct"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeBoolArrayMessage"] = function(bb) {
+test["decodeBoolArrayMessage"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -805,22 +805,22 @@ test["decodeBoolArrayMessage"] = function(bb) {
 
   while (true) {
     switch (bb.readVarUint()) {
-    case 0:
-      return result;
+      case 0:
+        return result;
 
-    case 1:
-      var length = bb.readVarUint();
-      var values = result["x"] = Array(length);
-      for (var i = 0; i < length; i++) values[i] = !!bb.readByte();
-      break;
+      case 1:
+        var length = bb.readVarUint();
+        var values = result["x"] = Array(length);
+        for (var i = 0; i < length; i++) values[i] = !!bb.readByte();
+        break;
 
-    default:
-      throw new Error("Attempted to parse invalid message");
+      default:
+        throw new Error("Attempted to parse invalid message");
     }
   }
 };
 
-test["encodeBoolArrayMessage"] = function(message, bb) {
+test["encodeBoolArrayMessage"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -839,7 +839,7 @@ test["encodeBoolArrayMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeByteArrayMessage"] = function(bb) {
+test["decodeByteArrayMessage"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -847,20 +847,20 @@ test["decodeByteArrayMessage"] = function(bb) {
 
   while (true) {
     switch (bb.readVarUint()) {
-    case 0:
-      return result;
+      case 0:
+        return result;
 
-    case 1:
-      result["x"] = bb.readByteArray();
-      break;
+      case 1:
+        result["x"] = bb.readByteArray();
+        break;
 
-    default:
-      throw new Error("Attempted to parse invalid message");
+      default:
+        throw new Error("Attempted to parse invalid message");
     }
   }
 };
 
-test["encodeByteArrayMessage"] = function(message, bb) {
+test["encodeByteArrayMessage"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -874,7 +874,7 @@ test["encodeByteArrayMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeIntArrayMessage"] = function(bb) {
+test["decodeIntArrayMessage"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -882,22 +882,22 @@ test["decodeIntArrayMessage"] = function(bb) {
 
   while (true) {
     switch (bb.readVarUint()) {
-    case 0:
-      return result;
+      case 0:
+        return result;
 
-    case 1:
-      var length = bb.readVarUint();
-      var values = result["x"] = Array(length);
-      for (var i = 0; i < length; i++) values[i] = bb.readVarInt();
-      break;
+      case 1:
+        var length = bb.readVarUint();
+        var values = result["x"] = Array(length);
+        for (var i = 0; i < length; i++) values[i] = bb.readVarInt();
+        break;
 
-    default:
-      throw new Error("Attempted to parse invalid message");
+      default:
+        throw new Error("Attempted to parse invalid message");
     }
   }
 };
 
-test["encodeIntArrayMessage"] = function(message, bb) {
+test["encodeIntArrayMessage"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -916,7 +916,7 @@ test["encodeIntArrayMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeUintArrayMessage"] = function(bb) {
+test["decodeUintArrayMessage"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -924,22 +924,22 @@ test["decodeUintArrayMessage"] = function(bb) {
 
   while (true) {
     switch (bb.readVarUint()) {
-    case 0:
-      return result;
+      case 0:
+        return result;
 
-    case 1:
-      var length = bb.readVarUint();
-      var values = result["x"] = Array(length);
-      for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
-      break;
+      case 1:
+        var length = bb.readVarUint();
+        var values = result["x"] = Array(length);
+        for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
+        break;
 
-    default:
-      throw new Error("Attempted to parse invalid message");
+      default:
+        throw new Error("Attempted to parse invalid message");
     }
   }
 };
 
-test["encodeUintArrayMessage"] = function(message, bb) {
+test["encodeUintArrayMessage"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -958,7 +958,7 @@ test["encodeUintArrayMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeFloatArrayMessage"] = function(bb) {
+test["decodeFloatArrayMessage"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -966,22 +966,22 @@ test["decodeFloatArrayMessage"] = function(bb) {
 
   while (true) {
     switch (bb.readVarUint()) {
-    case 0:
-      return result;
+      case 0:
+        return result;
 
-    case 1:
-      var length = bb.readVarUint();
-      var values = result["x"] = Array(length);
-      for (var i = 0; i < length; i++) values[i] = bb.readVarFloat();
-      break;
+      case 1:
+        var length = bb.readVarUint();
+        var values = result["x"] = Array(length);
+        for (var i = 0; i < length; i++) values[i] = bb.readVarFloat();
+        break;
 
-    default:
-      throw new Error("Attempted to parse invalid message");
+      default:
+        throw new Error("Attempted to parse invalid message");
     }
   }
 };
 
-test["encodeFloatArrayMessage"] = function(message, bb) {
+test["encodeFloatArrayMessage"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -1000,7 +1000,7 @@ test["encodeFloatArrayMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeStringArrayMessage"] = function(bb) {
+test["decodeStringArrayMessage"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -1008,22 +1008,22 @@ test["decodeStringArrayMessage"] = function(bb) {
 
   while (true) {
     switch (bb.readVarUint()) {
-    case 0:
-      return result;
+      case 0:
+        return result;
 
-    case 1:
-      var length = bb.readVarUint();
-      var values = result["x"] = Array(length);
-      for (var i = 0; i < length; i++) values[i] = bb.readString();
-      break;
+      case 1:
+        var length = bb.readVarUint();
+        var values = result["x"] = Array(length);
+        for (var i = 0; i < length; i++) values[i] = bb.readString();
+        break;
 
-    default:
-      throw new Error("Attempted to parse invalid message");
+      default:
+        throw new Error("Attempted to parse invalid message");
     }
   }
 };
 
-test["encodeStringArrayMessage"] = function(message, bb) {
+test["encodeStringArrayMessage"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -1042,7 +1042,7 @@ test["encodeStringArrayMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeCompoundArrayMessage"] = function(bb) {
+test["decodeCompoundArrayMessage"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -1050,28 +1050,28 @@ test["decodeCompoundArrayMessage"] = function(bb) {
 
   while (true) {
     switch (bb.readVarUint()) {
-    case 0:
-      return result;
+      case 0:
+        return result;
 
-    case 1:
-      var length = bb.readVarUint();
-      var values = result["x"] = Array(length);
-      for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
-      break;
+      case 1:
+        var length = bb.readVarUint();
+        var values = result["x"] = Array(length);
+        for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
+        break;
 
-    case 2:
-      var length = bb.readVarUint();
-      var values = result["y"] = Array(length);
-      for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
-      break;
+      case 2:
+        var length = bb.readVarUint();
+        var values = result["y"] = Array(length);
+        for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
+        break;
 
-    default:
-      throw new Error("Attempted to parse invalid message");
+      default:
+        throw new Error("Attempted to parse invalid message");
     }
   }
 };
 
-test["encodeCompoundArrayMessage"] = function(message, bb) {
+test["encodeCompoundArrayMessage"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -1101,7 +1101,7 @@ test["encodeCompoundArrayMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeRecursiveMessage"] = function(bb) {
+test["decodeRecursiveMessage"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -1109,20 +1109,20 @@ test["decodeRecursiveMessage"] = function(bb) {
 
   while (true) {
     switch (bb.readVarUint()) {
-    case 0:
-      return result;
+      case 0:
+        return result;
 
-    case 1:
-      result["x"] = this["decodeRecursiveMessage"](bb);
-      break;
+      case 1:
+        result["x"] = this["decodeRecursiveMessage"](bb);
+        break;
 
-    default:
-      throw new Error("Attempted to parse invalid message");
+      default:
+        throw new Error("Attempted to parse invalid message");
     }
   }
 };
 
-test["encodeRecursiveMessage"] = function(message, bb) {
+test["encodeRecursiveMessage"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -1136,7 +1136,7 @@ test["encodeRecursiveMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeNonDeprecatedMessage"] = function(bb) {
+test["decodeNonDeprecatedMessage"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -1144,48 +1144,48 @@ test["decodeNonDeprecatedMessage"] = function(bb) {
 
   while (true) {
     switch (bb.readVarUint()) {
-    case 0:
-      return result;
+      case 0:
+        return result;
 
-    case 1:
-      result["a"] = bb.readVarUint();
-      break;
+      case 1:
+        result["a"] = bb.readVarUint();
+        break;
 
-    case 2:
-      result["b"] = bb.readVarUint();
-      break;
+      case 2:
+        result["b"] = bb.readVarUint();
+        break;
 
-    case 3:
-      var length = bb.readVarUint();
-      var values = result["c"] = Array(length);
-      for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
-      break;
+      case 3:
+        var length = bb.readVarUint();
+        var values = result["c"] = Array(length);
+        for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
+        break;
 
-    case 4:
-      var length = bb.readVarUint();
-      var values = result["d"] = Array(length);
-      for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
-      break;
+      case 4:
+        var length = bb.readVarUint();
+        var values = result["d"] = Array(length);
+        for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
+        break;
 
-    case 5:
-      result["e"] = this["decodeByteStruct"](bb);
-      break;
+      case 5:
+        result["e"] = this["decodeByteStruct"](bb);
+        break;
 
-    case 6:
-      result["f"] = this["decodeByteStruct"](bb);
-      break;
+      case 6:
+        result["f"] = this["decodeByteStruct"](bb);
+        break;
 
-    case 7:
-      result["g"] = bb.readVarUint();
-      break;
+      case 7:
+        result["g"] = bb.readVarUint();
+        break;
 
-    default:
-      throw new Error("Attempted to parse invalid message");
+      default:
+        throw new Error("Attempted to parse invalid message");
     }
   }
 };
 
-test["encodeNonDeprecatedMessage"] = function(message, bb) {
+test["encodeNonDeprecatedMessage"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -1245,7 +1245,7 @@ test["encodeNonDeprecatedMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeDeprecatedMessage"] = function(bb) {
+test["decodeDeprecatedMessage"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -1253,47 +1253,47 @@ test["decodeDeprecatedMessage"] = function(bb) {
 
   while (true) {
     switch (bb.readVarUint()) {
-    case 0:
-      return result;
+      case 0:
+        return result;
 
-    case 1:
-      result["a"] = bb.readVarUint();
-      break;
+      case 1:
+        result["a"] = bb.readVarUint();
+        break;
 
-    case 2:
-      bb.readVarUint();
-      break;
+      case 2:
+        bb.readVarUint();
+        break;
 
-    case 3:
-      var length = bb.readVarUint();
-      var values = result["c"] = Array(length);
-      for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
-      break;
+      case 3:
+        var length = bb.readVarUint();
+        var values = result["c"] = Array(length);
+        for (var i = 0; i < length; i++) values[i] = bb.readVarUint();
+        break;
 
-    case 4:
-      var length = bb.readVarUint();
-      while (length-- > 0) bb.readVarUint();
-      break;
+      case 4:
+        var length = bb.readVarUint();
+        while (length-- > 0) bb.readVarUint();
+        break;
 
-    case 5:
-      result["e"] = this["decodeByteStruct"](bb);
-      break;
+      case 5:
+        result["e"] = this["decodeByteStruct"](bb);
+        break;
 
-    case 6:
-      this["decodeByteStruct"](bb);
-      break;
+      case 6:
+        this["decodeByteStruct"](bb);
+        break;
 
-    case 7:
-      result["g"] = bb.readVarUint();
-      break;
+      case 7:
+        result["g"] = bb.readVarUint();
+        break;
 
-    default:
-      throw new Error("Attempted to parse invalid message");
+      default:
+        throw new Error("Attempted to parse invalid message");
     }
   }
 };
 
-test["encodeDeprecatedMessage"] = function(message, bb) {
+test["encodeDeprecatedMessage"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
@@ -1330,7 +1330,7 @@ test["encodeDeprecatedMessage"] = function(message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
-test["decodeSortedStruct"] = function(bb) {
+test["decodeSortedStruct"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
     bb = new this.ByteBuffer(bb);
@@ -1367,7 +1367,7 @@ test["decodeSortedStruct"] = function(bb) {
   return result;
 };
 
-test["encodeSortedStruct"] = function(message, bb) {
+test["encodeSortedStruct"] = function (message, bb) {
   var isTopLevel = !bb;
   if (isTopLevel) bb = new this.ByteBuffer();
 
