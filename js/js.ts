@@ -6,7 +6,7 @@ function compileDecode(definition: Definition, definitions: { [name: string]: De
   let lines: string[] = [];
   let indent = '  ';
 
-  lines.push('function(bb) {');
+  lines.push('function (bb) {');
   lines.push('  var result = {};');
   lines.push('  if (!(bb instanceof this.ByteBuffer)) {');
   lines.push('    bb = new this.ByteBuffer(bb);');
@@ -16,10 +16,10 @@ function compileDecode(definition: Definition, definitions: { [name: string]: De
   if (definition.kind === 'MESSAGE') {
     lines.push('  while (true) {');
     lines.push('    switch (bb.readVarUint()) {');
-    lines.push('    case 0:');
-    lines.push('      return result;');
+    lines.push('      case 0:');
+    lines.push('        return result;');
     lines.push('');
-    indent = '      ';
+    indent = '        ';
   }
 
   for (let i = 0; i < definition.fields.length; i++) {
@@ -70,7 +70,7 @@ function compileDecode(definition: Definition, definitions: { [name: string]: De
     }
 
     if (definition.kind === 'MESSAGE') {
-      lines.push('    case ' + field.value + ':');
+      lines.push('      case ' + field.value + ':');
     }
 
     if (field.isArray) {
@@ -101,14 +101,14 @@ function compileDecode(definition: Definition, definitions: { [name: string]: De
     }
 
     if (definition.kind === 'MESSAGE') {
-      lines.push('      break;');
+      lines.push('        break;');
       lines.push('');
     }
   }
 
   if (definition.kind === 'MESSAGE') {
-    lines.push('    default:');
-    lines.push('      throw new Error("Attempted to parse invalid message");');
+    lines.push('      default:');
+    lines.push('        throw new Error("Attempted to parse invalid message");');
     lines.push('    }');
     lines.push('  }');
   }
@@ -125,7 +125,7 @@ function compileDecode(definition: Definition, definitions: { [name: string]: De
 function compileEncode(definition: Definition, definitions: { [name: string]: Definition }): string {
   let lines: string[] = [];
 
-  lines.push('function(message, bb) {');
+  lines.push('function (message, bb) {');
   lines.push('  var isTopLevel = !bb;');
   lines.push('  if (isTopLevel) bb = new this.ByteBuffer();');
 
