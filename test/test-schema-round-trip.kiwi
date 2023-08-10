@@ -24,6 +24,14 @@ struct UintStruct {
   uint x;
 }
 
+struct Int64Struct {
+  int64 x;
+}
+
+struct Uint64Struct {
+  uint64 x;
+}
+
 struct FloatStruct {
   float x;
 }
@@ -57,6 +65,14 @@ message IntMessage {
 
 message UintMessage {
   uint x = 1;
+}
+
+message Int64Message {
+  int64 x = 1;
+}
+
+message Uint64Message {
+  uint64 x = 1;
 }
 
 message FloatMessage {
@@ -94,6 +110,14 @@ struct UintArrayStruct {
   uint[] x;
 }
 
+struct Int64ArrayStruct {
+  int64[] x;
+}
+
+struct Uint64ArrayStruct {
+  uint64[] x;
+}
+
 struct FloatArrayStruct {
   float[] x;
 }
@@ -121,6 +145,14 @@ message IntArrayMessage {
 
 message UintArrayMessage {
   uint[] x = 1;
+}
+
+message Int64ArrayMessage {
+  int64[] x = 1;
+}
+
+message Uint64ArrayMessage {
+  uint64[] x = 1;
 }
 
 message FloatArrayMessage {
@@ -167,16 +199,22 @@ struct SortedStruct {
   uint d1;
   float e1;
   string f1;
+  int64 g1;
+  uint64 h1;
   bool a2;
   byte b2;
   int c2;
   uint d2;
   float e2;
   string f2;
+  int64 g2;
+  uint64 h2;
   bool[] a3;
   byte[] b3;
   int[] c3;
   uint[] d3;
   float[] e3;
   string[] f3;
+  int64[] g3;
+  uint64[] h3;
 }

@@ -25,6 +25,8 @@ Non-goals:
 * **uint:** A 32-bit integer value stored using a variable-length encoding optimized for storing small non-negative numbers. Will use at most 5 bytes.
 * **float:** A 32-bit floating-point number. Normally uses 4 bytes but a value of zero uses 1 byte ([denormal numbers](https://en.wikipedia.org/wiki/Denormal_number) become zero when encoded).
 * **string:** A UTF-8 null-terminated string. Will use at least 1 byte.
+* **int64:** A 64-bit integer value stored using a variable-length encoding optimized for storing numbers with a small magnitude. Will use at most 9 bytes.
+* **uint64:** A 64-bit integer value stored using a variable-length encoding optimized for storing small non-negative numbers. Will use at most 9 bytes.
 * **T[]:** Any type can be made into an array using the `[]` suffix.
 
 ## User Types

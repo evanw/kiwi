@@ -6,8 +6,10 @@ export let nativeTypes = [
   'byte',
   'float',
   'int',
+  'int64',
   'string',
   'uint',
+  'uint64',
 ];
 
 // These are special names on the object returned by compileSchema()

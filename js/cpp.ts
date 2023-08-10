@@ -11,6 +11,8 @@ function cppType(definitions: { [name: string]: Definition }, field: Field, isAr
     case 'uint': type = 'uint32_t'; break;
     case 'float': type = 'float'; break;
     case 'string': type = 'kiwi::String'; break;
+    case 'int64': type = 'int64_t'; break;
+    case 'uint64': type = 'uint64_t'; break;
 
     default: {
       let definition = definitions[field.type!];
@@ -176,10 +178,10 @@ export function compileSchemaCPP(schema: Schema): string {
             continue;
           }
 
-          let name = cppFieldName(field);
+          // let name = cppFieldName(field);
           let type = cppType(definitions, field, field.isArray);
-          let flagIndex = cppFlagIndex(j);
-          let flagMask = cppFlagMask(j);
+          // let flagIndex = cppFlagIndex(j);
+          // let flagMask = cppFlagMask(j);
 
           if (cppIsFieldPointer(definitions, field)) {
             cpp.push('  ' + type + ' *' + field.name + '();');
@@ -348,6 +350,16 @@ export function compileSchemaCPP(schema: Schema): string {
               break;
             }
 
+            case 'int64': {
+              code = '_bb.writeVarInt64(' + value + ');';
+              break;
+            }
+
+            case 'uint64': {
+              code = '_bb.writeVarUint64(' + value + ');';
+              break;
+            }
+
             default: {
               let type = definitions[field.type!];
 
@@ -450,6 +462,16 @@ export function compileSchemaCPP(schema: Schema): string {
 
             case 'string': {
               code = '_bb.readString(' + value + ', _pool)';
+              break;
+            }
+
+            case 'int64': {
+              code = '_bb.readVarInt64(' + value + ')';
+              break;
+            }
+
+            case 'uint64': {
+              code = '_bb.readVarUint64(' + value + ')';
               break;
             }
 

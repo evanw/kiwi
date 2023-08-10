@@ -105,6 +105,33 @@ namespace Kiwi {
       return (value & 1) != 0 ? ~(value >>> 1) : value >>> 1
     }
 
+    def readVarUint64 BigInt {
+      var value = BigInt.new(0)
+      var shift = BigInt.new(0)
+      var seven = BigInt.new(7)
+      var byte int
+
+      while true {
+        byte = readByte
+        if (byte & 128) == 0 || shift >= 56 {
+          break
+        }
+        value |= BigInt.new(byte & 127) << shift
+        shift += seven
+      }
+
+      value |= BigInt.new(byte) << shift
+      return value
+    }
+
+    def readVarInt64 BigInt {
+      var value = readVarUint64
+      var one = BigInt.new(1)
+      var sign = value & one
+      value >>= one
+      return sign == one ? ~value : value
+    }
+
     def readString string {
       var result = ""
 
@@ -199,6 +226,23 @@ namespace Kiwi {
 
     def writeVarInt(value int) {
       writeVarUint((value << 1) ^ (value >> 31))
+    }
+
+    def writeVarUint64(value BigInt) {
+      var mask = BigInt.new(127)
+      var seven = BigInt.new(7)
+      var i = 0
+      while value > mask && i < 8 {
+        writeByte((value & mask).toInt | 128)
+        value >>= seven
+        i++
+      }
+      writeByte(value.toInt)
+    }
+
+    def writeVarInt64(value BigInt) {
+      var one = BigInt.new(1)
+      writeVarUint64(value < 0 ? ~(value << one) : value << one)
     }
 
     def writeString(value string) {

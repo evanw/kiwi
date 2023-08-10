@@ -1,7 +1,7 @@
 import { ByteBuffer } from "./bb";
 import { Schema, Field, Definition, DefinitionKind } from "./schema";
 
-let types: (string | null)[] = ['bool', 'byte', 'int', 'uint', 'float', 'string'];
+let types: (string | null)[] = ['bool', 'byte', 'int', 'uint', 'float', 'string', 'int64', 'uint64'];
 let kinds: DefinitionKind[] = ['ENUM', 'STRUCT', 'MESSAGE'];
 
 export function decodeBinarySchema(buffer: Uint8Array | ByteBuffer): Schema {

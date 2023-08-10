@@ -210,6 +210,95 @@ static void testStructString() {
   check("🙉🙈🙊", {240, 159, 153, 137, 240, 159, 153, 136, 240, 159, 153, 138, 0});
 }
 
+static void testStructInt64() {
+  puts("testStructInt64");
+
+  auto check = [](int64_t i, std::vector<uint8_t> o) {
+    kiwi::ByteBuffer bb;
+    kiwi::MemoryPool pool;
+
+    test::Int64Struct s;
+    s.set_x(i);
+    assert(s.encode(bb));
+    assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
+
+    kiwi::ByteBuffer bb2(o.data(), o.size());
+    test::Int64Struct s2;
+    assert(s2.decode(bb2, pool));
+    assert(s2.x());
+    assert(*s2.x() == i);
+  };
+
+  check(0x00, {0x00});
+  check(-0x01, {0x01});
+  check(0x01, {0x02});
+  check(-0x02, {0x03});
+  check(0x02, {0x04});
+  check(-0x3F, {0x7D});
+  check(0x3F, {0x7E});
+  check(-0x40, {0x7F});
+  check(0x40, {0x80, 0x01});
+  check(-0x3FFF, {0xFD, 0xFF, 0x01});
+  check(0x3FFF, {0xFE, 0xFF, 0x01});
+  check(-0x4000, {0xFF, 0xFF, 0x01});
+  check(0x4000, {0x80, 0x80, 0x02});
+  check(0x44070C1420304040, {0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88});
+  check(-0x1000000000000001, {0x81, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x20});
+  check(0x1000000000000001, {0x82, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x20});
+  check(-0x3FFFFFFFFFFFFFFF, {0xFD, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F});
+  check(0x3FFFFFFFFFFFFFFF, {0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F});
+  check(-0x4000000000000000, {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F});
+  check(0x4000000000000000, {0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80});
+  check(-0x7FFFFFFFFFFFFFFF, {0xFD, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF});
+  check(0x7FFFFFFFFFFFFFFF, {0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF});
+  check(-0x8000000000000000, {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF});
+}
+
+static void testStructUint64() {
+  puts("testStructUint64");
+
+  auto check = [](uint64_t i, std::vector<uint8_t> o) {
+    kiwi::ByteBuffer bb;
+    kiwi::MemoryPool pool;
+
+    test::Uint64Struct s;
+    s.set_x(i);
+    assert(s.encode(bb));
+    assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
+
+    kiwi::ByteBuffer bb2(o.data(), o.size());
+    test::Uint64Struct s2;
+    assert(s2.decode(bb2, pool));
+    assert(s2.x());
+    if (*s2.x() != i) {
+      printf("testStructUint64: %llu != %llu\n", *s2.x(), i);
+    }
+    assert(*s2.x() == i);
+  };
+
+  check(0x00, {0x00});
+  check(0x01, {0x01});
+  check(0x02, {0x02});
+  check(0x7F, {0x7F});
+  check(0x80, {0x80, 0x01});
+  check(0x81, {0x81, 0x01});
+  check(0x100, {0x80, 0x02});
+  check(0x101, {0x81, 0x02});
+  check(0x17F, {0xFF, 0x02});
+  check(0x180, {0x80, 0x03});
+  check(0x1FF, {0xFF, 0x03});
+  check(0x200, {0x80, 0x04});
+  check(0x7FFF, {0xFF, 0xFF, 0x01});
+  check(0x8000, {0x80, 0x80, 0x02});
+  check(0x7FFFFFFF, {0xFF, 0xFF, 0xFF, 0xFF, 0x07});
+  check(0x80000000, {0x80, 0x80, 0x80, 0x80, 0x08});
+  check(0x880E182840608080, {0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88});
+  check(0x1000000000000001, {0x81, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x10});
+  check(0x7FFFFFFFFFFFFFFF, {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F});
+  check(0x8000000000000000, {0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80});
+  check(0xFFFFFFFFFFFFFFFF, {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF});
+}
+
 static void testStructCompound() {
   puts("testStructCompound");
 
@@ -422,6 +511,51 @@ static void testMessageString() {
   check("\0abc\0", {1, 0, 0});
   check("abc", {1, 97, 98, 99, 0, 0});
   check("🙉🙈🙊", {1, 240, 159, 153, 137, 240, 159, 153, 136, 240, 159, 153, 138, 0, 0});
+}
+
+static void testMessageInt64() {
+  puts("testMessageInt64");
+
+  auto check = [](int64_t i, std::vector<uint8_t> o) {
+    kiwi::ByteBuffer bb;
+    kiwi::MemoryPool pool;
+
+    test::Int64Message s;
+    s.set_x(i);
+    assert(s.encode(bb));
+    assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
+
+    kiwi::ByteBuffer bb2(o.data(), o.size());
+    test::Int64Message s2;
+    assert(s2.decode(bb2, pool));
+    assert(s2.x());
+    assert(*s2.x() == i);
+  };
+
+  check(123456789012345678, {0x01, 0x9C, 0xCD, 0x87, 0xE3, 0xF4, 0xD2, 0xCD, 0xB6, 0x03, 0x00});
+  check(-123456789012345678, {0x01, 0x9B, 0xCD, 0x87, 0xE3, 0xF4, 0xD2, 0xCD, 0xB6, 0x03, 0x00});
+}
+
+static void testMessageUint64() {
+  puts("testMessageUint64");
+
+  auto check = [](uint64_t i, std::vector<uint8_t> o) {
+    kiwi::ByteBuffer bb;
+    kiwi::MemoryPool pool;
+
+    test::Uint64Message s;
+    s.set_x(i);
+    assert(s.encode(bb));
+    assert(std::vector<uint8_t>(bb.data(), bb.data() + bb.size()) == o);
+
+    kiwi::ByteBuffer bb2(o.data(), o.size());
+    test::Uint64Message s2;
+    assert(s2.decode(bb2, pool));
+    assert(s2.x());
+    assert(*s2.x() == i);
+  };
+
+  check(123456789012345678, {0x01, 0xCE, 0xE6, 0xC3, 0xB1, 0xBA, 0xE9, 0xA6, 0xDB, 0x01, 0x00});
 }
 
 static void testMessageCompound() {
@@ -782,6 +916,8 @@ int main() {
   testStructInt();
   testStructFloat();
   testStructString();
+  testStructInt64();
+  testStructUint64();
   testStructCompound();
   testStructNested();
 
@@ -791,6 +927,8 @@ int main() {
   testMessageInt();
   testMessageFloat();
   testMessageString();
+  testMessageInt64();
+  testMessageUint64();
   testMessageCompound();
   testMessageNested();
 

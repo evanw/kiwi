@@ -163,6 +163,32 @@ impl<'a> ByteBuffer<'a> {
 
     Err(())
   }
+
+  /// Try to read a variable-length signed 64-bit integer starting at the
+  /// current index.
+  pub fn read_var_int64(&mut self) -> Result<i64, ()> {
+    let value = self.read_var_uint64()?;
+    Ok((if (value & 1) != 0 { !(value >> 1) } else { value >> 1 }) as i64)
+  }
+
+  /// Try to read a variable-length unsigned 64-bit integer starting at the
+  /// current index.
+  pub fn read_var_uint64(&mut self) -> Result<u64, ()> {
+    let mut shift: u8 = 0;
+    let mut result: u64 = 0;
+
+    loop {
+      let byte = self.read_byte()?;
+      if (byte & 128) == 0 || shift >= 56 {
+        result |= (byte as u64) << shift;
+        break;
+      }
+      result |= ((byte & 127) as u64) << shift;
+      shift += 7;
+    }
+
+    Ok(result)
+  }
 }
 
 #[test]
@@ -276,6 +302,69 @@ fn read_string() {
 }
 
 #[test]
+fn read_var_int64() {
+  let try = |bytes| { ByteBuffer::new(bytes).read_var_int64() };
+  assert_eq!(try(&[]), Err(()));
+  assert_eq!(try(&[0]), Ok(0));
+  assert_eq!(try(&[1]), Ok(-1));
+  assert_eq!(try(&[2]), Ok(1));
+  assert_eq!(try(&[3]), Ok(-2));
+  assert_eq!(try(&[4]), Ok(2));
+  assert_eq!(try(&[127]), Ok(-64));
+  assert_eq!(try(&[128]), Err(()));
+  assert_eq!(try(&[128, 0]), Ok(0));
+  assert_eq!(try(&[128, 1]), Ok(64));
+  assert_eq!(try(&[128, 2]), Ok(128));
+  assert_eq!(try(&[129, 0]), Ok(-1));
+  assert_eq!(try(&[129, 1]), Ok(-65));
+  assert_eq!(try(&[129, 2]), Ok(-129));
+  assert_eq!(try(&[253, 255, 7]), Ok(-65535));
+  assert_eq!(try(&[254, 255, 7]), Ok(65535));
+  assert_eq!(try(&[253, 255, 255, 255, 15]), Ok(-2147483647));
+  assert_eq!(try(&[254, 255, 255, 255, 15]), Ok(2147483647));
+  assert_eq!(try(&[255, 255, 255, 255, 15]), Ok(-2147483648));
+  assert_eq!(try(&[0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88]), Ok(0x4407_0C14_2030_4040));
+  assert_eq!(try(&[0x81, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x20]), Ok(-0x1000_0000_0000_0001));
+  assert_eq!(try(&[0x82, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x20]), Ok(0x1000_0000_0000_0001));
+  assert_eq!(try(&[0xFD, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]), Ok(-0x3FFF_FFFF_FFFF_FFFF));
+  assert_eq!(try(&[0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]), Ok(0x3FFF_FFFF_FFFF_FFFF));
+  assert_eq!(try(&[0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]), Ok(-0x4000_0000_0000_0000));
+  assert_eq!(try(&[0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80]), Ok(0x4000_0000_0000_0000));
+  assert_eq!(try(&[0xFD, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]), Ok(-0x7FFF_FFFF_FFFF_FFFF));
+  assert_eq!(try(&[0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]), Ok(0x7FFF_FFFF_FFFF_FFFF));
+  assert_eq!(try(&[0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]), Ok(-0x8000_0000_0000_0000));
+}
+
+#[test]
+fn read_var_uint64() {
+  let try = |bytes| { ByteBuffer::new(bytes).read_var_uint64() };
+  assert_eq!(try(&[]), Err(()));
+  assert_eq!(try(&[0]), Ok(0));
+  assert_eq!(try(&[1]), Ok(1));
+  assert_eq!(try(&[2]), Ok(2));
+  assert_eq!(try(&[3]), Ok(3));
+  assert_eq!(try(&[4]), Ok(4));
+  assert_eq!(try(&[127]), Ok(127));
+  assert_eq!(try(&[128]), Err(()));
+  assert_eq!(try(&[128, 0]), Ok(0));
+  assert_eq!(try(&[128, 1]), Ok(128));
+  assert_eq!(try(&[128, 2]), Ok(256));
+  assert_eq!(try(&[129, 0]), Ok(1));
+  assert_eq!(try(&[129, 1]), Ok(129));
+  assert_eq!(try(&[129, 2]), Ok(257));
+  assert_eq!(try(&[253, 255, 7]), Ok(131069));
+  assert_eq!(try(&[254, 255, 7]), Ok(131070));
+  assert_eq!(try(&[253, 255, 255, 255, 15]), Ok(4294967293));
+  assert_eq!(try(&[254, 255, 255, 255, 15]), Ok(4294967294));
+  assert_eq!(try(&[255, 255, 255, 255, 15]), Ok(4294967295));
+  assert_eq!(try(&[0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88]), Ok(0x880E_1828_4060_8080));
+  assert_eq!(try(&[0x81, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x10]), Ok(0x1000_0000_0000_0001));
+  assert_eq!(try(&[0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]), Ok(0x7FFF_FFFF_FFFF_FFFF));
+  assert_eq!(try(&[0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80]), Ok(0x8000_0000_0000_0000));
+  assert_eq!(try(&[0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]), Ok(0xFFFF_FFFF_FFFF_FFFF));
+}
+
+#[test]
 fn read_sequence() {
   let mut bb = ByteBuffer::new(&[0, 133, 242, 210, 237, 240, 159, 141, 149, 0, 149, 154, 239, 58]);
   assert_eq!(bb.read_var_float(), Ok(0.0));
@@ -380,6 +469,22 @@ impl ByteBufferMut {
     self.data.extend_from_slice(value.as_bytes());
     self.data.push(0);
   }
+
+  /// Write a variable-length signed 64-bit integer to the end of the buffer.
+  pub fn write_var_int64(&mut self, value: i64) {
+    self.write_var_uint64(((value << 1) ^ (value >> 63)) as u64);
+  }
+
+  /// Write a variable-length unsigned 64-bit integer to the end of the buffer.
+  pub fn write_var_uint64(&mut self, mut value: u64) {
+    let mut i = 0;
+    while value > 127 && i < 8 {
+      self.write_byte((value as u8 & 127) | 128);
+      value >>= 7;
+      i += 1;
+    }
+    self.write_byte(value as u8);
+  }
 }
 
 #[cfg(test)]
@@ -474,6 +579,56 @@ fn write_string() {
 }
 
 #[test]
+fn write_var_int64() {
+  assert_eq!(write_once(|bb| bb.write_var_int64(0)), [0]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(-1)), [1]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(1)), [2]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(-2)), [3]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(2)), [4]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(-64)), [127]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(64)), [128, 1]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(128)), [128, 2]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(-129)), [129, 2]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(-65535)), [253, 255, 7]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(65535)), [254, 255, 7]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(-2147483647)), [253, 255, 255, 255, 15]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(2147483647)), [254, 255, 255, 255, 15]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(-2147483648)), [255, 255, 255, 255, 15]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(-0x1000_0000_0000_0001)), [0x81, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x20]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(0x1000_0000_0000_0001)), [0x82, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x20]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(-0x3FFF_FFFF_FFFF_FFFF)), [0xFD, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(0x3FFF_FFFF_FFFF_FFFF)), [0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(-0x4000_0000_0000_0000)), [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(0x4000_0000_0000_0000)), [0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(-0x7FFF_FFFF_FFFF_FFFF)), [0xFD, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(0x7FFF_FFFF_FFFF_FFFF)), [0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]);
+  assert_eq!(write_once(|bb| bb.write_var_int64(-0x8000_0000_0000_0000)), [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]);
+}
+
+#[test]
+fn write_var_uint64() {
+  assert_eq!(write_once(|bb| bb.write_var_uint64(0)), [0]);
+  assert_eq!(write_once(|bb| bb.write_var_uint64(1)), [1]);
+  assert_eq!(write_once(|bb| bb.write_var_uint64(2)), [2]);
+  assert_eq!(write_once(|bb| bb.write_var_uint64(3)), [3]);
+  assert_eq!(write_once(|bb| bb.write_var_uint64(4)), [4]);
+  assert_eq!(write_once(|bb| bb.write_var_uint64(127)), [127]);
+  assert_eq!(write_once(|bb| bb.write_var_uint64(128)), [128, 1]);
+  assert_eq!(write_once(|bb| bb.write_var_uint64(256)), [128, 2]);
+  assert_eq!(write_once(|bb| bb.write_var_uint64(129)), [129, 1]);
+  assert_eq!(write_once(|bb| bb.write_var_uint64(257)), [129, 2]);
+  assert_eq!(write_once(|bb| bb.write_var_uint64(131069)), [253, 255, 7]);
+  assert_eq!(write_once(|bb| bb.write_var_uint64(131070)), [254, 255, 7]);
+  assert_eq!(write_once(|bb| bb.write_var_uint64(4294967293)), [253, 255, 255, 255, 15]);
+  assert_eq!(write_once(|bb| bb.write_var_uint64(4294967294)), [254, 255, 255, 255, 15]);
+  assert_eq!(write_once(|bb| bb.write_var_uint64(4294967295)), [255, 255, 255, 255, 15]);
+  assert_eq!(write_once(|bb| bb.write_var_uint64(0x1000_0000_0000_0001)), [0x81, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x10]);
+  assert_eq!(write_once(|bb| bb.write_var_uint64(0x7FFF_FFFF_FFFF_FFFF)), [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]);
+  assert_eq!(write_once(|bb| bb.write_var_uint64(0x8000_0000_0000_0000)), [0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80]);
+  assert_eq!(write_once(|bb| bb.write_var_uint64(0xFFFF_FFFF_FFFF_FFFF)), [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]);
+}
+
+#[test]
 fn write_sequence() {
   let mut bb = ByteBufferMut::new();
   bb.write_var_float(0.0);
@@ -489,6 +644,8 @@ pub const TYPE_INT: i32 = -3;
 pub const TYPE_UINT: i32 = -4;
 pub const TYPE_FLOAT: i32 = -5;
 pub const TYPE_STRING: i32 = -6;
+pub const TYPE_INT64: i32 = -7;
+pub const TYPE_UINT64: i32 = -8;
 
 /// Represents a single field in a [Def](struct.Def.html).
 #[derive(Debug, PartialEq)]
@@ -828,6 +985,8 @@ pub enum Value<'a> {
   UInt(u32),
   Float(f32),
   String(String),
+  Int64(i64),
+  UInt64(u64),
   Array(Vec<Value<'a>>),
   Enum(&'a str, &'a str),
   Object(&'a str, HashMap<&'a str, Value<'a>>),
@@ -955,6 +1114,8 @@ impl<'a> Value<'a> {
       TYPE_UINT => { Ok(Value::UInt(bb.read_var_uint()?)) },
       TYPE_FLOAT => { Ok(Value::Float(bb.read_var_float()?)) },
       TYPE_STRING => { Ok(Value::String(bb.read_string()?.into_owned())) },
+      TYPE_INT64 => { Ok(Value::Int64(bb.read_var_int64()?)) },
+      TYPE_UINT64 => { Ok(Value::UInt64(bb.read_var_uint64()?)) },
 
       _ => {
         let def = &schema.defs[type_id as usize];
@@ -1023,6 +1184,8 @@ impl<'a> Value<'a> {
       Value::UInt(value) => bb.write_var_uint(value),
       Value::Float(value) => bb.write_var_float(value),
       Value::String(ref value) => bb.write_string(value.as_str()),
+      Value::Int64(value) => bb.write_var_int64(value),
+      Value::UInt64(value) => bb.write_var_uint64(value),
 
       Value::Array(ref values) => {
         bb.write_var_uint(values.len() as u32);
@@ -1086,6 +1249,8 @@ impl<'a> fmt::Debug for Value<'a> {
       Value::UInt(value) => value.fmt(f),
       Value::Float(value) => value.fmt(f),
       Value::String(ref value) => value.fmt(f),
+      Value::Int64(value) => value.fmt(f),
+      Value::UInt64(value) => value.fmt(f),
       Value::Array(ref values) => values.fmt(f),
       Value::Enum(name, ref value) => write!(f, "{}::{}", name, value),
 
@@ -1229,19 +1394,23 @@ fn value_encode_and_decode() {
       Field {name: "v_uint".to_owned(), type_id: TYPE_UINT, is_array: false, value: 4},
       Field {name: "v_float".to_owned(), type_id: TYPE_FLOAT, is_array: false, value: 5},
       Field {name: "v_string".to_owned(), type_id: TYPE_STRING, is_array: false, value: 6},
-      Field {name: "v_enum".to_owned(), type_id: 0, is_array: false, value: 7},
-      Field {name: "v_struct".to_owned(), type_id: 1, is_array: false, value: 8},
-      Field {name: "v_message".to_owned(), type_id: 2, is_array: false, value: 9},
+      Field {name: "v_int64".to_owned(), type_id: TYPE_INT64, is_array: false, value: 7},
+      Field {name: "v_uint64".to_owned(), type_id: TYPE_UINT64, is_array: false, value: 8},
+      Field {name: "v_enum".to_owned(), type_id: 0, is_array: false, value: 9},
+      Field {name: "v_struct".to_owned(), type_id: 1, is_array: false, value: 10},
+      Field {name: "v_message".to_owned(), type_id: 2, is_array: false, value: 11},
 
-      Field {name: "a_bool".to_owned(), type_id: TYPE_BOOL, is_array: true, value: 10},
-      Field {name: "a_byte".to_owned(), type_id: TYPE_BYTE, is_array: true, value: 11},
-      Field {name: "a_int".to_owned(), type_id: TYPE_INT, is_array: true, value: 12},
-      Field {name: "a_uint".to_owned(), type_id: TYPE_UINT, is_array: true, value: 13},
-      Field {name: "a_float".to_owned(), type_id: TYPE_FLOAT, is_array: true, value: 14},
-      Field {name: "a_string".to_owned(), type_id: TYPE_STRING, is_array: true, value: 15},
-      Field {name: "a_enum".to_owned(), type_id: 0, is_array: true, value: 16},
-      Field {name: "a_struct".to_owned(), type_id: 1, is_array: true, value: 17},
-      Field {name: "a_message".to_owned(), type_id: 2, is_array: true, value: 18},
+      Field {name: "a_bool".to_owned(), type_id: TYPE_BOOL, is_array: true, value: 12},
+      Field {name: "a_byte".to_owned(), type_id: TYPE_BYTE, is_array: true, value: 13},
+      Field {name: "a_int".to_owned(), type_id: TYPE_INT, is_array: true, value: 14},
+      Field {name: "a_uint".to_owned(), type_id: TYPE_UINT, is_array: true, value: 15},
+      Field {name: "a_float".to_owned(), type_id: TYPE_FLOAT, is_array: true, value: 16},
+      Field {name: "a_string".to_owned(), type_id: TYPE_STRING, is_array: true, value: 17},
+      Field {name: "a_int64".to_owned(), type_id: TYPE_INT64, is_array: true, value: 18},
+      Field {name: "a_uint64".to_owned(), type_id: TYPE_UINT64, is_array: true, value: 19},
+      Field {name: "a_enum".to_owned(), type_id: 0, is_array: true, value: 20},
+      Field {name: "a_struct".to_owned(), type_id: 1, is_array: true, value: 21},
+      Field {name: "a_message".to_owned(), type_id: 2, is_array: true, value: 22},
     ]),
   ]);
 
@@ -1253,6 +1422,8 @@ fn value_encode_and_decode() {
   assert_eq!(Value::decode(&schema, TYPE_UINT, &[1]), Ok(Value::UInt(1)));
   assert_eq!(Value::decode(&schema, TYPE_FLOAT, &[126, 0, 0, 0]), Ok(Value::Float(0.5)));
   assert_eq!(Value::decode(&schema, TYPE_STRING, &[240, 159, 141, 149, 0]), Ok(Value::String("🍕".to_owned())));
+  assert_eq!(Value::decode(&schema, TYPE_INT64, &[1]), Ok(Value::Int64(-1)));
+  assert_eq!(Value::decode(&schema, TYPE_UINT64, &[1]), Ok(Value::UInt64(1)));
   assert_eq!(Value::decode(&schema, 0, &[0]), Err(()));
   assert_eq!(Value::decode(&schema, 0, &[100]), Ok(Value::Enum("Enum", "FOO")));
   assert_eq!(Value::decode(&schema, 0, &[200, 1]), Ok(Value::Enum("Enum", "BAR")));
@@ -1264,6 +1435,8 @@ fn value_encode_and_decode() {
   assert_eq!(Value::UInt(1).encode(&schema), [1]);
   assert_eq!(Value::Float(0.5).encode(&schema), [126, 0, 0, 0]);
   assert_eq!(Value::String("🍕".to_owned()).encode(&schema), [240, 159, 141, 149, 0]);
+  assert_eq!(Value::Int64(-1).encode(&schema), [1]);
+  assert_eq!(Value::UInt64(1).encode(&schema), [1]);
   assert_eq!(Value::Enum("Enum", "FOO").encode(&schema), [100]);
   assert_eq!(Value::Enum("Enum", "BAR").encode(&schema), [200, 1]);
 
@@ -1300,9 +1473,11 @@ fn value_encode_and_decode() {
   assert_eq!(Value::Object("Message", insert(HashMap::new(), "v_uint", Value::UInt(1))).encode(&schema), [4, 1, 0]);
   assert_eq!(Value::Object("Message", insert(HashMap::new(), "v_float", Value::Float(0.0))).encode(&schema), [5, 0, 0]);
   assert_eq!(Value::Object("Message", insert(HashMap::new(), "v_string", Value::String("".to_owned()))).encode(&schema), [6, 0, 0]);
-  assert_eq!(Value::Object("Message", insert(HashMap::new(), "v_enum", Value::Enum("Enum", "FOO"))).encode(&schema), [7, 100, 0]);
-  assert_eq!(Value::Object("Message", insert(HashMap::new(), "v_struct", empty_struct.clone())).encode(&schema), [8, 0, 0, 0]);
-  assert_eq!(Value::Object("Message", insert(HashMap::new(), "v_message", Value::Object("Message", HashMap::new()))).encode(&schema), [9, 0, 0]);
+  assert_eq!(Value::Object("Message", insert(HashMap::new(), "v_int64", Value::Int(-1))).encode(&schema), [7, 1, 0]);
+  assert_eq!(Value::Object("Message", insert(HashMap::new(), "v_uint64", Value::UInt(1))).encode(&schema), [8, 1, 0]);
+  assert_eq!(Value::Object("Message", insert(HashMap::new(), "v_enum", Value::Enum("Enum", "FOO"))).encode(&schema), [9, 100, 0]);
+  assert_eq!(Value::Object("Message", insert(HashMap::new(), "v_struct", empty_struct.clone())).encode(&schema), [10, 0, 0, 0]);
+  assert_eq!(Value::Object("Message", insert(HashMap::new(), "v_message", Value::Object("Message", HashMap::new()))).encode(&schema), [11, 0, 0]);
 
   assert_eq!(Value::decode(&schema, 2, &[1, 0, 0]), Ok(Value::Object("Message", insert(HashMap::new(), "v_bool", Value::Bool(false)))));
   assert_eq!(Value::decode(&schema, 2, &[1, 1, 0]), Ok(Value::Object("Message", insert(HashMap::new(), "v_bool", Value::Bool(true)))));
@@ -1311,9 +1486,11 @@ fn value_encode_and_decode() {
   assert_eq!(Value::decode(&schema, 2, &[4, 1, 0]), Ok(Value::Object("Message", insert(HashMap::new(), "v_uint", Value::UInt(1)))));
   assert_eq!(Value::decode(&schema, 2, &[5, 0, 0]), Ok(Value::Object("Message", insert(HashMap::new(), "v_float", Value::Float(0.0)))));
   assert_eq!(Value::decode(&schema, 2, &[6, 0, 0]), Ok(Value::Object("Message", insert(HashMap::new(), "v_string", Value::String("".to_owned())))));
-  assert_eq!(Value::decode(&schema, 2, &[7, 100, 0]), Ok(Value::Object("Message", insert(HashMap::new(), "v_enum", Value::Enum("Enum", "FOO")))));
-  assert_eq!(Value::decode(&schema, 2, &[8, 0, 0, 0]), Ok(Value::Object("Message", insert(HashMap::new(), "v_struct", empty_struct.clone()))));
-  assert_eq!(Value::decode(&schema, 2, &[9, 0, 0]), Ok(Value::Object("Message", insert(HashMap::new(), "v_message", Value::Object("Message", HashMap::new())))));
+  assert_eq!(Value::decode(&schema, 2, &[7, 1, 0]), Ok(Value::Object("Message", insert(HashMap::new(), "v_int64", Value::Int64(-1)))));
+  assert_eq!(Value::decode(&schema, 2, &[8, 1, 0]), Ok(Value::Object("Message", insert(HashMap::new(), "v_uint64", Value::UInt64(1)))));
+  assert_eq!(Value::decode(&schema, 2, &[9, 100, 0]), Ok(Value::Object("Message", insert(HashMap::new(), "v_enum", Value::Enum("Enum", "FOO")))));
+  assert_eq!(Value::decode(&schema, 2, &[10, 0, 0, 0]), Ok(Value::Object("Message", insert(HashMap::new(), "v_struct", empty_struct.clone()))));
+  assert_eq!(Value::decode(&schema, 2, &[11, 0, 0]), Ok(Value::Object("Message", insert(HashMap::new(), "v_message", Value::Object("Message", HashMap::new())))));
 }
 
 // This test case is for a bug where rustc was silently inferring an incorrect

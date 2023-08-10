@@ -32,12 +32,16 @@ namespace kiwi {
     bool readVarInt(int32_t &result);
     bool readString(const char *&result);
     bool readString(String &result, MemoryPool &pool);
+    bool readVarUint64(uint64_t &result);
+    bool readVarInt64(int64_t &result);
 
     void writeByte(uint8_t value);
     void writeVarFloat(float value);
     void writeVarUint(uint32_t value);
     void writeVarInt(int32_t value);
     void writeString(const char *value);
+    void writeVarUint64(uint64_t value);
+    void writeVarInt64(int64_t value);
 
   private:
     void _growBy(size_t amount);
@@ -143,6 +147,8 @@ namespace kiwi {
       TYPE_UINT = -4,
       TYPE_FLOAT = -5,
       TYPE_STRING = -6,
+      TYPE_INT64 = -7,
+      TYPE_UINT64 = -8,
     };
 
     struct Field {
@@ -293,6 +299,37 @@ namespace kiwi {
     return true;
   }
 
+  bool kiwi::ByteBuffer::readVarUint64(uint64_t &result) {
+    uint8_t shift = 0;
+    uint8_t byte;
+    result = 0;
+
+    while (true) {
+      if (!readByte(byte)) {
+        return false;
+      }
+      if (!(byte & 128) || shift >= 56) {
+        break;
+      }
+      result |= (uint64_t)(byte & 127) << shift;
+      shift += 7;
+    }
+
+    result |= (uint64_t)(byte) << shift;
+    return true;
+  }
+
+  bool kiwi::ByteBuffer::readVarInt64(int64_t &result) {
+    uint64_t value;
+    if (!readVarUint64(value)) {
+      result = 0;
+      return false;
+    }
+
+    result = value & 1 ? ~(value >> 1) : value >> 1;
+    return true;
+  }
+
   void kiwi::ByteBuffer::writeByte(uint8_t value) {
     assert(!_isConst);
     size_t index = _size;
@@ -337,6 +374,20 @@ namespace kiwi {
   void kiwi::ByteBuffer::writeVarInt(int32_t value) {
     assert(!_isConst);
     writeVarUint((value << 1) ^ (value >> 31));
+  }
+
+  void kiwi::ByteBuffer::writeVarUint64(uint64_t value) {
+    assert(!_isConst);
+    for (int i = 0; value > 127 && i < 8; i++) {
+      writeByte((value & 127) | 128);
+      value >>= 7;
+    }
+    writeByte(value);
+  }
+
+  void kiwi::ByteBuffer::writeVarInt64(int64_t value) {
+    assert(!_isConst);
+    writeVarUint64((value << 1) ^ (value >> 63));
   }
 
   void kiwi::ByteBuffer::writeString(const char *value) {

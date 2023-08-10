@@ -173,8 +173,9 @@ function main(args: string[]): number {
     if (rootType === null) {
       throw new Error('Missing flag --root-type when using --to-json');
     }
+    const replacer = (k: any, v: any) => typeof v === 'bigint' ? '' + v : v
     writeFileString(flags['--to-json'] + '.json', JSON.stringify((compiled as any)['decode' + rootType](
-      new Uint8Array(fs.readFileSync(flags['--to-json']))), null, 2) + '\n');
+      new Uint8Array(fs.readFileSync(flags['--to-json']))), replacer, 2) + '\n');
   }
 
   // Convert a JSON file to binary

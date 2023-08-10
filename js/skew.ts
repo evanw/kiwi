@@ -19,6 +19,8 @@ function skewDefaultValueForField(definitions: { [name: string]: Definition }, f
     case 'uint': return '0';
     case 'float': return '0.0';
     case 'string': return 'null';
+    case 'int64':
+    case 'uint64': return 'BigInt.new(0)';
   }
 
   let def = definitions[field.type!];
@@ -43,6 +45,8 @@ function skewTypeForField(field: Field): string | null {
     case 'uint': type = 'int'; break;
     case 'float': type = 'double'; break;
     case 'string': type = 'string'; break;
+    case 'int64':
+    case 'uint64': type = 'BigInt'; break;
     default: type = field.type; break;
   }
 
@@ -239,6 +243,16 @@ export function compileSchemaSkew(schema: Schema): string {
               break;
             }
 
+            case 'int64': {
+              code = 'bb.writeVarInt64(' + value + ')';
+              break;
+            }
+
+            case 'uint64': {
+              code = 'bb.writeVarUint64(' + value + ')';
+              break;
+            }
+
             default: {
               let type = definitions[field.type!];
               if (!type) {
@@ -362,6 +376,16 @@ export function compileSchemaSkew(schema: Schema): string {
 
             case 'string': {
               code = 'bb.readString';
+              break;
+            }
+
+            case 'int64': {
+              code = 'bb.readVarInt64';
+              break;
+            }
+
+            case 'uint64': {
+              code = 'bb.readVarUint64';
               break;
             }
 

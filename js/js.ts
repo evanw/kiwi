@@ -57,6 +57,16 @@ function compileDecode(definition: Definition, definitions: { [name: string]: De
         break;
       }
 
+      case 'int64': {
+        code = 'bb.readVarInt64()';
+        break;
+      }
+
+      case 'uint64': {
+        code = 'bb.readVarUint64()';
+        break;
+      }
+
       default: {
         let type = definitions[field.type!];
         if (!type) {
@@ -165,6 +175,16 @@ function compileEncode(definition: Definition, definitions: { [name: string]: De
 
       case 'string': {
         code = 'bb.writeString(value);';
+        break;
+      }
+
+      case 'int64': {
+        code = 'bb.writeVarInt64(value);';
+        break;
+      }
+
+      case 'uint64': {
+        code = 'bb.writeVarUint64(value);';
         break;
       }
 

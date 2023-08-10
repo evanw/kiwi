@@ -53,6 +53,7 @@ export function compileSchemaSkewTypes(schema: Schema): string {
         switch (field.type) {
           case 'byte': case 'uint': type = 'int'; break;
           case 'float': type = 'double'; break;
+          case 'int64': case 'uint64': type = 'BigInt'; break;
           default: type = field.type; break;
         }
 

@@ -11,6 +11,8 @@ struct BoolStruct { bool x; }
 struct ByteStruct { byte x; }
 struct IntStruct { int x; }
 struct UintStruct { uint x; }
+struct Int64Struct { int64 x; }
+struct Uint64Struct { uint64 x; }
 struct FloatStruct { float x; }
 struct StringStruct { string x; }
 struct CompoundStruct { uint x; uint y; }
@@ -20,6 +22,8 @@ message BoolMessage { bool x = 1; }
 message ByteMessage { byte x = 1; }
 message IntMessage { int x = 1; }
 message UintMessage { uint x = 1; }
+message Int64Message { int64 x = 1; }
+message Uint64Message { uint64 x = 1; }
 message FloatMessage { float x = 1; }
 message StringMessage { string x = 1; }
 message CompoundMessage { uint x = 1; uint y = 2; }
@@ -29,6 +33,8 @@ struct BoolArrayStruct { bool[] x; }
 struct ByteArrayStruct { byte[] x; }
 struct IntArrayStruct { int[] x; }
 struct UintArrayStruct { uint[] x; }
+struct Int64ArrayStruct { int64[] x; }
+struct Uint64ArrayStruct { uint64[] x; }
 struct FloatArrayStruct { float[] x; }
 struct StringArrayStruct { string[] x; }
 struct CompoundArrayStruct { uint[] x; uint[] y; }
@@ -37,6 +43,8 @@ message BoolArrayMessage { bool[] x = 1; }
 message ByteArrayMessage { byte[] x = 1; }
 message IntArrayMessage { int[] x = 1; }
 message UintArrayMessage { uint[] x = 1; }
+message Int64ArrayMessage { int64[] x = 1; }
+message Uint64ArrayMessage { uint64[] x = 1; }
 message FloatArrayMessage { float[] x = 1; }
 message StringArrayMessage { string[] x = 1; }
 message CompoundArrayMessage { uint[] x = 1; uint[] y = 2; }
@@ -71,6 +79,8 @@ struct SortedStruct {
   uint d1;
   float e1;
   string f1;
+  int64 g1;
+  uint64 h1;
 
   bool a2;
   byte b2;
@@ -78,6 +88,8 @@ struct SortedStruct {
   uint d2;
   float e2;
   string f2;
+  int64 g2;
+  uint64 h2;
 
   bool[] a3;
   byte[] b3;
@@ -85,4 +97,6 @@ struct SortedStruct {
   uint[] d3;
   float[] e3;
   string[] f3;
+  int64[] g3;
+  uint64[] h3;
 }

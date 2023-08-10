@@ -41,6 +41,8 @@ void testRoundTripSortedStruct() {
   writer.visitSortedStruct_d1(12345);
   writer.visitSortedStruct_e1(123.45);
   writer.visitSortedStruct_f1("abcde");
+  writer.visitSortedStruct_g1(-123456789012345678);
+  writer.visitSortedStruct_h1(123456789012345678);
 
   writer.visitSortedStruct_a2(true);
   writer.visitSortedStruct_b2(121);
@@ -48,6 +50,8 @@ void testRoundTripSortedStruct() {
   writer.visitSortedStruct_d2(12321);
   writer.visitSortedStruct_e2(123.21);
   writer.visitSortedStruct_f2("");
+  writer.visitSortedStruct_g2(-123456789012345678);
+  writer.visitSortedStruct_h2(123456789012345678);
 
   writer.visitSortedStruct_a3_count(2);
   writer.visitSortedStruct_a3_element(false);
@@ -72,6 +76,14 @@ void testRoundTripSortedStruct() {
   writer.visitSortedStruct_f3_count(2);
   writer.visitSortedStruct_f3_element("");
   writer.visitSortedStruct_f3_element("xyz");
+
+  writer.visitSortedStruct_g3_count(2);
+  writer.visitSortedStruct_g3_element(12345678);
+  writer.visitSortedStruct_g3_element(-123456789012345678);
+
+  writer.visitSortedStruct_h3_count(2);
+  writer.visitSortedStruct_h3_element(12345678);
+  writer.visitSortedStruct_h3_element(123456789012345678);
 
   writer.endSortedStruct();
 

@@ -1,0 +1,39 @@
+@import
+class BigInt {
+  def ~ BigInt
+  def - BigInt
+  def + BigInt
+
+  def +(x BigInt) BigInt
+  def -(x BigInt) BigInt
+  def *(x BigInt) BigInt
+  def /(x BigInt) BigInt
+  def %(x BigInt) BigInt
+  def &(x BigInt) BigInt
+  def |(x BigInt) BigInt
+  def ^(x BigInt) BigInt
+  def <<(x BigInt) BigInt
+  def >>(x BigInt) BigInt
+
+  def +=(x BigInt)
+  def -=(x BigInt)
+  def *=(x BigInt)
+  def /=(x BigInt)
+  def %=(x BigInt)
+  def &=(x BigInt)
+  def |=(x BigInt)
+  def ^=(x BigInt)
+  def <<=(x BigInt)
+  def >>=(x BigInt)
+
+  def <=>(x BigInt) int
+
+  def toInt int {
+    return dynamic.Number(self)
+  }
+}
+
+namespace BigInt {
+  def new(x int) BigInt { return dynamic.BigInt(x) }
+  def new(x string) BigInt { return dynamic.BigInt(x) }
+}

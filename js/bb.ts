@@ -86,6 +86,27 @@ export class ByteBuffer {
     return value & 1 ? ~(value >>> 1) : value >>> 1;
   }
 
+  readVarUint64(): bigint {
+    let value = BigInt(0);
+    let shift = BigInt(0);
+    let seven = BigInt(7);
+    let byte: number;
+    while ((byte = this.readByte()) & 128 && shift < 56) {
+      value |= BigInt(byte & 127) << shift;
+      shift += seven;
+    }
+    value |= BigInt(byte) << shift;
+    return value;
+  }
+
+  readVarInt64(): bigint {
+    let value = this.readVarUint64();
+    let one = BigInt(1);
+    let sign = value & one;
+    value >>= one;
+    return sign ? ~value : value;
+  }
+
   readString(): string {
     let result = '';
 
@@ -185,6 +206,25 @@ export class ByteBuffer {
 
   writeVarInt(value: number): void {
     this.writeVarUint((value << 1) ^ (value >> 31));
+  }
+
+  writeVarUint64(value: bigint | string): void {
+    if (typeof value === 'string') value = BigInt(value);
+    else if (typeof value !== 'bigint') throw new Error('Expected bigint but got ' + typeof value + ': ' + value);
+    let mask = BigInt(127);
+    let seven = BigInt(7);
+    for (let i = 0; value > mask && i < 8; i++) {
+      this.writeByte(Number(value & mask) | 128);
+      value >>= seven;
+    }
+    this.writeByte(Number(value));
+  }
+
+  writeVarInt64(value: bigint | string): void {
+    if (typeof value === 'string') value = BigInt(value);
+    else if (typeof value !== 'bigint') throw new Error('Expected bigint but got ' + typeof value + ': ' + value);
+    let one = BigInt(1);
+    this.writeVarUint64(value < 0 ? ~(value << one) : value << one);
   }
 
   writeString(value: string): void {

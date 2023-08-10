@@ -45,6 +45,7 @@ export function compileSchemaTypeScript(schema: Schema): string {
         switch (field.type) {
           case 'bool': type = 'boolean'; break;
           case 'byte': case 'int': case 'uint': case 'float': type = 'number'; break;
+          case 'int64': case 'uint64': type = 'bigint'; break;
           default: type = field.type; break;
         }
 

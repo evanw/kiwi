@@ -13,6 +13,8 @@ function argumentForField(definitions: { [name: string]: Definition }, type: str
     case 'uint': return { type: 'uint32_t ', name: name };
     case 'float': return { type: 'float ', name: name };
     case 'string': return { type: 'const char *', name: name };
+    case 'int64': return { type: 'int64_t ', name: name };
+    case 'uint64': return { type: 'uint64_t ', name: name };
     default: {
       let definition = definitions[type!];
       if (definition.kind === 'ENUM') return { type: definition.name + ' ', name: name };
@@ -69,6 +71,8 @@ function argToNotRead(arg: Argument): string {
     case 'uint32_t ': return '!bb.readVarUint(' + arg.name + ')';
     case 'float ': return '!bb.readVarFloat(' + arg.name + ')';
     case 'const char *': return '!bb.readString(' + arg.name + ')';
+    case 'int64_t ': return '!bb.readVarInt64(' + arg.name + ')';
+    case 'uint64_t ': return '!bb.readVarUint64(' + arg.name + ')';
     default: return '!bb.readVarUint(reinterpret_cast<uint32_t &>(' + arg.name + '))';
   }
 }
@@ -81,6 +85,8 @@ function argToWrite(arg: Argument): string {
     case 'uint32_t ': return '_bb.writeVarUint(' + arg.name + ')';
     case 'float ': return '_bb.writeVarFloat(' + arg.name + ')';
     case 'const char *': return '_bb.writeString(' + arg.name + ')';
+    case 'int64_t ': return '_bb.writeVarInt64(' + arg.name + ')';
+    case 'uint64_t ': return '_bb.writeVarUint64(' + arg.name + ')';
     default: return '_bb.writeVarUint(static_cast<uint32_t>(' + arg.name + '))';
   }
 }
