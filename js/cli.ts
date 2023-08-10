@@ -117,8 +117,9 @@ export function main(args: string[]): number {
   try {
     var parsed: Schema = typeof content === 'string' ? parseSchema(content) : decodeBinarySchema(new ByteBuffer(content));
     var compiled = compileSchema(parsed);
-  } catch (e) {
-    if (e && e.message && 'line' in e || 'column' in e) {
+  } catch (err) {
+    var e = err as Error | (Error & { line: number, column: number });
+    if (e && e.message && 'line' in e && 'column' in e) {
       e.message = flags['--schema'] + ':' + e.line + ':' + e.column + ': error: ' + e.message;
       if (typeof content === 'string') {
         e.message += '\n' + content.split('\n')[e.line - 1] + '\n' + new Array(e.column).join(' ') + '^';
