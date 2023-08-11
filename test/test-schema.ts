@@ -24,6 +24,14 @@ export namespace test {
     x: number;
   }
 
+  export interface Int64Struct {
+    x: bigint;
+  }
+
+  export interface Uint64Struct {
+    x: bigint;
+  }
+
   export interface FloatStruct {
     x: number;
   }
@@ -57,6 +65,14 @@ export namespace test {
 
   export interface UintMessage {
     x?: number;
+  }
+
+  export interface Int64Message {
+    x?: bigint;
+  }
+
+  export interface Uint64Message {
+    x?: bigint;
   }
 
   export interface FloatMessage {
@@ -94,6 +110,14 @@ export namespace test {
     x: number[];
   }
 
+  export interface Int64ArrayStruct {
+    x: bigint[];
+  }
+
+  export interface Uint64ArrayStruct {
+    x: bigint[];
+  }
+
   export interface FloatArrayStruct {
     x: number[];
   }
@@ -121,6 +145,14 @@ export namespace test {
 
   export interface UintArrayMessage {
     x?: number[];
+  }
+
+  export interface Int64ArrayMessage {
+    x?: bigint[];
+  }
+
+  export interface Uint64ArrayMessage {
+    x?: bigint[];
   }
 
   export interface FloatArrayMessage {
@@ -164,18 +196,24 @@ export namespace test {
     d1: number;
     e1: number;
     f1: string;
+    g1: bigint;
+    h1: bigint;
     a2: boolean;
     b2: number;
     c2: number;
     d2: number;
     e2: number;
     f2: string;
+    g2: bigint;
+    h2: bigint;
     a3: boolean[];
     b3: Uint8Array;
     c3: number[];
     d3: number[];
     e3: number[];
     f3: string[];
+    g3: bigint[];
+    h3: bigint[];
   }
 
   export interface Schema {
@@ -190,6 +228,10 @@ export namespace test {
     decodeIntStruct(buffer: Uint8Array): IntStruct;
     encodeUintStruct(message: UintStruct): Uint8Array;
     decodeUintStruct(buffer: Uint8Array): UintStruct;
+    encodeInt64Struct(message: Int64Struct): Uint8Array;
+    decodeInt64Struct(buffer: Uint8Array): Int64Struct;
+    encodeUint64Struct(message: Uint64Struct): Uint8Array;
+    decodeUint64Struct(buffer: Uint8Array): Uint64Struct;
     encodeFloatStruct(message: FloatStruct): Uint8Array;
     decodeFloatStruct(buffer: Uint8Array): FloatStruct;
     encodeStringStruct(message: StringStruct): Uint8Array;
@@ -206,6 +248,10 @@ export namespace test {
     decodeIntMessage(buffer: Uint8Array): IntMessage;
     encodeUintMessage(message: UintMessage): Uint8Array;
     decodeUintMessage(buffer: Uint8Array): UintMessage;
+    encodeInt64Message(message: Int64Message): Uint8Array;
+    decodeInt64Message(buffer: Uint8Array): Int64Message;
+    encodeUint64Message(message: Uint64Message): Uint8Array;
+    decodeUint64Message(buffer: Uint8Array): Uint64Message;
     encodeFloatMessage(message: FloatMessage): Uint8Array;
     decodeFloatMessage(buffer: Uint8Array): FloatMessage;
     encodeStringMessage(message: StringMessage): Uint8Array;
@@ -222,6 +268,10 @@ export namespace test {
     decodeIntArrayStruct(buffer: Uint8Array): IntArrayStruct;
     encodeUintArrayStruct(message: UintArrayStruct): Uint8Array;
     decodeUintArrayStruct(buffer: Uint8Array): UintArrayStruct;
+    encodeInt64ArrayStruct(message: Int64ArrayStruct): Uint8Array;
+    decodeInt64ArrayStruct(buffer: Uint8Array): Int64ArrayStruct;
+    encodeUint64ArrayStruct(message: Uint64ArrayStruct): Uint8Array;
+    decodeUint64ArrayStruct(buffer: Uint8Array): Uint64ArrayStruct;
     encodeFloatArrayStruct(message: FloatArrayStruct): Uint8Array;
     decodeFloatArrayStruct(buffer: Uint8Array): FloatArrayStruct;
     encodeStringArrayStruct(message: StringArrayStruct): Uint8Array;
@@ -236,6 +286,10 @@ export namespace test {
     decodeIntArrayMessage(buffer: Uint8Array): IntArrayMessage;
     encodeUintArrayMessage(message: UintArrayMessage): Uint8Array;
     decodeUintArrayMessage(buffer: Uint8Array): UintArrayMessage;
+    encodeInt64ArrayMessage(message: Int64ArrayMessage): Uint8Array;
+    decodeInt64ArrayMessage(buffer: Uint8Array): Int64ArrayMessage;
+    encodeUint64ArrayMessage(message: Uint64ArrayMessage): Uint8Array;
+    decodeUint64ArrayMessage(buffer: Uint8Array): Uint64ArrayMessage;
     encodeFloatArrayMessage(message: FloatArrayMessage): Uint8Array;
     decodeFloatArrayMessage(buffer: Uint8Array): FloatArrayMessage;
     encodeStringArrayMessage(message: StringArrayMessage): Uint8Array;

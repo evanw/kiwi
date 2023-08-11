@@ -21,6 +21,8 @@ public:
   virtual void visitByteStruct(uint8_t x) = 0;
   virtual void visitIntStruct(int32_t x) = 0;
   virtual void visitUintStruct(uint32_t x) = 0;
+  virtual void visitInt64Struct(int64_t x) = 0;
+  virtual void visitUint64Struct(uint64_t x) = 0;
   virtual void visitFloatStruct(float x) = 0;
   virtual void visitStringStruct(const char *x) = 0;
   virtual void visitCompoundStruct(uint32_t x, uint32_t y) = 0;
@@ -37,6 +39,12 @@ public:
   virtual void beginUintMessage() = 0;
   virtual void visitUintMessage_x(uint32_t x) = 0;
   virtual void endUintMessage() = 0;
+  virtual void beginInt64Message() = 0;
+  virtual void visitInt64Message_x(int64_t x) = 0;
+  virtual void endInt64Message() = 0;
+  virtual void beginUint64Message() = 0;
+  virtual void visitUint64Message_x(uint64_t x) = 0;
+  virtual void endUint64Message() = 0;
   virtual void beginFloatMessage() = 0;
   virtual void visitFloatMessage_x(float x) = 0;
   virtual void endFloatMessage() = 0;
@@ -68,6 +76,14 @@ public:
   virtual void visitUintArrayStruct_x_count(uint32_t size) = 0;
   virtual void visitUintArrayStruct_x_element(uint32_t x) = 0;
   virtual void endUintArrayStruct() = 0;
+  virtual void beginInt64ArrayStruct() = 0;
+  virtual void visitInt64ArrayStruct_x_count(uint32_t size) = 0;
+  virtual void visitInt64ArrayStruct_x_element(int64_t x) = 0;
+  virtual void endInt64ArrayStruct() = 0;
+  virtual void beginUint64ArrayStruct() = 0;
+  virtual void visitUint64ArrayStruct_x_count(uint32_t size) = 0;
+  virtual void visitUint64ArrayStruct_x_element(uint64_t x) = 0;
+  virtual void endUint64ArrayStruct() = 0;
   virtual void beginFloatArrayStruct() = 0;
   virtual void visitFloatArrayStruct_x_count(uint32_t size) = 0;
   virtual void visitFloatArrayStruct_x_element(float x) = 0;
@@ -98,6 +114,14 @@ public:
   virtual void visitUintArrayMessage_x_count(uint32_t size) = 0;
   virtual void visitUintArrayMessage_x_element(uint32_t x) = 0;
   virtual void endUintArrayMessage() = 0;
+  virtual void beginInt64ArrayMessage() = 0;
+  virtual void visitInt64ArrayMessage_x_count(uint32_t size) = 0;
+  virtual void visitInt64ArrayMessage_x_element(int64_t x) = 0;
+  virtual void endInt64ArrayMessage() = 0;
+  virtual void beginUint64ArrayMessage() = 0;
+  virtual void visitUint64ArrayMessage_x_count(uint32_t size) = 0;
+  virtual void visitUint64ArrayMessage_x_element(uint64_t x) = 0;
+  virtual void endUint64ArrayMessage() = 0;
   virtual void beginFloatArrayMessage() = 0;
   virtual void visitFloatArrayMessage_x_count(uint32_t size) = 0;
   virtual void visitFloatArrayMessage_x_element(float x) = 0;
@@ -140,12 +164,16 @@ public:
   virtual void visitSortedStruct_d1(uint32_t d1) = 0;
   virtual void visitSortedStruct_e1(float e1) = 0;
   virtual void visitSortedStruct_f1(const char *f1) = 0;
+  virtual void visitSortedStruct_g1(int64_t g1) = 0;
+  virtual void visitSortedStruct_h1(uint64_t h1) = 0;
   virtual void visitSortedStruct_a2(bool a2) = 0;
   virtual void visitSortedStruct_b2(uint8_t b2) = 0;
   virtual void visitSortedStruct_c2(int32_t c2) = 0;
   virtual void visitSortedStruct_d2(uint32_t d2) = 0;
   virtual void visitSortedStruct_e2(float e2) = 0;
   virtual void visitSortedStruct_f2(const char *f2) = 0;
+  virtual void visitSortedStruct_g2(int64_t g2) = 0;
+  virtual void visitSortedStruct_h2(uint64_t h2) = 0;
   virtual void visitSortedStruct_a3_count(uint32_t size) = 0;
   virtual void visitSortedStruct_a3_element(bool a3) = 0;
   virtual void visitSortedStruct_b3_count(uint32_t size) = 0;
@@ -158,6 +186,10 @@ public:
   virtual void visitSortedStruct_e3_element(float e3) = 0;
   virtual void visitSortedStruct_f3_count(uint32_t size) = 0;
   virtual void visitSortedStruct_f3_element(const char *f3) = 0;
+  virtual void visitSortedStruct_g3_count(uint32_t size) = 0;
+  virtual void visitSortedStruct_g3_element(int64_t g3) = 0;
+  virtual void visitSortedStruct_h3_count(uint32_t size) = 0;
+  virtual void visitSortedStruct_h3_element(uint64_t h3) = 0;
   virtual void endSortedStruct() = 0;
 };
 
@@ -175,6 +207,8 @@ public:
   virtual void visitByteStruct(uint8_t x) override;
   virtual void visitIntStruct(int32_t x) override;
   virtual void visitUintStruct(uint32_t x) override;
+  virtual void visitInt64Struct(int64_t x) override;
+  virtual void visitUint64Struct(uint64_t x) override;
   virtual void visitFloatStruct(float x) override;
   virtual void visitStringStruct(const char *x) override;
   virtual void visitCompoundStruct(uint32_t x, uint32_t y) override;
@@ -191,6 +225,12 @@ public:
   virtual void beginUintMessage() override;
   virtual void visitUintMessage_x(uint32_t x) override;
   virtual void endUintMessage() override;
+  virtual void beginInt64Message() override;
+  virtual void visitInt64Message_x(int64_t x) override;
+  virtual void endInt64Message() override;
+  virtual void beginUint64Message() override;
+  virtual void visitUint64Message_x(uint64_t x) override;
+  virtual void endUint64Message() override;
   virtual void beginFloatMessage() override;
   virtual void visitFloatMessage_x(float x) override;
   virtual void endFloatMessage() override;
@@ -222,6 +262,14 @@ public:
   virtual void visitUintArrayStruct_x_count(uint32_t size) override;
   virtual void visitUintArrayStruct_x_element(uint32_t x) override;
   virtual void endUintArrayStruct() override;
+  virtual void beginInt64ArrayStruct() override;
+  virtual void visitInt64ArrayStruct_x_count(uint32_t size) override;
+  virtual void visitInt64ArrayStruct_x_element(int64_t x) override;
+  virtual void endInt64ArrayStruct() override;
+  virtual void beginUint64ArrayStruct() override;
+  virtual void visitUint64ArrayStruct_x_count(uint32_t size) override;
+  virtual void visitUint64ArrayStruct_x_element(uint64_t x) override;
+  virtual void endUint64ArrayStruct() override;
   virtual void beginFloatArrayStruct() override;
   virtual void visitFloatArrayStruct_x_count(uint32_t size) override;
   virtual void visitFloatArrayStruct_x_element(float x) override;
@@ -252,6 +300,14 @@ public:
   virtual void visitUintArrayMessage_x_count(uint32_t size) override;
   virtual void visitUintArrayMessage_x_element(uint32_t x) override;
   virtual void endUintArrayMessage() override;
+  virtual void beginInt64ArrayMessage() override;
+  virtual void visitInt64ArrayMessage_x_count(uint32_t size) override;
+  virtual void visitInt64ArrayMessage_x_element(int64_t x) override;
+  virtual void endInt64ArrayMessage() override;
+  virtual void beginUint64ArrayMessage() override;
+  virtual void visitUint64ArrayMessage_x_count(uint32_t size) override;
+  virtual void visitUint64ArrayMessage_x_element(uint64_t x) override;
+  virtual void endUint64ArrayMessage() override;
   virtual void beginFloatArrayMessage() override;
   virtual void visitFloatArrayMessage_x_count(uint32_t size) override;
   virtual void visitFloatArrayMessage_x_element(float x) override;
@@ -294,12 +350,16 @@ public:
   virtual void visitSortedStruct_d1(uint32_t d1) override;
   virtual void visitSortedStruct_e1(float e1) override;
   virtual void visitSortedStruct_f1(const char *f1) override;
+  virtual void visitSortedStruct_g1(int64_t g1) override;
+  virtual void visitSortedStruct_h1(uint64_t h1) override;
   virtual void visitSortedStruct_a2(bool a2) override;
   virtual void visitSortedStruct_b2(uint8_t b2) override;
   virtual void visitSortedStruct_c2(int32_t c2) override;
   virtual void visitSortedStruct_d2(uint32_t d2) override;
   virtual void visitSortedStruct_e2(float e2) override;
   virtual void visitSortedStruct_f2(const char *f2) override;
+  virtual void visitSortedStruct_g2(int64_t g2) override;
+  virtual void visitSortedStruct_h2(uint64_t h2) override;
   virtual void visitSortedStruct_a3_count(uint32_t size) override;
   virtual void visitSortedStruct_a3_element(bool a3) override;
   virtual void visitSortedStruct_b3_count(uint32_t size) override;
@@ -312,6 +372,10 @@ public:
   virtual void visitSortedStruct_e3_element(float e3) override;
   virtual void visitSortedStruct_f3_count(uint32_t size) override;
   virtual void visitSortedStruct_f3_element(const char *f3) override;
+  virtual void visitSortedStruct_g3_count(uint32_t size) override;
+  virtual void visitSortedStruct_g3_element(int64_t g3) override;
+  virtual void visitSortedStruct_h3_count(uint32_t size) override;
+  virtual void visitSortedStruct_h3_element(uint64_t h3) override;
   virtual void endSortedStruct() override;
 };
 
@@ -320,6 +384,8 @@ bool parseBoolStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseByteStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseIntStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseUintStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
+bool parseInt64Struct(kiwi::ByteBuffer &bb, Visitor &visitor);
+bool parseUint64Struct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseFloatStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseStringStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseCompoundStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
@@ -328,6 +394,8 @@ bool parseBoolMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseByteMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseIntMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseUintMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
+bool parseInt64Message(kiwi::ByteBuffer &bb, Visitor &visitor);
+bool parseUint64Message(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseFloatMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseStringMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseCompoundMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
@@ -336,6 +404,8 @@ bool parseBoolArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseByteArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseIntArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseUintArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
+bool parseInt64ArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
+bool parseUint64ArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseFloatArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseStringArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseCompoundArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor);
@@ -343,6 +413,8 @@ bool parseBoolArrayMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseByteArrayMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseIntArrayMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseUintArrayMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
+bool parseInt64ArrayMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
+bool parseUint64ArrayMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseFloatArrayMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseStringArrayMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
 bool parseCompoundArrayMessage(kiwi::ByteBuffer &bb, Visitor &visitor);
@@ -395,6 +467,20 @@ bool parseUintStruct(kiwi::ByteBuffer &bb, Visitor &visitor) {
   uint32_t x;
   if (!bb.readVarUint(x)) return false;
   visitor.visitUintStruct(x);
+  return true;
+}
+
+bool parseInt64Struct(kiwi::ByteBuffer &bb, Visitor &visitor) {
+  int64_t x;
+  if (!bb.readVarInt64(x)) return false;
+  visitor.visitInt64Struct(x);
+  return true;
+}
+
+bool parseUint64Struct(kiwi::ByteBuffer &bb, Visitor &visitor) {
+  uint64_t x;
+  if (!bb.readVarUint64(x)) return false;
+  visitor.visitUint64Struct(x);
   return true;
 }
 
@@ -507,6 +593,48 @@ bool parseUintMessage(kiwi::ByteBuffer &bb, Visitor &visitor) {
         uint32_t x;
         if (!bb.readVarUint(x)) return false;
         visitor.visitUintMessage_x(x);
+        break;
+      }
+      default: return false;
+    }
+  }
+}
+
+bool parseInt64Message(kiwi::ByteBuffer &bb, Visitor &visitor) {
+  visitor.beginInt64Message();
+  while (true) {
+    uint32_t _type;
+    if (!bb.readVarUint(_type)) return false;
+    switch (_type) {
+      case 0: {
+        visitor.endInt64Message();
+        return true;
+      }
+      case 1: {
+        int64_t x;
+        if (!bb.readVarInt64(x)) return false;
+        visitor.visitInt64Message_x(x);
+        break;
+      }
+      default: return false;
+    }
+  }
+}
+
+bool parseUint64Message(kiwi::ByteBuffer &bb, Visitor &visitor) {
+  visitor.beginUint64Message();
+  while (true) {
+    uint32_t _type;
+    if (!bb.readVarUint(_type)) return false;
+    switch (_type) {
+      case 0: {
+        visitor.endUint64Message();
+        return true;
+      }
+      case 1: {
+        uint64_t x;
+        if (!bb.readVarUint64(x)) return false;
+        visitor.visitUint64Message_x(x);
         break;
       }
       default: return false;
@@ -671,6 +799,34 @@ bool parseUintArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor) {
   return true;
 }
 
+bool parseInt64ArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor) {
+  visitor.beginInt64ArrayStruct();
+  uint32_t _x_count;
+  if (!bb.readVarUint(_x_count)) return false;
+  visitor.visitInt64ArrayStruct_x_count(_x_count);
+  while (_x_count-- > 0) {
+    int64_t x;
+    if (!bb.readVarInt64(x)) return false;
+    visitor.visitInt64ArrayStruct_x_element(x);
+  }
+  visitor.endInt64ArrayStruct();
+  return true;
+}
+
+bool parseUint64ArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor) {
+  visitor.beginUint64ArrayStruct();
+  uint32_t _x_count;
+  if (!bb.readVarUint(_x_count)) return false;
+  visitor.visitUint64ArrayStruct_x_count(_x_count);
+  while (_x_count-- > 0) {
+    uint64_t x;
+    if (!bb.readVarUint64(x)) return false;
+    visitor.visitUint64ArrayStruct_x_element(x);
+  }
+  visitor.endUint64ArrayStruct();
+  return true;
+}
+
 bool parseFloatArrayStruct(kiwi::ByteBuffer &bb, Visitor &visitor) {
   visitor.beginFloatArrayStruct();
   uint32_t _x_count;
@@ -817,6 +973,58 @@ bool parseUintArrayMessage(kiwi::ByteBuffer &bb, Visitor &visitor) {
           uint32_t x;
           if (!bb.readVarUint(x)) return false;
           visitor.visitUintArrayMessage_x_element(x);
+        }
+        break;
+      }
+      default: return false;
+    }
+  }
+}
+
+bool parseInt64ArrayMessage(kiwi::ByteBuffer &bb, Visitor &visitor) {
+  visitor.beginInt64ArrayMessage();
+  while (true) {
+    uint32_t _type;
+    if (!bb.readVarUint(_type)) return false;
+    switch (_type) {
+      case 0: {
+        visitor.endInt64ArrayMessage();
+        return true;
+      }
+      case 1: {
+        uint32_t _x_count;
+        if (!bb.readVarUint(_x_count)) return false;
+        visitor.visitInt64ArrayMessage_x_count(_x_count);
+        while (_x_count-- > 0) {
+          int64_t x;
+          if (!bb.readVarInt64(x)) return false;
+          visitor.visitInt64ArrayMessage_x_element(x);
+        }
+        break;
+      }
+      default: return false;
+    }
+  }
+}
+
+bool parseUint64ArrayMessage(kiwi::ByteBuffer &bb, Visitor &visitor) {
+  visitor.beginUint64ArrayMessage();
+  while (true) {
+    uint32_t _type;
+    if (!bb.readVarUint(_type)) return false;
+    switch (_type) {
+      case 0: {
+        visitor.endUint64ArrayMessage();
+        return true;
+      }
+      case 1: {
+        uint32_t _x_count;
+        if (!bb.readVarUint(_x_count)) return false;
+        visitor.visitUint64ArrayMessage_x_count(_x_count);
+        while (_x_count-- > 0) {
+          uint64_t x;
+          if (!bb.readVarUint64(x)) return false;
+          visitor.visitUint64ArrayMessage_x_element(x);
         }
         break;
       }
@@ -1084,6 +1292,12 @@ bool parseSortedStruct(kiwi::ByteBuffer &bb, Visitor &visitor) {
   const char *f1;
   if (!bb.readString(f1)) return false;
   visitor.visitSortedStruct_f1(f1);
+  int64_t g1;
+  if (!bb.readVarInt64(g1)) return false;
+  visitor.visitSortedStruct_g1(g1);
+  uint64_t h1;
+  if (!bb.readVarUint64(h1)) return false;
+  visitor.visitSortedStruct_h1(h1);
   bool a2;
   if (!bb.readByte(a2)) return false;
   visitor.visitSortedStruct_a2(a2);
@@ -1102,6 +1316,12 @@ bool parseSortedStruct(kiwi::ByteBuffer &bb, Visitor &visitor) {
   const char *f2;
   if (!bb.readString(f2)) return false;
   visitor.visitSortedStruct_f2(f2);
+  int64_t g2;
+  if (!bb.readVarInt64(g2)) return false;
+  visitor.visitSortedStruct_g2(g2);
+  uint64_t h2;
+  if (!bb.readVarUint64(h2)) return false;
+  visitor.visitSortedStruct_h2(h2);
   uint32_t _a3_count;
   if (!bb.readVarUint(_a3_count)) return false;
   visitor.visitSortedStruct_a3_count(_a3_count);
@@ -1150,6 +1370,22 @@ bool parseSortedStruct(kiwi::ByteBuffer &bb, Visitor &visitor) {
     if (!bb.readString(f3)) return false;
     visitor.visitSortedStruct_f3_element(f3);
   }
+  uint32_t _g3_count;
+  if (!bb.readVarUint(_g3_count)) return false;
+  visitor.visitSortedStruct_g3_count(_g3_count);
+  while (_g3_count-- > 0) {
+    int64_t g3;
+    if (!bb.readVarInt64(g3)) return false;
+    visitor.visitSortedStruct_g3_element(g3);
+  }
+  uint32_t _h3_count;
+  if (!bb.readVarUint(_h3_count)) return false;
+  visitor.visitSortedStruct_h3_count(_h3_count);
+  while (_h3_count-- > 0) {
+    uint64_t h3;
+    if (!bb.readVarUint64(h3)) return false;
+    visitor.visitSortedStruct_h3_element(h3);
+  }
   visitor.endSortedStruct();
   return true;
 }
@@ -1186,6 +1422,14 @@ void Writer::visitIntStruct(int32_t x) {
 
 void Writer::visitUintStruct(uint32_t x) {
   _bb.writeVarUint(x);
+}
+
+void Writer::visitInt64Struct(int64_t x) {
+  _bb.writeVarInt64(x);
+}
+
+void Writer::visitUint64Struct(uint64_t x) {
+  _bb.writeVarUint64(x);
 }
 
 void Writer::visitFloatStruct(float x) {
@@ -1253,6 +1497,30 @@ void Writer::visitUintMessage_x(uint32_t x) {
 }
 
 void Writer::endUintMessage() {
+  _bb.writeVarUint(0);
+}
+
+void Writer::beginInt64Message() {
+}
+
+void Writer::visitInt64Message_x(int64_t x) {
+  _bb.writeVarUint(1);
+  _bb.writeVarInt64(x);
+}
+
+void Writer::endInt64Message() {
+  _bb.writeVarUint(0);
+}
+
+void Writer::beginUint64Message() {
+}
+
+void Writer::visitUint64Message_x(uint64_t x) {
+  _bb.writeVarUint(1);
+  _bb.writeVarUint64(x);
+}
+
+void Writer::endUint64Message() {
   _bb.writeVarUint(0);
 }
 
@@ -1374,6 +1642,34 @@ void Writer::visitUintArrayStruct_x_element(uint32_t x) {
 void Writer::endUintArrayStruct() {
 }
 
+void Writer::beginInt64ArrayStruct() {
+}
+
+void Writer::visitInt64ArrayStruct_x_count(uint32_t size) {
+  _bb.writeVarUint(size);
+}
+
+void Writer::visitInt64ArrayStruct_x_element(int64_t x) {
+  _bb.writeVarInt64(x);
+}
+
+void Writer::endInt64ArrayStruct() {
+}
+
+void Writer::beginUint64ArrayStruct() {
+}
+
+void Writer::visitUint64ArrayStruct_x_count(uint32_t size) {
+  _bb.writeVarUint(size);
+}
+
+void Writer::visitUint64ArrayStruct_x_element(uint64_t x) {
+  _bb.writeVarUint64(x);
+}
+
+void Writer::endUint64ArrayStruct() {
+}
+
 void Writer::beginFloatArrayStruct() {
 }
 
@@ -1485,6 +1781,38 @@ void Writer::visitUintArrayMessage_x_element(uint32_t x) {
 }
 
 void Writer::endUintArrayMessage() {
+  _bb.writeVarUint(0);
+}
+
+void Writer::beginInt64ArrayMessage() {
+}
+
+void Writer::visitInt64ArrayMessage_x_count(uint32_t size) {
+  _bb.writeVarUint(1);
+  _bb.writeVarUint(size);
+}
+
+void Writer::visitInt64ArrayMessage_x_element(int64_t x) {
+  _bb.writeVarInt64(x);
+}
+
+void Writer::endInt64ArrayMessage() {
+  _bb.writeVarUint(0);
+}
+
+void Writer::beginUint64ArrayMessage() {
+}
+
+void Writer::visitUint64ArrayMessage_x_count(uint32_t size) {
+  _bb.writeVarUint(1);
+  _bb.writeVarUint(size);
+}
+
+void Writer::visitUint64ArrayMessage_x_element(uint64_t x) {
+  _bb.writeVarUint64(x);
+}
+
+void Writer::endUint64ArrayMessage() {
   _bb.writeVarUint(0);
 }
 
@@ -1664,6 +1992,14 @@ void Writer::visitSortedStruct_f1(const char *f1) {
   _bb.writeString(f1);
 }
 
+void Writer::visitSortedStruct_g1(int64_t g1) {
+  _bb.writeVarInt64(g1);
+}
+
+void Writer::visitSortedStruct_h1(uint64_t h1) {
+  _bb.writeVarUint64(h1);
+}
+
 void Writer::visitSortedStruct_a2(bool a2) {
   _bb.writeByte(a2);
 }
@@ -1686,6 +2022,14 @@ void Writer::visitSortedStruct_e2(float e2) {
 
 void Writer::visitSortedStruct_f2(const char *f2) {
   _bb.writeString(f2);
+}
+
+void Writer::visitSortedStruct_g2(int64_t g2) {
+  _bb.writeVarInt64(g2);
+}
+
+void Writer::visitSortedStruct_h2(uint64_t h2) {
+  _bb.writeVarUint64(h2);
 }
 
 void Writer::visitSortedStruct_a3_count(uint32_t size) {
@@ -1734,6 +2078,22 @@ void Writer::visitSortedStruct_f3_count(uint32_t size) {
 
 void Writer::visitSortedStruct_f3_element(const char *f3) {
   _bb.writeString(f3);
+}
+
+void Writer::visitSortedStruct_g3_count(uint32_t size) {
+  _bb.writeVarUint(size);
+}
+
+void Writer::visitSortedStruct_g3_element(int64_t g3) {
+  _bb.writeVarInt64(g3);
+}
+
+void Writer::visitSortedStruct_h3_count(uint32_t size) {
+  _bb.writeVarUint(size);
+}
+
+void Writer::visitSortedStruct_h3_element(uint64_t h3) {
+  _bb.writeVarUint64(h3);
 }
 
 void Writer::endSortedStruct() {

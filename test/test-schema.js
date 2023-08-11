@@ -142,6 +142,54 @@ test["encodeUintStruct"] = function (message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
+test["decodeInt64Struct"] = function (bb) {
+  var result = {};
+  if (!(bb instanceof this.ByteBuffer)) {
+    bb = new this.ByteBuffer(bb);
+  }
+
+  result["x"] = bb.readVarInt64();
+  return result;
+};
+
+test["encodeInt64Struct"] = function (message, bb) {
+  var isTopLevel = !bb;
+  if (isTopLevel) bb = new this.ByteBuffer();
+
+  var value = message["x"];
+  if (value != null) {
+    bb.writeVarInt64(value);
+  } else {
+    throw new Error("Missing required field \"x\"");
+  }
+
+  if (isTopLevel) return bb.toUint8Array();
+};
+
+test["decodeUint64Struct"] = function (bb) {
+  var result = {};
+  if (!(bb instanceof this.ByteBuffer)) {
+    bb = new this.ByteBuffer(bb);
+  }
+
+  result["x"] = bb.readVarUint64();
+  return result;
+};
+
+test["encodeUint64Struct"] = function (message, bb) {
+  var isTopLevel = !bb;
+  if (isTopLevel) bb = new this.ByteBuffer();
+
+  var value = message["x"];
+  if (value != null) {
+    bb.writeVarUint64(value);
+  } else {
+    throw new Error("Missing required field \"x\"");
+  }
+
+  if (isTopLevel) return bb.toUint8Array();
+};
+
 test["decodeFloatStruct"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
@@ -396,6 +444,76 @@ test["encodeUintMessage"] = function (message, bb) {
   if (value != null) {
     bb.writeVarUint(1);
     bb.writeVarUint(value);
+  }
+  bb.writeVarUint(0);
+
+  if (isTopLevel) return bb.toUint8Array();
+};
+
+test["decodeInt64Message"] = function (bb) {
+  var result = {};
+  if (!(bb instanceof this.ByteBuffer)) {
+    bb = new this.ByteBuffer(bb);
+  }
+
+  while (true) {
+    switch (bb.readVarUint()) {
+      case 0:
+        return result;
+
+      case 1:
+        result["x"] = bb.readVarInt64();
+        break;
+
+      default:
+        throw new Error("Attempted to parse invalid message");
+    }
+  }
+};
+
+test["encodeInt64Message"] = function (message, bb) {
+  var isTopLevel = !bb;
+  if (isTopLevel) bb = new this.ByteBuffer();
+
+  var value = message["x"];
+  if (value != null) {
+    bb.writeVarUint(1);
+    bb.writeVarInt64(value);
+  }
+  bb.writeVarUint(0);
+
+  if (isTopLevel) return bb.toUint8Array();
+};
+
+test["decodeUint64Message"] = function (bb) {
+  var result = {};
+  if (!(bb instanceof this.ByteBuffer)) {
+    bb = new this.ByteBuffer(bb);
+  }
+
+  while (true) {
+    switch (bb.readVarUint()) {
+      case 0:
+        return result;
+
+      case 1:
+        result["x"] = bb.readVarUint64();
+        break;
+
+      default:
+        throw new Error("Attempted to parse invalid message");
+    }
+  }
+};
+
+test["encodeUint64Message"] = function (message, bb) {
+  var isTopLevel = !bb;
+  if (isTopLevel) bb = new this.ByteBuffer();
+
+  var value = message["x"];
+  if (value != null) {
+    bb.writeVarUint(1);
+    bb.writeVarUint64(value);
   }
   bb.writeVarUint(0);
 
@@ -689,6 +807,68 @@ test["encodeUintArrayStruct"] = function (message, bb) {
   if (isTopLevel) return bb.toUint8Array();
 };
 
+test["decodeInt64ArrayStruct"] = function (bb) {
+  var result = {};
+  if (!(bb instanceof this.ByteBuffer)) {
+    bb = new this.ByteBuffer(bb);
+  }
+
+  var length = bb.readVarUint();
+  var values = result["x"] = Array(length);
+  for (var i = 0; i < length; i++) values[i] = bb.readVarInt64();
+  return result;
+};
+
+test["encodeInt64ArrayStruct"] = function (message, bb) {
+  var isTopLevel = !bb;
+  if (isTopLevel) bb = new this.ByteBuffer();
+
+  var value = message["x"];
+  if (value != null) {
+    var values = value, n = values.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < n; i++) {
+      value = values[i];
+      bb.writeVarInt64(value);
+    }
+  } else {
+    throw new Error("Missing required field \"x\"");
+  }
+
+  if (isTopLevel) return bb.toUint8Array();
+};
+
+test["decodeUint64ArrayStruct"] = function (bb) {
+  var result = {};
+  if (!(bb instanceof this.ByteBuffer)) {
+    bb = new this.ByteBuffer(bb);
+  }
+
+  var length = bb.readVarUint();
+  var values = result["x"] = Array(length);
+  for (var i = 0; i < length; i++) values[i] = bb.readVarUint64();
+  return result;
+};
+
+test["encodeUint64ArrayStruct"] = function (message, bb) {
+  var isTopLevel = !bb;
+  if (isTopLevel) bb = new this.ByteBuffer();
+
+  var value = message["x"];
+  if (value != null) {
+    var values = value, n = values.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < n; i++) {
+      value = values[i];
+      bb.writeVarUint64(value);
+    }
+  } else {
+    throw new Error("Missing required field \"x\"");
+  }
+
+  if (isTopLevel) return bb.toUint8Array();
+};
+
 test["decodeFloatArrayStruct"] = function (bb) {
   var result = {};
   if (!(bb instanceof this.ByteBuffer)) {
@@ -951,6 +1131,90 @@ test["encodeUintArrayMessage"] = function (message, bb) {
     for (var i = 0; i < n; i++) {
       value = values[i];
       bb.writeVarUint(value);
+    }
+  }
+  bb.writeVarUint(0);
+
+  if (isTopLevel) return bb.toUint8Array();
+};
+
+test["decodeInt64ArrayMessage"] = function (bb) {
+  var result = {};
+  if (!(bb instanceof this.ByteBuffer)) {
+    bb = new this.ByteBuffer(bb);
+  }
+
+  while (true) {
+    switch (bb.readVarUint()) {
+      case 0:
+        return result;
+
+      case 1:
+        var length = bb.readVarUint();
+        var values = result["x"] = Array(length);
+        for (var i = 0; i < length; i++) values[i] = bb.readVarInt64();
+        break;
+
+      default:
+        throw new Error("Attempted to parse invalid message");
+    }
+  }
+};
+
+test["encodeInt64ArrayMessage"] = function (message, bb) {
+  var isTopLevel = !bb;
+  if (isTopLevel) bb = new this.ByteBuffer();
+
+  var value = message["x"];
+  if (value != null) {
+    bb.writeVarUint(1);
+    var values = value, n = values.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < n; i++) {
+      value = values[i];
+      bb.writeVarInt64(value);
+    }
+  }
+  bb.writeVarUint(0);
+
+  if (isTopLevel) return bb.toUint8Array();
+};
+
+test["decodeUint64ArrayMessage"] = function (bb) {
+  var result = {};
+  if (!(bb instanceof this.ByteBuffer)) {
+    bb = new this.ByteBuffer(bb);
+  }
+
+  while (true) {
+    switch (bb.readVarUint()) {
+      case 0:
+        return result;
+
+      case 1:
+        var length = bb.readVarUint();
+        var values = result["x"] = Array(length);
+        for (var i = 0; i < length; i++) values[i] = bb.readVarUint64();
+        break;
+
+      default:
+        throw new Error("Attempted to parse invalid message");
+    }
+  }
+};
+
+test["encodeUint64ArrayMessage"] = function (message, bb) {
+  var isTopLevel = !bb;
+  if (isTopLevel) bb = new this.ByteBuffer();
+
+  var value = message["x"];
+  if (value != null) {
+    bb.writeVarUint(1);
+    var values = value, n = values.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < n; i++) {
+      value = values[i];
+      bb.writeVarUint64(value);
     }
   }
   bb.writeVarUint(0);
@@ -1342,12 +1606,16 @@ test["decodeSortedStruct"] = function (bb) {
   result["d1"] = bb.readVarUint();
   result["e1"] = bb.readVarFloat();
   result["f1"] = bb.readString();
+  result["g1"] = bb.readVarInt64();
+  result["h1"] = bb.readVarUint64();
   result["a2"] = !!bb.readByte();
   result["b2"] = bb.readByte();
   result["c2"] = bb.readVarInt();
   result["d2"] = bb.readVarUint();
   result["e2"] = bb.readVarFloat();
   result["f2"] = bb.readString();
+  result["g2"] = bb.readVarInt64();
+  result["h2"] = bb.readVarUint64();
   var length = bb.readVarUint();
   var values = result["a3"] = Array(length);
   for (var i = 0; i < length; i++) values[i] = !!bb.readByte();
@@ -1364,6 +1632,12 @@ test["decodeSortedStruct"] = function (bb) {
   var length = bb.readVarUint();
   var values = result["f3"] = Array(length);
   for (var i = 0; i < length; i++) values[i] = bb.readString();
+  var length = bb.readVarUint();
+  var values = result["g3"] = Array(length);
+  for (var i = 0; i < length; i++) values[i] = bb.readVarInt64();
+  var length = bb.readVarUint();
+  var values = result["h3"] = Array(length);
+  for (var i = 0; i < length; i++) values[i] = bb.readVarUint64();
   return result;
 };
 
@@ -1413,6 +1687,20 @@ test["encodeSortedStruct"] = function (message, bb) {
     throw new Error("Missing required field \"f1\"");
   }
 
+  var value = message["g1"];
+  if (value != null) {
+    bb.writeVarInt64(value);
+  } else {
+    throw new Error("Missing required field \"g1\"");
+  }
+
+  var value = message["h1"];
+  if (value != null) {
+    bb.writeVarUint64(value);
+  } else {
+    throw new Error("Missing required field \"h1\"");
+  }
+
   var value = message["a2"];
   if (value != null) {
     bb.writeByte(value);
@@ -1453,6 +1741,20 @@ test["encodeSortedStruct"] = function (message, bb) {
     bb.writeString(value);
   } else {
     throw new Error("Missing required field \"f2\"");
+  }
+
+  var value = message["g2"];
+  if (value != null) {
+    bb.writeVarInt64(value);
+  } else {
+    throw new Error("Missing required field \"g2\"");
+  }
+
+  var value = message["h2"];
+  if (value != null) {
+    bb.writeVarUint64(value);
+  } else {
+    throw new Error("Missing required field \"h2\"");
   }
 
   var value = message["a3"];
@@ -1520,6 +1822,30 @@ test["encodeSortedStruct"] = function (message, bb) {
     }
   } else {
     throw new Error("Missing required field \"f3\"");
+  }
+
+  var value = message["g3"];
+  if (value != null) {
+    var values = value, n = values.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < n; i++) {
+      value = values[i];
+      bb.writeVarInt64(value);
+    }
+  } else {
+    throw new Error("Missing required field \"g3\"");
+  }
+
+  var value = message["h3"];
+  if (value != null) {
+    var values = value, n = values.length;
+    bb.writeVarUint(n);
+    for (var i = 0; i < n; i++) {
+      value = values[i];
+      bb.writeVarUint64(value);
+    }
+  } else {
+    throw new Error("Missing required field \"h3\"");
   }
 
   if (isTopLevel) return bb.toUint8Array();

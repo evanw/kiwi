@@ -74,6 +74,30 @@ namespace test {
   }
 
   @import
+  class Int64Struct {
+    var x BigInt
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace Int64Struct {
+    @alwaysinline
+    def new Int64Struct { return {} as dynamic }
+  }
+
+  @import
+  class Uint64Struct {
+    var x BigInt
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace Uint64Struct {
+    @alwaysinline
+    def new Uint64Struct { return {} as dynamic }
+  }
+
+  @import
   class FloatStruct {
     var x double
     @alwaysinline
@@ -176,6 +200,30 @@ namespace test {
   namespace UintMessage {
     @alwaysinline
     def new UintMessage { return {} as dynamic }
+  }
+
+  @import
+  class Int64Message {
+    var x BigInt
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace Int64Message {
+    @alwaysinline
+    def new Int64Message { return {} as dynamic }
+  }
+
+  @import
+  class Uint64Message {
+    var x BigInt
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace Uint64Message {
+    @alwaysinline
+    def new Uint64Message { return {} as dynamic }
   }
 
   @import
@@ -284,6 +332,30 @@ namespace test {
   }
 
   @import
+  class Int64ArrayStruct {
+    var x List<BigInt>
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace Int64ArrayStruct {
+    @alwaysinline
+    def new Int64ArrayStruct { return {} as dynamic }
+  }
+
+  @import
+  class Uint64ArrayStruct {
+    var x List<BigInt>
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace Uint64ArrayStruct {
+    @alwaysinline
+    def new Uint64ArrayStruct { return {} as dynamic }
+  }
+
+  @import
   class FloatArrayStruct {
     var x List<double>
     @alwaysinline
@@ -368,6 +440,30 @@ namespace test {
   namespace UintArrayMessage {
     @alwaysinline
     def new UintArrayMessage { return {} as dynamic }
+  }
+
+  @import
+  class Int64ArrayMessage {
+    var x List<BigInt>
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace Int64ArrayMessage {
+    @alwaysinline
+    def new Int64ArrayMessage { return {} as dynamic }
+  }
+
+  @import
+  class Uint64ArrayMessage {
+    var x List<BigInt>
+    @alwaysinline
+    def has_x bool { return self.x != dynamic.void(0) }
+  }
+
+  namespace Uint64ArrayMessage {
+    @alwaysinline
+    def new Uint64ArrayMessage { return {} as dynamic }
   }
 
   @import
@@ -492,6 +588,12 @@ namespace test {
     var f1 string
     @alwaysinline
     def has_f1 bool { return self.f1 != dynamic.void(0) }
+    var g1 BigInt
+    @alwaysinline
+    def has_g1 bool { return self.g1 != dynamic.void(0) }
+    var h1 BigInt
+    @alwaysinline
+    def has_h1 bool { return self.h1 != dynamic.void(0) }
     var a2 bool
     @alwaysinline
     def has_a2 bool { return self.a2 != dynamic.void(0) }
@@ -510,6 +612,12 @@ namespace test {
     var f2 string
     @alwaysinline
     def has_f2 bool { return self.f2 != dynamic.void(0) }
+    var g2 BigInt
+    @alwaysinline
+    def has_g2 bool { return self.g2 != dynamic.void(0) }
+    var h2 BigInt
+    @alwaysinline
+    def has_h2 bool { return self.h2 != dynamic.void(0) }
     var a3 List<bool>
     @alwaysinline
     def has_a3 bool { return self.a3 != dynamic.void(0) }
@@ -528,6 +636,12 @@ namespace test {
     var f3 List<string>
     @alwaysinline
     def has_f3 bool { return self.f3 != dynamic.void(0) }
+    var g3 List<BigInt>
+    @alwaysinline
+    def has_g3 bool { return self.g3 != dynamic.void(0) }
+    var h3 List<BigInt>
+    @alwaysinline
+    def has_h3 bool { return self.h3 != dynamic.void(0) }
   }
 
   namespace SortedStruct {
@@ -548,6 +662,10 @@ namespace test {
     def decodeIntStruct(buffer Uint8Array) IntStruct
     def encodeUintStruct(message UintStruct) Uint8Array
     def decodeUintStruct(buffer Uint8Array) UintStruct
+    def encodeInt64Struct(message Int64Struct) Uint8Array
+    def decodeInt64Struct(buffer Uint8Array) Int64Struct
+    def encodeUint64Struct(message Uint64Struct) Uint8Array
+    def decodeUint64Struct(buffer Uint8Array) Uint64Struct
     def encodeFloatStruct(message FloatStruct) Uint8Array
     def decodeFloatStruct(buffer Uint8Array) FloatStruct
     def encodeStringStruct(message StringStruct) Uint8Array
@@ -564,6 +682,10 @@ namespace test {
     def decodeIntMessage(buffer Uint8Array) IntMessage
     def encodeUintMessage(message UintMessage) Uint8Array
     def decodeUintMessage(buffer Uint8Array) UintMessage
+    def encodeInt64Message(message Int64Message) Uint8Array
+    def decodeInt64Message(buffer Uint8Array) Int64Message
+    def encodeUint64Message(message Uint64Message) Uint8Array
+    def decodeUint64Message(buffer Uint8Array) Uint64Message
     def encodeFloatMessage(message FloatMessage) Uint8Array
     def decodeFloatMessage(buffer Uint8Array) FloatMessage
     def encodeStringMessage(message StringMessage) Uint8Array
@@ -580,6 +702,10 @@ namespace test {
     def decodeIntArrayStruct(buffer Uint8Array) IntArrayStruct
     def encodeUintArrayStruct(message UintArrayStruct) Uint8Array
     def decodeUintArrayStruct(buffer Uint8Array) UintArrayStruct
+    def encodeInt64ArrayStruct(message Int64ArrayStruct) Uint8Array
+    def decodeInt64ArrayStruct(buffer Uint8Array) Int64ArrayStruct
+    def encodeUint64ArrayStruct(message Uint64ArrayStruct) Uint8Array
+    def decodeUint64ArrayStruct(buffer Uint8Array) Uint64ArrayStruct
     def encodeFloatArrayStruct(message FloatArrayStruct) Uint8Array
     def decodeFloatArrayStruct(buffer Uint8Array) FloatArrayStruct
     def encodeStringArrayStruct(message StringArrayStruct) Uint8Array
@@ -594,6 +720,10 @@ namespace test {
     def decodeIntArrayMessage(buffer Uint8Array) IntArrayMessage
     def encodeUintArrayMessage(message UintArrayMessage) Uint8Array
     def decodeUintArrayMessage(buffer Uint8Array) UintArrayMessage
+    def encodeInt64ArrayMessage(message Int64ArrayMessage) Uint8Array
+    def decodeInt64ArrayMessage(buffer Uint8Array) Int64ArrayMessage
+    def encodeUint64ArrayMessage(message Uint64ArrayMessage) Uint8Array
+    def decodeUint64ArrayMessage(buffer Uint8Array) Uint64ArrayMessage
     def encodeFloatArrayMessage(message FloatArrayMessage) Uint8Array
     def decodeFloatArrayMessage(buffer Uint8Array) FloatArrayMessage
     def encodeStringArrayMessage(message StringArrayMessage) Uint8Array
