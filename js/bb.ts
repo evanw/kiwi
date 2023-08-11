@@ -197,6 +197,7 @@ export class ByteBuffer {
   }
 
   writeVarUint(value: number): void {
+    if (value < 0 || value > 0xFFFF_FFFF) throw new Error('Outside uint range: ' + value);
     do {
       let byte = value & 127;
       value >>>= 7;
@@ -205,12 +206,14 @@ export class ByteBuffer {
   }
 
   writeVarInt(value: number): void {
-    this.writeVarUint((value << 1) ^ (value >> 31));
+    if (value < -0x8000_0000 || value > 0x7FFF_FFFF) throw new Error('Outside int range: ' + value);
+    this.writeVarUint(((value << 1) ^ (value >> 31)) >>> 0);
   }
 
   writeVarUint64(value: bigint | string): void {
     if (typeof value === 'string') value = BigInt(value);
     else if (typeof value !== 'bigint') throw new Error('Expected bigint but got ' + typeof value + ': ' + value);
+    if (value < 0 || value > BigInt('0xFFFFFFFFFFFFFFFF')) throw new Error('Outside uint64 range: ' + value);
     let mask = BigInt(127);
     let seven = BigInt(7);
     for (let i = 0; value > mask && i < 8; i++) {
@@ -223,6 +226,7 @@ export class ByteBuffer {
   writeVarInt64(value: bigint | string): void {
     if (typeof value === 'string') value = BigInt(value);
     else if (typeof value !== 'bigint') throw new Error('Expected bigint but got ' + typeof value + ': ' + value);
+    if (value < -BigInt('0x8000000000000000') || value > BigInt('0x7FFFFFFFFFFFFFFF')) throw new Error('Outside int64 range: ' + value);
     let one = BigInt(1);
     this.writeVarUint64(value < 0 ? ~(value << one) : value << one);
   }
