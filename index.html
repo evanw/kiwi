@@ -1,18 +1,29 @@
+<!DOCTYPE html>
 <meta charset="utf8">
 <title>Kiwi File Format Demo</title>
 <style>
   body {
     font: 14px/150% sans-serif;
     margin: 50px 0 50px 50px;
+    color: black;
+    background: white;
   }
 
-  h1, p {
+  @media (prefers-color-scheme: dark) {
+    body {
+      color: #EEE;
+      background: #191919;
+    }
+  }
+
+  h1,
+  p {
     padding-right: 50px;
     clear: both;
   }
 
   h1 {
-    margin-bottom: 50px;
+    margin-bottom: 15px;
   }
 
   p {
@@ -30,16 +41,18 @@
     min-height: 300px;
     resize: vertical;
     margin: 0;
-    border: 1px solid #CCC;
+    border: 1px solid rgba(127, 127, 127, 0.5);
     border-radius: 5px;
     padding: 5px;
     font: 12px/130% Consolas, monospace;
+    color: inherit;
+    background: rgba(0, 0, 0, 0.1);
   }
 
   textarea:focus {
     outline: none;
     border-color: #777;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 4px rgba(127, 127, 127, 0.8);
   }
 
   section {
@@ -53,7 +66,9 @@
   .spacer {
     height: 50px;
   }
+
 </style>
+
 <body>
   <h1>Kiwi File Format Demo</h1>
 
@@ -110,33 +125,33 @@ message Example {
 
   <section>
     <h2>Log</h2>
-    <textarea id="log" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">Success</textarea>
+    <textarea id="log" readonly autocomplete="off" autocorrect="off" autocapitalize="off"
+      spellcheck="false">Success</textarea>
   </section>
 </body>
-<script src="kiwi.js"></script>
-<script>
+<script type="module">
+  import * as kiwi from './kiwi-esm.js';
 
-(function() {
   var json = document.getElementById('json');
   var binary = document.getElementById('binary');
   var schema = document.getElementById('schema');
   var log = document.getElementById('log');
 
   function toHex(value) {
-    return Array.prototype.map.call(value, function(x) {
+    return Array.prototype.map.call(value, function (x) {
       return (0x100 | x).toString(16).slice(-2);
     }).join(' ');
   }
 
   function fromHex(value) {
-    return new Uint8Array(value.split(/[\s,]+/g).map(function(x) {
+    return new Uint8Array(value.split(/[\s,]+/g).map(function (x) {
       return '0x' + x | 0;
     }));
   }
 
   function update() {
     try {
-      var compiled = kiwi.compileSchema(schema.value);
+      var compiled = kiwi.compileSchema(kiwi.parseSchema(schema.value));
       var parts = schema.value.split(/\b(?:message|struct)\s+(\w+)\b/g);
 
       if (parts.length < 2) {
@@ -151,7 +166,8 @@ message Example {
       }
 
       else if (document.activeElement === binary) {
-        json.value = JSON.stringify(compiled['decode' + name](fromHex(binary.value)), null, 2) + '\n';
+        const replacer = (k, v) => typeof v === 'bigint' ? '' + v : v
+        json.value = JSON.stringify(compiled['decode' + name](fromHex(binary.value)), replacer, 2) + '\n';
       }
 
       log.value = 'Success';
@@ -167,6 +183,5 @@ message Example {
   json.oninput = binary.oninput = schema.oninput = update;
   json.onchange = binary.onchange = schema.onchange = update;
   update();
-})();
 
 </script>
