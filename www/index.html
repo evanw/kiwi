@@ -5,6 +5,15 @@
   body {
     font: 14px/150% sans-serif;
     margin: 50px 0 50px 50px;
+    color: black;
+    background: white;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      color: #EEE;
+      background: #191919;
+    }
   }
 
   h1,
@@ -14,7 +23,7 @@
   }
 
   h1 {
-    margin-bottom: 50px;
+    margin-bottom: 15px;
   }
 
   p {
@@ -32,16 +41,18 @@
     min-height: 300px;
     resize: vertical;
     margin: 0;
-    border: 1px solid #CCC;
+    border: 1px solid rgba(127, 127, 127, 0.5);
     border-radius: 5px;
     padding: 5px;
     font: 12px/130% Consolas, monospace;
+    color: inherit;
+    background: rgba(0, 0, 0, 0.1);
   }
 
   textarea:focus {
     outline: none;
     border-color: #777;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 4px rgba(127, 127, 127, 0.8);
   }
 
   section {
