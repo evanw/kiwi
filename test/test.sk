@@ -406,6 +406,9 @@ def main {
   })
 
   it("binary schema", => {
+    var test_schema = test1.BinarySchema.new
+    test_schema.parse(Uint8Array.new(fs.readFileSync(__dirname + "/test-schema.bkiwi")))
+
     var test1_schema1 = test1.BinarySchema.new
     var test1_schema2 = test1.BinarySchema.new
     var test2_schema1 = test2.BinarySchema.new

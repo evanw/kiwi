@@ -300,7 +300,7 @@ namespace Kiwi {
 
         for j in 0..bb.readVarUint {
           var field = Field.new(bb.readString, bb.readVarInt, bb.readByte as bool, bb.readVarUint)
-          if field.type < TYPE_STRING || field.type >= definitionCount {
+          if field.type < TYPE_UINT64 || field.type >= definitionCount {
             DecodeError.throwInvalidSchema
           }
           fields.append(field)
@@ -341,6 +341,7 @@ namespace Kiwi {
           case TYPE_INT, TYPE_UINT { bb.readVarUint }
           case TYPE_FLOAT { bb.readVarFloat }
           case TYPE_STRING { while bb.readByte != 0 {} }
+          case TYPE_INT64, TYPE_UINT64 { bb.readVarUint64 }
 
           default {
             assert(field.type >= 0 && field.type < _definitions.count)
@@ -371,6 +372,8 @@ namespace Kiwi {
     const TYPE_UINT = -4
     const TYPE_FLOAT = -5
     const TYPE_STRING = -6
+    const TYPE_INT64 = -7
+    const TYPE_UINT64 = -8
 
     class Field {
       const name string

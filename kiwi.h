@@ -491,7 +491,7 @@ namespace kiwi {
             !bb.readVarInt(field.type) ||
             !bb.readByte(field.isArray) ||
             !bb.readVarUint(field.value) ||
-            field.type < TYPE_STRING ||
+            field.type < TYPE_UINT64 ||
             field.type >= (int32_t)definitionCount) {
           return false;
         }
@@ -561,6 +561,13 @@ namespace kiwi {
           do {
             if (!bb.readByte(value)) return false;
           } while (value);
+          break;
+        }
+
+        case TYPE_INT64:
+        case TYPE_UINT64: {
+          uint64_t dummy = 0;
+          if (!bb.readVarUint64(dummy)) return false;
           break;
         }
 

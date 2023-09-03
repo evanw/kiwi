@@ -704,6 +704,13 @@ static void testRecursiveMessage() {
 static void testBinarySchema() {
   puts("testBinarySchema");
 
+  {
+    kiwi::BinarySchema test_schema;
+    kiwi::ByteBuffer file;
+    assert(readFile("test-schema.bkiwi", file));
+    assert(test_schema.parse(file));
+  }
+
   test1::BinarySchema test1_schema1;
   test1::BinarySchema test1_schema2;
   test2::BinarySchema test2_schema1;

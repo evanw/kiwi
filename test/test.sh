@@ -8,6 +8,9 @@ node ../js/cli.js --schema ./test-schema.kiwi --js ./test-schema.js
 
 node ../js/cli.js --schema ./test-schema.kiwi --ts ./test-schema.ts
 
+node ../js/cli.js --schema ./test-schema.kiwi --binary ./test-schema.bkiwi
+node ../js/cli.js --schema ./test-schema.bkiwi --text ./test-schema-round-trip.kiwi
+
 node ../js/cli.js --schema ./test-schema.kiwi --cpp ./test-schema.h
 node ../js/cli.js --schema ./test1-schema.kiwi --cpp ./test1-schema.h --binary ./test1-schema.bkiwi
 node ../js/cli.js --schema ./test2-schema.kiwi --cpp ./test2-schema.h --binary ./test2-schema.bkiwi
@@ -31,6 +34,4 @@ rm temp.js temp.js.map
 
 node ../js/cli.js --schema ./test-schema.kiwi --skew-types ./test-schema-types.sk
 
-node ../js/cli.js --schema ./test-schema.kiwi --binary ./test-schema.bkiwi
-node ../js/cli.js --schema ./test-schema.bkiwi --text ./test-schema-round-trip.kiwi
 rm ./test-schema.bkiwi

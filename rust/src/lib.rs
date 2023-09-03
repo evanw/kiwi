@@ -663,6 +663,8 @@ pub struct Field {
   /// * [TYPE_UINT](constant.TYPE_UINT.html)
   /// * [TYPE_FLOAT](constant.TYPE_FLOAT.html)
   /// * [TYPE_STRING](constant.TYPE_STRING.html)
+  /// * [TYPE_INT64](constant.TYPE_INT64.html)
+  /// * [TYPE_UINT64](constant.TYPE_UINT64.html)
   pub type_id: i32,
 
   /// True if this field was declared as an array (e.g. `int[]` instead of
@@ -843,6 +845,9 @@ impl Schema {
         let type_id = bb.read_var_int()?;
         let is_array = bb.read_bool()?;
         let value = bb.read_var_uint()?;
+        if type_id < TYPE_UINT64 || type_id >= definition_count as i32 {
+          return Err(());
+        }
         fields.push(Field {name, type_id, is_array, value});
       }
 
@@ -896,6 +901,8 @@ impl Schema {
       TYPE_UINT => { bb.read_var_uint()?; },
       TYPE_FLOAT => { bb.read_var_float()?; },
       TYPE_STRING => { bb.read_string()?; },
+      TYPE_INT64 => { bb.read_var_int64()?; },
+      TYPE_UINT64 => { bb.read_var_uint64()?; },
 
       _ => {
         let def = &self.defs[type_id as usize];
@@ -1413,6 +1420,8 @@ fn value_encode_and_decode() {
       Field {name: "a_message".to_owned(), type_id: 2, is_array: true, value: 22},
     ]),
   ]);
+
+  assert!(Schema::decode(&schema.encode()).is_ok());
 
   assert_eq!(Value::decode(&schema, TYPE_BOOL, &[0]), Ok(Value::Bool(false)));
   assert_eq!(Value::decode(&schema, TYPE_BOOL, &[1]), Ok(Value::Bool(true)));
