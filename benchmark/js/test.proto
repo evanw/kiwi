@@ -1,0 +1,18 @@
+package test;
+syntax = "proto3";
+
+enum Type {
+  FLAT = 0;
+  ROUND = 1;
+  POINTED = 2;
+}
+
+message Color {
+  optional bytes rgba = 1;
+}
+
+message Example {
+  optional uint32 clientID = 1;
+  optional Type type = 2;
+  repeated Color colors = 3;
+}
