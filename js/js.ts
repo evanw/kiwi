@@ -1,6 +1,28 @@
 import { Schema, Definition } from "./schema";
 import { ByteBuffer } from "./bb";
-import { error, quote } from "./util";
+import { error, quote, quoteFast } from "./util";
+
+const decodeMap: Record<string, string> = {
+  bool: 'readByte',
+  byte: 'readByte',
+  int: 'readVarInt',
+  uint: 'readVarUint',
+  float: 'readVarFloat',
+  string: 'readString',
+  int64: 'readVarInt64',
+  uint64: 'readVarUint64',
+};
+
+const encodeMap: Record<string, string> = {
+  bool: 'writeByte',
+  byte: 'writeByte',
+  int: 'writeVarInt',
+  uint: 'writeVarUint',
+  float: 'writeVarFloat',
+  string: 'writeString',
+  int64: 'writeVarInt64',
+  uint64: 'writeVarUint64',
+}
 
 function compileDecode(definition: Definition, definitions: { [name: string]: Definition }): string {
   let lines: string[] = [];
@@ -26,56 +48,16 @@ function compileDecode(definition: Definition, definitions: { [name: string]: De
     let field = definition.fields[i];
     let code: string;
 
-    switch (field.type) {
-      case 'bool': {
-        code = '!!bb.readByte()';
-        break;
-      }
-
-      case 'byte': {
-        code = 'bb.readByte()';  // only used if not array
-        break;
-      }
-
-      case 'int': {
-        code = 'bb.readVarInt()';
-        break;
-      }
-
-      case 'uint': {
-        code = 'bb.readVarUint()';
-        break;
-      }
-
-      case 'float': {
-        code = 'bb.readVarFloat()';
-        break;
-      }
-
-      case 'string': {
-        code = 'bb.readString()';
-        break;
-      }
-
-      case 'int64': {
-        code = 'bb.readVarInt64()';
-        break;
-      }
-
-      case 'uint64': {
-        code = 'bb.readVarUint64()';
-        break;
-      }
-
-      default: {
-        let type = definitions[field.type!];
-        if (!type) {
-          error('Invalid type ' + quote(field.type!) + ' for field ' + quote(field.name), field.line, field.column);
-        } else if (type.kind === 'ENUM') {
-          code = 'this[' + quote(type.name) + '][bb.readVarUint()]';
-        } else {
-          code = 'this[' + quote('decode' + type.name) + '](bb)';
-        }
+    if (field.type && decodeMap[field.type]) {
+      code = `bb.${decodeMap[field.type]}()`;
+    } else {
+      let type = definitions[field.type!];
+      if (!type) {
+        error('Invalid type ' + quoteFast(field.type!) + ' for field ' + quoteFast(field.name), field.line, field.column);
+      } else if (type.kind === 'ENUM') {
+        code = 'this[' + quoteFast(type.name) + '][bb.readVarUint()]';
+      } else {
+        code = 'this[' + quoteFast('decode' + type.name) + '](bb)';
       }
     }
 
@@ -93,10 +75,10 @@ function compileDecode(definition: Definition, definitions: { [name: string]: De
         }
       } else {
         if (field.type === 'byte') {
-          lines.push(indent + 'result[' + quote(field.name) + '] = bb.readByteArray();');
+          lines.push(indent + 'result[' + quoteFast(field.name) + '] = bb.readByteArray();');
         } else {
           lines.push(indent + 'var length = bb.readVarUint();');
-          lines.push(indent + 'var values = result[' + quote(field.name) + '] = Array(length);');
+          lines.push(indent + 'var values = result[' + quoteFast(field.name) + '] = Array(length);');
           lines.push(indent + 'for (var i = 0; i < length; i++) values[i] = ' + code + ';');
         }
       }
@@ -106,7 +88,7 @@ function compileDecode(definition: Definition, definitions: { [name: string]: De
       if (field.isDeprecated) {
         lines.push(indent + code + ';');
       } else {
-        lines.push(indent + 'result[' + quote(field.name) + '] = ' + code + ';');
+        lines.push(indent + 'result[' + quoteFast(field.name) + '] = ' + code + ';');
       }
     }
 
@@ -147,64 +129,24 @@ function compileEncode(definition: Definition, definitions: { [name: string]: De
       continue;
     }
 
-    switch (field.type) {
-      case 'bool': {
-        code = 'bb.writeByte(value);';
-        break;
-      }
-
-      case 'byte': {
-        code = 'bb.writeByte(value);';  // only used if not array
-        break;
-      }
-
-      case 'int': {
-        code = 'bb.writeVarInt(value);';
-        break;
-      }
-
-      case 'uint': {
-        code = 'bb.writeVarUint(value);';
-        break;
-      }
-
-      case 'float': {
-        code = 'bb.writeVarFloat(value);';
-        break;
-      }
-
-      case 'string': {
-        code = 'bb.writeString(value);';
-        break;
-      }
-
-      case 'int64': {
-        code = 'bb.writeVarInt64(value);';
-        break;
-      }
-
-      case 'uint64': {
-        code = 'bb.writeVarUint64(value);';
-        break;
-      }
-
-      default: {
-        let type = definitions[field.type!];
-        if (!type) {
-          throw new Error('Invalid type ' + quote(field.type!) + ' for field ' + quote(field.name));
-        } else if (type.kind === 'ENUM') {
-          code =
-            'var encoded = this[' + quote(type.name) + '][value]; ' +
-            'if (encoded === void 0) throw new Error("Invalid value " + JSON.stringify(value) + ' + quote(' for enum ' + quote(type.name)) + '); ' +
-            'bb.writeVarUint(encoded);';
-        } else {
-          code = 'this[' + quote('encode' + type.name) + '](value, bb);';
-        }
+    if (field.type && encodeMap[field.type]) {
+      code = `bb.${encodeMap[field.type]}(value);`;
+    } else {
+      let type = definitions[field.type!];
+      if (!type) {
+        throw new Error('Invalid type ' + quoteFast(field.type!) + ' for field ' + quoteFast(field.name));
+      } else if (type.kind === 'ENUM') {
+        code =
+          'var encoded = this[' + quoteFast(type.name) + '][value]; ' +
+          'if (encoded === void 0) throw new Error("Invalid value " + JSON.stringify(value) + ' + quote(' for enum ' + quoteFast(type.name)) + '); ' +
+          'bb.writeVarUint(encoded);';
+      } else {
+        code = 'this[' + quoteFast('encode' + type.name) + '](value, bb);';
       }
     }
 
     lines.push('');
-    lines.push('  var value = message[' + quote(field.name) + '];');
+    lines.push('  var value = message[' + quoteFast(field.name) + '];');
     lines.push('  if (value != null) {'); // Comparing with null using "!=" also checks for undefined
 
     if (definition.kind === 'MESSAGE') {
@@ -230,7 +172,7 @@ function compileEncode(definition: Definition, definitions: { [name: string]: De
 
     if (definition.kind === 'STRUCT') {
       lines.push('  } else {');
-      lines.push('    throw new Error(' + quote('Missing required field ' + quote(field.name)) + ');');
+      lines.push('    throw new Error(' + quote('Missing required field ' + quoteFast(field.name)) + ');');
     }
 
     lines.push('  }');
@@ -262,8 +204,7 @@ export function compileSchemaJS(schema: Schema): string {
 
   js.push(name + '.ByteBuffer = ' + name + '.ByteBuffer || require("kiwi-schema").ByteBuffer;');
 
-  for (let i = 0; i < schema.definitions.length; i++) {
-    let definition = schema.definitions[i];
+  for (const definition of schema.definitions) {
     definitions[definition.name] = definition;
   }
 
@@ -272,27 +213,24 @@ export function compileSchemaJS(schema: Schema): string {
 
     switch (definition.kind) {
       case 'ENUM': {
-        let value: any = {};
-        for (let j = 0; j < definition.fields.length; j++) {
-          let field = definition.fields[j];
-          value[field.name] = field.value;
-          value[field.value] = field.name;
-        }
-        js.push(name + '[' + quote(definition.name) + '] = ' + JSON.stringify(value, null, 2) + ';');
+        let fieldStr = definition.fields.map(field => quoteFast(field.name) + ': ' + field.value).concat(
+          definition.fields.map(field => quoteFast(field.value) + ': ' + quoteFast(field.name))
+        ).join(',');
+        js.push(name + '[' + quoteFast(definition.name) + '] = {' + fieldStr + '};');
         break;
       }
 
       case 'STRUCT':
       case 'MESSAGE': {
         js.push('');
-        js.push(name + '[' + quote('decode' + definition.name) + '] = ' + compileDecode(definition, definitions) + ';');
+        js.push(name + '[' + quoteFast('decode' + definition.name) + '] = ' + compileDecode(definition, definitions) + ';');
         js.push('');
-        js.push(name + '[' + quote('encode' + definition.name) + '] = ' + compileEncode(definition, definitions) + ';');
+        js.push(name + '[' + quoteFast('encode' + definition.name) + '] = ' + compileEncode(definition, definitions) + ';');
         break;
       }
 
       default: {
-        error('Invalid definition kind ' + quote(definition.kind), definition.line, definition.column);
+        error('Invalid definition kind ' + quoteFast(definition.kind), definition.line, definition.column);
         break;
       }
     }

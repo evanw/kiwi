@@ -21,18 +21,7 @@ export let reservedNames = [
 let regex = /((?:-|\b)\d+\b|[=;{}]|\[\]|\[deprecated\]|\b[A-Za-z_][A-Za-z0-9_]*\b|\/\/.*|\s+)/g;
 let identifier = /^[A-Za-z_][A-Za-z0-9_]*$/;
 let whitespace = /^\/\/.*|\s+$/;
-let equals = /^=$/;
-let endOfFile = /^$/;
-let semicolon = /^;$/;
 let integer = /^-?\d+$/;
-let leftBrace = /^\{$/;
-let rightBrace = /^\}$/;
-let arrayToken = /^\[\]$/;
-let enumKeyword = /^enum$/;
-let structKeyword = /^struct$/;
-let messageKeyword = /^message$/;
-let packageKeyword = /^package$/;
-let deprecatedToken = /^\[deprecated\]$/;
 
 interface Token {
   text: string
@@ -41,69 +30,57 @@ interface Token {
 }
 
 function tokenize(text: string): Token[] {
-  let parts = text.split(regex);
   let tokens = [];
   let column = 0;
   let line = 0;
 
-  for (let i = 0; i < parts.length; i++) {
-    let part = parts[i];
-
-    // Keep non-whitespace tokens
-    if (i & 1) {
-      if (!whitespace.test(part)) {
-        tokens.push({
-          text: part,
-          line: line + 1,
-          column: column + 1,
-        });
-      }
-    }
-
-    // Detect syntax errors
-    else if (part !== '') {
-      error('Syntax error ' + quote(part), line + 1, column + 1);
+  for (const part of text.split(regex).filter((e, i) => i & 1)) {
+    if (!whitespace.test(part)) {
+      tokens.push({
+        text: part,
+        line: line + 1,
+        column: column + 1,
+      });
     }
 
     // Keep track of the line and column counts
     let lines = part.split('\n');
-    if (lines.length > 1) column = 0;
-    line += lines.length - 1;
-    column += lines[lines.length - 1].length;
+    if (lines.length > 1) {
+      column = 0;
+      line += lines.length - 1;
+    } else {
+      column += lines[lines.length - 1].length;
+    }
   }
-
-  // End-of-file token
-  tokens.push({
-    text: '',
-    line: line,
-    column: column,
-  });
 
   return tokens;
 }
 
 function parse(tokens: Token[]): Schema {
-  function current(): Token {
-    return tokens[index];
-  }
-
-  function eat(test: RegExp): boolean {
-    if (test.test(current().text)) {
+  function eatStr(test: string, token: Token): boolean {
+    if (test === token.text) {
       index++;
       return true;
     }
     return false;
   }
 
-  function expect(test: RegExp, expected: string): void {
-    if (!eat(test)) {
-      let token = current();
+  function expect(test: RegExp, expected: string, token: Token): void {
+    if (!test.test(token.text)) {
       error('Expected ' + expected + ' but found ' + quote(token.text), token.line, token.column);
     }
+    index++;
+  }
+
+  function expectStr(test: string, expected: string, token: Token): void {
+    if (test !== token.text) {
+      error('Expected ' + expected + ' but found ' + quote(token.text), token.line, token.column);
+    }
+    index++;
   }
 
   function unexpectedToken(): never {
-    let token = current();
+    let token = tokens[index];
     error('Unexpected token ' + quote(token.text), token.line, token.column);
   }
 
@@ -111,56 +88,60 @@ function parse(tokens: Token[]): Schema {
   let packageText = null;
   let index = 0;
 
-  if (eat(packageKeyword)) {
-    packageText = current().text;
-    expect(identifier, 'identifier');
-    expect(semicolon, '";"');
+  if (eatStr('package', tokens[index])) {
+    const token = tokens[index];
+    expect(identifier, 'identifier', token);
+    expectStr(';', '";"', tokens[index]);
+    packageText = token.text;
   }
 
-  while (index < tokens.length && !eat(endOfFile)) {
+  while (index < tokens.length) {
     let fields: Field[] = [];
     let kind: DefinitionKind;
 
-    if (eat(enumKeyword)) kind = 'ENUM';
-    else if (eat(structKeyword)) kind = 'STRUCT';
-    else if (eat(messageKeyword)) kind = 'MESSAGE';
+    const keyw = tokens[index].text;
+    if (keyw === 'enum') kind = 'ENUM';
+    else if (keyw === 'struct') kind = 'STRUCT';
+    else if (keyw === 'message') kind = 'MESSAGE';
     else unexpectedToken();
+    index++;
 
     // All definitions start off the same
-    let name = current();
-    expect(identifier, 'identifier');
-    expect(leftBrace, '"{"');
+    let name = tokens[index];
+    expect(identifier, 'identifier', name);
+    expectStr('{', '"{"', tokens[index]);
 
     // Parse fields
-    while (!eat(rightBrace)) {
+    while (!eatStr('}', tokens[index])) {
       let type: string | null = null;
       let isArray = false;
       let isDeprecated = false;
 
       // Enums don't have types
       if (kind !== 'ENUM') {
-        type = current().text;
-        expect(identifier, 'identifier');
-        isArray = eat(arrayToken);
+        const token = tokens[index];
+        expect(identifier, 'identifier', token);
+        isArray = eatStr('[]', tokens[index]);
+        type = token.text;
       }
 
-      let field = current();
-      expect(identifier, 'identifier');
+      let field = tokens[index];
+      expect(identifier, 'identifier', field);
 
       // Structs don't have explicit values
       let value: Token | null = null;
       if (kind !== 'STRUCT') {
-        expect(equals, '"="');
-        value = current();
-        expect(integer, 'integer');
+        expectStr('=', '"="', tokens[index]);
+        value = tokens[index];
+        expect(integer, 'integer', value);
 
         if ((+value.text | 0) + '' !== value.text) {
           error('Invalid integer ' + quote(value.text), value.line, value.column);
         }
       }
 
-      let deprecated = current();
-      if (eat(deprecatedToken)) {
+      let deprecated = tokens[index];
+      if (eatStr('[deprecated]', deprecated)) {
         if (kind !== 'MESSAGE') {
           error('Cannot deprecate this field', deprecated.line, deprecated.column);
         }
@@ -168,7 +149,7 @@ function parse(tokens: Token[]): Schema {
         isDeprecated = true;
       }
 
-      expect(semicolon, '";"');
+      expectStr(';', '";"', tokens[index]);
 
       fields.push({
         name: field.text,
